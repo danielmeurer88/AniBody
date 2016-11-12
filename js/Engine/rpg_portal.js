@@ -19,7 +19,7 @@ RPGPortal.prototype = Object.create(ABO.prototype);
 RPGPortal.prototype.constructor = RPGPortal;
 
 RPGPortal.prototype.Initialize = function(){
-    this.Traveler = this.Engine.ObjQ.SelectedObject;
+    this.Traveler = this.Engine.Objects.SelectedObject;
     this.FromField = this.FromTerrain.GetField(this.FromPos.X, this.FromPos.Y);
     this.ToField = this.ToTerrain.GetField(this.ToPos.X, this.ToPos.Y);
     

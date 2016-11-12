@@ -18,7 +18,7 @@ function RPGCamera(){
 
     this.Update = function(){
 
-        var sObj = this.Engine.ObjQ.SelectedObject;
+        var sObj = this.Engine.Objects.SelectedObject;
         var fcenter = {
             X : sObj.Center.X + (sObj.Width/2),
             Y : sObj.Center.Y + (sObj.Height/2)

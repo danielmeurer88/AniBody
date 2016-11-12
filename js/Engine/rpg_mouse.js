@@ -18,7 +18,7 @@ RPGMouse.prototype.Initialize = function(){
     
     // path calculation
     var gotof = function(){
-        this.Engine.ObjQ.SelectedObject.FindPath(this.Field);
+        this.Engine.Objects.SelectedObject.FindPath(this.Field);
     };
     this.RegisterLeftClickFunction(gotof, this);
 };

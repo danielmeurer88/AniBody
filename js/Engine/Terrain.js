@@ -63,13 +63,6 @@ function DefaultTerrain(img_code, bottom_height){
     
     this.Update = function(){
         
-        var m = this.Engine.Input.Mouse;
-        var input = this.Engine.Input;
-        
-        if(input.Canvas.MouseOn && m.Left.FramesUp==1){
-            this.Engine.ObjQ.DeselectAll();
-        }
-        
     };
     
     this.GetY = function(x){

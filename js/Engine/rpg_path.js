@@ -23,12 +23,12 @@ RPGPath.prototype.constructor = RPGPath;
 
 RPGPath.prototype.Initialize = function(){
     if(!this.Player)
-        this.Player = this.Engine.ObjQ.SelectedObject;
+        this.Player = this.Engine.Objects.SelectedObject;
 };
 
 RPGPath.prototype.SetPlayer = function(p){
     if(!p)
-        this.Player = this.Engine.ObjQ.SelectedObject;
+        this.Player = this.Engine.Objects.SelectedObject;
     else
         this.Player = p;
 };

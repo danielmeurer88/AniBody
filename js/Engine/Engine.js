@@ -7,7 +7,7 @@ function Engine(html_id){
         Version : "0.942",
         Author : "Daniel Meurer",
         Project : "Developing",
-        LastUpdated : "2016_06_28:14" // year_month_day:hour
+        LastUpdated : "2016_11_12:10" // year_month_day:hour
     };
     
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
@@ -36,7 +36,7 @@ function Engine(html_id){
         DetectionEnabled : true, // flag if touch handle will be registered
         PreventScrolling : true, // flag if a touch move should cause scrolling
         FakeMouseClick : true, // flag if an object will be saved where the mouse event is expected causing that it looks like a mouse click when tapped
-        PiesAllowed : true, // flag if pies should be used instead of long taps
+        PiesAllowed : false, // flag if pies should be used instead of long taps
         LongTapThreshold : 300, // millisecond difference between normal tap and long
         MovementStabilizer : 50,
         SwipeThreshold : 150
@@ -47,12 +47,17 @@ function Engine(html_id){
     
     // ### PROPERTIES
     
-    this.ObjQ = new ObjQ();
+    // the Object Loop, where all external objects will be saved and the currently important/selected one
+    this.Objects = {
+        Queue : null,
+        SelectedObject : null 
+    };
+    
     this.CanvasID = html_id;// the id string
     this.Canvas = {};// the canvas object
     this.Canvas.ScreenRatio = 0;
     
-    this.CausalityManager = new RPGCausalityManager();
+    this.CausalityManager;
 
     
     // after the user uses the first touch event, it will be true
@@ -61,13 +66,13 @@ function Engine(html_id){
 
     this.Context;// the context of the canvas object
     this.Camera = {SelectedCamera : false, Cameras: false};// place holder for all needed camera (in later progress it will be possible to have more than just one camera)
-    this.Counter = new Counter();// the variable for the counter object
-    this.Log = new Array();// most error messages are sent here
-    this.ProcessInputFunctions = [];// array of all functions, which the user added and which concern the input processing
+    this.Counter;// the variable for the counter object
+    this.Log = [];// most error messages are sent here
+    this.ProcessInputUserFunctions = [];// array of all functions, which the user added and which concern the input processing
     this.UpdateFunctions = []; // array of all functions, which the user added and which concern the update process
     this.ImageData = null;// the variable for the ImageData of the canvas, if need be. maybe deprecated
     this.FPS = 25;// the amount of frames per second (default: 25)
-    this.t; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
+    this.Timer; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
     
     this.MediaManager = {};
     this.Terrain = {};
@@ -114,7 +119,6 @@ Object.defineProperty(Engine.prototype, "Engine", {get: function(){
 Engine.prototype.Initialize = function(){
     this.MediaManager = new MediaManager();
     this.MediaManager.EI = this.EI;
-    //this.AddObject(this.MediaManager, -2);
     
     this.Canvas = document.getElementById(this.CanvasID);
 
@@ -128,16 +132,19 @@ Engine.prototype.Initialize = function(){
     this.Input.Engine = this;
     this.Input.Mouse.Cursor.Engine = this;
     this.Input.Initialize();
+    
+    this.Objects.Queue = new PriorityQueue();
 
     // set the Counter function running
+    this.Counter = new Counter();// the variable for the counter object
     this.AddUpdateFunction( { function : this.Counter.Update, parameter : this.Counter, that:this.Counter });
 
-    this.t = new Timer(this, this.Frame, this.FPS);
+    this.Timer = new Timer(this, this.Frame, this.FPS);
     
     this.Storage.Engine = this;
     this.Storage.InitStorage();
     
-    
+    this.CausalityManager = new RPGCausalityManager();
 
     this.DebugList = new DebugList();
 };
@@ -152,9 +159,9 @@ Engine.prototype.Start = function(){
     if(!this.Engine.Camera.SelectedCamera || !this.Engine.Camera.SelectedCamera.Type)
         this.Engine.Camera.SelectedCamera = this.GetNewCamera("default");
     
-    this.Engine.ObjQ.ObjQ.Sort();
+    this.Engine.Objects.Queue.Sort();
     
-    this.Engine.t.Start();
+    this.Engine.Timer.Start();
 };
 
 /**
@@ -175,7 +182,7 @@ Engine.prototype.StartWithImages = function(imgs){
 /**
  * @description stops the Engine
  */
-Engine.prototype.Stop = function(){ this.t.Stop()};
+Engine.prototype.Stop = function(){ this.Timer.Stop()};
 
 // pauses and continues drawing and processing user input but not updating objects
 Engine.prototype.Continue = function(){ this.Paused = false};
@@ -196,7 +203,7 @@ Engine.prototype.Frame = function(){
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
-Engine.prototype.AddProcessInputFunction = function(pio){this.ProcessInputFunctions.push(pio);};
+Engine.prototype.AddProcessInputUserFunction = function(pio){this.ProcessInputUserFunctions.push(pio);};
 /**
  * @description the function, which calls all functions concerning to process the user input
  * @returns {undefined}
@@ -207,8 +214,8 @@ Engine.prototype.ProcessInput = function(){
     this.Input.Mouse.Cursor.default();
 
     this.Input.Update();
-    for(var i=0; i<this.ProcessInputFunctions.length;i++){
-        this.ProcessInputFunctions[i].function(this.ProcessInputFunctions[i].parameter);
+    for(var i=0; i<this.ProcessInputUserFunctions.length;i++){
+        this.ProcessInputUserFunctions[i].function(this.ProcessInputUserFunctions[i].parameter);
     }
 };
 
@@ -231,8 +238,8 @@ Engine.prototype.Update = function(){
     // get the actual position of the canvas
     this.Input.CalculateCanvasPosition();
 
-    if(!this.ObjQ.ObjQ.Sorted)
-        this.ObjQ.ObjQ.Sort();
+    if(!this.Objects.Queue.Sorted)
+        this.Objects.Queue.Sort();
 
     if(this.Terrain && this.Terrain.Update)
         this.Terrain.Update();
@@ -247,13 +254,14 @@ Engine.prototype.Update = function(){
 
     // invoke update functions of every object in the object queue as long as they have one
     var o;
-    for(var i=0; i<this.ObjQ.length;i++){
-        o = this.ObjQ.GetObj(i);
+    for(var i=0; i<this.Objects.Queue.heap.length;i++){
+        o = this.GetObject(i);
         if(o && o.Update)
             o.Update();
     }
-
-    this.MediaManager.Update();
+    
+    if(this.Modul.MediaManager)
+        this.MediaManager.Update();
 
     if(this.Touch.DetectionEnabled && this.Input.Touch.PieEnabled){
             this.Input.Touch.Pie.Update();
@@ -286,13 +294,14 @@ Engine.prototype.Draw = function(){
 
     // draws all Objects in the ObjQ if they own a Draw()-function and are not hidden
     // if the objects are drawn relative to the camera or statically to the canvas (HUD-like) is up to the Draw() in the certain object
-    for(var i=0; i<this.ObjQ.ObjQ.heap.length;i++){
-        o = this.ObjQ.GetObj(i);
+    for(var i=0; i<this.Objects.Queue.heap.length;i++){
+        o = this.GetObject(i);
         if(o && o.Draw)
             o.Draw(c);
     }
     
-    this.MediaManager.Draw(c);
+    if(this.Modul.MediaManager)
+        this.MediaManager.Draw(c);
     
     if(this.Touch.DetectionEnabled && this.Input.Touch.PieEnabled){
 //        this.Input.Touch.Pie.Draw(c);
@@ -365,35 +374,55 @@ Engine.prototype.DrawAlert = function(c){
 };
 
 /**
- * @description download current canvas state as a png
+ * @description creates a link to download current canvas state as a png
+ * @param {string|object} jQuery Selector
+ * @param {string} the text of the Link 
  * @returns {undefined}
  */
 Engine.prototype.CreateDownloadLink = function(selwhere,innerText){
     
     var a = document.createElement("A");
+    var date = Date.now();
     
-    $(a).text(innerText || "Download " + Date.now());
+    $(a).text(innerText || "Download " + date);
     $(selwhere || "body").append(a);
     
     var data = this.Canvas.toDataURL();
     
     $(a).click(function(){
         this.href = data;
-        this.download = "test.png";
+        this.download = "screenshot_{0}.png".format(date);
     });
     $(a).click();
-    //$("body").remove(a);
 };
 
 /**
- * @description Adds the object to the ObjectQueue
+ * @description Returns the object at index i
+ * @param {integer} i
+ * @returns {result}
+ */
+Engine.prototype.GetObject = function(i){
+    if(i < this.Objects.Queue.heap.length)
+        return this.Objects.Queue.heap[i].data;
+    else
+        return false;
+};
+/**
+ * @description Adds the object to the Objects Queue
  * @param {Object} obj
+ * @param {Number} priority you can add an optional priority, which will influence the order of the objects
  * @returns {result}
  */
 Engine.prototype.AddObject = function(obj, pr){
     obj.EI = this.EI;
-    return this.ObjQ.AddObj(obj, pr)
+    return this.Objects.Queue.Enqueue(obj, pr);
 };
+Engine.prototype.FlushQueue = function(){
+    this.Objects.Queue.Flush();
+    this.length = 0;
+    this.SelectedObject="undefined";
+};
+
 /**
  * @description Adds the object to the ObjectQueue
  * @param {Object} obj
@@ -410,7 +439,7 @@ Engine.prototype.SetTerrain = function(t){
  * @returns {undefined}
  */
 Engine.prototype.FlushScene = function(){
-    this.ObjQ.Flush();
+    this.Objects.Queue.Flush();
     this.MediaManager.Flush();
 };
 /**
@@ -463,34 +492,6 @@ Engine.prototype.FitToScreen = function(){
         this.IsCanvasFitToScreen = true;
 };
 
-// ################################### ObjQ
-
-function ObjQ() {
-    this.ObjQ = new PriorityQueue();
-    this.SelectedObject; // the most imortant object becomes the selected object like currently moveable player
-    this.length = 0;
-}
-ObjQ.prototype.GetObj = function(i){
-    if(i < this.ObjQ.heap.length)
-        return this.ObjQ.heap[i].data;
-    else
-        return false;
-};
-ObjQ.prototype.AddObj = function(obj, pr){
-    this.length++;
-    return this.ObjQ.Enqueue(obj, pr);
-};
-ObjQ.prototype.Flush = function(){
-    this.ObjQ.Flush();
-    this.length = 0;
-    this.SelectedObject="undefined";
-};
-ObjQ.prototype.DeselectAll = function(){
-    for(var i=0; i<this.ObjQ.length; i++){
-        if( this.GetObj(i).Attributes && this.GetObj(i).Attributes.Selectable)
-            this.GetObj(i).Selected = false;
-    }
-};
 
 //#################################### Input
 Engine.prototype.Input = {
@@ -1494,20 +1495,6 @@ Engine.prototype.Input = {
         
         window.setTimeout(upf.bind(this.Engine), releaseLength);
         
-    },
-    /**
-     * @description Sets the counter of all keys to zero. The counter, which counts the frames, in which the respective key is still pressed
-     * @returns {undefined}
-     */
-    RefreshKeyFrames : function(){
-        var input = this;
-        var cur;
-        for(var key in input.Key){
-            cur = input.Key[key];
-            if(cur.FramesPressed && cur.FramesPressed>0){
-                cur.FramesPressed == 0;
-            }
-        }
     }
 };
 

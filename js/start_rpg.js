@@ -136,7 +136,7 @@ function rpg_callback(engine){
         var player = new RPGPlayer(60, 70);
         var start = engine.Terrain.GetField(4,3);
         player.SetCurrentField(start);
-        engine.ObjQ.SelectedObject = player;
+        engine.Objects.SelectedObject = player;
 
         player.SetSprite("rpg_testsprite", {
             stopped : true,
@@ -299,31 +299,31 @@ function level_rpg_Input(engine){
         var e = arguments[0];
         
          if(!e.Paused){
-            if(e.Input.Key.A.Pressed && e.ObjQ.SelectedObject)
-                e.ObjQ.SelectedObject.Move({X:-1,Y:0});
+            if(e.Input.Key.A.Pressed && e.Objects.SelectedObject)
+                e.Objects.SelectedObject.Move({X:-1,Y:0});
 
-            if(e.Input.Key.D.Pressed && e.ObjQ.SelectedObject)
-                e.ObjQ.SelectedObject.Move({X:1,Y:0});
+            if(e.Input.Key.D.Pressed && e.Objects.SelectedObject)
+                e.Objects.SelectedObject.Move({X:1,Y:0});
             
-            if(e.Input.Key.W.Pressed && e.ObjQ.SelectedObject)
-                e.ObjQ.SelectedObject.Move({X:0,Y:-1});
+            if(e.Input.Key.W.Pressed && e.Objects.SelectedObject)
+                e.Objects.SelectedObject.Move({X:0,Y:-1});
 
-            if(e.Input.Key.S.Pressed && e.ObjQ.SelectedObject)
-                e.ObjQ.SelectedObject.Move({X:0,Y:1});
+            if(e.Input.Key.S.Pressed && e.Objects.SelectedObject)
+                e.Objects.SelectedObject.Move({X:0,Y:1});
             
              if(e.Input.Key.Space.FramesPressed == 1){
-                 e.ObjQ.SelectedObject.Interact();
+                 e.Objects.SelectedObject.Interact();
             }
             
-            if(e.Input.Key.I.FramesPressed == 1 && e.ObjQ.SelectedObject){
-                if(e.ObjQ.SelectedObject.ItemBag.isOpen())
-                    e.ObjQ.SelectedObject.ItemBag.Close();
+            if(e.Input.Key.I.FramesPressed == 1 && e.Objects.SelectedObject){
+                if(e.Objects.SelectedObject.ItemBag.isOpen())
+                    e.Objects.SelectedObject.ItemBag.Close();
                 else
-                    e.ObjQ.SelectedObject.ItemBag.Open();
+                    e.Objects.SelectedObject.ItemBag.Open();
             }
             
-            if(e.Input.Key.U.FramesPressed == 1 && e.ObjQ.SelectedObject){
-                e.ObjQ.SelectedObject.ItemBag.UseItem();
+            if(e.Input.Key.U.FramesPressed == 1 && e.Objects.SelectedObject){
+                e.Objects.SelectedObject.ItemBag.UseItem();
             }
             
         }
@@ -334,22 +334,22 @@ function level_rpg_Input(engine){
     f = function(dir, player){
         player.Move(dir);
     };
-    engine.Input.Touch.RegisterSwipeFunction(f, 5, false, engine.ObjQ.SelectedObject);
+    engine.Input.Touch.RegisterSwipeFunction(f, 5, false, engine.Objects.SelectedObject);
     
     f = function(player){
         player.Interact();
     };
-    engine.Input.Touch.RegisterLongTapFunction(f, 5, engine, engine.ObjQ.SelectedObject);
+    engine.Input.Touch.RegisterLongTapFunction(f, 5, engine, engine.Objects.SelectedObject);
     
     f = function(player){
         player.ItemBag.SelectItem();
     };
-    engine.Input.Touch.RegisterTap2Function(f, 5, engine, engine.ObjQ.SelectedObject);
+    engine.Input.Touch.RegisterTap2Function(f, 5, engine, engine.Objects.SelectedObject);
     
     f = function(player){
         player.ItemBag.UseItem();
     };
-    engine.Input.Touch.RegisterLongTap2Function(f, 5, engine, engine.ObjQ.SelectedObject);
+    engine.Input.Touch.RegisterLongTap2Function(f, 5, engine, engine.Objects.SelectedObject);
     
     f = function(dir, player){
         // left swipe2
@@ -361,5 +361,5 @@ function level_rpg_Input(engine){
             player.ItemBag.Close();
 
     };
-    engine.Input.Touch.RegisterSwipe2Function(f, 5, engine, engine.ObjQ.SelectedObject);
+    engine.Input.Touch.RegisterSwipe2Function(f, 5, engine, engine.Objects.SelectedObject);
 }

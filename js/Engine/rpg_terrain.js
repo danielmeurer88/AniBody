@@ -155,13 +155,6 @@ RPGTerrain.prototype.Update = function(){
         if(!this.SideQHandled)
             this.FillObjQ();
         
-        var m = this.Engine.Input.Mouse;
-        var input = this.Engine.Input;
-        
-        if(input.Canvas.MouseOn && m.Left.FramesUp==1){
-            this.Engine.ObjQ.DeselectAll();
-        }
-        
         if(this.RPGMouse)
             this.RPGMouse.Update();
         
@@ -382,13 +375,13 @@ RPGTerrain.prototype.AddObjectToSideQ = function(obj, pr){
     return this.SideQ.Enqueue(obj, pr);
 };
 RPGTerrain.prototype.FillObjQ = function(){
-    this.Engine.ObjQ.ObjQ.Merge(this.SideQ);
-    this.Engine.ObjQ.length = this.Engine.ObjQ.ObjQ.heap.length;
+    this.Engine.Objects.Queue.Merge(this.SideQ);
+    this.Engine.Objects.length = this.Engine.Objects.Queue.heap.length;
     this.SideQHandled = true;
-    this.Engine.ObjQ.ObjQ.Sort();
+    this.Engine.Objects.Queue.Sort();
 };
 RPGTerrain.prototype.CleanObjectQ = function(){
-    this.Engine.ObjQ.ObjQ.DeleteMergedElements();
+    this.Engine.Objects.Queue.DeleteMergedElements();
     //this.SideQHandled = false;
 };
 RPGTerrain.prototype.SetTerrain = function(newt){
