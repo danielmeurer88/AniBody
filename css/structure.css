@@ -1,0 +1,42 @@
+
+* {padding: 0; margin: 0;}
+
+canvas { 
+    border: 0.5px black solid;
+    box-shadow: 1px 1px 4px grey;
+    background-color: white;
+}
+
+body {
+    background-color: #aaffaa;
+}
+
+@media screen and (max-width : 480px) {
+    body {
+        margin: 0px;
+        width: 100%;
+    }
+    
+    @media screen and (orientation: portrait) {
+        #MainContainer .articles {
+            background-color: purple;
+        }
+    }
+    
+    @media screen and (orientation: landscape) {
+        #MainContainer .articles {
+            background-color: greenyellow;
+        }
+    }
+    
+    
+}
+
+/*  width between 480px - 1000 : mobile screens */
+
+@media screen and (min-width : 481px) and (max-width : 1000px) {
+    body {
+        
+    }
+    
+}
