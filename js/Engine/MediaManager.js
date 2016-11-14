@@ -4,7 +4,7 @@ function MediaManager() {
     this.Images = [];
     this.Sounds = [];
     this.Strings = [];
-    
+
     this.Pack = [];
 
     this.Unloaded = [];
@@ -26,28 +26,28 @@ MediaManager.prototype.Flush = function () {
 
 MediaManager.prototype.Draw = function (c) {
     c.save();
-    
+
     if (this.Loading) {
-    
-        var center = {x:this.Engine.Canvas.width/2, y:this.Engine.Canvas.height/2};
+
+        var center = {x: this.Engine.Canvas.width / 2, y: this.Engine.Canvas.height / 2};
         var bar = {
-            x : center.x / 2,
-            width : center.x,
-            y : center.y - center.y/20,
-            height: center.y/10
+            x: center.x / 2,
+            width: center.x,
+            y: center.y - center.y / 20,
+            height: center.y / 10
         };
         var r = 5;
         var cent = bar.width / 100;
-    
+
         // drawing the progress bar current progress
         c.fillStyle = "green";
-        c.fillVariousRoundedRect(bar.x, bar.y, this.Progress*cent, bar.height, r);
+        c.fillVariousRoundedRect(bar.x, bar.y, this.Progress * cent, bar.height, r);
         // drawing the progress bar border
         c.strokeStyle = "blue";
         c.strokeVariousRoundedRect(bar.x, bar.y, bar.width, bar.height, r);
-        
-    
-        c.fillText("Loading: {0}%".format(parseInt(this.Progress)), bar.x, bar.y+bar.height+10);
+
+
+        c.fillText("Loading: {0}%".format(parseInt(this.Progress)), bar.x, bar.y + bar.height + 10);
     }
     c.restore();
 };
@@ -55,139 +55,40 @@ MediaManager.prototype.Draw = function (c) {
 MediaManager.prototype.Update = function () {
 };
 
-/*
- this.AddImages(
- //path/codename-pair array
- [ {path: "./images/test1.jpg", codename: "test1", width: 400, height: 300}, {path: "./images/test2.jpg", codename: "test2"} ],
- //callback-object
- { function : callback, parameter: parameterOfCallback }
- );
- */
-/*
-MediaManager.prototype.AddImages = function () {
-    if (arguments.length == 0)
-        return false;
-
-    this.Loading = true;
-
-    var pcpa = arguments[0]; // path/codename-pair-array = {path: String, codename: String}
-    var co = arguments[1]; // Callback Object = {function:function, parameter:object}
-    var nof = function () { // current onload function
-
-        if (this.ImagesParameter != "undefined") {
-            var pcpa = this.ImagesParameter.pcpa; // path/codename-pair-array = {path: String, codename: String}
-            var co = this.ImagesParameter.co; // Callback Object = {function:function, parameter:object}
-            var nof = this.ImagesParameter.nof; // next onload function
-            var mm = this.ImagesParameter.mm;
-        } else {
-            return false;
-        }
-
-        // check if pcpa.length == 0 is. If it is 0 then the callback object is used
-        if (pcpa.length == 0) {
-            if (co) {
-                mm.Loading = false;
-                co.function.call(co.that, co.parameter);
-            }
-            return true;
-        }
-
-        var pcpe = pcpa.pop(); // current path/codename-pair-element of the array
-        // create image
-        var img = document.createElement("IMG");
-        if (pcpe.width && pcpe.height) {
-            img.width = pcpe.width;
-            img.height = pcpe.height;
-        }
-        img.onload = nof;
-        img.ImagesParameter = {
-            pcpa: pcpa,
-            co: co,
-            nof: nof,
-            mm: mm
-        };
-        img.codename = pcpe.codename;
-        img.src = pcpe.path;
-
-        // add to the MediaManager image array
-        mm.Images.push(img);
-
-
-    };
-
-    //if no array or an empty array was given
-    // pcpa gets shorter every time
-    if (!pcpa || pcpa.length == 0) {
-        if (co) {
-            // before the callback, setting Loading = false causes that that objects will be drawen when loaded
-            this.Loading = false;
-            co.function.call(co.that, co.parameter);
-
-        }
-        return true;
-    }
-
-    // 1st element is popped out and saved in "pcpe"
-    var pcpe = pcpa.pop(); // current path/codename-pair-element of the array
-
-    // create a new image
-    var img = document.createElement("IMG");
-    // the image gets the correct width and height - maybe not needed (?)
-    if (pcpe.width && pcpe.height) {
-        img.width = pcpe.width;
-        img.height = pcpe.height;
-    }
-    // the image receives the onload function "nof", which follows the same principle as the rest of the algorithm
-    img.onload = nof;
-    // these Parameters are needed in the "nof"
-    img.ImagesParameter = {
-        pcpa: pcpa,
-        co: co,
-        nof: nof,
-        mm: this
-    };
-    // the image receives a codename so it can be found later in getImage()
-    img.codename = pcpe.codename;
-    // it receives a image source - now it will be loaded and when it finishes "nof" will be triggered
-    img.src = pcpe.path;
-
-    // add to the MediaManager image array
-    this.Images.push(img);
-
-    // the nof will be started soon and it will start a chain reaction until all images are loaded
-    // the last image loaded that way will call the callback function 
-};
-*/
-
 MediaManager.prototype.AddString = function (txt, codename) {
     this.Strings.push({string: txt, codename: codename});
 };
 
 MediaManager.prototype.GetString = function (codename) {
     for (var i = 0; i < this.Strings.length; i++)
-        if (this.Strings[i].codename == codename)
-            return this.Strings[i].string;
+        if (this.Strings[i].Codename == codename)
+            return this.Strings[i].Data;
     return "Error 404 : String.Not.Found";
 };
 
 MediaManager.prototype.GetImage = function (codename) {
     for (var i = 0; i < this.Images.length; i++)
-        if (this.Images[i].codename == codename)
-            return this.Images[i];
+        if (this.Images[i].Codename == codename)
+            return this.Images[i].Data;
     return false;
 };
 
 MediaManager.prototype.GetSound = function (codename) {
     for (var i = 0; i < this.Sounds.length; i++)
-        if (this.Sounds[i].codename == codename)
-            return this.Sounds[i];
+        if (this.Sounds[i].Codename == codename)
+            return this.Sounds[i].Data;
     return false;
 };
 
 
 
-// pack = Array of path-codename-type-Objects
-MediaManager.prototype.AddMedia = function (pack, co) {
+/**
+ * Load all media, saved in an array (pack), and orders them to the representive Property (Images, Sounds, Strings)
+ * @param {type} pack
+ * @param {type} co (callback object)
+ * @returns {undefined|Boolean}
+ */
+MediaManager.prototype.LoadMedia = function (pack, co) {
 
     //
     var aom = pack.length;
@@ -204,54 +105,42 @@ MediaManager.prototype.AddMedia = function (pack, co) {
         var mm = this.Parameters.mm;
         var pack = mm.Unloaded;
 
+        // if-statement if the pack is empty then trigger callback object
         if (!pack || pack.length <= 0) {
             mm.Loading = false;
             mm.Progress = 100; // drawing will stop when Loading is false - command not needed
-            co.function.call(co.that, co.parameter);
+            co.Call();
             return true;
         }
 
         var of = this.Parameters.of;
-        var curpct = pack.pop();
-        mm.Progress += mm.ProgressStep;
+        var curpct = pack.pop(); // curpct = current element of the processed mediapack
+        mm.Progress += mm.ProgressStep; // progress progresses one step further - needed for the animation
 
-        if (curpct.type == MediaManager.prototype.Types.Image) {
-            var img = document.createElement("IMG");
-            img.onload = of;
-            img.codename = curpct.codename;
-
-            img.Parameters = {
+        if (curpct instanceof Image) {
+            mm.Images.push(curpct);
+            curpct.Load(of, {
                 co: co,
                 of: of,
                 mm: mm
-            };
-
-            img.src = curpct.path;
-
-            mm.Images.push(img);
+            });
             return;
         }
 
-        if (curpct.type == MediaManager.prototype.Types.Sound) {
-            var snd = document.createElement("AUDIO");
-            snd.oncanplay = of;
-            snd.codename = curpct.codename;
-            snd.preload = true;
-
-            snd.Parameters = {
+        if (curpct instanceof Sound) {
+            mm.Sounds.push(curpct);
+            curpct.Load(of, {
                 co: co,
                 of: of,
                 mm: mm
-            };
-
-            snd.src = curpct.path;
-
-            mm.Sounds.push(snd);
+            });
             return;
+
         }
 
-        if (curpct.type == MediaManager.prototype.Types.String) {
-            mm.AddString(curpct.path, curpct.codename);
+        if (curpct instanceof Text) {
+            // in case of a Text, path is the text
+            mm.AddString(curpct.Path, curpct.Codename);
             var obj = {
                 Parameters: {
                     co: co,
@@ -259,97 +148,167 @@ MediaManager.prototype.AddMedia = function (pack, co) {
                     mm: mm
                 }
             };
-
+            // strings a not asynchronally saved so we call the onload function directly
             of.call(obj);
             return;
         }
-    };
+    }; // END of of - the anonym onload function, which is called at the end of the anonym onload function of every Image and Sound
 
     // call the callback-object if pack is empty
     if (!pack || pack.length <= 0) {
         this.Loading = false;
         this.Progress = 100;
-        if(co && co.function)
-            co.function.call(co.that, co.parameter);
+        if (co && co.function)
+            co.Call();
         return true;
     }
     var curpct = pack.pop();
     this.Progress += this.ProgressStep;
 
-    if (curpct.type == MediaManager.prototype.Types.Image) {
-        var img = document.createElement("IMG");
-        img.onload = of;
-        img.codename = curpct.codename;
-
-        img.Parameters = {
+    if (curpct instanceof Image) {
+        this.Images.push(curpct);
+        curpct.Load(of, {
             co: co,
             of: of,
-            mm: this
-        };
-
-        img.src = curpct.path;
-        this.Images.push(img);
-
+            mm: this // a reference to the MediaManager is needed because the onload function does not know it
+        });
         return;
     }
 
-    if (curpct.type == MediaManager.prototype.Types.Sound) {
-        var snd = document.createElement("AUDIO");
-        snd.oncanplay = of;
-        snd.codename = curpct.codename;
-        snd.preload = true;
-
-        snd.Parameters = {
+    if (curpct instanceof Sound) {
+        this.Sounds.push(curpct);
+        curpct.Load(of, {
             co: co,
             of: of,
-            mm: this
-        };
-
-        snd.src = curpct.path;
-        this.Sounds.push(snd);
-
+            mm: this // a reference to the MediaManager is needed because the onload function does not know it
+        });
         return;
+
     }
 
-    if (curpct.type == MediaManager.prototype.Types.String) {
-        this.AddString(curpct.path, curpct.codename);
+    if (curpct instanceof Text) {
+        // in case of a Text, path is the text
+        this.AddString(curpct.Path, curpct.Codename);
         var obj = {
             Parameters: {
                 co: co,
                 of: of,
-                mm: this
+                mm: this // a reference to the MediaManager is needed because the onload function does not know it
             }
         };
-
+        // strings a not asynchronally saved so we call the onload function directly
         of.call(obj);
         return;
     }
-};
 
-MediaManager.prototype.Init = function(pack, co){
-    this.Pack = pack;
-    this.Require("now", co, true);
-};
-
-MediaManager.prototype.ExtendInit = function(pack, co){
-    this.Pack = this.Pack.concat(pack);
-    this.Require("now", co, true);
 }
 
-MediaManager.prototype.Require = function(cname, co, withnogroup){
-    
-    var cnpack = [], p;
-    for(var i=0; i<this.Pack.length;i++){
-        p = this.Pack[i];
-        if(p.group == cname || withnogroup && !p.group)
-            cnpack.push(p);
-    }
-    this.AddMedia(cnpack, co);
-};
-  
 
-MediaManager.prototype.Types = {
-    Image: 1,
-    Sound: 2,
-    String: 3
+/**
+ * Sets mediapack of the manager, loads all "always" media and triggers the CO (callback objects)
+ * @param {type} pack
+ * @param {type} co
+ * @returns {undefined}
+ */
+MediaManager.prototype.SetMediaPack = function (pack, co) {
+    this.Pack = pack;
+    this.Require("always", co, true);
 };
+/**
+ * Extends the current mediapack of the manager, loads all "always" media and triggers the CO (callback objects)
+ * @param {type} pack
+ * @param {type} co
+ * @returns {undefined}
+ */
+MediaManager.prototype.ExtendMediaPack = function (pack, co) {
+    this.Pack = this.Pack.concat(pack);
+    this.Require("always", co, true);
+}
+
+/**
+ * Searches through the current mediapack in the Manager and loads all of a certain group
+ * @param {type} cname
+ * @param {type} co
+ * @param {type} withnogroup
+ * @returns {undefined}
+ */
+MediaManager.prototype.Require = function (group, co, loadMediaWithNoGroupToo) {
+
+    var pack = [], m;
+    for (var i = 0; i < this.Pack.length; i++) {
+        m = this.Pack[i];
+        if (m.IsGroupOf(group) || (loadMediaWithNoGroupToo && m.HasNoGroup))
+            pack.push(m);
+    }
+    console.log(pack.length + " data required: group." + group);
+    this.LoadMedia(pack, co);
+};
+
+function Media(path, codename, group) {
+
+    if (typeof path == "object") {
+        codename = path.codename;
+        group = path.group;
+        path = path.path;
+    }
+
+    this.Path = path;
+    this.Codename = codename;
+
+    // the value of group/path.group can be "undefined" (it will be "always" then)
+    // it can be a string or an array of strings
+
+    this.Group = [];
+    if (typeof group == "object")
+        this.Group.concat(group);
+    else
+        this.Group = [group || "always"];
+
+    this.HasNoGroup = (group) ? true : false;
+    this.Data;
+    this.DataLoaded = false;
+}
+
+Media.prototype.IsGroupOf = function (group) {
+    for (var i = 0; i < this.Group.length; i++)
+        if (this.Group[i] == group)
+            return true;
+    return false;
+};
+
+function Image() {
+    Media.call(this, arguments[0], arguments[1], arguments[2]);
+}
+Image.prototype = Object.create(Media.prototype);
+Image.prototype.constructor = Image;
+
+Image.prototype.Load = function (onload, paras) {
+    this.Data = document.createElement("IMG");
+    this.Data.onload = onload;
+    this.Data.Parameters = paras;
+    this.Data.src = this.Path;
+    this.DataLoaded = true;
+};
+
+function Sound() {
+    Media.call(this, arguments[0], arguments[1], arguments[2]);
+}
+Sound.prototype = Object.create(Media.prototype);
+Sound.prototype.constructor = Sound;
+
+Sound.prototype.Load = function (onload, paras) {
+    this.Data = document.createElement("AUDIO");
+    this.Data.oncanplay = onload;
+    this.Data.preload = true;
+
+    this.Data.Parameters = paras
+
+    this.Data.src = this.Path;
+    this.DataLoaded = true;
+};
+
+function Text() {
+    Media.call(this, arguments[0], arguments[1], arguments[2]);
+}
+Text.prototype = Object.create(Media.prototype);
+Text.prototype.constructor = Text;

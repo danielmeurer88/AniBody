@@ -6,27 +6,28 @@ $(document).ready(function () {
     RegisterTouchTest(engine);
 
     var mediapack = [
-        {path: "./img_rpg/button_0.png", codename: "button_state_0", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/button_1.png", codename: "button_state_1", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/button_2.png", codename: "button_state_2", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/rpg_img2.png", codename: "rpg_img", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite", type:MediaManager.prototype.Types.Image },
-        {path: "./img_rpg/tresure_closed.png", codename: "tresure_closed", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/tresure_opened.png", codename: "tresure_opened", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/girl.png", codename: "girl", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/crate.png", codename: "crate", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/crate_pad.png", codename: "pad", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/fire_sprite.png", codename: "bonfire", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/fire_out.png", codename: "bonfire_out", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/water_glass.jpg", codename: "water_glass", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", type:MediaManager.prototype.Types.Image, group:"room1"}
+        new Image("./img_rpg/button_0.png", "button_state_0"),
+        new Image("./img_rpg/button_1.png", "button_state_1"),
+        new Image("./img_rpg/button_2.png", "button_state_2"),
+        new Image({path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"]}),
+        new Image({path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure"}),
+        new Image({path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group:"room2"}),
+        new Image({path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure"}),
+        new Image({path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
+        new Image({path: "./img_rpg/tresure_closed.png", codename: "tresure_closed"}),
+        new Image({path: "./img_rpg/tresure_opened.png", codename: "tresure_opened"}),
+        new Image({path: "./img_rpg/girl.png", codename: "girl", group:"room2"}),
+        new Image({path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", group:"room2"}),
+        new Image({path: "./img_rpg/crate.png", codename: "crate", group:"room2"}),
+        new Image({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
+        new Image({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
+        new Image({path: "./img_rpg/fire_out.png", codename: "bonfire_out", group:"room1"}),
+        new Image({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room1"}),
+        new Image({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"})
     ];
 
-    engine.MediaManager.Init(  mediapack, {function : menu_callback, parameter: engine, that:engine});
+    //engine.MediaManager.SetMediaPack(  mediapack, {function : menu_callback, parameter: engine, that:engine});
+    engine.MediaManager.SetMediaPack(  mediapack, new Callback(engine, menu_callback, engine));
 
     
 });

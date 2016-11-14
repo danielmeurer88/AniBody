@@ -3,31 +3,11 @@ function level_rpg(engine){
         
     engine.FlushScene();
     
-    /*
-    var mediapack = [
-        
-        {path: "./img_rpg/rpg_img2.png", codename: "rpg_img", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure", type:MediaManager.prototype.Types.Image},
-        {path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite", type:MediaManager.prototype.Types.Image },
-        {path: "./img_rpg/tresure_closed.png", codename: "tresure_closed", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/tresure_opened.png", codename: "tresure_opened", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/girl.png", codename: "girl", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/crate.png", codename: "crate", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/crate_pad.png", codename: "pad", type:MediaManager.prototype.Types.Image, group:"room2"},
-        {path: "./img_rpg/fire_sprite.png", codename: "bonfire", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/fire_out.png", codename: "bonfire_out", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/water_glass.jpg", codename: "water_glass", type:MediaManager.prototype.Types.Image, group:"room1"},
-        {path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", type:MediaManager.prototype.Types.Image, group:"room1"}
-    ];
-    */
-    
     //engine.MediaManager.AddMedia( {function : rpg_callback, parameter: engine, that:engine} ,mediapack);
     //engine.MediaManager.ExtendInit(mediapack, {function : rpg_callback, parameter: engine, that:engine});
     
-    engine.MediaManager.Require("room1", {function : rpg_callback, parameter: engine, that:engine});
+    //engine.MediaManager.Require("room1", {function : rpg_callback, parameter: engine, that:engine});
+    engine.MediaManager.Require("room1", new Callback(engine, rpg_callback, engine));
 }
 
 function rpg_callback(engine){

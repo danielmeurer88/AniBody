@@ -1,4 +1,32 @@
 
+function Callback(that, func, parameter){
+    
+    // if Callback was instanciated with an object
+    if(that.function){
+        this.that = that.that;
+        this.function = that.function;
+        this.parameters = [that.parameter];
+    }else{
+        this.function = func;
+        this.that = that;
+        this.parameters = [parameter];
+    }
+    
+    this.OneParameter = true;
+    if(arguments.length > 3){
+        this.OneParameter = false;
+        for(var i = 3; i < arguments.length; i++)
+            this.parameters.push(arguments[i]);
+    }
+};
+
+Callback.prototype.Call = function(){
+    if(this.OneParameter)
+        this.function.call(this.that, this.parameters[0]);
+    else
+        this.function.call(this.that, this.parameters);
+};
+
 /**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority
  * @param {Boolean} nop Flag if an enqueued element without given priority gets priority of zero (true) or the current highest priority + 1 (false and default)

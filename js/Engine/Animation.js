@@ -85,7 +85,7 @@ function Animation(x, y, width, height, fbj, infinite, scale){
                 this.Sprite.Current.Clipping.Y = this.Sprite.Order[this.Sprite.Current.Row].Row * this.Height;
             }
         };
-        this.Engine.AddUpdateFunction({function : f, parameter : this, that : this});
+        this.Engine.AddUpdateFunction(new Callback({function : f, parameter : this, that : this}));
         
     };
     

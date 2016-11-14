@@ -98,7 +98,7 @@ RPGDialog.prototype.Update = function(){
     if(this.ImageTypes[this.ImageIndex] == this.Types.CallbackFunction){
         // callback-object
         var cbo = this.ImageTypes[this.ImageIndex+1];
-        cbo.function.call(cbo.that, cbo.parameter);
+        cbo.Call();
         
     }
     
@@ -150,13 +150,13 @@ RPGDialog.prototype.Update = function(){
         
         if(m.Left.FramesUp == 1 && this.MouseOverYes){
             this.WaitingForInput = false;
-            this.InputFunctionYes.function.call(this.InputFunctionYes.that, this.InputFunctionYes.parameter);
+            this.InputFunctionYes.Call();
             this.Interact();
                 
         }
         if(m.Left.FramesUp == 1 && this.MouseOverNo){
             this.WaitingForInput = false;
-            this.InputFunctionNo.function.call(this.InputFunctionNo.that, this.InputFunctionNo.parameter);
+            this.InputFunctionNo.Call();
             this.Interact();
         }
         
@@ -601,19 +601,19 @@ RPGDialog.prototype.AddPolarQuestion = function(question, yes, no){
 RPGDialog.prototype.AddCallbackFunction = function(f, that, para){
     
     this.ImageTypes.push(this.Types.CallbackFunction);
-    this.ImageTypes.push({function:f, that: that, parameter:para});
+    this.ImageTypes.push(new Callback({function:f, that: that, parameter:para}));
 };
 
 RPGDialog.prototype.AddInputFunctionYes = function(f, para){
-    this.InputFunctionYes = {
+    this.InputFunctionYes = new Callback({
         function:f,
         that:this,
-        parameter:para};
+        parameter:para});
 };
-RPGDialog.prototype.AddInputFunctionNo = function(f, para){ this.InputFunctionNo = {
+RPGDialog.prototype.AddInputFunctionNo = function(f, para){ this.InputFunctionNo = new Callback({
         function:f,
         that:this,
-        parameter:para}; };
+        parameter:para}); };
 
 RPGDialog.prototype.AddInputFunctions = function(yf, nf, para){
     this.AddInputFunctionYes(yf, para);

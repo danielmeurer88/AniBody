@@ -7,7 +7,7 @@ function Engine(html_id){
         Version : "0.942",
         Author : "Daniel Meurer",
         Project : "Developing",
-        LastUpdated : "2016_11_12:10" // year_month_day:hour
+        LastUpdated : "2016_11_14:22" // year_month_day:hour
     };
     
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
@@ -68,7 +68,7 @@ function Engine(html_id){
     this.Camera = {SelectedCamera : false, Cameras: false};// place holder for all needed camera (in later progress it will be possible to have more than just one camera)
     this.Counter;// the variable for the counter object
     this.Log = [];// most error messages are sent here
-    this.ProcessInputUserFunctions = [];// array of all functions, which the user added and which concern the input processing
+    this.ProcessInputFunctions = [];// array of all functions, which the user added and which concern the input processing
     this.UpdateFunctions = []; // array of all functions, which the user added and which concern the update process
     this.ImageData = null;// the variable for the ImageData of the canvas, if need be. maybe deprecated
     this.FPS = 25;// the amount of frames per second (default: 25)
@@ -137,7 +137,7 @@ Engine.prototype.Initialize = function(){
 
     // set the Counter function running
     this.Counter = new Counter();// the variable for the counter object
-    this.AddUpdateFunction( { function : this.Counter.Update, parameter : this.Counter, that:this.Counter });
+    this.AddUpdateFunction( new Callback({ function : this.Counter.Update, parameter : this.Counter, that:this.Counter }) );
 
     this.Timer = new Timer(this, this.Frame, this.FPS);
     
@@ -203,7 +203,7 @@ Engine.prototype.Frame = function(){
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
-Engine.prototype.AddProcessInputUserFunction = function(pio){this.ProcessInputUserFunctions.push(pio);};
+Engine.prototype.AddProcessInputFunction = function(pio){this.ProcessInputFunctions.push(pio);};
 /**
  * @description the function, which calls all functions concerning to process the user input
  * @returns {undefined}
@@ -214,8 +214,8 @@ Engine.prototype.ProcessInput = function(){
     this.Input.Mouse.Cursor.default();
 
     this.Input.Update();
-    for(var i=0; i<this.ProcessInputUserFunctions.length;i++){
-        this.ProcessInputUserFunctions[i].function(this.ProcessInputUserFunctions[i].parameter);
+    for(var i=0; i<this.ProcessInputFunctions.length;i++){
+        this.ProcessInputFunctions[i].function(this.ProcessInputFunctions[i].parameter);
     }
 };
 
@@ -249,7 +249,7 @@ Engine.prototype.Update = function(){
         if(!this.UpdateFunctions[i].that)
             this.UpdateFunctions[i].function(this.UpdateFunctions[i].parameter);
         else
-            this.UpdateFunctions[i].function.call(this.UpdateFunctions[i].that, this.UpdateFunctions[i].parameter);
+            this.UpdateFunctions[i].Call();
     }
 
     // invoke update functions of every object in the object queue as long as they have one
