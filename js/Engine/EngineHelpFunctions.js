@@ -24,7 +24,7 @@ Callback.prototype.Call = function(){
     if(this.OneParameter)
         this.function.call(this.that, this.parameters[0]);
     else
-        this.function.call(this.that, this.parameters);
+        this.function.apply(this.that, this.parameters);
 };
 
 /**

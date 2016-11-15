@@ -13,7 +13,6 @@ function MediaManager() {
 
     this.Loading = false;
 
-
 }
 MediaManager.prototype = Object.create(EngineObject.prototype);
 MediaManager.prototype.constructor = MediaManager;
@@ -254,17 +253,16 @@ function Media(path, codename, group) {
 
     this.Path = path;
     this.Codename = codename;
-
+    this.HasNoGroup = (group) ? false : true;
     // the value of group/path.group can be "undefined" (it will be "always" then)
     // it can be a string or an array of strings
 
     this.Group = [];
     if (typeof group == "object")
-        this.Group.concat(group);
+        this.Group = this.Group.concat(group);
     else
         this.Group = [group || "always"];
-
-    this.HasNoGroup = (group) ? true : false;
+    
     this.Data;
     this.DataLoaded = false;
 }

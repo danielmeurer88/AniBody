@@ -1,5 +1,6 @@
 function Field(idx, idy, size, type){
     ABO.call(this);
+    
     this.ID = {X: idx, Y: idy};
     this.Size = size;
     this.X = idx*size;
@@ -28,9 +29,10 @@ Field.prototype.PaintField = function(c){
     c.fillRect(this.X - cam.X, this.Y - cam.Y, this.Size, this.Size);
 };
 
-function RPGTerrain(img_code, str_code, fieldsize, name){
+function RPGTerrain(req, img_code, str_code, fieldsize, tname){
     Terrain.call(this);
     
+    this.Required = req;
     this.DebugFields = false;
     this.Attributes = { hidden: false};
     
@@ -53,9 +55,8 @@ function RPGTerrain(img_code, str_code, fieldsize, name){
     this.FieldDimension = {X:50, Y:50};
     
     this.Type = "Terrain";
-    this.Name = "rpg";
     
-    this.TerrainName =  name ? name : "main";
+    this.TerrainName =  tname || "main";
     this.ParentTerrain;
     this.RootTerrain = this;
     
@@ -121,7 +122,9 @@ RPGTerrain.prototype.Draw = function(c){
     var cam = this.Engine.Camera.SelectedCamera;
     this.GetViewableRange(2);
     
-    if(!this.NoImage){
+    this.Image = this.Engine.MediaManager.GetImage(this.ImageCodename);
+    
+    if(this.Image != false){
 
         c.drawImage(this.Image,this.X - cam.X,this.Y - cam.Y);
     }
@@ -341,8 +344,8 @@ RPGTerrain.prototype.GetViewableRange = function(extra){
     
     return this.ViewableRange;
 };
-RPGTerrain.prototype.AddChildTerrain = function(img_code, str_code, name){
-    var ct = new RPGTerrain(img_code, str_code, this.Field, name);
+RPGTerrain.prototype.AddChildTerrain = function(req, img_code, str_code, tname){
+    var ct = new RPGTerrain(req, img_code, str_code, this.Field, tname);
     ct.RPGMouse = this.RPGMouse;
     // ... 
     ct.EI = this.EI;

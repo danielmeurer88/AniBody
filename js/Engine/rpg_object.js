@@ -60,19 +60,11 @@ function RPGObject(objectid, width,height, am_needed){
     // attributes for the still images
     this.ImageBefore = false;
     this.ImageAfter = false;
+    this.RefreshCallback = false;
     
     // attribute for the sprite
     this.Sprite = false;
     this.DrawSprite = false; // Flag if Sprites will be drawn or not
-    
-//    this.Attributes = {
-//        Collidable : false,
-//        Selectable : true,
-//        Selected : false,
-//        Drawable : true,
-//        Hidden : false,
-//        OnGrid : false
-//    };
     
     this.Stopped = true;
     this.AnimationSteps = 12;
@@ -114,8 +106,14 @@ RPGObject.prototype.Draw = function(c){
                 c.drawImage(s.DrawImage, this.X - cam.X , this.Y - cam.Y);
             }
     }else{
+        
+        if(this.ImageBefore == false || this.ImageAfter == false){
+            this.RefreshStillImages();
+        }
+        
         // still images will 
         if(!this.Interacted){
+            
             if(this.ImageBefore)
                 c.drawImage(this.ImageBefore, this.X - cam.X , this.Y - cam.Y);
         }else{
@@ -145,7 +143,7 @@ RPGObject.prototype.Update = function(){
     }
     
     if(this.UpdateFunction)
-        this.UpdateFunction.function.call(this.UpdateFunction.that, this.UpdateFunction.parameter);
+        this.UpdateFunction.Call();
     
     // will continue the Sprite to create the illusion of movements
     if(this.Sprite)
@@ -158,7 +156,7 @@ RPGObject.prototype.Update = function(){
  * @returns {undefined}
  */
 RPGObject.prototype.SetUpdateFunction = function(f, para){
-    this.UpdateFunction = {that:this, function: f, parameter: para};
+    this.UpdateFunction = new Callback({that:this, function: f, parameter: para});
 };
 
 /**
@@ -331,7 +329,28 @@ RPGObject.prototype.SetStillImages = function(codename_before, codename_after){
     this.ImageBefore = this.Engine.MediaManager.GetImage(this.CodenameBefore);
     this.ImageAfter = this.Engine.MediaManager.GetImage(this.CodenameAfter);
     
+    this.RefreshCallback = new Callback(this, function(codename_before, codename_after){
+        this.ActivateImages();
+        this.CodenameBefore = codename_before;
+        this.CodenameAfter = codename_after;
+        this.ImageBefore = this.Engine.MediaManager.GetImage(this.CodenameBefore);
+        this.ImageAfter = this.Engine.MediaManager.GetImage(this.CodenameAfter);
+    }, codename_before, codename_after);
+    
 };
+
+/**
+ * @description Sets new still images for the object and activates it so that the still images will be drawn in Draw()
+ * @param {type} codename_before a String, with which the before-interaction image is registered in the MediaManager
+ * @param {type} codename_after a String, with which the after-interaction image is registered in the MediaManager
+ * @returns {undefined}
+ */
+RPGObject.prototype.RefreshStillImages = function(){
+    if(!this.RefreshCallback)
+        return false;
+    this.RefreshCallback.Call();
+};
+
 /**
  * @description Activates that the Sprite will be drawn
  * @returns {undefined}

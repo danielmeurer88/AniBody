@@ -13,14 +13,14 @@ function level_rpg(engine){
 function rpg_callback(engine){
         
     // creating a starting terrain
-    var topterr = getTerrain("rpg", "rpg_img", "rpg_structure", 60);
+    var topterr = createTerrain("rpg", "room1", "rpg_img", "rpg_structure", 60);
     // creating a rpg camera
     this.SetCamera(this.GetNewCamera("rpg"));
     // setting the terrain as the active terrain
     this.SetTerrain(topterr);
     
     // creating a sub terrain, which is a child ob the first 
-    var subterr = topterr.AddChildTerrain("rpg_subimg", "rpg_substructure", "sub");
+    var subterr = topterr.AddChildTerrain("room2" ,"rpg_subimg", "rpg_substructure", "sub");
     //subterr.SetStandardEntry(3,3);
     
     //OBJECTS

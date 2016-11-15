@@ -2,6 +2,7 @@ function RPGImageObject(codename,cf/* (optional), scale*/){
     ABO.call(this);
     
     this.Image = this.Engine.MediaManager.GetImage(codename);
+    this.ImageCodename = codename;
     this.Width = this.Image.width;
     this.Height = this.Image.height;
     
@@ -25,5 +26,6 @@ RPGImageObject.prototype.constructor = RPGImageObject;
 
 RPGImageObject.prototype.Draw = function(c){
     var cam = this.Engine.Camera.SelectedCamera;
+    this.Image = this.Engine.MediaManager.GetImage(this.ImageCodename);
     c.drawImage(this.Image, this.X - cam.X, this.Y - cam.Y, this.Image.width*this.Scale, this.Image.height*this.Scale);
 };
