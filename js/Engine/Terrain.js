@@ -5,21 +5,22 @@ function Terrain(){
 Terrain.prototype = Object.create(EngineObject.prototype);
 Terrain.prototype.constructor = Terrain;
 
-function getTerrain(type, para1, para2, para3){
+function createTerrain(type,req, para1, para2, para3){
     if(!type || type === "default"){
-        return new DefaultTerrain(para1, para2);
+        return new DefaultTerrain(req, para1, para2);
     }
     
     //if(type === "easy"){return new EasyTerrain(para1, para2);}if(type === "complex"){return new ComplexTerrain(para1, para2);}
     
     if(type === "rpg"){
-        return new RPGTerrain(para1, para2, para3);
+        return new RPGTerrain(req, para1, para2, para3);
     }
     
 }
 
-function DefaultTerrain(img_code, bottom_height){
+function DefaultTerrain(name, img_code, bottom_height){
     ABO.call(this);
+    this.Name = name;
     this.Attributes = { hidden: false};
     this.Width=0;
     this.Height=0;
