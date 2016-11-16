@@ -26,6 +26,7 @@ $(document).ready(function () {
         new Image({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"})
     ];
 
+    //engine.MediaManager.SetMediaPack(  mediapack, {function : menu_callback, parameter: engine, that:engine});
     engine.MediaManager.SetMediaPack(  mediapack, new Callback(engine, menu_callback, engine));
 
     
