@@ -65,12 +65,12 @@ RPGPortal.prototype.Update = function(){
             // if you go to a new terrain - you need to check if all images are loaded for it
             var req = this.ToTerrain.Required;
             var mm = this.Engine.MediaManager;
+            this.OldMoveCounter = this.Engine.Terrain.MoveCounter;
             
             mm.Require(req, new Callback(this,function(){
                 
                 this.Engine.Terrain.CleanObjectQ();
                 this.Engine.Terrain.SetTerrain(this.ToTerrain);
-                this.OldMoveCounter = this.Engine.Terrain.MoveCounter;
                 this.Traveler.SetCurrentField(this.ToField);
                 
             },this));

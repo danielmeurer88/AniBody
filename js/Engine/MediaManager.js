@@ -6,6 +6,7 @@ function MediaManager() {
     this.Strings = [];
 
     this.Pack = [];
+    this.SortedPack = false;
 
     this.Unloaded = [];
     this.Progress = 0;
@@ -211,6 +212,7 @@ MediaManager.prototype.LoadMedia = function (pack, co) {
  */
 MediaManager.prototype.SetMediaPack = function (pack, co) {
     this.Pack = pack;
+    this.SortPack();
     this.Require("always", co, true);
 };
 /**
@@ -220,8 +222,18 @@ MediaManager.prototype.SetMediaPack = function (pack, co) {
  * @returns {undefined}
  */
 MediaManager.prototype.ExtendMediaPack = function (pack, co) {
+    
     this.Pack = this.Pack.concat(pack);
+    this.SortPack();
     this.Require("always", co, true);
+}
+
+MediaManager.prototype.SortPack = function () {
+    
+    this.Pack = this.Pack.sort(function(a,b){
+        return (a<b) ? 1 : -1;       
+    });
+    this.SortedPack = true;
 }
 
 /**
@@ -233,14 +245,18 @@ MediaManager.prototype.ExtendMediaPack = function (pack, co) {
  */
 MediaManager.prototype.Require = function (group, co, loadMediaWithNoGroupToo) {
 
-    var pack = [], m;
+    var req = [], unreq = [], m;
     for (var i = 0; i < this.Pack.length; i++) {
         m = this.Pack[i];
         if (m.IsGroupOf(group) || (loadMediaWithNoGroupToo && m.HasNoGroup))
-            pack.push(m);
+            req.push(m);
+        else
+            unreq.push(m);
     }
-    console.log(pack.length + " data required: group." + group);
-    this.LoadMedia(pack, co);
+    console.log(req.length + " data required: group." + group + " ## " + unreq.length + " not required" );
+    this.Pack = unreq;
+    
+    this.LoadMedia(req, co);
 };
 
 function Media(path, codename, group) {
@@ -272,6 +288,10 @@ Media.prototype.IsGroupOf = function (group) {
         if (this.Group[i] == group)
             return true;
     return false;
+};
+
+Media.prototype.AddGroup = function (alias) {
+    this.Group.push(alias);
 };
 
 function Image() {

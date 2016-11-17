@@ -5,6 +5,9 @@ $(document).ready(function () {
 
     RegisterTouchTest(engine);
 
+    var waterglass = new Image({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
+    waterglass.AddGroup("room1");
+
     var mediapack = [
         new Image("./img_rpg/button_0.png", "button_state_0"),
         new Image("./img_rpg/button_1.png", "button_state_1"),
@@ -22,11 +25,10 @@ $(document).ready(function () {
         new Image({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
         new Image({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
         new Image({path: "./img_rpg/fire_out.png", codename: "bonfire_out", group:"room1"}),
-        new Image({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room1"}),
+        waterglass,
         new Image({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"})
     ];
 
-    //engine.MediaManager.SetMediaPack(  mediapack, {function : menu_callback, parameter: engine, that:engine});
     engine.MediaManager.SetMediaPack(  mediapack, new Callback(engine, menu_callback, engine));
 
     
