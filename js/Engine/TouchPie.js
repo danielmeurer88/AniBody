@@ -1,20 +1,4 @@
 
-function GIF(x,y, codename){
-    ABO.call(this);
-    this.Image = this.Engine.MediaManager.GetImage(codename);
-    this.X = x;
-    this.Y = y;
-}
-GIF.prototype = Object.create(ABO.prototype);
-GIF.prototype.constructor = GIF;
-
-GIF.prototype.Draw = function(c){
-    
-    var img = $("#EARTH")[0];
-    
-    c.drawImage(img, this.X, this.Y);
-};
-
 function TouchPie(){
     ABO.call(this);
     

@@ -26,7 +26,9 @@ $(document).ready(function () {
         new Image({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
         new Image({path: "./img_rpg/fire_out.png", codename: "bonfire_out", group:"room1"}),
         waterglass,
-        new Image({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"})
+        new Image({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"}),
+        new Sound({path: "./music/portal_activate.mp3", codename: "portal_activate", group:"room1"}),
+        new Sound({path: "./music/alongway.mp3", codename: "girl_background", group:"room2"})
     ];
 
     engine.MediaManager.SetMediaPack(  mediapack, new Callback(engine, menu_callback, engine));
