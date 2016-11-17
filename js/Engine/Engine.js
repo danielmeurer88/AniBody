@@ -7,7 +7,7 @@ function Engine(html_id){
         Version : "0.942",
         Author : "Daniel Meurer",
         Project : "Developing",
-        LastUpdated : "2016_11_14:22" // year_month_day:hour
+        LastUpdated : "2016_11_17:16" // year_month_day:hour
     };
     
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
