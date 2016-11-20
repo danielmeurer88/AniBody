@@ -63,8 +63,8 @@ PriorityQueue.prototype.Enqueue = function(data, priority){
         priority = priority || typeof priority == "number" ? priority : ++this.HighestPriority;
     
     this.Sorted = false;
-    return this.heap.push({data:data, priority:priority, origin:"enqueued"});
     this.length++;
+    return this.heap.push({data:data, priority:priority, origin:"enqueued"});
 };
 /**
  * @description Returns true if the element was found else false
