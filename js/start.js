@@ -74,6 +74,10 @@ function menu_callback(engine){
     engine.AddObject(b2, 1);
         
     engine.Start();
+    
+    // Example: FLAG Engine.ConstantLoop set to false then own timer needs to handle the frame
+    //var timer = new Timer(engine, engine.Frame, 1);
+    //timer.Start();
 }
 
 function RegisterTouchTest(en){

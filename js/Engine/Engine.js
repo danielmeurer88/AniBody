@@ -25,6 +25,7 @@ function Engine(html_id){
     }
     
     // ### FLAGS
+    this.ConstantLoop = true; // flag if developer wants to have a timer, which constantly triggers Frame() (input, update, draw) or self responsible
     this.PreventKeyboardStrokesToBubbleUp = true;
     this.PreventContextClickBubbleToUp = true;
     
@@ -138,8 +139,9 @@ Engine.prototype.Initialize = function(){
     // set the Counter function running
     this.Counter = new Counter();// the variable for the counter object
     this.AddUpdateFunction( new Callback({ function : this.Counter.Update, parameter : this.Counter, that:this.Counter }) );
-
-    this.Timer = new Timer(this, this.Frame, this.FPS);
+    
+    if(this.ConstantLoop)
+        this.Timer = new Timer(this, this.Frame, this.FPS);
     
     this.Storage.Engine = this;
     this.Storage.InitStorage();
@@ -160,8 +162,8 @@ Engine.prototype.Start = function(){
         this.Engine.Camera.SelectedCamera = this.GetNewCamera("default");
     
     this.Engine.Objects.Queue.Sort();
-    
-    this.Engine.Timer.Start();
+    if(this.ConstantLoop)
+        this.Engine.Timer.Start();
 };
 
 /**
@@ -182,7 +184,10 @@ Engine.prototype.StartWithImages = function(imgs){
 /**
  * @description stops the Engine
  */
-Engine.prototype.Stop = function(){ this.Timer.Stop()};
+Engine.prototype.Stop = function(){
+    if(this.ConstantLoop)
+        this.Timer.Stop();
+};
 
 // pauses and continues drawing and processing user input but not updating objects
 Engine.prototype.Continue = function(){ this.Paused = false};
