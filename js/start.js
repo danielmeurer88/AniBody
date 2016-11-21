@@ -61,7 +61,7 @@ function menu_callback(engine){
     var b2 = new Button("center", 220, 250, 60);
     b2.SetTriggerCallbackObject({that:b2, parameter: engine, function:function (engine) {
         //start_help(engine);
-        engine.CreateDownloadLink();
+        engine.CreateDownloadImageLink(false, false, 0.5);
     }});
     
     

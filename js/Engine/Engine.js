@@ -402,6 +402,40 @@ Engine.prototype.CreateDownloadLink = function(selwhere,innerText){
 };
 
 /**
+ * @description creates a link to download current canvas state as a png
+ * @param {string|object} jQuery Selector
+ * @param {string} the text of the Link 
+ * @returns {undefined}
+ */
+Engine.prototype.CreateDownloadImageLink = function(selwhere, scale){
+    
+    var a = document.createElement("A");
+    var img = document.createElement("IMG");
+    var coff = document.createElement("CANVAS");
+    coff.width = this.Canvas.widt*(scale||1);
+    coff.height = this.Canvas.height*(scale||1);
+    
+    var imgData = this.Context.getImageData(0,0,this.Canvas.width,this.Canvas.height);
+    //coff.getContext("2d").putImageData(imgData,0,0,coff.width, coff.height);
+    coff.getContext("2d").putImageData(imgData,0,0);
+    var durl = coff.toDataURL();
+    
+    img.src = durl;
+    var date = Date.now();
+    
+    a.appendChild(img);
+    
+    $(selwhere || "body").append(a);
+    
+    var data = this.Canvas.toDataURL();
+    
+    $(a).click(function(){
+        this.href = data;
+        this.download = "screenshot_{0}.png".format(date);
+    });
+};
+
+/**
  * @description Returns the object at index i
  * @param {integer} i
  * @returns {result}
