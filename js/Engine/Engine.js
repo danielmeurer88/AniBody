@@ -34,7 +34,7 @@ function Engine(html_id){
     this.Modul.CausalityManager = true;
     
     this.Touch = {
-        DetectionEnabled : true, // flag if touch handle will be registered
+        DetectionEnabled : false, // flag if touch handle will be registered
         PreventScrolling : true, // flag if a touch move should cause scrolling
         FakeMouseClick : true, // flag if an object will be saved where the mouse event is expected causing that it looks like a mouse click when tapped
         PiesAllowed : false, // flag if pies should be used instead of long taps
@@ -42,6 +42,9 @@ function Engine(html_id){
         MovementStabilizer : 50,
         SwipeThreshold : 150
     };
+    
+    // TESTING TouchHandler
+    this.TouchHandler = false;
     
     // ### PROPERTIES - STATE OF ENGINE
     this.Paused = false;
@@ -78,7 +81,7 @@ function Engine(html_id){
     this.MediaManager = {};
     this.Terrain = {};
     this.DebugList = {};
-        
+         
     // unique Alert-look
     this.Alert = { 
         FramesLeft : 0,
@@ -149,6 +152,10 @@ Engine.prototype.Initialize = function(){
     this.CausalityManager = new RPGCausalityManager();
 
     this.DebugList = new DebugList();
+    
+    // TESTING TouchHandler
+    this.TouchHandler = new TouchHandler();
+    this.TouchHandler.Initialize();
 };
  /**
  * @description before it starts the Engine, it checks if there is a Terrain object and a Camera selected, if not default objects are initialized
@@ -272,6 +279,8 @@ Engine.prototype.Update = function(){
             this.Input.Touch.Pie.Update();
             this.Input.Touch.Pie2.Update();
     }
+
+    this.TouchHandler.Update();
 
     // update the camera
     this.Camera.SelectedCamera.Update();
