@@ -3,8 +3,10 @@ function TouchHandler(){
     EngineObject.call(this);
     
     // FLAGS
-    this.AlwaysPreventDefault = true;
+    this.PreventDefault = true;
     this.PreventScrolling = true;
+    this.FakeMouseClick = true; //flag if a (short) tap will call for a fake mouse click - useful if the default will be prevented
+    // a FakeMouseClick will only be recognized by the AniBody-Engine as a real mouse click in the MouseHandler
     
     // DEFINED VALUES
     this.DEFINEDVALUES = {
@@ -28,18 +30,27 @@ function TouchHandler(){
         TouchEndEvent : false
     };
     
-    this.ExpectTouch = false; // important for the update-function
+    this.DeviceIsTouchDevice = false; // not implemented yet
+    this.TouchDeviceRecognization = []; // not implemented yet
+    
+    this.ExpectTouch = false; // true: no guesture has been matched to the current screen touch, false: algorithm does not need to search guesture anymore
     
     this.Finger1 = {
         X : 0,
         Y : 0,
-        Detected : false
+        Detected : false,
+        TapListener : [],
+        LongTapListener : [],
+        SwipeListener : []
     };
     
     this.Finger2 = {
         X : 0,
         Y : 0,
-        Detected : false
+        Detected : false,
+        TapListener : [],
+        LongTapListener : [],
+        SwipeListener : []
     };
     
 }
@@ -73,8 +84,8 @@ TouchHandler.prototype.TouchStartHandler = function(e){
         this.Finger2.Y = e.touches[1].clientY;
         this.Finger2.Detected = true;
     }
-    if(this.AlwaysPreventDefault)
-    e.preventDefault();
+    if(this.PreventDefault)
+        e.preventDefault();
 };
 
 TouchHandler.prototype.TouchMoveHandler = function(e){
@@ -106,8 +117,8 @@ TouchHandler.prototype.TouchEndHandler = function(e){
     
     // the duration of the touch <= time now - time at the beginning
     var timedelta = e.timeStamp - this.EventObjects.TouchStartEvent.timeStamp;
-    var xdelta = starte.touches[0].clientX - laste.touches[0].clientX;
-    var ydelta = starte.touches[0].clientY - laste.touches[0].clientY;
+    var xdelta = laste.touches[0].clientX - starte.touches[0].clientX;
+    var ydelta = laste.touches[0].clientY - starte.touches[0].clientY;
     
     this.Finger2.Detected = false;
     if(laste.touches.length >= 2){
@@ -124,9 +135,10 @@ TouchHandler.prototype.TouchEndHandler = function(e){
 
         // is it a tap with the first or the second finger
         if(!this.Finger2.Detected){
-            console.log("Finger1 Tap");
+            this.OnTapFinger1();
+            
         }else{
-            console.log("Finger2 Tap");
+            this.OnTapFinger2();
         }
 
     }// Tap testing ENDIF
@@ -138,9 +150,9 @@ TouchHandler.prototype.TouchEndHandler = function(e){
 
         // is it a longtap with the first or the second finger
         if(!this.Finger2.Detected){
-            console.log("Finger1 LongTap");
+            this.OnLongTapFinger1();
         }else{
-            console.log("Finger2 LongTap");
+            this.OnLongTapFinger2();
         }
 
     }// LongTap testing ENDIF
@@ -148,15 +160,28 @@ TouchHandler.prototype.TouchEndHandler = function(e){
     // TESTING FOR A SWIPE and testing for the direction - only if ExpectTouch is still true (gesture has not been figured out yet)
     // direction will be handled as an 0,1 Object - {X : [0|1], Y : [0|1]}
     if(this.ExpectTouch && timedelta <= this.DEFINEDVALUES.SwipeTimeLimit && !this._movementWithin(xdelta,ydelta, this.DEFINEDVALUES.SwipeTrackLimit)){
-        console.log(this._getDirection(xdelta, ydelta, true) + " swipe");
+        this.ExpectTouch = false;
+        
         var dir = this._getDirection(xdelta, ydelta);
-        console.log(JSON.stringify(dir));
+        
+        if(!this.Finger2.Detected){
+            this.OnSwipeFinger1(dir);
+        }else{
+            this.OnSwipeFinger2(dir);
+        }
     }
     
+    if(this.ExpectTouch)
+        console.log("No guesture matched: timedelta: {0}, xdelta: {1}, ydelta: {2}".format(timedelta, xdelta, ydelta));
+    
     //clean-up at the end
+    this.EventObjects.TouchMoveEvent = false; // Start- and EndEventObject will be overwritten in the next guesture but MoveEventObject only if the guesture moves - to be sure => clean it up
     this.Finger1.Detected = false;
-    this.Finger2.Detected.false;
+    this.Finger2.Detected = false;
     this.ExpectTouch = false;
+    
+    if(this.PreventDefault)
+        e.preventDefault();
 };
 
 TouchHandler.prototype.Update = function(){
@@ -178,34 +203,99 @@ TouchHandler.prototype._movementWithin = function(x,y,limit){
         false;
 };
 
-TouchHandler.prototype._getDirection = function(x,y, string){
+TouchHandler.prototype._getDirection = function(x,y){
     var dir;
-    if (Math.abs(x) > Math.abs(y)) {
-        // horizontal swipe was bigger
-        if (x > 0) {
-            // right
-            dir = {X: 1, Y: 0};
+    if(arguments.length >= 2){
+        // testing if horizontal swipe (x) or vertical swipe (y) is bigger
+        if (Math.abs(x) > Math.abs(y)) {
+            // horizontal swipe was bigger
+            if (x > 0)
+                dir = {X: 1, Y: 0};// right
+            else
+                dir = {X: -1, Y: 0};// left
         } else {
-            // left
-            dir = {X: -1, Y: 0};
+            // vertical swipe was bigger
+            if (y > 0)
+                dir = {X: 0, Y: 1};// down
+            else
+                dir = {X: 0, Y: -1};// up
         }
-
-    } else {
-        // vertical swipe was bigger
-        if (y > 0) {
-            // down
-            dir = {X: 0, Y: 1};
-        } else {
-            // up
-            dir = {X: 0, Y: -1};
-        }
-    }
-    if(!string)
         return dir;
-    else{
+    } 
+    
+    if(arguments.length == 1){
+        dir = x; // the first parameter (x) was meant to be the 0,1 direction object
         if(dir.Y == 0)
             return dir.X==1 ? "right" : "left";
         else
             return dir.Y == 1 ? "down" : "up";
+    }
+    
+    return false;
+};
+
+TouchHandler.prototype.OnTapFinger1 = function(){
+    console.log("Finger1 Tap");
+    var l;
+    for(var i=0; this.Finger1.TapListener.length; i++){
+        l = this.Finger1.TapListener[i];
+        l.call(this.Engine, this);
+    }
+};
+
+TouchHandler.prototype.OnTapFinger2 = function(){
+    console.log("Finger2 Tap");
+    var l;
+    for(var i=0; this.Finger2.TapListener.length; i++){
+        l = this.Finger2.TapListener[i];
+        l.call(this.Engine, this);
+    }
+};
+
+TouchHandler.prototype.OnLongTapFinger1 = function(){
+    console.log("Finger1 LongTap");
+    var l;
+    for(var i=0; this.Finger1.LongTapListener.length; i++){
+        l = this.Finger1.LongTapListener[i];
+        l.call(this.Engine, this);
+    }
+};
+
+TouchHandler.prototype.OnLongTapFinger2 = function(){
+    console.log("Finger2 LongTap");
+    var l;
+    for(var i=0; this.Finger2.LongTapListener.length; i++){
+        l = this.Finger2.LongTapListener[i];
+        l.call(this.Engine, this);
+    }
+};
+
+TouchHandler.prototype.OnSwipeFinger1 = function(dir){
+    console.log("Finger1 " + this._getDirection(dir) + " swipe - " + JSON.stringify(dir));
+    var l;
+    for(var i=0; this.Finger1.SwipeListener.length; i++){
+        l = this.Finger1.SwipeListener[i];
+        l.call(this.Engine, this, dir);
+    }
+};
+
+TouchHandler.prototype.OnSwipeFinger2 = function(dir){
+    console.log("Finger2 " + this._getDirection(dir) + " swipe - " + JSON.stringify(dir));
+    var l;
+    for(var i=0; this.Finger1.SwipeListener.length; i++){
+        l = this.Finger1.SwipeListener[i];
+        l.call(this.Engine, this, dir);
+    }
+};
+
+TouchHandler.prototype.AddEventListener = function(eventtype, listener){
+    switch(eventtype){
+        case "tapfinger1" : this.Finger1.TapListener.push(listener);break;
+        case "tapfinger2" : this.Finger2.TapListener.push(listener);break;
+        case "longtapfinger1" : this.Finger1.LongTapListener.push(listener);break;
+        case "longtapfinger2" : this.Finger2.LongTapListener.push(listener);break;
+        case "swipefinger1" : this.Finger1.SwipeListener.push(listener);break;
+        case "swipefinger2" : this.Finger2.SwipeListener.push(listener);break;
+        default : console.log("could not add event listener with type "+eventtype);
     }
 };
