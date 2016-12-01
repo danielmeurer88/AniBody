@@ -230,21 +230,61 @@ Queue.prototype.isEmpty = function(){if(this.vals.length<=0)return true; else re
 // ########################################################
 // ########################################################
 
-function Timer(ref, f, fps){
+/**
+ * @description Encapsulates a function which is called periodically 
+ * @param {object} ref object will be the first parameter of the function f
+ * @param {type} f a function, which will be called the number of times as given in fps 
+ * @param {type} fps determines how often the function f will be called in a second
+ * @param {type} [optional] framestotal determines how often the function will be called in total
+ * @returns {Timer}
+ */
+function Timer(ref, f, fps, framestotal){
     this.ref = ref;
-    this.Function = f;
     this.Active = false;
     this.internal = null;
     if(fps <= 0) fps = 1;
     this.Milli = 1000/fps;
+    this.Counter = 0;
+    this.Total = framestotal;
+    
+    if(!this.Total || arguments.length > 3){
+        this.HasLimit = true;
+    }else{
+        this.HasLimit = false;
+    }
+    
+    this.Function = function(that){
+        that.Counter++;
+        
+        if(that.HasLimit && that.Counter > that.Total){
+            that.Stop();
+            return;
+        }
+        f(that.ref);    
+    };
 }
 Timer.prototype.Start = function(){
-        this.internal = window.setInterval(this.Function, this.Milli, this.ref);
+        this.Reset();
+        this.internal = window.setInterval(this.Function, this.Milli, this);
         this.Active = true;
 };
+Timer.prototype.Reset = function(){
+        this.Counter = 0;
+};
 Timer.prototype.Stop = function(){
-        window.clearInterval(this.internal); this.Active = false;
+        window.clearInterval(this.internal);
         this.Active = false;
+};
+Timer.prototype.Continue = function(){
+        this.internal = window.setInterval(this.Function, this.Milli, this);
+        this.Active = true;
+};
+Timer.prototype.Pause = function(){
+        window.clearInterval(this.internal);
+        this.Active = false;
+};
+Timer.prototype.SetTotal = function(t){
+        this.Total = t;
 };
 
 // ########################################################
