@@ -11,6 +11,16 @@ body {
     background-color: #aaffaa;
 }
 
+#Play {
+    display : none;
+}
+
+#PlayDiv {
+    width : 800px;
+    height : 600px;
+    background-color: rgba(100, 150, 200, 0.4);
+}
+
 @media screen and (max-width : 480px) {
     body {
         margin: 0px;

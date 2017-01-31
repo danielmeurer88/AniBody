@@ -1,8 +1,8 @@
 
 $(document).ready(function () {
 
-    var engine = new Engine("Play");
-
+    var engine = new Engine("PlayDiv");
+    
     RegisterTouchTest(engine);
 
     var waterglass = new Image({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});

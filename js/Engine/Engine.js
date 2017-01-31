@@ -124,12 +124,21 @@ Engine.prototype.Initialize = function(){
     this.MediaManager = new MediaManager();
     this.MediaManager.EI = this.EI;
     
-    this.Canvas = document.getElementById(this.CanvasID);
+    // it checks if it's a div container
+    // if so it creates a new canvas element inside of it and goes on
+    var pseudo = $("#"+this.CanvasID)[0];
+    var width = $("#"+this.CanvasID).width();
+    var height = $("#"+this.CanvasID).height();
+    if(pseudo.nodeName == "DIV"){
+        $("#"+this.CanvasID).html("<canvas width='"+width+"' height='"+height+"' id='"+this.CanvasID+"_Canvas'></canvas>");
+        this.CanvasID = this.CanvasID + "_Canvas";
+    }
+    this.Canvas = $("#"+this.CanvasID)[0];
 
     this.Canvas.PosNew = {x:0, y:0};
     this.Canvas.PosOld = {x:0, y:0};
-
-    this.Canvas.ScreenRatio = this.Canvas.width / this.Canvas.height;
+    
+    this.Canvas.ScreenRatio = parseInt(this.Canvas.width / this.Canvas.height*1000)/1000;
 
     this.Context = this.Canvas.getContext("2d");
     
