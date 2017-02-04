@@ -186,6 +186,32 @@ window.CanvasRenderingContext2D.prototype.drawRoundedImage = function(img,r){
     };
 };
 
+/**
+ * Fills a certain text like the text is written on a piece of paper,
+ * pinned on the canvas. Spinning the paper would render a circle, whose centroid is given.
+ * @param {Number} mx x-value of the centroid of the circle
+ * @param {Number} my y-value of the centroid
+ * @param {String} text the text which will be rendered
+ * @param {Number} degree [0-360] of which the paper will be spinned (0 and 360 means displayed as usual)
+ * @returns {undefined}
+ */
+window.CanvasRenderingContext2D.prototype.fillSpinnedText = function(mx, my, text, degree){
+    this.save();
+    
+    //var textlen = this.measureText(text).width;
+    
+    var rad = degree * Math.PI / 180;
+    
+    this.textAlign = "center";
+    this.textBaseline = "middle";
+    
+    this.translate(mx, my);
+    this.rotate(rad);
+    
+    this.fillText(text, 0, 0);
+    this.restore();
+};
+
 String.prototype.format = function(){
     var str = this;
     var regEx;
