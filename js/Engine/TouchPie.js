@@ -96,6 +96,7 @@ TouchPie.prototype.Draw = function(c){
     con.arc(center,center,this.Radius*0.3,0,2 * Math.PI, false);
     con.lineTo(center,center);
     con.fill();
+    con.closePath();
     con.globalCompositeOperation = "source-over";
     
     // drawing the texts

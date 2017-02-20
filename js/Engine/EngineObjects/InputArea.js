@@ -165,15 +165,19 @@ InputArea.prototype.Update = function () {
 InputArea.prototype.Draw = function (c) {
 
     c.save();
-
+    
+    
     var cam = this.Engine.Camera.SelectedCamera;
 
     // Begin - background rectangle
     c.fillStyle = (this.Selected) ? this.FillStyle[1] : this.FillStyle[0];
     
+    // cancels out all open paths
+    c.beginPath();
     // using rect() and fill() instead of fillRect() because the latter destroys the path, which we use to clip later.
     c.rect(this.X - cam.X, this.Y - cam.Y, this.Width, this.Height);
     c.fill();
+    c.closePath();
     // End - background rectangle
     
     // clipping the path, which we build with rect()
@@ -200,6 +204,7 @@ InputArea.prototype.Draw = function (c) {
     c.lineTo((this.X+this.Width) - cam.X, this.Y - cam.Y);
     c.strokeStyle = this.shading + "px grey";
     c.stroke();
+    c.closePath();
     // End - grey box shades
 
 
@@ -211,9 +216,10 @@ InputArea.prototype.Draw = function (c) {
         // no need to subtract the cam.X from the x-coords because "txtx" already took care of that
         c.moveTo(txtx + this.CursorWidth, this.Y + this.padding - cam.Y);
         c.lineTo(txtx + this.CursorWidth, this.Y + this.padding + this.TextHeight - cam.Y);
-        c.closePath();
+        
         c.strokeStyle = "black";
         c.stroke();
+        c.closePath();
     }
     // End - the writing cursor
 

@@ -156,7 +156,7 @@ window.CanvasRenderingContext2D.prototype.strokeVariousRoundedRect = function(x,
 };
 
 window.CanvasRenderingContext2D.prototype.drawRoundedImage = function(img,r){
-    
+    this.save();
     var can = this.canvas;
     
     var x = (can.width / 2) - (img.width / 2);
@@ -173,7 +173,7 @@ window.CanvasRenderingContext2D.prototype.drawRoundedImage = function(img,r){
     this.lineTo(x, y+r);
     this.bezierCurveTo(x,y, x+r, y, x+r, y); // top-left
     this.closePath();
-    this.save();
+    
     this.clip();
     this.drawImage(img, x,y, img.width, img.height);
     this.restore();
