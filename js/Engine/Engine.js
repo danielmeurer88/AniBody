@@ -338,7 +338,7 @@ Engine.prototype.Draw = function(){
         this.Alert.FramesLeft--;
     }
     
-    c.fillSpinningText(100, 100, "Das ist ein Test", this.Counter.Frames);
+    c.fillSpinnedText(100, 100, "Das ist ein Test", this.Counter.Frames);
     c.strokeCircle(100,100,50,true);
     
     this.DebugList.Draw(c);
