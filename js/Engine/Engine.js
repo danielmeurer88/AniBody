@@ -7,7 +7,7 @@ function Engine(html_id){
         Version : "0.942",
         Author : "Daniel Meurer",
         Project : "Developing",
-        LastUpdated : "2016_11_22:12" // year_month_day:hour
+        LastUpdated : "2017_02_22_h12" // year_month_day_hhour
     };
     
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
@@ -1077,7 +1077,10 @@ Engine.prototype.Input = {
         //var test = this.Engine.Canvas.getBoundingClientRect();
 
         var i = 200;
-        while(ele.nodeName != "BODY" && i > 0){
+        x += ele.offsetLeft;
+        y += ele.offsetTop;
+        
+        while(ele.offsetParent && ele.offsetParent.nodeName != "BODY" && i > 0){
             i--;
             x += ele.offsetLeft;
             y += ele.offsetTop;

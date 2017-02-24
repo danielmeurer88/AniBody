@@ -260,7 +260,7 @@ function Timer(ref, f, fps, framestotal){
             that.Stop();
             return;
         }
-        f(that.ref);    
+        f.call(that.ref, that.ref);
     };
 }
 Timer.prototype.Start = function(){
