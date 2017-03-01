@@ -562,10 +562,12 @@ Engine.prototype.Input = {
     MouseDownEvent : {},
     TouchStartEvent : {},
     KeyDownEvent : {},
+    ParentKeyDownEvent : {},
     
     MouseUpEvent : {},
     TouchEndEvent : {},
     KeyUpEvent : {},
+    ParentKeyUpEvent : {},
     
     MouseMoveEvent : {},
     TouchMoveEvent : {},
@@ -1091,7 +1093,8 @@ Engine.prototype.Input = {
         
     },
     RegisterKeyEvents : function(lockKeys){
-        this.KeyDownEvent = $(document).keydown(this.Engine,function(e){
+        
+        var onkeydown = function(e){
             
             var input = e.data.Input;
             
@@ -1166,8 +1169,8 @@ Engine.prototype.Input = {
                 e.stopPropagation();
                 return false;
             }
-        });
-        this.KeyUpEvent = $(document).keyup(this.Engine, function(e){
+        };
+        var onkeyup = function(e){
             var input = e.data.Input;
             input.Key.Event = e;
             if(e.key)
@@ -1240,7 +1243,20 @@ Engine.prototype.Input = {
                 e.stopPropagation();
                 return false;
             }
-        });
+        };
+        
+        this.KeyDownEvent = $(document).keydown(this.Engine,onkeydown);
+        this.KeyUpEvent = $(document).keyup(this.Engine, onkeyup);
+        
+        // if the script runs on a (same-origin) document within an iframe (or popup?)
+        if(window.top != window.self){
+            try{
+                this.ParentKeyDownEvent = $(window.parent.document).keydown(this.Engine,onkeydown);
+                this.ParentKeyUpEvent = $(window.parent.document).keyup(this.Engine, onkeyup);
+            }catch(e){
+                
+            }
+        }
     },
     RegisterMouseEvents : function(lockContext){
         
