@@ -145,7 +145,7 @@ function rpg_callback(engine){
         acF.SetActivator(player);
         acF.SetRange(engine.Terrain.GetField(1,4), 2, 2);
         acF.ActivationFunction = function(){
-            $.Engine.ShowAlert("You are in the Zone", 1/$.Engine.FPS);
+            console.log("You are in the Zone");
         };
         topterr.AddObjectToSideQ(acF, prarr.actField);
     }
@@ -310,6 +310,7 @@ function level_rpg_Input(engine){
     };
     engine.AddProcessInputFunction( { function : f, parameter : engine } );
 
+    return;
     /* +++++++ TOUCH HANDLER +++++ */
     f = function(dir, player){
         player.Move(dir);

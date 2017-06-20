@@ -1,3 +1,186 @@
+/**
+ * HashTable for Key/Value-pairs
+ * @param {type} maxLists
+ * @returns {HashTable}
+ */
+function HashTable(maxLists){
+    this._lists = [];
+    this._maxLists = maxLists || 25;
+}
+/**
+ * hash function of the HastTable-Class - get the charCode of every letter of the key and returns the sum
+ * @param {string} key
+ * @returns {Number}
+ */
+HashTable.prototype._hashFunction = function(key){
+    
+    if(typeof key === "undefined")
+        throw {Message:"HashTable_Error: undefined key"};
+    
+    if(typeof key !== "string")
+        key = key.toString();
+    
+    var val = 0;
+    
+    for(var i=0; i<key.length; i++){
+        val += key.charCodeAt(i);
+    };
+    return val;
+};
+
+/**
+ * Get the index of the list (array), in which the value will be saved or is saved
+ * @param {string} key
+ * @returns {Number|Object.prototype._hashFunction.val|type}
+ */
+HashTable.prototype._getListNum = function(key){
+    return this._hashFunction(key) % this._maxLists;
+};
+
+/**
+ * Saves a new key/value-pair
+ * @param {string} key
+ * @param {object} value
+ * @returns {undefined}
+ */
+HashTable.prototype.Set = function(key, value){
+    var listnum = this._getListNum(key);
+    
+    if(typeof this._lists[listnum] === "undefined"){
+        this._lists[listnum] = [];
+    }
+    this._lists[listnum].push({key:key, value:value});
+};
+
+/**
+ * Gets the value of a given key
+ * @param {string} key
+ * @returns {object}
+ */
+HashTable.prototype.Get = function(key){
+    var listnum = this._getListNum(key);
+    
+    if(typeof this._lists[listnum] === "undefined"){
+        throw {Message:"HashTable_Error: undefined list for key: " + key};
+    }
+    for(var i=0; i<this._lists[listnum].length; i++){
+        if(key === this._lists[listnum][i].key)
+            return this._lists[listnum][i].value;
+    }
+    throw {Message:"HashTable_Error: cannot find value for key: " + key};
+};
+
+/**
+ * Gets the value of a given key along with internal data
+ * @param {string} key
+ * @returns {object}
+ */
+HashTable.prototype.DebugGet = function(key){
+    var listnum = this._getListNum(key);
+    var obj = {Messages : false, key:key, value:false, hashedKey : listnum};
+    
+    if(typeof this._lists[listnum] === "undefined"){
+        obj.Messages = "HashTable_Error: undefined list for key: " + key;
+    }
+    if(!obj.Messages){
+        for(var i=0; i<this._lists[listnum].length; i++){
+            if(key === this._lists[listnum][i].key)
+                obj.value = this._lists[listnum][i].value;
+        }
+        if(obj.value === false)
+            obj.Messages = "HashTable_Error: cannot find value for key: " + key;
+    }
+    return obj;
+};
+
+/**
+ * returns Array of all values and how they are distributed within the hash table
+ * @returns {Array}
+ */
+HashTable.prototype.GetDistribution = function(){
+    var arr = [];
+    for(var i=0; i<this._lists.length; i++){
+        if(typeof this._lists[i] === "undefined")
+            arr.push("List " + i + " is empty");
+        else
+            if(this._lists[i].length > 1)
+                arr.push("List " + i + " has " + this._lists[i].length + " key/value-pairs");
+            else
+                arr.push("List " + i + " has " + this._lists[i].length + " key/value-pair");
+    }
+    return arr;
+};
+
+// ########################################################
+// ########################################################
+// ########################################################
+
+var Random = {};
+/**
+ * Returns a number between a minimum and a maximum - both inclusivly
+ * @param {number} min
+ * @param {number} max
+ * @param {number} decimals
+ * @returns {Number}
+ */
+Random.GetNumber = function(min, max, decimals){
+    if(typeof min === "undefined" || isNaN(min))
+        min = 0;
+    if(typeof max === "undefined" || isNaN(max))
+        if(Number && Number.MAX_SAFE_INTEGER)
+            max = Number.MAX_SAFE_INTEGER;
+        else
+            max = Math.pow(2, 53) - 1;
+        
+    if(typeof decimals === "undefined" || isNaN(decimals))
+        decimals = 0;
+    
+    var ran = Math.random() * Math.pow(10, decimals);
+    
+    return (Math.round((ran * max) + min)/Math.pow(10, decimals));
+};
+/**
+ * Returns a timestamp from now minus a random timespan
+ * @param {number} min minimum
+ * @param {number} max maximum
+ * @param {string} time unit (ms|s|min|h|d|w|y) leapyear not included in calculation
+ * @returns {Number}
+ */
+Random.GetTimestamp = function(min, max, unit){
+    if(typeof unit === "undefined")
+        unit = "s";
+    var num = Random.GetNumber(min, max);
+    
+    var lim = Date.now();
+    if(unit === "ms" || unit === "mil")
+        lim -= num;
+    
+    if(unit === "s")
+        lim -= num * 1000;
+    
+    if(unit === "min")
+        lim -= num * 1000 * 60;
+    
+    if(unit === "h")
+        lim -= num * 1000 * 60 * 60;
+    
+    if(unit === "d")
+        lim -= num * 1000 * 60 * 60 * 24;
+    
+    if(unit === "w")
+        lim -= num * 1000 * 60 * 60 * 24 * 7;
+    
+    if(unit === "y")
+        lim -= num * 1000 * 60 * 60 * 24 * 365;
+    
+    return lim;
+    
+};
+
+// ########################################################
+// ########################################################
+// ########################################################
+
 function Callback(that, func, parameter){
     
     // if Callback was instanciated with an object
@@ -19,7 +202,6 @@ function Callback(that, func, parameter){
     }
 };
 
-
 Callback.prototype.Call = function(){
     if(this.OneParameter)
         this.function.call(this.that, this.parameters[0]);
@@ -27,6 +209,14 @@ Callback.prototype.Call = function(){
         this.function.apply(this.that, this.parameters);
 };
 
+Callback.CallObject = function(obj){
+    if(typeof obj === "object" && typeof obj.function === "function")
+        obj.function.call(obj.that, obj.parameter);
+};
+
+Callback.prototype.ToObject = function(){
+     return { that:this.that, function:this.function, parameter:this.parameters};
+};
 
 // ########################################################
 // ########################################################
@@ -46,14 +236,16 @@ function PriorityQueue(nop){
     this.NoPriorityThenZero = nop ? nop : false;
     this.Sorted = false;
     this.length = 0;
+    this._refnums = 0;
 }
 /**
- * @description Adds a new element of the given data to the queue
+ * @description Adds a new element of the given data to the queue and returns refnum
  * @param {object} data 
  * @param {number} priority
- * @returns {Boolean} if successful or not
+ * @param {string} name (optional)
+ * @returns {Number} the refnum
  */
-PriorityQueue.prototype.Enqueue = function(data, priority){
+PriorityQueue.prototype.Enqueue = function(data, priority, name){
     if(priority && priority > this.HighestPriority)
         this.HighestPriority = priority;
     
@@ -64,8 +256,44 @@ PriorityQueue.prototype.Enqueue = function(data, priority){
     
     this.Sorted = false;
     this.length++;
-    return this.heap.push({data:data, priority:priority, origin:"enqueued"});
+    var obj = {data:data, priority:priority, origin:"enqueued", refnum : this._refnums++, name:name};
+    this.heap.push(obj);
+    return obj.refnum;
 };
+/**
+ * @description Delets the element of the given refnum
+ * @param {Number} ref
+ * @returns {Number} Number of deleted elements
+ */
+PriorityQueue.prototype.DeleteByReferenceNumber = function(ref){
+    var arr = [];
+    var found = 0;
+    for(var i=0; i<this.heap.length; i++)
+        if(this.heap[i].refnum !== ref)
+            arr.push(this.heap[i]);
+        else
+            found++;
+    this.heap = arr;
+    return found;
+};
+
+/**
+ * @description Delets the element of the given refnum
+ * @param {string} name
+ * @returns {Number} Number of deleted elements
+ */
+PriorityQueue.prototype.DeleteByName = function(name){
+    var arr = [];
+    var found = 0;
+    for(var i=0; i<this.heap.length; i++)
+        if(this.heap[i].name !== name)
+            arr.push(this.heap[i]);
+        else
+            found++;
+    this.heap = arr;
+    return found;
+};
+
 /**
  * @description Returns true if the element was found else false
  * @param {object} data element
@@ -102,7 +330,6 @@ PriorityQueue.prototype.isEmpty = function(){if(this.heap.length<=0)return true;
  * @returns {undefined}
  */
 PriorityQueue.prototype.Sort = function(desc){
-    
     if(arguments.length <= 0 || desc){
         this._desc = true;
     }else{
@@ -291,6 +518,12 @@ Timer.prototype.SetTotal = function(t){
 // ########################################################
 // ########################################################
 
+/**
+ * @deprecated an easy object is simplier to use and it is quicker
+ * @param {type} x
+ * @param {type} y
+ * @returns {Point}
+ */
 function Point(x,y){
     this.X = x;
     this.Y = y;
@@ -303,33 +536,35 @@ function Point(x,y){
 function Counter(){
     EngineObject.call(this);
     // Javascript Integer limit = 2^53 = 9007199254740992
-    // (25 fps ) 25*60*60*24*5 (5 days) = 10.800.000
-    
-    this.Limit = 1800000000;
+    // (Number of Frames with 25 fps after 5 days) = 25*60*60*24*5 = 10.800.000
     this.Frames = 0;
-    
-    this.CounterFunctions = [];
-        
-    this.Update = function(){
-        
-        this.Frames++;
-        
-        for(var i=0; i<this.CounterFunctions.length; i++){
-            this.CounterFunctions[i].that = this.CounterFunctions[i].that ? this.CounterFunctions[i].that : this.Engine;
-            if( this.Frames % this.CounterFunctions[i].every == 0)
-                this.CounterFunctions[i].function.call( this.CounterFunctions[i].that, this.CounterFunctions[i].parameter);
-        }
-        
-    };
-    
-    this.AddCounterFunction = function(co){
-        // co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
-        this.CounterFunctions.push(co);
-    };
-    
+    this.CounterFunctions = new PriorityQueue();
 }
 Counter.prototype = Object.create(EngineObject.prototype);
 Counter.prototype.constructor = Counter;
+
+Counter.prototype.Update = function () {
+
+    this.Frames++;
+    var cf = this.CounterFunctions.heap;
+    var d;
+    for (var i = 0; i < cf.length; i++) {
+        d = cf[i].data;
+        d.that = d.that ? d.that : this.Engine;
+        if (this.Frames % d.every == 0)
+            d.function.call(d.that, d.parameter);
+    }
+
+};
+
+Counter.prototype.AddCounterFunction = function (co, prior, name) {
+    // co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+    return this.CounterFunctions.Enqueue(co, prior, name);
+};
+
+Counter.prototype.RemoveCounterFunction = function (ref) {
+    this.CounterFunctions.DeleteByReferenceNumber(ref);
+};
 
 // ########################################################
 // ########################################################

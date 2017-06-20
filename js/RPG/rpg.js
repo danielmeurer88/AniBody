@@ -54,7 +54,7 @@ RPGPlayer.prototype.Initialize = function () {
     this.Dialog.Owner = this;
     this.Dialog.EI = this.EI;
     this.Engine.AddObject(this.Dialog, -1);
-    this.Engine.AddUpdateFunction(new Callback({function: this.Dialog.Update, parameter: this.Dialog, that: this.Dialog}));
+    this.Engine.AddUpdateFunctionObject(this.Dialog.Update.getCallbackObject(this.Dialog,this.Dialog));
 
     this.ItemBag = new RPGItemBag("main");
     this.ItemBag.EI = this.EI;

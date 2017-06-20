@@ -236,6 +236,10 @@ TouchHandler.prototype._getDirection = function(x,y){
 
 TouchHandler.prototype.OnTapFinger1 = function(){
     console.log("Finger1 Tap");
+    if(this.FakeMouseClick){
+        this.Engine.Input.FakeMouseClick(this.Finger1.X, this.Finger1.Y);
+    }
+    
     var l;
     for(var i=0; this.Finger1.TapListener.length; i++){
         l = this.Finger1.TapListener[i];

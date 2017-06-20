@@ -1,7 +1,7 @@
-
+// testing if neccessary
 function Sprite() {
     
-    EngineObject.call(this);
+    ABO.call(this);
     
     this.Image; // the whole image
 
@@ -81,7 +81,7 @@ function Sprite() {
 
     this.Constructor();
 }
-Sprite.prototype = Object.create(EngineObject.prototype);
+Sprite.prototype = Object.create(ABO.prototype);
 Sprite.prototype.constructor = Sprite;
 
 Sprite.prototype.SetSprite = function(codename, flagList, speed){

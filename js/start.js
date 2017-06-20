@@ -3,7 +3,7 @@ $(document).ready(function () {
 
     var engine = new Engine("PlayDiv");
     
-    RegisterTouchTest(engine);
+    //RegisterTouchTest(engine);
 
     var waterglass = new Image({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
     waterglass.AddGroup("room1");
@@ -40,46 +40,46 @@ function menu_callback(engine){
     
     // ------------------------------------------------ adding objects to the engine
     /* BUTTON RPG */
-    var b1 = new Button("center", 120, 250, 60);
-    b1.SetTriggerCallbackObject({that:b1, parameter: engine, function:function (engine) {
-        level_rpg(engine);
-    }});
-    
-    b1.SetAppearance(
-        {DisplayType: "image", Code: "button_state_0", Label: "RPG Test", TextColor: "black", FontHeight: 18},
-        {DisplayType: "image", Code: "button_state_1", Label: "RPG Test", TextColor: "black", FontHeight: 18},
-        {DisplayType: "image", Code: "button_state_2", Label: "RPG Test", TextColor: "white", FontHeight: 12}
-    );
 
+    var b1 = new Button({
+        X:"center", Y: 120, Width:250, Height:60,
+        DisplayType : "image",
+        Codename : ["button_state_0", "button_state_1", "button_state_2"],
+        Label : "Start",
+        TextColor: "white", FontHeight: 18,
+        TriggerCallbackObject : function (engine) {
+                level_rpg(engine);
+            }.getCallbackObject(engine, engine),
+        HoverText : "Startet das Spiel"
+    });
+    b1.AddButtonEffect();
     engine.AddObject(b1, 2);
 
     // input Area
-    var ia = new InputArea(10, 10, 300);
+    var ia = new InputField(10, 10, 300);
     engine.AddObject(ia);
 
     /* BUTTON HELP */
-    var b2 = new Button("center", 220, 250, 60);
-    b2.SetTriggerCallbackObject({that:b2, parameter: engine, function:function (engine) {
-        //start_help(engine);
-        engine.CreateDownloadImageLink(false, false, 0.5);
-    }});
+    var b2 = new Button({
+        X:"center", Y: 220, Width:250, Height:60,
+        DisplayType : "image",
+        Codename : ["button_state_0", "button_state_1", "button_state_2"],
+        Label : "Not implemented yet",
+        TextColor: "white", FontHeight: 18,
+        TriggerCallbackObject : function (engine) {
+                start_help(engine)
+            }.getCallbackObject(engine, engine),
+        HoverText : "Startet das Spiel"
+    });
+    b2.AddButtonEffect();
     
-    
-    b2.SetAppearance(
-        {DisplayType: "image", Code: "button_state_0", Label: "Start Help", TextColor: "black", FontHeight: 18},
-        {DisplayType: "image", Code: "button_state_1", Label: "Start Help", TextColor: "black", FontHeight: 18},
-        {DisplayType: "image", Code: "button_state_2", Label: "Start Help", TextColor: "white", FontHeight: 12}
-    );
-
     engine.AddObject(b2, 1);
         
     engine.Start();
     
-    // Example: FLAG Engine.ConstantLoop set to false then own timer needs to handle the frame
-    //var timer = new Timer(engine, engine.Frame, 1);
-    //timer.Start();
 }
 
+// needs to be adjusted
 function RegisterTouchTest(en){
     
     var f = function(text){
@@ -152,8 +152,5 @@ function RegisterTouchTest(en){
 }
 
 function start_help(engine){
-    engine.ShowAlert("in developement", 1);
-    
-    // needs Platform_Only.js
-    // platform_start(engine);
+    new Alert("in developement").Start();
 }
