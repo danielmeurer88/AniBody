@@ -77,9 +77,6 @@ MediaManager.prototype.Draw = function (c) {
  * @returns {undefined}
  */
 MediaManager.prototype.Update = function () {
-    if(this.Engine.Input.Key.D.FramesPressed == 2){
-        console.log(this.Images.GetDistribution());
-    }
 };
 
 /**

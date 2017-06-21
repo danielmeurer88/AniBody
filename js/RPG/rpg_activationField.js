@@ -1,5 +1,5 @@
 
-function RPGActivationField(constant){
+function RPGActivationField(constant, parameter){
     this.DebugDraw = true;
     
     ABO.call(this);
@@ -7,7 +7,7 @@ function RPGActivationField(constant){
     this.FramesActivated = 0;
     this.Activator;
     
-    this.Parameter = [];
+    this.Parameter = parameter;
     
     this.CurrentField;
     this.RangeX = 1;

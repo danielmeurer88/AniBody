@@ -139,16 +139,7 @@ function rpg_callback(engine){
         engine.AddObject(player, prarr.player);
     }
     
-    // ActivationField
-    {
-        var acF = new RPGActivationField(true);
-        acF.SetActivator(player);
-        acF.SetRange(engine.Terrain.GetField(1,4), 2, 2);
-        acF.ActivationFunction = function(){
-            console.log("You are in the Zone");
-        };
-        topterr.AddObjectToSideQ(acF, prarr.actField);
-    }
+    
     
     // Portal --
     {
@@ -159,22 +150,18 @@ function rpg_callback(engine){
         subterr.AddObjectToSideQ(pts, prarr.portal);
     }
     
-    // Button: To activate the Portal
+    // ActivationField
     {
-        var bpa = new Button(500, 440, 100, 20);
-        bpa.SetImagesThroughSprite("little_click_sprite");
-        topterr.AddObjectToSideQ(bpa, prarr.buttonPortalActivator); 
-        bpa.SetTriggerCallbackObject({
-            that: bpa,
-            parameter : pts,
-            function : function(portal){
-                //var ac = this.Engine.MediaManager.GetSound("portal_activate");
-                portal.Activate();
-//                if(ac)
-//                    ac.play();
-            }
-        });
+        var acF = new RPGActivationField(false, pts);
+        acF.SetActivator(player);
+        acF.SetRange(engine.Terrain.GetField(1,4), 2, 2);
+        acF.ActivationFunction = function(portal){
+            console.log("You are in the Zone");
+            portal.Activate();
+        };
+        topterr.AddObjectToSideQ(acF, prarr.actField);
     }
+    
     
     // Crate
     {
@@ -188,7 +175,7 @@ function rpg_callback(engine){
                 this.Pushable = false;
                 this.Interacted = true;
                 //
-                $.Engine.ShowAlert("target reached", 2);
+                new Alert("target reached").Start();
             }
         }, subterr.GetField(20,3));
         subterr.AddObjectToSideQ(crate, prarr.crate);
