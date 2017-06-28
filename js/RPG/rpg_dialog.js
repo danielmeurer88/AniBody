@@ -388,7 +388,11 @@ RPGDialog.prototype.AddPopupImage = function(cn, scale){
     
     img.width = sup.width;
     img.height = sup.height;
-    var box = con.drawRoundedImage(img, 50);
+    
+    var x = (this.Engine.Canvas.width - img.width) / 2;
+    var y = (this.Engine.Canvas.height - img.height) / 2;
+    
+    var box = con.drawRoundedImage(img,x,y,img.width, img.height, 50);
     //
     
     // rounding box values - the border
