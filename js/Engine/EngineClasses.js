@@ -209,9 +209,9 @@ Callback.prototype.Call = function(){
         this.function.apply(this.that, this.parameters);
 };
 
-Callback.CallObject = function(obj){
+Callback.CallObject = function(obj,para2){
     if(typeof obj === "object" && typeof obj.function === "function")
-        obj.function.call(obj.that, obj.parameter);
+        obj.function.call(obj.that, obj.parameter,para2);
 };
 
 Callback.prototype.ToObject = function(){

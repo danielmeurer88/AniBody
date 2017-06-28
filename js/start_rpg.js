@@ -3,10 +3,6 @@ function level_rpg(engine){
         
     engine.FlushScene();
     
-    //engine.MediaManager.AddMedia( {function : rpg_callback, parameter: engine, that:engine} ,mediapack);
-    //engine.MediaManager.ExtendInit(mediapack, {function : rpg_callback, parameter: engine, that:engine});
-    
-    //engine.MediaManager.Require("room1", {function : rpg_callback, parameter: engine, that:engine});
     engine.MediaManager.Require("room1", new Callback(engine, rpg_callback, engine));
 }
 
@@ -61,7 +57,7 @@ function rpg_callback(engine){
                             },
 
                             function(obj){
-                                this.AddBasicText("Alright, maybe you get thursty later.");
+                                this.AddBasicText("Alright, maybe you get thirsty later.");
                             },
                             obj
                         );
@@ -297,12 +293,14 @@ function level_rpg_Input(engine){
     };
     engine.AddProcessInputFunction( { function : f, parameter : engine } );
 
-    return;
+    
     /* +++++++ TOUCH HANDLER +++++ */
-    f = function(dir, player){
+    f = function(player, dir){
         player.Move(dir);
-    };
-    engine.Input.Touch.RegisterSwipeFunction(f, 5, false, engine.Objects.SelectedObject);
+    }.getCallbackObject(engine, engine.Objects.SelectedObject);
+    return;
+    engine.TouchHandler.AddEventListener("swipefinger1", f);
+    
     
     f = function(player){
         player.Interact();

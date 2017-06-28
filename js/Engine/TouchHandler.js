@@ -243,7 +243,7 @@ TouchHandler.prototype.OnTapFinger1 = function(){
     var l;
     for(var i=0; this.Finger1.TapListener.length; i++){
         l = this.Finger1.TapListener[i];
-        l.call(this.Engine, this);
+        Callback.CallObject(l);
     }
 };
 
@@ -252,7 +252,7 @@ TouchHandler.prototype.OnTapFinger2 = function(){
     var l;
     for(var i=0; this.Finger2.TapListener.length; i++){
         l = this.Finger2.TapListener[i];
-        l.call(this.Engine, this);
+        Callback.CallObject(l);
     }
 };
 
@@ -261,7 +261,7 @@ TouchHandler.prototype.OnLongTapFinger1 = function(){
     var l;
     for(var i=0; this.Finger1.LongTapListener.length; i++){
         l = this.Finger1.LongTapListener[i];
-        l.call(this.Engine, this);
+        Callback.CallObject(l);
     }
 };
 
@@ -270,7 +270,7 @@ TouchHandler.prototype.OnLongTapFinger2 = function(){
     var l;
     for(var i=0; this.Finger2.LongTapListener.length; i++){
         l = this.Finger2.LongTapListener[i];
-        l.call(this.Engine, this);
+        Callback.CallObject(l);
     }
 };
 
@@ -279,7 +279,7 @@ TouchHandler.prototype.OnSwipeFinger1 = function(dir){
     var l;
     for(var i=0; this.Finger1.SwipeListener.length; i++){
         l = this.Finger1.SwipeListener[i];
-        l.call(this.Engine, this, dir);
+        Callback.CallObject(l, dir);
     }
 };
 
@@ -288,18 +288,18 @@ TouchHandler.prototype.OnSwipeFinger2 = function(dir){
     var l;
     for(var i=0; this.Finger1.SwipeListener.length; i++){
         l = this.Finger1.SwipeListener[i];
-        l.call(this.Engine, this, dir);
+        Callback.CallObject(l, dir);
     }
 };
 
-TouchHandler.prototype.AddEventListener = function(eventtype, listener){
+TouchHandler.prototype.AddEventListener = function(eventtype, cbo){
     switch(eventtype){
-        case "tapfinger1" : this.Finger1.TapListener.push(listener);break;
-        case "tapfinger2" : this.Finger2.TapListener.push(listener);break;
-        case "longtapfinger1" : this.Finger1.LongTapListener.push(listener);break;
-        case "longtapfinger2" : this.Finger2.LongTapListener.push(listener);break;
-        case "swipefinger1" : this.Finger1.SwipeListener.push(listener);break;
-        case "swipefinger2" : this.Finger2.SwipeListener.push(listener);break;
+        case "tapfinger1" : this.Finger1.TapListener.push(cbo);break;
+        case "tapfinger2" : this.Finger2.TapListener.push(cbo);break;
+        case "longtapfinger1" : this.Finger1.LongTapListener.push(cbo);break;
+        case "longtapfinger2" : this.Finger2.LongTapListener.push(cbo);break;
+        case "swipefinger1" : this.Finger1.SwipeListener.push(cbo);break;
+        case "swipefinger2" : this.Finger2.SwipeListener.push(cbo);break;
         default : console.log("could not add event listener with type "+eventtype);
     }
 };
