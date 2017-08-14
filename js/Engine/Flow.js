@@ -1,6 +1,6 @@
 
 /**
- * a class that ensures the constant and steady change of  multiply attributes of objects to targeted values.
+ * a class that ensures the constant and steady change of multiply attributes of objects to targeted values.
  * After every step and after the whole process two seperate functions can be called
  * @param {Object-Array} object
  * @param {String-Array} attr
@@ -34,7 +34,7 @@ function MultiFlow(object, attr, targetvalue, duration,callbackobject, afterever
 };
 
 /**
- * Starts the change process
+ * Starts the flow process
  * @returns {undefined}
  */
 MultiFlow.prototype.Start = function(){
@@ -101,7 +101,10 @@ MultiFlow.prototype.Start = function(){
     this.ref = setInterval(f, (1000/this.FPS), this);
     
 };
-
+/**
+ * returns true if all attributes reached their target value
+ * @returns {Boolean}
+ */
 MultiFlow.prototype._allReached = function(){
     for(var i=0; i<this.Object.length; i++){
         if(!this.TargetReached[i])

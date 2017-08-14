@@ -1,80 +1,58 @@
-
-function Terrain(){
-    EngineObject.call(this);
+/**
+ * abstract class
+ * represents a terrain on which a game is played
+ * holds information about the gaming environment
+ * - it is a necessary object for the AniBody-Engine and if the software does not need a
+ * game environment than a DefaultTerrain is used
+ * @returns {Terrain}
+ */
+function Terrain() {
+    ABO.call(this);
 }
-Terrain.prototype = Object.create(EngineObject.prototype);
+Terrain.prototype = Object.create(ABO.prototype);
 Terrain.prototype.constructor = Terrain;
 
-function createTerrain(type,req, para1, para2, para3){
-    if(!type || type === "default"){
-        return new DefaultTerrain(req, para1, para2);
-    }
+/**
+ * Represents the game environment and can hold the background image of the map
+ * @param {string} img_code - codename of the background image (optional)
+ * @returns {DefaultTerrain}
+ */
+function DefaultTerrain(img_code) {
+    Terrain.call(this);
     
-    //if(type === "easy"){return new EasyTerrain(para1, para2);}if(type === "complex"){return new ComplexTerrain(para1, para2);}
-    
-    if(type === "rpg"){
-        return new RPGTerrain(req, para1, para2, para3);
-    }
-    
-}
-
-function DefaultTerrain(name, img_code, bottom_height){
-    ABO.call(this);
-    this.Name = name;
-    this.Attributes = { hidden: false};
-    this.Width=0;
-    this.Height=0;
-    this.X = 0;
-    this.Y = 0;
-    this.Structure = null;
-    this.NoImage = false;
-    
-    this.BottomHeight = (bottom_height) ? bottom_height : 100;
-    
-    this.Type = "Terrain";
     this.Name = "default";
+    this.Codename = img_code;
+
+    this.NoImage = false;
+
+    this.Type = "Terrain";
     
-    this.Structure = {};
-    this.Structure.Terrain = new Array();
-    
-    this.Constructor = function(){
-        
-        if(img_code){
-            this.Image = this.Engine.MediaManager.GetImage(img_code);
-            this.Width = this.Image.width;
-            this.Height = this.Image.height;
-        }
-        else{
-            this.NoImage = true;
-            this.Width = this.Engine.Canvas.width;
-            this.Height = this.Engine.Canvas.height;
-        }
-        
-        this.Structure.Terrain.push({Type: "bottom",X:0, Y:this.Height-this.BottomHeight}); // first point
-        this.Structure.Terrain.push({Type: "bottom",X:this.Width, Y:this.Height-this.BottomHeight}); // last point
-    };
-        
-    this.Draw = function(c){
-        
-        if(!this.NoImage){
-            var cam = this.Engine.Camera.SelectedCamera;
-            c.drawImage(this.Image,this.X - cam.X,this.Y - cam.Y);
-        }
-    };
-    
-    this.Update = function(){
-        
-    };
-    
-    this.GetY = function(x){
-        return this.Height-this.BottomHeight;
-    };
-    
-    this.WriteStructurNode = function(){
-        return false;
-    };
-    
-this.Constructor();
+    this.Initialize();
 }
 DefaultTerrain.prototype = Object.create(Terrain.prototype);
 DefaultTerrain.prototype.constructor = DefaultTerrain;
+/**
+ * @see README_DOKU.txt
+ */
+DefaultTerrain.prototype.Initialize = function () {
+
+    if (this.Codename) {
+        this.Image = this.Engine.MediaManager.GetImage(this.Codename);
+        this.Width = this.Image.width;
+        this.Height = this.Image.height;
+    } else {
+        this.NoImage = true;
+        this.Width = this.Engine.Canvas.width;
+        this.Height = this.Engine.Canvas.height;
+    }
+};
+/**
+ * @see README_DOKU.txt
+ */
+DefaultTerrain.prototype.Draw = function (c) {
+
+    if (!this.NoImage) {
+        var cam = this.Engine.Camera.SelectedCamera;
+        c.drawImage(this.Image, this.X - cam.X, this.Y - cam.Y);
+    }
+};

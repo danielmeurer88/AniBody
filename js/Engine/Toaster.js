@@ -23,6 +23,7 @@ function Toaster(type, title, txt, ms) {
     this.Rows = false;
 
     this.Image = false;
+    this.BackgroundImage = false;
 
     this.IsMouseOver = false;
     this.IsMouseOverClose = false;
@@ -49,6 +50,7 @@ function Toaster(type, title, txt, ms) {
     this._refPIF = null;
     
     this._isBlocking = false;
+    this._isOverwriting = true;
     
     
     // IE does not support context.filter - chrome, firefox, opera do
@@ -62,6 +64,7 @@ Toaster.prototype = Object.create(EngineObject.prototype);
 Toaster.prototype.constructor = Toaster;
 
 Toaster.BlockMode = false;
+Toaster.CurrentInstance = null;
 
 Toaster.prototype.DefaultDefaultBackgroundColor = "black";
 Toaster.prototype.DefaultDefaultFontColor = "white";
@@ -82,13 +85,17 @@ Toaster.prototype.DefaultRowSpace = 3;
 Toaster.prototype.Initialize = function () {
 
     this._calculateValues();
+    this._getBackgroundImage();
     this._createImage();
     this._adjustPosition();
-
+    
 };
 
 /**
- * Starts the process (register a draw function) and ends it (deregister)
+ * opens the toaster: 
+ * - starts a flow (flow animation, emerging the toaster from the bottom)
+ * - asynchron: at the end of the animation, a timeout triggers FlowClose()
+ * - register a draw, a update, a process input - function) 
  * @returns {undefined}
  */
 Toaster.prototype.Open = function () {
@@ -99,6 +106,9 @@ Toaster.prototype.Open = function () {
     if(this._isBlocking){
         Toaster.BlockMode = true;
     }
+    
+    this.CloseCurrentInstance();
+    Toaster.CurrentInstance = this;
     
     var can = this.Engine.Canvas;
 
@@ -157,7 +167,10 @@ Toaster.prototype.Open = function () {
                 }
     });
 };
-
+/**
+ * Closes the toaster with a flow animation disapearing to the bottom
+ * @returns {undefined}
+ */
 Toaster.prototype.FlowClose = function () {
     var can = this.Engine.Canvas;
     new Flow(this, "Y", can.height, 600, {
@@ -166,7 +179,10 @@ Toaster.prototype.FlowClose = function () {
         }
     }).Start();
 };
-
+/**
+ * closes the toaster without a flow animation, just disapearing on the spot
+ * @returns {undefined}
+ */
 Toaster.prototype.Close = function () {
     this.Engine.RemoveForegroundDrawFunctionObject(this._refFD);
     this._refFD = null;
@@ -177,9 +193,14 @@ Toaster.prototype.Close = function () {
     this.Engine.RemoveProcessInputFunction(this._refPIF);
     this._refPIF = null;
     
+    Toaster.CurrentInstance = null;
     Toaster.BlockMode = false;
 };
-
+/**
+ * registers the left click mouse handler that checks for a left mouse click on the X
+ * @param {number} prior (optional)
+ * @returns {undefined}
+ */
 Toaster.prototype.AddMouseHandler = function (prior) {
 
     this._refMH = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
@@ -199,10 +220,15 @@ Toaster.prototype.AddMouseHandler = function (prior) {
 
 };
 
+/**
+ * returns a callback object, which can be used to register a foreground draw function
+ * @returns {object}
+ */
 Toaster.prototype._createForegroundDrawFunctionObject = function () {
     var f = function (c) {
         c.save();
-                
+        
+        c.drawImage(this.BackgroundImage, this.X, this.Y);
         c.drawImage(this.Image, this.X, this.Y);
         c.restore();
     };
@@ -305,9 +331,10 @@ Toaster.prototype._createImage = function () {
     coff.setFontHeight(this.FontHeight);
     
     // extra background layer
+    /*
     coff.fillStyle = getRGBA(this.BackgroundColor, 0.6, 0.4);
     coff.fillRect(0,0, off.width, off.height);
-    
+    */
     
     // creating the black rectangle
     coff.fillStyle = this.BackgroundColor;
@@ -355,60 +382,6 @@ Toaster.prototype._createImage = function () {
 
 };
 
-Toaster.prototype._createImageBCKUP = function () {
-    // creating an offscreen canvas with the specific width and height
-    var off = document.createElement("CANVAS");
-    off.width = this.Width;
-    off.height = this.Height;
-    var coff = off.getContext("2d");
-
-    coff.setFontHeight(this.FontHeight);
-    
-    // creating the black rectangle
-    coff.fillStyle = this.BackgroundColor;
-    coff.fillRect(0, 0, this.Width, this.Height);
-
-    coff.textAlign = "left";
-    coff.textBaseline = "top";
-    coff.fillStyle = this.FontColor;
-
-    coff.strokeStyle = this.FontColor
-
-    var x = this.Padding;
-    var y = this.RowSpace;
-
-    /* ++++++++++ creating the title ++++++++ */
-    coff.fillText(this.Title, x, y);
-    coff.lineWidth = 2;
-    /* ++++++++++ creating the title's cross ++++++++ */
-    coff.drawCross(this.Width - this.FontHeight / 2 - this.RowSpace, this.RowSpace + this.FontHeight / 2, this.FontHeight);
-    coff.lineWidth = 1;
-
-
-    y = 2 * this.RowSpace + this.FontHeight;
-    
-    /* ++++++++++ seperation line ++++++++ */
-    coff.beginPath();
-    coff.moveTo(x, y);
-    coff.lineTo(x + this.Width - 2 * this.Padding, y);
-    coff.stroke();
-    coff.closePath();
-
-    y = this.Padding + 2 * this.RowSpace + this.FontHeight;
-
-    /* ++++++++++ creating the text ++++++++ */
-    for (var i = 0; i < this.Rows.length; i++) {
-        coff.fillText(this.Rows[i], x, y);
-        y += this.FontHeight + this.RowSpace;
-    }
-    
-    /* ++++++++++ creating the image and saving ++++++++ */
-    var url = off.toDataURL();
-    this.Image = document.createElement("IMG");
-    this.Image.src = url;
-
-};
-
 /**
  * sets the image to the offside of the bottom right corner so
  * that the image is able to "pop up" like a slice of bread in a toaster
@@ -419,11 +392,62 @@ Toaster.prototype._adjustPosition = function () {
     this.X = can.width * this.PositionQutient;
     this.Y = can.height;
 };
-
+/**
+ * sets the state of the blocking feature
+ * @param {boolean} blocking
+ * @returns {undefined}
+ */
 Toaster.prototype.SetBlocking = function(blocking){
     this._isBlocking = blocking;
 };
+/**
+ * sets the state of the overwritting feature
+ * @param {boolean} ow
+ * @returns {undefined}
+ */
+Toaster.prototype.SetOverwriting = function(ow){
+    this._isOverwriting = ow;
+};
 
+/**
+ * if the overwriting feature is active, it
+ * checks if another instance of Toaster is currently open 
+ * and closes it if there is
+ * @returns {undefined}
+ */
+Toaster.prototype.CloseCurrentInstance = function(){
+    if(this._isOverwriting && Toaster.CurrentInstance !== null){
+        Toaster.CurrentInstance.Close();
+    }
+};
+
+/**
+ * transformes the text into an image
+ * @returns {undefined}
+ */
+Toaster.prototype._getBackgroundImage = function(){
+    
+    var can = document.createElement("CANVAS");
+    can.width = this.Width + 2*this._blur;
+    can.height = this.Height + this._blur;
+    var c = can.getContext("2d");
+    
+    c.lineWidth = this._blur;
+    c.filter = "blur("+(this._blur/2)+"px)";    
+    
+    c.strokeStyle = getRGBA(this.BackgroundColor, 0.6);
+    
+    c.strokeRect(this._blur,this._blur, can.width-this._blur*2, can.height);
+                
+    var url = can.toDataURL();
+    this.BackgroundImage = document.createElement("IMG");
+    this.BackgroundImage.src = url;
+
+};
+/**
+ * collection of the available types
+ * @type Object
+ */
 Toaster.prototype.Types = {
     Default : "default",
     Warning : "warning",

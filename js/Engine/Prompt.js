@@ -1,7 +1,8 @@
 /**
  * Represents a canvas and anibody-based alternative to the javascript prompt dialog
  * @param {string} m - message, that will be displayed above the input field
- * @param {type} cbo - callback-object with the special feature, that the first parameter will be the user's input
+ * @param {callback-object} cbo - callback-object with the special feature, that the first parameter will be the user's input
+ * @param {boolean} numpad - if true then a virtual numpad will be rendered beyond the input field
  * @returns {Prompt}
  */
 function Prompt(m, cbo, numpad){

@@ -3,13 +3,17 @@ function level_rpg(engine){
         
     engine.FlushScene();
     
-    engine.MediaManager.Require("room1", new Callback(engine, rpg_callback, engine));
+    engine.MediaManager.Require("room1", rpg_callback.getCallbackObject(engine, engine));
 }
 
 function rpg_callback(engine){
-        
+    
+    // adding a causality manager
+    engine.CausalityManager = new RPGCausalityManager();
+    
     // creating a starting terrain
-    var topterr = createTerrain("rpg", "room1", "rpg_img", "rpg_structure", 60);
+    //var topterr = createTerrain("rpg", "room1", "rpg_img", "rpg_structure", 60);
+    var topterr = new RPGTerrain("room1", "rpg_img", "rpg_structure", 60);
     // creating a rpg camera
     this.SetCamera(this.GetNewCamera("rpg"));
     // setting the terrain as the active terrain
@@ -298,24 +302,26 @@ function level_rpg_Input(engine){
     f = function(player, dir){
         player.Move(dir);
     }.getCallbackObject(engine, engine.Objects.SelectedObject);
-    return;
-    engine.TouchHandler.AddEventListener("swipefinger1", f);
     
+    engine.Input.TouchHandler.AddEventListener("swipefinger1", f);
     
     f = function(player){
         player.Interact();
-    };
-    engine.Input.Touch.RegisterLongTapFunction(f, 5, engine, engine.Objects.SelectedObject);
+    }.getCallbackObject(engine, engine.Objects.SelectedObject);
+    //engine.Input.Touch.RegisterLongTapFunction(f, 5, engine, engine.Objects.SelectedObject);
+    engine.Input.TouchHandler.AddEventListener("longtapfinger1", f);
     
     f = function(player){
         player.ItemBag.SelectItem();
-    };
-    engine.Input.Touch.RegisterTap2Function(f, 5, engine, engine.Objects.SelectedObject);
+    }.getCallbackObject(engine, engine.Objects.SelectedObject);
+    //engine.Input.Touch.RegisterTap2Function(f, 5, engine, engine.Objects.SelectedObject);
+    engine.Input.TouchHandler.AddEventListener("tapfinger2", f);
     
     f = function(player){
         player.ItemBag.UseItem();
-    };
-    engine.Input.Touch.RegisterLongTap2Function(f, 5, engine, engine.Objects.SelectedObject);
+    }.getCallbackObject(engine, engine.Objects.SelectedObject);
+    //engine.Input.Touch.RegisterLongTap2Function(f, 5, engine, engine.Objects.SelectedObject);
+    engine.Input.TouchHandler.AddEventListener("longtapfinger2", f);
     
     f = function(dir, player){
         // left swipe2
@@ -326,6 +332,7 @@ function level_rpg_Input(engine){
         if(dir.X == 1 && dir.Y == 0)
             player.ItemBag.Close();
 
-    };
-    engine.Input.Touch.RegisterSwipe2Function(f, 5, engine, engine.Objects.SelectedObject);
+    }.getCallbackObject(engine, engine.Objects.SelectedObject);
+    //engine.Input.Touch.RegisterSwipe2Function(f, 5, engine, engine.Objects.SelectedObject);
+    engine.Input.TouchHandler.AddEventListener("swipefinger2", f);
 }

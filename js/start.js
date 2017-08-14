@@ -30,8 +30,8 @@ $(document).ready(function () {
         new Sound({path: "./music/portal_activate.mp3", codename: "portal_activate", group:"room1"}),
         new Sound({path: "./music/alongway.mp3", codename: "girl_background", group:"room2"})
     ];
-
-    engine.MediaManager.SetMediaPack(  mediapack, new Callback(engine, menu_callback, engine));
+    
+    engine.MediaManager.SetMediaPack(  mediapack, menu_callback.getCallbackObject(engine,engine));
 
     
 });
@@ -76,78 +76,6 @@ function menu_callback(engine){
     engine.AddObject(b2, 1);
         
     engine.Start();
-    
-}
-
-// needs to be adjusted
-function RegisterTouchTest(en){
-    
-    var f = function(text){
-        if(arguments.length == 2)
-            text = arguments[1];
-        
-        this.ShowAlert(text, 1);
-        
-    };
-    
-    en.Input.Touch.RegisterTapFunction(f, 5, en, "tap");
-    en.Input.Touch.RegisterTap2Function(f, 5, en, "tap 2");
-    
-    en.Input.Touch.RegisterSwipeFunction(f, 5, en, "swipe");
-    en.Input.Touch.RegisterSwipe2Function(f, 5, en, "swipe 2");
-    
-    if(en.Touch.PiesAllowed){
-        
-        en.Input.Touch.Pie.SetPiece(0, "Right1",
-                {that: en, parameter: en.Input.Touch.Pie, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        en.Input.Touch.Pie.SetPiece(1, "Bottom1",
-                {that: en, parameter: en.Input.Touch.Pie, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        en.Input.Touch.Pie.SetPiece(2, "Left1",
-                {that: en, parameter: en.Input.Touch.Pie, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        en.Input.Touch.Pie.SetPiece(3, "Top1",
-                {that: en, parameter: en.Input.Touch.Pie, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-
-
-        en.Input.Touch.Pie2.SetPiece(0, "Right2",
-                {that: en, parameter: en.Input.Touch.Pie2, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        en.Input.Touch.Pie2.SetPiece(1, "Bottom2",
-                {that: en, parameter: en.Input.Touch.Pie2, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        en.Input.Touch.Pie2.SetPiece(2, "Left2",
-                {that: en, parameter: en.Input.Touch.Pie2, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        en.Input.Touch.Pie2.SetPiece(3, "Top2",
-                {that: en, parameter: en.Input.Touch.Pie2, function: function (self) {
-                        this.ShowAlert(self.Labels[self.SelectedPiePiece], 1);
-                    }}
-        );
-        
-    }else{
-        
-        en.Input.Touch.RegisterLongTapFunction(f, 5, en, "long tap");
-        en.Input.Touch.RegisterLongTap2Function(f, 5, en, "long tap 2");
-        
-    }
-    
     
 }
 

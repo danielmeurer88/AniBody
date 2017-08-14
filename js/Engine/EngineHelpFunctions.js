@@ -1,4 +1,9 @@
-
+/**
+ * gets the RGBA-Value of the pixel x,y
+ * @param {integer} x
+ * @param {integer} y
+ * @returns {red,green,blue,alpha}
+ */
 window.ImageData.prototype.getPixel = function(x,y){
         return {
             red : this.data[ 4* ( x + this.width * y ) + 0 ],
@@ -7,7 +12,16 @@ window.ImageData.prototype.getPixel = function(x,y){
             alpha : this.data[ 4* ( x + this.width * y ) + 3 ]
         };
     };
-    
+/**
+ * sets the RGBA-Value of the pixel x,y
+ * @param {integer} x
+ * @param {integer} y
+ * @param {number} r - red
+ * @param {number} g - green
+ * @param {number} b - blue
+ * @param {number} a - alpha
+ * @returns {undefined}
+ */    
 window.ImageData.prototype.setPixel = function(x,y,r,g,b,a){
     var p =  4* ( x + this.width * y );
     this.data[p + 0 ] = r;
@@ -16,8 +30,16 @@ window.ImageData.prototype.setPixel = function(x,y,r,g,b,a){
     this.data[p + 3 ] = a;
 };
 
+/**
+ * Adds an attribute called ImageData to all images
+ * @type ImageData
+ */
 HTMLImageElement.prototype.ImageData = "undefined";
 
+/**
+ * gets the image data of image, saves it and returns it
+ * @returns {ImageData}
+ */
 HTMLImageElement.prototype.getImageData = function(){
     var can = document.createElement("canvas");
     can.width = this.width;
@@ -27,7 +49,10 @@ HTMLImageElement.prototype.getImageData = function(){
     this.ImageData = con.getImageData(0,0,can.width, can.height);
     return this.ImageData;
 };
-
+/**
+ * gets the data url of an image
+ * @returns {string}
+ */
 HTMLImageElement.prototype.getDataURL = function(){
     var can = document.createElement("canvas");
     can.width = this.width;
@@ -436,38 +461,17 @@ window.CanvasRenderingContext2D.prototype.strokeVariousRoundedRect = function(x,
     this.stroke();
     this.closePath();
 };
-/*
-window.CanvasRenderingContext2D.prototype.drawRoundedImage = function(img,r){
-    this.save();
-    var can = this.canvas;
-    
-    var x = (can.width / 2) - (img.width / 2);
-    var y = (can.height / 2) - (img.height / 2);
-    
-    this.beginPath();
-    this.moveTo(x+r,y); //behind top-left edge
-    this.lineTo(x+img.width-r,y);
-    this.bezierCurveTo(x+img.width,y, x+img.width, y+r, x+img.width, y+r); //top-right
-    this.lineTo(x+img.width, y+img.height-r);
-    this.bezierCurveTo(x+img.width,y+img.height, x+img.width-r, y+img.height, x+img.width-r, y+img.height);  // bottom-right
-    this.lineTo(x+r, y+img.height);
-    this.bezierCurveTo(x,y+img.height, x, y+img.height-r, x, y+img.height-r); // bottom-left
-    this.lineTo(x, y+r);
-    this.bezierCurveTo(x,y, x+r, y, x+r, y); // top-left
-    this.closePath();
-    
-    this.clip();
-    this.drawImage(img, x,y, img.width, img.height);
-    this.restore();
-    
-    return {
-        X : x,
-        Y : y,
-        Width : img.width,
-        Height : img.height
-    };
-};
-*/
+
+/**
+ * draws an image to a certain position, with a specified width and height and rounded corners
+ * @param {Image} img
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @param {number} r
+ * @returns {object}
+ */
 window.CanvasRenderingContext2D.prototype.drawRoundedImage = function(img, x, y, w, h, r){
     this.save();
     this.beginPath();
@@ -486,12 +490,7 @@ window.CanvasRenderingContext2D.prototype.drawRoundedImage = function(img, x, y,
     this.drawImage(img, x,y, w, h);
     this.restore();
     
-    return {
-        x : x,
-        y : y,
-        width : w,
-        height : h
-    };
+    return {x : x,y : y,width : w,height : h};
 };
 
 /**
@@ -545,13 +544,16 @@ window.CanvasRenderingContext2D.prototype.strokeSpinnedText = function(mx, my, t
     this.strokeText(text, 0, 0);
     this.restore();
 };
-
-window.CanvasRenderingContext2D.prototype.drawCross = function(x, y, size, centered){
+/**
+ * draws a cross with two perpendicular stroked lines
+ * @param {number} x - x of the center
+ * @param {number} y - y of the center
+ * @param {number} size - diagonal length
+ * @returns {undefined}
+ */
+window.CanvasRenderingContext2D.prototype.drawCross = function(x, y, size){
     this.save();
-    
-    if(arguments.length < 4)
-        centered = true;
-    
+        
     var s = size/2;
     
     this.beginPath();
@@ -565,7 +567,15 @@ window.CanvasRenderingContext2D.prototype.drawCross = function(x, y, size, cente
     this.stroke();
     this.restore();
 };
-
+/**
+ * @see experimental
+ * creates the path of two perpendicular rectangles 
+ * @param {number} x - x of the center
+ * @param {number} y - y of the center
+ * @param {number} size - diagonal length
+ * @param {number} th - thickness of the rectangles
+ * @returns {undefined}
+ */
 window.CanvasRenderingContext2D.prototype.cross = function(x, y, size, th){
     this.save();
     
@@ -675,6 +685,12 @@ String.prototype.format = function(){
     ß = %C3%9F
 
  */
+/**
+ * returns a string in which German special characters will be found if they are
+ * in a certain format (like 'a-umlaut' is '{ae}'), decoded to an UTF-8
+ * string and returned
+ * @returns {string}
+ */
 String.prototype.decodeURI = function(){
     var str = this;
     
@@ -705,6 +721,10 @@ String.prototype.decodeURI = function(){
     return decodeURI(str);
 };
 
+/**
+ * special characters collection
+ * @type object
+ */
 String.UTF8 = {
     // http://www.utf8-zeichentabelle.de/unicode-utf8-table.pl
     // http://www.fileformat.info/info/charset/UTF-8/list.htm?start=1024
@@ -774,6 +794,10 @@ String.UTF8 = {
     }
     
 };
+/**
+ * downloads a list of all implemented special characters in the String.UTF8 object
+ * @returns {undefined}
+ */
 String._downloadUTF8Table = function(){
     
     // count entries
@@ -864,6 +888,10 @@ String._downloadUTF8Table = function(){
     ü = %C3%BC
     ß = %C3%9F
 
+ */
+/**
+ * returns a string ready to be implemented in to an html text node
+ * @returns {String}
  */
 String.prototype.decodeHTML = function(){
     var str = this;
@@ -1013,7 +1041,11 @@ Array.prototype.delete = function(index){
     this.pop();
     return ret;
 };
-
+/**
+ * true if the given element is an element of the array
+ * @param {object} el - element
+ * @returns {Boolean}
+ */
 Array.prototype.isElement = function(el){
     for(var i=0; i<this.length; i++){
         if(this[i] === el)
@@ -1021,7 +1053,12 @@ Array.prototype.isElement = function(el){
     }
     return false;
 };
-
+/**
+ * returns the index of a given element if it is in the array
+ * otherwise function returns -1
+ * @param {object} el - element
+ * @returns {Number}
+ */
 Array.prototype.getIndex = function(el){
     for(var i=0; i<this.length; i++){
         if(this[i] === el)
@@ -1030,6 +1067,12 @@ Array.prototype.getIndex = function(el){
     return -1;
 };
 
+/**
+ * transforms the function into a callback-object and returns this object
+ * @param {object} that
+ * @param {object} parameter
+ * @returns {object}
+ */
 Function.prototype.getCallbackObject = function(that, parameter){
     return {that:that, function:this, parameter:parameter};
 };
@@ -1167,14 +1210,14 @@ if (!Date.now) {
 
 /**
  * Returns an image, in which the specified text or text-lines are fitted
- * @param {Number} width, max width of the returned image in pixel
- * @param {Number} height, max height in pixel
- * @param {string|string-Array} texts, text written in the image
- * @param {Number} startfontheight, the fontheight, with which the algorithmen is going to start
- * @param {Number} padding, gap between the text and the border of the image
- * @param {Number} rowspace, gap between the rows
- * @param {string} color, color of the text
- * @param {string} cfont, the HTML5-Canvas text format
+ * @param {Number} width - max width of the returned image in pixel
+ * @param {Number} height - max height in pixel
+ * @param {string|string-Array} texts - text written in the image
+ * @param {Number} startfontheight - the fontheight, with which the algorithmen is going to start
+ * @param {Number} padding - gap between the text and the border of the image
+ * @param {Number} rowspace - gap between the rows
+ * @param {string} color - color of the text
+ * @param {string} cfont - the HTML5-Canvas text format
  * @returns {Image-Element}
  */
 function createImageWithFittedText(width, height, texts, startfontheight, padding, rowspace, color, cfont){

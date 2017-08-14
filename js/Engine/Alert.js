@@ -1,6 +1,6 @@
 /**
  * Presents a dialog
- * @param {type} abo
+ * @param {string} text - the text, which will be shown to the user
  * @returns {Alert}
  */
 function Alert(text){
@@ -64,8 +64,7 @@ Alert.prototype.DefaultBoxPadding = 5;
 Alert.prototype.DefaultRowSpace = 4;
 
 /**
- * Can be seen as an extension of the constructor function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Alert.prototype.Initialize = function () {
     
@@ -74,7 +73,12 @@ Alert.prototype.Initialize = function () {
     this._recalculateSizes();
     
 };
-
+/**
+ * The length of the text will be calculated and if it is longer than than the expected width
+ * of the alert box, it will be cut into rows. Later the so processed text will be
+ * transformed into an image. 
+ * @returns {undefined}
+ */
 Alert.prototype._createTextImage = function () {
     
     // creating an offscreen canvas with the specific width and height
@@ -186,7 +190,6 @@ Alert.prototype._createTextImage = function () {
     this.ImageText.src = off.toDataURL();
     
 };
-
 /**
  * recalculate the necessary size of the Alert.
  * @returns {undefined}

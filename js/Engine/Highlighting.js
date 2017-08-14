@@ -15,6 +15,7 @@ function Highlighting(area, flow_ms, ms){
     this.Roundings = area.roundings || [area.rounding,area.rounding,area.rounding,area.rounding];
     this.Radius= area.radius || 0;
     
+    // a function that draws an area (path)
     this.CallbackAreaFunction = area.function;
     
     this.Type = area.type || "vrrect";
@@ -33,6 +34,7 @@ function Highlighting(area, flow_ms, ms){
     this.TextImageBox = {x:0, y:0, width:0, height:0};
     this._text;
     
+    // callback-object that will be called when the highlighting is over
     this.CallbackObject = {that:this, function:function(){return;}, parameter:"default"};
     
     this.FlowMilliseconds = flow_ms;
@@ -462,7 +464,11 @@ Highlighting.prototype.IncreaseArea = function(inc){
     
     
 };
-
+/**
+ * rounds the edges of the highlighted area
+ * @param {number} r
+ * @returns {undefined}
+ */
 Highlighting.prototype.RoundingArea = function(r){
     this.Rounding = r;
     this.Type = "rrect";
@@ -478,11 +484,14 @@ Highlighting.prototype.MoveArea = function(dx, dy){
     this.X += dx;
     this.Y += dy;
 };
-
+/**
+ * adds a callback-object that will be called when the highlighting is over
+ * @param {type} cbo
+ * @returns {undefined}
+ */
 Highlighting.prototype.AddCallbackObject = function(cbo){
     this.CallbackObject = cbo;
 };
-
 /**
  * Sets Highlighting instance to instruction mode - a mode, in which the highlight won't vanish after a period of time only after a left click
  * @param {type} title

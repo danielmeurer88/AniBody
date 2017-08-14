@@ -4,10 +4,10 @@ function Engine(html_id) {
     // ### INFO
     this.Info = {
         Engine: "AniBody",
-        Version: "0.95",
+        Version: "0.96",
         Author: "Daniel Meurer",
         Project: "Developing",
-        LastUpdated: "2017_06_11_h17" // year_month_day_hhour
+        LastUpdated: "2017_08_08_h17" // year_month_day_hhour
     };
 
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
@@ -32,12 +32,6 @@ function Engine(html_id) {
     this.Flags.TouchHandler = true;
     this.Flags._useFakeMouseClick = true;
     this.Flags.AntiHoverEffect = false;
-    
-    this.Flags.CausalityManager = true;
-
-    // ### Touch related classes
-    this.TouchHandler = false;
-    this.TouchPies = false;
 
     // ### PROPERTIES - STATE OF ENGINE
     this.Paused = false;
@@ -71,26 +65,9 @@ function Engine(html_id) {
     this.Timer; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
 
     this.MediaManager = {};
+    // terrain holds the data of a game world. if not further declared a default terrain with the same size as the canvas object will be set
     this.Terrain = {};
-    this.DebugList = {};
-
-    // Anti Hover Effect Data
-    this.AHE = {
-        _id: "antiHoverEffect",
-        _zindex: 1000,
-        _fadeIn: 500, //Dauer in Millisekunden für das Einblenden der Box
-        _fadeOut: 100, //Dauer in Millisekunden für das Ausblenden der Box
-        _backgroundColor: "rgba(0,0,0,0.4)",
-
-        Browser: {
-            width: 0,
-            height: 0
-        },
-
-        Selector: "",
-        Canvas: false,
-        Context: false
-    };
+    this.DebugWindow = {};
 
     this.OverlayImages = [];
 
@@ -127,8 +104,6 @@ Object.defineProperty(Engine.prototype, "Engine", {get: function () {
 
 // Takes up the role of the constructor
 Engine.prototype.Initialize = function () {
-
-
 
     if (this.Flags.MediaManager) {
         this.MediaManager = new MediaManager();
@@ -170,14 +145,6 @@ Engine.prototype.Initialize = function () {
 
     this.DebugWindow = new DebugWindow();
 
-    // TESTING TouchHandler
-    if (this.Flags.TouchHandler) {
-        this.TouchHandler = new TouchHandler();
-        this.TouchHandler.Initialize();
-    }
-    
-    if(this.Flags.CausalityManager)
-        this.CausalityManager = new RPGCausalityManager();
 };
 /**
  * @description before it starts the Engine, it checks if there is a Terrain object and a Camera selected, if not default objects are initialized
@@ -202,16 +169,26 @@ Engine.prototype.Stop = function () {
     if (this.Flags.ConstantLoop)
         this.Timer.Stop();
 };
-
-// pauses and continues updating objects
+/**
+ * continues updating objects
+ * @returns {undefined}
+ */
 Engine.prototype.Continue = function () {
     this.Paused = false
 };
+/**
+ * pauses updating objects
+ * @returns {undefined}
+ */
 Engine.prototype.Pause = function () {
     this.Paused = true
 };
 
-// the beating heart of the Engine
+/**
+ * function applies the game loop - it starts
+ * ProcessInput(), Update() and Draw()
+ * @returns {undefined}
+ */
 Engine.prototype.Frame = function () {
     var e = arguments[0];
     e.ProcessInput();
@@ -222,7 +199,7 @@ Engine.prototype.Frame = function () {
 };
 
 /**
- * @description The functions adds an object to the ProcessInput(), which is a part of the frame()
+ * @description The functions adds an object to the ProcessInput(), which is a part of the Frame()
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
@@ -232,7 +209,7 @@ Engine.prototype.AddProcessInputFunction = function (pio, prio) {
     return ref;
 };
 /**
- * @description The functions adds an object to the ProcessInput(), which is a part of the frame()
+ * @description The functions adds an object to the ProcessInput(), which is a part of the Frame()
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
@@ -247,7 +224,8 @@ Engine.prototype.ProcessInput = function () {
 
     // set cursor to default - maybe an other object changes the cursor later in the same frame.
     this.Input.Mouse.Cursor.default();
-
+    
+    // inpute-object needs to be updated not in Update() but here in ProcessInput()
     this.Input.Update();
 
     for (var i = 0; i < this.Objects.Queue.heap.length; i++) {
@@ -321,14 +299,6 @@ Engine.prototype.Update = function () {
     if (this.Flags.MediaManager)
         this.MediaManager.Update();
 
-    if (this.TouchPies) {
-        this.Input.Touch.Pie.Update();
-        this.Input.Touch.Pie2.Update();
-    }
-
-    if (this.TouchHandler)
-        this.TouchHandler.Update();
-
     if (this.DebugWindow)
         this.DebugWindow.Update();
 
@@ -377,10 +347,6 @@ Engine.prototype.Draw = function () {
 
     if (this.Flags.MediaManager)
         this.MediaManager.Draw(c);
-
-    if (this.TouchPies) {
-        this.Input.Touch.SelectedPie.Draw(c);
-    }
 
     if (this.DebugWindow)
         this.DebugWindow.Draw();
@@ -540,7 +506,10 @@ Engine.prototype.GetOutsideElement = function (codename) {
 
     return false;
 };
-
+/**
+ * empties the object queue (the scene)
+ * @returns {undefined}
+ */
 Engine.prototype.FlushQueue = function () {
     this.Objects.Queue.Flush();
     this.length = 0;
@@ -548,8 +517,8 @@ Engine.prototype.FlushQueue = function () {
 };
 
 /**
- * @description Adds the object to the ObjectQueue
- * @param {Object} obj
+ * @description sets the AniBody's Terrain
+ * @param {Terrain} t
  * @returns {result}
  */
 Engine.prototype.SetTerrain = function (t) {
@@ -694,29 +663,32 @@ Engine.prototype.UnlockUnload = function () {
 };
 
 //#################################### Input
+// holds information and provides functions around user input
 Engine.prototype.Input = {
 
-    //Pie : false,
+    // will be the anibody engine
     Engine: false,
 
+    // all event handlers, which are registered, are saved here
     MouseDownEvent: {},
-    TouchStartEvent: {},
     KeyDownEvent: {},
     ParentKeyDownEvent: {},
 
     MouseUpEvent: {},
-    TouchEndEvent: {},
     KeyUpEvent: {},
     ParentKeyUpEvent: {},
 
     MouseMoveEvent: {},
     MouseScrollEvent: {},
-    TouchMoveEvent: {},
 
     ResizeEvent: {},
-
+    // end of event handler attributes
+    
+    // placeholder for the instance of the MouseHandler and the TouchHandler classes
     MouseHandler: {},
-
+    TouchHandler: {},
+    
+    // object that holds information about the mouse of the user
     Mouse: {
         EventObject: 0,
         DownEvent: 0,
@@ -861,7 +833,7 @@ Engine.prototype.Input = {
                 this.Current = "zoom-out";
                 this.Set(this.Current);
             }
-        },
+        }
     },
 
     // Pressed - is a boolean, which describes if the Key is pressed while in current frame
@@ -1099,6 +1071,9 @@ Engine.prototype.Input = {
                 input.Mouse.Right.FramesUp++;
         }
 
+        if (this.Engine.Flags.TouchHandler)
+            this.TouchHandler.Update();
+        
     },
     // registers mouse events (those events are not bound to the frame() - the callback function is triggered when the user activates them )
     Initialize: function () {
@@ -1113,13 +1088,11 @@ Engine.prototype.Input = {
 
         this.RegisterResizeEvent();
 
-        if (this.Engine.TouchPies) {
-            this.Touch.Pie = new TouchPie();
-            this.Touch.Pie2 = new TouchPie();
-        }
-
         this.MouseHandler = new MouseHandler();
-
+        
+        if(this.Engine.Flags.TouchHandler)
+            this.TouchHandler = new TouchHandler();
+        
     },
     CalculateCanvasPosition: function () {
         // getting the real position of the canvas 
@@ -2168,7 +2141,10 @@ Engine.prototype.Font = {
         c.font = str;
     }
 };
-
+/**
+ * prints the image of a given data url or just the image of the current canvas state
+ * @param {string} url - data url of an image (optional)
+ * @returns {undefined} */
 Engine.prototype.Print = function (url) {
     if (typeof url === "undefined")
         url = this.Canvas.toDataURL();
@@ -2186,50 +2162,4 @@ Engine.prototype.Print = function (url) {
         ifr.remove();
     }, 1000);
 
-};
-
-Engine.prototype.AHEStart = function () {
-
-    this.AHE.Browser.width = this.TopWindow.innerWidth;
-    this.AHE.Browser.height = this.TopWindow.innerHeight;
-
-    var canvasId = "Container_" + this.AHE._id;
-    this.AHE.Selector = "#" + canvasId;
-
-    var pbody = $(this.TopWindow.document.body);
-    this.AHE.Canvas = pbody.children("#" + canvasId)[0];
-    
-    // erzeugt die benötigte HTML-Elemente als erstes Kind vom Body
-    if (typeof this.AHE.Canvas === "undefined") {
-        var str = "<canvas width='" + this.AHE.Browser.width + "' height='" + this.AHE.Browser.height + "' id='" + canvasId + "'></canvas>";
-        $(pbody).prepend(str);
-        this.AHE.Canvas = pbody.children("#" + canvasId)[0];
-    }
-    
-    
-    this.AHE.Context = this.AHE.Canvas.getContext("2d");
-
-    // wendet benötigte und custom CSS-Regeln an
-
-    var tmp = {
-        "width": this.AHE.Browser.width + "px",
-        "height": this.AHE.Browser.height + "px",
-        "z-index": this.AHE._zindex,
-        "background-color": this.AHE._backgroundColor,
-        "position": "fixed"
-    };
-    $(this.AHE.Canvas).css(tmp);
-    
-    var c = this.AHE.Context;
-    
-    
-
-};
-
-
-Engine.prototype.AHEStop = function () {
-    var self = this;
-    $(this.AHE.Canvas).fadeOut(this.AHE._fadeOut, function () {
-        $(self.AHE.Canvas).remove();
-    });
 };

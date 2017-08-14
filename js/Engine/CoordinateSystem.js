@@ -1,11 +1,11 @@
 
 /**
  * Represents a Cartesian coordinate system
- * @param {type} x
- * @param {type} y
- * @param {type} w
- * @param {type} h
- * @param {type} opt
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @param {object} opt - objects, which contents ob key-value pairs, key=class attribute and their value
  * @returns {CoordinateSystem}
  */
 function CoordinateSystem(x, y, w, h, opt) {
@@ -27,12 +27,17 @@ function CoordinateSystem(x, y, w, h, opt) {
     this.OnClickCBO = {function: function () {}, parameter: {}, that: this};
 
     this.PixelPerScale = 15;
+    
+    // the limits are used so that the line length is shortened to a minimum what the user is able to see
+    // hence saving processor power
     this._drawLimit = {
         Xpos: 500,
         Xneg: 500,
         Ypos: 500,
         Yneg: 500
     };
+    // the limits are used so that the number of marks is shortened to a minimum what the user is able to see
+    // hence saving processor power
     this._markLimit = {
         Xpos: 25,
         Xneg: 25,
@@ -63,7 +68,9 @@ function CoordinateSystem(x, y, w, h, opt) {
 }
 CoordinateSystem.prototype = Object.create(ABO.prototype);
 CoordinateSystem.prototype.constructor = CoordinateSystem;
-
+/**
+ * @see README_DOKU.txt
+ */
 CoordinateSystem.prototype.Initialize = function () {
 
     this.AddMouseHandler();
@@ -76,7 +83,9 @@ CoordinateSystem.prototype.Initialize = function () {
                 this[key] = opt[key];
         }
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 CoordinateSystem.prototype.AddMouseHandler = function(){
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter: this.Engine,
@@ -91,9 +100,13 @@ CoordinateSystem.prototype.AddMouseHandler = function(){
         }
     }, 10);
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 CoordinateSystem.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
-
+/**
+ * @see README_DOKU.txt
+ */
 CoordinateSystem.prototype.Draw = function (c) {
 
     c.save();
@@ -308,7 +321,9 @@ CoordinateSystem.prototype.Draw = function (c) {
 
 
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 CoordinateSystem.prototype.Update = function () {
 
     var mpos = this.Engine.Input.Mouse.Position.Relative; // the Nullpoint for this position is the canvas not the absolute nullpoint of the document
@@ -322,20 +337,30 @@ CoordinateSystem.prototype.Update = function () {
     this.SI.y = (Math.round((this.Mouse.y / ppmm) * 100) / 100);
 
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 CoordinateSystem.prototype.ProcessInput = function () {
 
     var area = this.GetArea();
     this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
 
 };
-
+/**
+ * Moves the null point of the coordination system
+ * @param {number} dx
+ * @param {number} dy
+ * @returns {undefined}
+ */
 CoordinateSystem.prototype.Move = function (dx, dy) {
     this.Nullpoint.x += dx;
     this.Nullpoint.y += dy;
     this.UpdateLimit();
 };
-
+/**
+ * Moves the null point to the center of the coordination system
+ * @returns {undefined}
+ */
 CoordinateSystem.prototype.Center = function () {
     this.Nullpoint = {
         x: this.Width / 2,
@@ -343,7 +368,6 @@ CoordinateSystem.prototype.Center = function () {
     };
     this.UpdateLimit();
 };
-
 /**
  * Return current SI values as an object {x:x, y:y}
  * @returns {object}
@@ -351,7 +375,6 @@ CoordinateSystem.prototype.Center = function () {
 CoordinateSystem.prototype.GetSI = function () {
     return {x: this.SI.x, y: this.SI.y};
 };
-
 /**
  * Return current Mouse position in pixel
  * @returns {object}
@@ -359,7 +382,10 @@ CoordinateSystem.prototype.GetSI = function () {
 CoordinateSystem.prototype.GetCoords = function () {
     return {x: this.Mouse.x, y: this.Mouse.y};
 };
-
+/**
+ * updates the limits according to the current null point position and the scale size
+ * @returns {undefined}
+ */
 CoordinateSystem.prototype.UpdateLimit = function () {
 
     // 1-Dimensional distance, (one coordinate is the same in both points and does not need to be considered in the formular)
@@ -398,7 +424,11 @@ CoordinateSystem.prototype.UpdateLimit = function () {
     };
 
 };
-
+/**
+ * clips the borders. Used in Draw()
+ * @param {type} c
+ * @returns {undefined}
+ */
 CoordinateSystem.prototype.Clip = function (c) {
     c.beginPath();
     // nothing beyond this two commands will cause the canvas to draw over the coord-sys
@@ -407,7 +437,13 @@ CoordinateSystem.prototype.Clip = function (c) {
     c.clip();
 
 };
-
+/**
+ * Sets the callback-object, that will be called when the user clicks on the coordination system
+ * @param {callback-object/function} that - will be seen as the callback-object when SetOnClick is called with only 1 arguments otherwise it's the this-object
+ * @param {function} f - the function that will be triggered
+ * @param {object} para - the first argument the function will have
+ * @returns {undefined}
+ */
 CoordinateSystem.prototype.SetOnClick = function (that, f, para) {
     if (arguments.length > 1) {
         this.OnClickCBO = {
@@ -419,7 +455,12 @@ CoordinateSystem.prototype.SetOnClick = function (that, f, para) {
         this.OnClickCBO = that;
     }
 };
-
+/**
+ * sets the null point to a certain position
+ * @param {type} x
+ * @param {type} y
+ * @returns {undefined}
+ */
 CoordinateSystem.prototype.SetNullpoint = function (x, y) {
     this.Nullpoint.x = x;
     this.Nullpoint.y = y;

@@ -77,6 +77,9 @@ MediaManager.prototype.Draw = function (c) {
  * @returns {undefined}
  */
 MediaManager.prototype.Update = function () {
+//    if(this.Engine.Input.Key.D.FramesPressed == 2){
+//        console.log(this.Images.GetDistribution());
+//    }
 };
 
 /**
@@ -106,7 +109,7 @@ MediaManager.prototype.GetSound = function (codename) {
 
 
 /**
- * Load all media, saved in an array (pack), and saves them to the representive Property (Images, Sounds)
+ * Load all media, saved in an array (pack), and saves them to the respective Property (Images, Sounds)
  * When all media are loaded, the callback-object will be called
  * @param {type} pack
  * @param {type} co (callback object)
@@ -133,7 +136,7 @@ MediaManager.prototype.LoadMedia = function (pack, co) {
         if (!pack || pack.length <= 0) {
             mm.Loading = false;
             mm.Progress = 100; // drawing will stop when Loading is false - command not needed
-            co.Call();
+            Callback.CallObject(co);
             return true;
         }
 
@@ -168,8 +171,7 @@ MediaManager.prototype.LoadMedia = function (pack, co) {
     if (!pack || pack.length <= 0) {
         this.Loading = false;
         this.Progress = 100;
-        if (co && co.function)
-            co.Call();
+        Callback.CallObject(co);
         return true;
     }
     var curpct = pack.pop();
@@ -197,12 +199,12 @@ MediaManager.prototype.LoadMedia = function (pack, co) {
     }
 
 
-}
+};
 
 /**
  * Sets (overwrite existing) mediapack of the manager, loads all "always" media and triggers the CO (callback objects)
- * @param {type} pack
- * @param {type} co
+ * @param {array} pack - an array of media files
+ * @param {object} co - callback object, which will be called afterwards
  * @returns {undefined}
  */
 MediaManager.prototype.SetMediaPack = function (pack, co) {
@@ -212,8 +214,8 @@ MediaManager.prototype.SetMediaPack = function (pack, co) {
 };
 /**
  * Extends the current mediapack of the manager, loads all "always" media and triggers the CO (callback objects)
- * @param {type} pack
- * @param {type} co
+ * @param {array} pack - an array of media files
+ * @param {object} co - callback object, which will be called afterwards
  * @returns {undefined}
  */
 MediaManager.prototype.ExtendMediaPack = function (pack, co) {
@@ -238,8 +240,8 @@ MediaManager.prototype.SortPack = function () {
 /**
  * Searches through the current mediapack in the Manager and loads all of a certain group
  * @param {string} group group name, which is supposed to be loaded
- * @param {object} co
- * @param {boolean} loadMediaWithNoGroupToo
+ * @param {object} co - callbach, which will be called afterwarsd
+ * @param {boolean} loadMediaWithNoGroupToo - includes to load media which has no group
  * @returns {undefined}
  */
 MediaManager.prototype.Require = function (group, co, loadMediaWithNoGroupToo) {
@@ -247,7 +249,7 @@ MediaManager.prototype.Require = function (group, co, loadMediaWithNoGroupToo) {
     var req = [], unreq = [], m;
     
     if(!co){
-        co = new Callback(this.Engine, function(){}, false);
+        co = function(){}.getCallbackObject(this.Engine, "default");
     }
     
     for (var i = 0; i < this.Pack.length; i++) {

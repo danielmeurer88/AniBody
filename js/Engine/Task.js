@@ -81,7 +81,7 @@ Task.prototype.HasFailed = function(){
     return false;
 };
 /**
- * Checks if task is done or has failed and calls the representive callback-object
+ * Checks if task is done or has failed and calls the respective callback-object
  * @returns {undefined}
  */
 Task.prototype._check = function(){

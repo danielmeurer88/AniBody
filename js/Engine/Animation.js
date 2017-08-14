@@ -62,8 +62,7 @@ ABOPresenter.prototype.DefaultRounding = 10;
 ABOPresenter.prototype.DefaultFontHeight = 18;
 
 /**
- * Can be seen as an extension of the constructor function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ABOPresenter.prototype.Initialize = function () {
     
@@ -217,6 +216,8 @@ ABOPresenter.prototype._createMouseHandlerObject = function(){
 
 /**
  * Starts/Opens the Presenter dialog box
+ * @param {Callback-Object} abostartfunc - sets the start function (optional)
+ * @param {Callback-Object} abostopfunc - sets the stop function (optional)
  * @returns {undefined}
  */
 ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
@@ -233,6 +234,7 @@ ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
     if(!found && this.StartFunction){
         Callback.CallObject(this.StartFunction);
     }
+    
     if(typeof abostopfunc !== "undefined")
         this.StopFunction = abostopfunc;
     
@@ -273,22 +275,20 @@ ABOPresenter.prototype.Stop = function () {
     this._ref_ip = null;
 };
 /**
- * Sets the StopFunction (a function, that is called before the start of the presenter
- * (the this-variable relates to the ABO-Object)
- * @param {Callback-Object} f
+ * Sets the StartFunction (a function, that is called before the stop of the presenter
+ * @param {Callback-Object} startcbo
  * @returns {undefined}
  */
-ABOPresenter.prototype.SetStartFunction = function (f) {
-    this.StartFunction = f;
+ABOPresenter.prototype.SetStartFunction = function (startcbo) {
+    this.StartFunction = startcbo;
 };
 /**
- * Sets the StartFunction (a function, that is called before the stop of the presenter
- * (the this-variable relates to the ABO-Object)
- * @param {Callback-Object} f
+ * Sets the StopFunction (a function, that is called before the stop of the presenter
+ * @param {Callback-Object} stopcbo
  * @returns {undefined}
  */
-ABOPresenter.prototype.SetStopFunction = function (f) {
-    this.StopFunction = f;
+ABOPresenter.prototype.SetStopFunction = function (stopcbo) {
+    this.StopFunction = stopcbo;
 };
 
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -354,7 +354,9 @@ Animation.prototype.constructor = Animation;
 Object.defineProperty(Animation.prototype, "Image", {get: function () {
         return this.Images[this.ImageIndex = 0];
 }});
-
+/**
+ * @see README_DOKU.txt
+ */
 Animation.prototype.Initialize = function () {
     
     this.FullImage = this.Engine.MediaManager.GetImage(this.Codename);
@@ -385,16 +387,18 @@ Animation.prototype.Initialize = function () {
             }
         }
     }
-
-    
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Animation.prototype.Draw = function (c) {
     if(!this.FullImage || !this.Active)
         return;
     c.drawImage(this.Images[this.ImageIndex], this.X, this.Y, this.Width, this.Height);
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Animation.prototype.Update = function () {
     if(!this.FullImage)
         this.Initialize();
@@ -403,12 +407,17 @@ Animation.prototype.Update = function () {
         this.Stop();
     }
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Animation.prototype.Start = function () {
     this.Active = true;
     this.ImageIndex = 0;
     this.AddCounterFunction();
 };
+/**
+ * @see README_DOKU.txt
+ */
 Animation.prototype.Stop = function () {
     this.Active = false;
     this.RemoveCounterFunction();
@@ -502,8 +511,7 @@ this.Initialize();
 ImageObject.prototype = Object.create(ABO.prototype);
 ImageObject.prototype.constructor = ImageObject;
 /**
- * can be seen as an extension of the constructor function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ImageObject.prototype.Initialize = function () {
         
@@ -517,9 +525,7 @@ ImageObject.prototype.Initialize = function () {
     this.Height = this.Image.height;
 };
 /**
- * Draw
- * @param {2DCanvasContex} c
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ImageObject.prototype.Draw = function (c) {
     var cam = this.Engine.Camera.SelectedCamera;
@@ -530,8 +536,7 @@ ImageObject.prototype.Draw = function (c) {
         c.fillRect(this.X - cam.X, this.Y - cam.Y, this.Image.width * this.Scale, this.Image.height * this.Scale);
 };
 /**
- * Update
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ImageObject.prototype.Update = function () {
     if(this.Width === 0 || this.Height === 0){
@@ -541,10 +546,10 @@ ImageObject.prototype.Update = function () {
 };
 /**
  * Represents a string
- * @param {type} x
- * @param {type} y
- * @param {type} txt
- * @param {type} fh
+ * @param {number} x
+ * @param {number} y
+ * @param {string} txt
+ * @param {number} fh
  * @returns {ABText}
  */
 function ABText(x, y, txt, fh) {
@@ -569,8 +574,7 @@ ABText.prototype.constructor = ABText;
 ABText.prototype.DefaultFontColor = "black";
 
 /**
- * can be seen as an extension of the constructor function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ABText.prototype.Initialize = function () {
     this.Resize();
@@ -591,9 +595,7 @@ ABText.prototype.Resize = function () {
 };
 
 /**
- * Draw
- * @param {2dCanvasContext} c
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ABText.prototype.Draw = function (c) {
 
@@ -618,11 +620,13 @@ ABText.prototype.Draw = function (c) {
 
     c.restore();
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 ABText.prototype.Update = function () {};
 /**
  * Sets the text
- * @param {type} txt
+ * @param {string} txt
  * @returns {undefined}
  */
 ABText.prototype.SetText = function (txt) {

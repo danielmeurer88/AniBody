@@ -1,4 +1,10 @@
-// testing if neccessary
+
+// ++++++++++++++++++++++++++++++++++++++
+
+// needs to be renovated and tested
+
+// ######################################
+
 function Sprite() {
     
     ABO.call(this);
@@ -107,6 +113,12 @@ Sprite.prototype.SetSprite = function(codename, flagList, speed){
 Sprite.prototype.Update = function(){
     this.UpdateActiveClipping();
 };
+
+// ++++++++++++++++++++++++++++++++++++++
+
+// needs to be renovated and tested
+
+// ######################################
 
 function Clipping(startx, starty, clipWidth, clipHeight, numClippings, flagNames) {
     ABO.call(this);

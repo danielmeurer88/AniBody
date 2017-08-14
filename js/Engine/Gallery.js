@@ -77,8 +77,7 @@ Gallery.prototype.Color = "#eee";
 Gallery.prototype.HandleColor = "#999";
 
 /**
- * Gets called at the end of the constructor function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Gallery.prototype.Initialize = function(){
     
@@ -103,7 +102,9 @@ Gallery.prototype.SetDraggable = function(val){
         }
     }
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Gallery.prototype.AddMouseHandler = function(){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
@@ -141,7 +142,11 @@ Gallery.prototype.AddMouseHandler = function(){
         }
     }, 100);
 };
-
+/**
+ * Checks the input information (mouse info) and manages the attributes of the BoxMenu
+ * which allows scrolling the handle or dragging/moving the whole box
+ * @returns {undefined}
+ */
 Gallery.prototype.AddProcessInputFunction = function(){
 
     this._ref_PIF = this.Engine.AddProcessInputFunction({
@@ -166,21 +171,28 @@ Gallery.prototype.AddProcessInputFunction = function(){
         }
     }, 5);
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Gallery.prototype.RemoveMouseHandler = function(){
     if(this._ref!=null){
         this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);
         this._ref=null;
     }
 };
-
+/**
+ * Removes the Process Input Function - called when the BoxMenu is supposed to be deleted
+ * @returns {undefined}
+ */
 Gallery.prototype.RemoveProcessInputFunction = function(){
     if(this._ref_PIF!= null){
         this.Engine.RemoveProcessInputFunction(this._ref_PIF);
         this._ref_PIF = null;
     }
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Gallery.prototype.Draw = function(c){
     c.save();
     
@@ -279,7 +291,10 @@ Gallery.prototype.Draw = function(c){
     }
     c.restore();
 };
-
+/**
+ * gets the combined width of all items
+ * @returns {Number}
+ */
 Gallery.prototype.GetItemsWidth = function(){
     var max = 0;
     for(var i=0; i<this.Items.length; i++){
@@ -292,7 +307,9 @@ Gallery.prototype.GetItemsWidth = function(){
         return this.Width;
     
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Gallery.prototype.ProcessInput = function(){
         
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -378,7 +395,9 @@ Gallery.prototype.ProcessInput = function(){
     }
     
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Gallery.prototype.Update = function(){
     
     var item;
@@ -412,7 +431,13 @@ Gallery.prototype.Update = function(){
         this.Engine.Input.Mouse.Cursor.Set("pointer");
     
 };
-
+/**
+ * updates the handle (position and height) according the displayed items
+ * should be called by the programmer when the number or the position of items has changed
+ * will be called automatically when the user scrolls the box
+ * @param {object} d - holds the scroll information
+ * @returns {undefined}
+ */
 Gallery.prototype.UpdateHandle = function(d){
     var refresh = false;
     if(arguments.length <= 0 || !d){
@@ -437,7 +462,11 @@ Gallery.prototype.UpdateHandle = function(d){
     
     
 };
-
+/**
+ * drags the box according to the information and checks if the title bar of the box is within the canvas borders
+ * @param {object} d - hold the dragging information
+ * @returns {undefined}
+ */
 Gallery.prototype.UpdateBox = function(d){
     
     if(this._dragging && !isNaN(d.Y)){
@@ -469,7 +498,10 @@ Gallery.prototype.UpdateBox = function(d){
         
     }
 };
-
+/**
+ * checks if the handle is within the borders of the underlining bar - if not, it will be adjusted
+ * @returns {undefined}
+ */
 Gallery.prototype.AdjustHandle = function(){
     
     if(this.Handle.x < this.X){
@@ -485,7 +517,13 @@ Gallery.prototype.AdjustHandle = function(){
     if(this.OffsetX < this.Width - this.ItemsWidth)
         this.OffsetX = this.Width - this.ItemsWidth;
 };
-
+/**
+ * adds an item 
+ * @param {ABO} item
+ * @param {number} offsetx - free area left of the item
+ * @param {number} offsety - free area top of the item
+ * @returns {undefined}
+ */
 Gallery.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 1)
         offsetx = 0;
@@ -499,7 +537,11 @@ Gallery.prototype.AddItem = function(item, offsetx, offsety){
     }
     
 };
-
+/**
+ * Deletes all items but before will call the given function for each item
+ * @param {function} itemDeleteFunc - function(item, engine)
+ * @returns {undefined}
+ */
 Gallery.prototype.DeleteItems = function(itemDeleteFunc){
     var item;
     
@@ -514,7 +556,8 @@ Gallery.prototype.DeleteItems = function(itemDeleteFunc){
 };
 
 /**
- * Sets the items into a vertical array and sets the items offscreen when the box is minimized so that there is no accidental clicking
+ * Sets the items into a horizontal array
+ * - sets the items offscreen when the box is minimized so that there is no accidental clicking
  * @returns {undefined}
  */
 Gallery.prototype.AdjustItemsPosition = function(){
@@ -535,7 +578,10 @@ Gallery.prototype.AdjustItemsPosition = function(){
     }
     
 };
-
+/**
+ * function is triggered if user clicks on the minimization button
+ * @returns {undefined}
+ */
 Gallery.prototype.ClickOnMinimize = function(){
     this._minimized = !this._minimized;
     if(this._minimized){
@@ -544,7 +590,10 @@ Gallery.prototype.ClickOnMinimize = function(){
         this.Height = this.TitleHeight + this.DisplayHeight;
     }
 };
-
+/**
+ * function is triggered if user clicks on the closing button
+ * @returns {undefined}
+ */
 Gallery.prototype.ClickOnClose = function(){
     console.log("Close Box");
     if(this.TrueClosing){
@@ -567,7 +616,12 @@ Gallery.prototype.ClickOnClose = function(){
     
     
 };
-
+/**
+ * Moves the box in an animated motion to a given position
+ * @param {number} x
+ * @param {number} y
+ * @returns {undefined}
+ */
 Gallery.prototype.MoveTo = function(x,y){
 
     var reldistance = {x: this.Handle.x - this.X, y: this.Handle.y - this.Y};
@@ -594,7 +648,10 @@ Gallery.prototype.MoveTo = function(x,y){
     
     
 };
-
+/**
+ * Truly closes the box
+ * @returns {undefined}
+ */
 Gallery.prototype.Close = function(x,y){
     this.RemoveMouseHandler();
     this.RemoveProcessInputFunction();

@@ -1,4 +1,3 @@
-
 /**
  * 
  * @param {type} x
@@ -251,7 +250,7 @@ InputField.prototype.Draw = function (c) {
  * @returns {undefined}
  */
 InputField.prototype.BindToStorageEntry = function (key) {
-    if (key != "") {
+    if (typeof key === "string" && key.length > 0) {
         var txt = this.Engine.Storage.ReadFromStorage(key);
         if (txt.code) {
             txt = this.Engine.Storage.WriteToStorage(key, "");

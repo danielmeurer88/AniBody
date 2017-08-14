@@ -32,8 +32,11 @@ function Slider(x,y,width,height){
     this._dragging = false;
     
     this.IsMouseOverSliderHandle = false;
+    this.IsMouseOver = false;
     
     this._ref = null;
+    this._ref_mh = null;
+    
     this._noValueChange = false;
     
     this.Color = Slider.prototype.DefaultColor;
@@ -44,11 +47,17 @@ Slider.prototype = Object.create(ABO.prototype);
 Slider.prototype.constructor = Slider;
 
 Slider.prototype.DefaultColor = "rgba(100,100,120,1)";
-
+/**
+ * @see README_DOKU.txt
+ */
 Slider.prototype.Initialize = function(){
     this.AddProcessInputFunction();
+    this.AddMouseHandler();
 };
-
+/**
+ * adds the process input function that enables the dragging the handler
+ * @returns {undefined}
+ */
 Slider.prototype.AddProcessInputFunction = function(){
 
     this._ref = this.Engine.AddProcessInputFunction({
@@ -69,8 +78,41 @@ Slider.prototype.AddProcessInputFunction = function(){
     }, 2);
 
 };
-
+/**
+ * Removes process input function
+ * @returns {undefined}
+ */
 Slider.prototype.RemoveProcessInputFunction = function(){this.Engine.RemoveProcessInputFunction(this._ref);};
+
+/**
+ * @see README_DOKU.txt
+ * fulfills the user expectations - when user clicks on the slide bar the handler jumps to the mouse and changes to the correct value
+ */
+Slider.prototype.AddMouseHandler = function(){
+    this._ref_mh = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
+        parameter: this.Engine,
+        that: this,
+        function: function (e, engine) {
+
+            if (this.IsMouseOver && !this.IsMouseOverSliderHandle) {
+                e.GoThrough = false;
+                // x value of the click
+                var x = e.Mouse.Position.Camera.X - this.X;
+                // x value of the slider bar in percent
+                var quotient = Math.round( x / this.Width * 100) / 100; 
+                
+                var value = (quotient * (this.ValueLimits[1] - this.ValueLimits[0])) + this.ValueLimits[0];
+                
+                this.SetValue(value);
+            }
+            
+        }
+    }, 4);
+};
+/**
+ * @see README_DOKU.txt
+ */
+Slider.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mh);};
 
 /**
  * Only needed if the user is dragging the handler. Calculates the position of
@@ -119,8 +161,20 @@ Slider.prototype.Update = function(){
         
     this._oldValue = this.Value;
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Slider.prototype.ProcessInput = function(){
+    
+    var area = {
+        x: this.X,
+        y: this.Y - this.Handle.height/2,
+        width : this.Width,
+        height : this.Handle.height,
+        type : "rect"
+    };
+    
+    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
     
     var area = {
         x: this.Handle.x - this.Handle.width / 2,

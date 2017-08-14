@@ -33,6 +33,12 @@ function MultipleChoice(text,labels, cbos){
         };
     }
     this.Labels = labels;
+    
+    this.MustDecide = true;
+    this.OnIllegalStopCBO = function(){
+        var txt = "Sie m{ue}ssen eine Entscheidung treffen!".decodeURI();
+        new Toaster("error", "Fehler", txt, 4000).Open();
+    }.getCallbackObject(this);
         
     this.Rounding = MultipleChoice.prototype.DefaultRounding;
     this.FontHeight = MultipleChoice.prototype.DefaultFontHeight;
@@ -81,7 +87,12 @@ MultipleChoice.prototype.Initialize = function () {
     this._recalculateSizes();
     
 };
-
+/**
+ * The length of the text will be calculated and if it is longer than than the expected width
+ * of the alert box, it will be cut into rows. Later the so processed text will be
+ * transformed into an image. 
+ * @returns {undefined}
+ */
 MultipleChoice.prototype._createTextImage = function () {
     
     // creating an offscreen canvas with the specific width and height
@@ -193,7 +204,10 @@ MultipleChoice.prototype._createTextImage = function () {
     this.ImageText.src = off.toDataURL();
     
 };
-
+/**
+ * calculates needed sizes and creates one button per choice
+ * @returns {undefined}
+ */
 MultipleChoice.prototype._initSizes = function () {
     
     var margin = this.BoxPadding;    
@@ -373,13 +387,14 @@ MultipleChoice.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
-        
-        
         if(this.IsMouseOverBackground){
-            this.Stop();
+            if(this.MustDecide){
+                this.IllegalStop();
+            }else{
+                this.Stop();
+            }
             e.GoThrough = false;
         }
-        
         
     };
     
@@ -425,4 +440,12 @@ MultipleChoice.prototype.Stop = function () {
     this._ref_mhan = null;
     this.Engine.RemoveProcessInputFunction(this._ref_ip);
     this._ref_ip = null;
+};
+
+/**
+ * Function, that handles an illegal stop - will be called by the class
+ * @returns {undefined}
+ */
+MultipleChoice.prototype.IllegalStop = function () {
+    Callback.CallObject(this.OnIllegalStopCBO);
 };

@@ -1,6 +1,5 @@
-
 /**
- * 
+ * An application programming interface that stands between the engine and the developer and handles mouse related functions
  * @returns {MouseHandler}
  */
 function MouseHandler(){
@@ -12,6 +11,7 @@ function MouseHandler(){
     this.WheelLimiter = 0.1;
     
     this.HoverRequests = [];
+    this._yesPool = [];
     
     this._oldLeftFramesDown = 0;
     this._oldRightFramesDown = 0;
@@ -20,7 +20,9 @@ this.Initialize();
 }
 MouseHandler.prototype = Object.create(EngineObject.prototype);
 MouseHandler.prototype.constructor = MouseHandler;
-
+/**
+ * @see README_DOKU.txt
+ */
 MouseHandler.prototype.Initialize = function(){
     
     // if it's a favorit browsers
@@ -57,7 +59,7 @@ MouseHandler.prototype.WheelHandler = function(dx, dy){
 };
 
 /**
- * Adds a Callback-Object to a certain AniBody.mouse event type
+ * Adds a handler (callback object) to a certain AniBody.mouse event type and returns a ref number
  * @param {string} type - AniBody.mouse event type
  * @param {object} cbo - callback-object
  * @param {number} prio - priority number (optional)
@@ -80,9 +82,9 @@ MouseHandler.prototype.AddMouseHandler = function(type, cbo, prio){
     return ref;
 };
 /**
- * 
+ * removes a mouse handler by the ref number, which relates to the handler
  * @param {number} ref
- * @returns {.Object@call;create.RemoveMouseHandler.tmp|Object.prototype.RemoveMouseHandler.tmp}
+ * @returns {Number of deleted elements}
  */
 MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
     var tmp;
@@ -95,13 +97,25 @@ MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
         tmp = this.WheelHandlerCBOs.DeleteByReferenceNumber(ref);
     return tmp;
 };
-
+/**
+ * empties all handlers
+ * @returns {undefined}
+ */
 MouseHandler.prototype.Flush = function(){
     this.LeftMouseClickHandlerCBOs.Flush();
     this.RightMouseClickHandlerCBOs.Flush();
     this.WheelHandlerCBOs.Flush();
 };
 
+/**
+ * adds a hover request
+ * @param {object} area - area object {x,y,width,height,type} or area function
+ * @param {object} object - object of the attribute
+ * @param {string} attr - name of the attribute that will change if request is positive
+ * @param {type} successvalue - the value the attribute becomes if request is positive (default:true)
+ * @param {type} failvalue - the value the attribute becomes if request is negative (default:false)
+ * @returns {undefined}
+ */
 MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successvalue, failvalue){
     if(arguments.length<=2) return;
     
@@ -118,6 +132,11 @@ MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successval
     this.HoverRequests.push({area:area, object:object, attr:attr, success : successvalue, failure : failvalue});
 };
 
+/**
+ * checks if the mouse left button or right button was clicked and if so it triggers all registered
+ * handlers
+ * @returns {undefined}
+ */
 MouseHandler.prototype.MouseClickHandler = function(){
     var mouse = this.Engine.Input.Mouse;
     
@@ -131,7 +150,8 @@ MouseHandler.prototype.MouseClickHandler = function(){
             GoThrough: true,
             Timestamp: Date.now(),
             Frame: this.Engine.Counter.Frames,
-            Type: "leftclick"
+            Type: "leftclick",
+            Mouse : this.Engine.Input.Mouse
         };
 
         for (var i = 0; event.GoThrough && i < arr.length; i++) {
@@ -170,6 +190,11 @@ MouseHandler.prototype.MouseClickHandler = function(){
     this._oldRightFramesDown = this.Engine.Input.Mouse.Right.FramesDown;
 };
 
+/**
+ * checks all areas in the hover requests and if last area checkes positively (mouse hovers in that area)
+ * the representative attribute gets the requested value
+ * @returns {undefined}
+ */
 MouseHandler.prototype.ResolveHoverRequest = function(){
     
     var c = this.Engine.Context;
@@ -211,7 +236,13 @@ MouseHandler.prototype.ResolveHoverRequest = function(){
         }
         
         if(!found && req.area.type === "function"){
-            a.function(c);
+            if(typeof a.function === "function")
+                a.function(c);
+            
+            // check if it is a callback object
+            if(a.function && typeof a.function.function === "function")
+                Callback.CallObject(a.function);
+            
             found = true;
         }
         
@@ -234,9 +265,7 @@ MouseHandler.prototype.ResolveHoverRequest = function(){
         c.closePath();
         c.restore();
     }
-    
-    
-    
+        
     for(var i=0; i<yes.length; i++){
         req = yes[i];
         

@@ -1,5 +1,3 @@
-
-
 /**
  * Collects and displays the current value of objects and their attributs in real time
  * It opens and extra popup window
@@ -19,9 +17,10 @@ function DebugWindow(){
     
 this.Initialize();
 }
-
+/**
+ * @see README_DOKU.txt
+ */
 DebugWindow.prototype.Initialize = function(){};
-
 /**
  * "Draws" the current values of the monitored objects into the new window
  * while using a table for each object
@@ -44,9 +43,9 @@ DebugWindow.prototype.Draw = function(){
     $(this.Body).html(str);
     
 };
-
 /**
- * Adds a new object to the monitored list, an array of attributes to focus on and the name of the representiv table
+ * Adds a new object to the monitored list, an array of attributes to focus on
+ * and the name of the respective table
  * @param {Object} obj
  * @param {String-Array} attr
  * @param {String} name
@@ -61,7 +60,6 @@ DebugWindow.prototype.Add = function(obj, attr, name){
     }
     this.Variables.push({object : obj, keys : attr, name : name});    
 };
-
 /**
  * Adds an object to the monitoring list and all sub-objects within a given depth
  * @param {Object} obj
@@ -82,7 +80,6 @@ DebugWindow.prototype.RecursiveAdd = function(obj, name, depth){
         }
     }
 };
-
 /**
  * Opens the new window
  * @returns {Boolean}
@@ -99,10 +96,8 @@ DebugWindow.prototype.Open = function(){
     this._setCSS();
     
 };
-
 /**
- * 
- * @returns {Boolean}
+ * @see README_DOKU.txt
  */
 DebugWindow.prototype.Update = function(){
     
@@ -116,7 +111,6 @@ DebugWindow.prototype.Update = function(){
 //    }
     
 };
-
 /**
  * embeddeds the needed data of the monitored objects in a table and returns the html-code as a string
  * @param {type} obj
@@ -141,7 +135,6 @@ DebugWindow.prototype._getHTML = function(obj, keys, nr, name){
     
     return str + "</table></div>"
 };
-
 /**
  * Applies the wanted css rules to the new window
  * @returns {undefined}
@@ -160,7 +153,6 @@ DebugWindow.prototype._setCSS = function(){
     $(head).append(css);
     
 };
-
 /**
  * finds out the type of the monitored attribute
  * @param {type} obj the objects which owns the attribute
@@ -192,14 +184,19 @@ DebugWindow.prototype._what = function(obj, key){
     
     return str;
 };
-
+/**
+ * returns the class or the type of an attribute
+ * @param {type} obj
+ * @param {type} key
+ * @returns {String}
+ */
 DebugWindow.prototype._getClass = function(obj, key){
     var object = obj[key];
     
-    if(object == "undefined"){
+    if(typeof object === "undefined"){
         return "undefined";
     }
-    if(object == null){
+    if(object === null){
         return "null";
     }
     

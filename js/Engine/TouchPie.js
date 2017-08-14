@@ -1,4 +1,8 @@
-
+/**
+ * represents a pie with 4 slices (pieces). Each slice can be selected by touchmove
+ * functions, in the form of callback objecs, can be registered to each slice
+ * @returns {TouchPie}
+ */
 function TouchPie(){
     ABO.call(this);
     
@@ -7,18 +11,18 @@ function TouchPie(){
     this.SelectedPiePiece = -1;
     
     this.Offset = 2.5;
-    this.StarAngles = false;
+    this.StartAngles = false;
     this.EndAngles = false;
     this.CenterRepositionValue = false;
     this.Value = this.Offset * 2;
     
     this.Enabled = false;
     
-    var stdco = {that:this, parameter:false, function:function(){
-        
-        console.log("Trigger: " + this.Labels[this.SelectedPiePiece]);
-    }};
-    this.COArray = [stdco,stdco,stdco,stdco];
+    var stdcbo = function(where){
+        return {that:this, parameter:where,
+            function:function(where){console.log("Trigger: " + where);}};
+    };
+    this.COArray = [stdcbo("right"),stdcbo("bottom"),stdcbo("left"),stdcbo("top")];
     this.Labels = ["Right", "Bottom", "Left", "Top"];
     
     // the canvas attributes, to which the touch pie objects relates.
@@ -32,22 +36,25 @@ this.Initialize();
 }
 TouchPie.prototype = Object.create(ABO.prototype);
 TouchPie.prototype.constructor = TouchPie;
-
+/**
+ * @see README_DOKU.txt
+ */
 TouchPie.prototype.Initialize = function(){
     
     var offset = this.Offset;
+    var _toRadians = function(deg) {return deg * Math.PI / 180;};
 
-    this.StarAngles = [
-        this.toRadians(315+offset), // right
-        this.toRadians(45+offset), //bottom
-        this.toRadians(135+offset), // left
-        this.toRadians(225+offset) // top
+    this.StartAngles = [
+        _toRadians(315+offset), // right
+        _toRadians(45+offset), //bottom
+        _toRadians(135+offset), // left
+        _toRadians(225+offset) // top
     ];
     this.EndAngles = [
-        this.toRadians(45-offset), // right
-        this.toRadians(135-offset), //bottom
-        this.toRadians(225-offset), // left
-        this.toRadians(315-offset) // top
+        _toRadians(45-offset), // right
+        _toRadians(135-offset), //bottom
+        _toRadians(225-offset), // left
+        _toRadians(315-offset) // top
     ];
     
     var v = this.Value;
@@ -58,7 +65,9 @@ TouchPie.prototype.Initialize = function(){
         { x : v*0, y : v*(-1)}
     ];
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 TouchPie.prototype.Draw = function(c){
     if(!this.Enabled) return;
     
@@ -84,7 +93,7 @@ TouchPie.prototype.Draw = function(c){
         }
         con.beginPath();
         con.moveTo(center + crp[i].x,center + crp[i].y);
-        con.arc(center,center,this.Radius,this.StarAngles[i],this.EndAngles[i]);
+        con.arc(center,center,this.Radius,this.StartAngles[i],this.EndAngles[i]);
         con.lineTo(center+ crp[i].x,center+ crp[i].y);
         con.fill();
         con.closePath();
@@ -113,25 +122,29 @@ TouchPie.prototype.Draw = function(c){
     
     c.restore();
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 TouchPie.prototype.Update = function(){
+    // checks if the canvas size has changed
     var curcan = this.Engine.Canvas;
     if(curcan.width != this.CanvasWidth || curcan.height != this.CanvasHeight){
+        
+        // if it has, size will be saved and pie radius will be adjusted
+        
         this.CanvasWidth = curcan.width;
         this.CanvasHeight = curcan.height;
         
-        var relval = this.CanvasHeight; // relating value
-        if(this.CanvasWidth < this.CanvasHeight)
-            relval = this.CanvasWidth;
-        
+        var relval = Math.min(this.CanvasHeight,this.CanvasWidth) ; // relating value        
         this.Radius = relval / 6;
     }
 };
 
-TouchPie.prototype.toRadians = function(deg) {
-    return deg * Math.PI / 180;
-};
-
+/**
+ * Sets the given pie piece as the selected pie piece
+ * @param {object} pp - given pie piece
+ * @returns {TouchPie.prototype.Pieces.None|Number|.Object@call;create.Pieces.None|Object.prototype.Pieces.None}
+ */
 TouchPie.prototype.SelectPiece = function(pp){
     if(pp != TouchPie.prototype.Pieces.None){
         this.SelectedPiePiece = pp;
@@ -140,6 +153,10 @@ TouchPie.prototype.SelectPiece = function(pp){
     return this.DeselectPieces();
 };
 
+/**
+ * Deselects the currently selected piece
+ * @returns {TouchPie.prototype.Pieces.None}
+ */
 TouchPie.prototype.DeselectPieces = function(){
     return this.SelectedPiePiece = TouchPie.prototype.Pieces.None;
 };
@@ -151,35 +168,40 @@ TouchPie.prototype.SetPiece = function(dir, label, co){
     return dir;
 };
 /**
- * 
- * @param {type} dir String, which is one of the English words [right, bottom, left, top] or the label description of the respective piece
- * @returns TouchPie.prototype.Piece
+ * Returns the respective pie piece or its index according to given string in 'dir'
+ * @param {string} dir - returns respective pie piece if you use 'right','bottom', 'left', or 'top'
+ * returns the label description of the respective piece
+ * @returns {TouchPie.prototype.Piece|| number}
  */
 TouchPie.prototype.GetPiece = function(dir){
     dir = dir.toLowerCase();
-    if(dir == "right")
+    if(dir === "right")
         return TouchPie.prototype.Pieces.Right;
-    if(dir == "bottom")
+    if(dir === "bottom")
         return TouchPie.prototype.Pieces.Bottom;
-    if(dir == "left")
+    if(dir === "left")
         return TouchPie.prototype.Pieces.Left;
-    if(dir == "top")
+    if(dir === "top")
         return TouchPie.prototype.Pieces.Top;
-    for(var i=0; i<this.Labels.length; i++)
-        if(dir == this.Labels[i].toLowerCase())
-            return i;
+    
     return -1;
 };
-
+/**
+ * triggers the registered callback object of the currently selected pie piece
+ * @returns {undefined}
+ */
 TouchPie.prototype.Trigger = function(){
     if(this.SelectedPiePiece == TouchPie.prototype.Pieces.None)
         return;
     
-    var co = this.COArray[this.SelectedPiePiece];
-    co.function.call(co.that, co.parameter);
+    var cbo = this.COArray[this.SelectedPiePiece];
+    Callback.CallObject(cbo);
     this.Enabled = false;
 };
 
+/**
+ * enum of the pieces
+ */
 TouchPie.prototype.Pieces = {
     Right : 0,
     Bottom : 1,

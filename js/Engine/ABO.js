@@ -1,4 +1,8 @@
-
+/**
+ * Every object used in the AniBody-Engine should derive from this class if it is used in the background
+ * not visible to the user
+ * @returns {EngineObject}
+ */
 function EngineObject(){
     this.EI = 0; // Engine Index (the index of the engine, to which this object belongs in the $.EngineArray!
     this.UniqueID = this._getUniqueID();
@@ -7,7 +11,9 @@ function EngineObject(){
     this.Type = "Object";
     this.OnTerrain = false;
 }
-
+/**
+ * @see README_DOKU.txt
+ */
 EngineObject.prototype.Update = function(){return false;};
 
 EngineObject.prototype.UniqueIDState = 0;
@@ -21,7 +27,8 @@ Object.defineProperty(EngineObject.prototype, "Engine", {get: function(){
 }});
 
 /**
- * 
+ * Every object used in the AniBody-Engine should derive from this class if it is used in the foreground
+ * visible to the user
  * @returns {ABO}
  */
 function ABO(){ // AniBodyObject
@@ -34,9 +41,13 @@ function ABO(){ // AniBodyObject
 
 ABO.prototype = Object.create(EngineObject.prototype);
 ABO.prototype.constructor = ABO;
-
+/**
+ * @see README_DOKU.txt
+ */
 ABO.prototype.Draw = function(){return false;};
-
+/**
+ * @see README_DOKU.txt
+ */
 ABO.prototype.ProcessInput = function(){return false;};
 
 /**
@@ -84,4 +95,13 @@ ABO.prototype.GetArea = function(off, rounding){
     
     area.background = false;
     return area;
+};
+
+/**
+ * Removes/deregisters all registered functions.
+ * This function should be called if the instance won't be used anymore
+ * @returns {undefined}
+ */
+ABO.prototype.Delete = function(){
+
 };

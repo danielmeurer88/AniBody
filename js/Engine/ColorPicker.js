@@ -68,9 +68,7 @@ ColorPicker.prototype = Object.create(ABO.prototype);
 ColorPicker.prototype.constructor = ColorPicker;
 
 /**
- * replaces the constructor of a real object oriented programming language
- * readies the major objects
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ColorPicker.prototype.Initialize = function () {
     
@@ -201,10 +199,8 @@ ColorPicker.prototype.AddMouseHandler = function(){
  * @returns {undefined}
  */
 ColorPicker.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
-
 /**
- * reads the current 
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ColorPicker.prototype.Update = function(){
     // no need for updating if the color picker is not being shown
@@ -218,10 +214,8 @@ ColorPicker.prototype.Update = function(){
         this.Engine.Input.Mouse.Cursor.Set("pointer");
     
 };
-
 /**
- * proccessing the user input regarding to this class' needs 
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ColorPicker.prototype.ProcessInput = function(){
     // no need for updating if the color picker is not being shown
@@ -268,10 +262,8 @@ ColorPicker.prototype.ProcessInput = function(){
     
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
-
 /**
- * Fades the color picker onto the canvas and starts the left click register function when it is done fading in
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ColorPicker.prototype.Show = function(){
 
@@ -279,10 +271,8 @@ ColorPicker.prototype.Show = function(){
             this.AddMouseHandler();
     }}).Start();
 };
-
 /**
- * Hides color picker instantly and starts to deregister the left click function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 ColorPicker.prototype.Hide = function(){
     this.Opacity = 0;

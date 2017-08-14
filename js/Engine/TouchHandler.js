@@ -1,4 +1,10 @@
-
+/**
+ * An application programming interface that stands between the engine and the developer and handles touch related functions.
+ * This API manages registration of known ways of input possibilities to touch devices like
+ * "Tap", "LongTap" or "Swipe" - for one or two fingers
+ * (for the 2nd finger events, the 1st finger has to be touching the screen/resting on the screen)
+ * @returns {TouchHandler}
+ */
 function TouchHandler(){
     EngineObject.call(this);
     
@@ -53,10 +59,13 @@ function TouchHandler(){
         SwipeListener : []
     };
     
+this.Initialize();
 }
 TouchHandler.prototype = Object.create(EngineObject.prototype);
 TouchHandler.prototype.constructor = TouchHandler;
-
+/**
+ * @see README_DOKU.txt
+ */
 TouchHandler.prototype.Initialize = function(){
     
     this.EventListener.TouchStartEvent = this.Engine.Canvas.addEventListener("touchstart",
@@ -65,7 +74,7 @@ TouchHandler.prototype.Initialize = function(){
                 this.TouchMoveHandler.bind(this), false);
     this.EventListener.TouchEndEvent = this.Engine.Canvas.addEventListener("touchend",
                 this.TouchEndHandler.bind(this), false);
-    
+                
 };
 
 TouchHandler.prototype.TouchStartHandler = function(e){
@@ -92,22 +101,25 @@ TouchHandler.prototype.TouchMoveHandler = function(e){
     this.EventObjects.TouchMoveEvent = e;
     
     // handler could not have been called if there was at least finger 1 but will there be finger 2 or more as well?
-    this.Finger2.Detected = false;      
+    this.Finger2.Detected = false;
+    
+    this.Finger1.X = e.touches[0].clientX;
+    this.Finger1.Y = e.touches[0].clientY;
+    
     if(e.touches.length >= 2){
         this.Finger2.Detected = true;
+        
+        this.Finger2.X = e.touches[1].clientX;
+        this.Finger2.Y = e.touches[1].clientY;
     }
 
     if (this.PreventScrolling) {
         e.preventDefault(); // prevent scrolling when touch inside Canvas
     }
     
+    
 };
 
-/**
- * 
- * @param {type} e
- * @returns {undefined}
- */
 TouchHandler.prototype.TouchEndHandler = function(e){
     
     this.EventObjects.TouchEndEvent = e;
@@ -124,10 +136,10 @@ TouchHandler.prototype.TouchEndHandler = function(e){
     if(laste.touches.length >= 2){
         this.Finger2.Detected = true;
         // now that there are more fingers on the screen we don't care for finger 1 data anymore
-        xdelta = starte.touches[1].clientX - laste.touches[1].clientX;
-        ydelta = starte.touches[1].clientY - laste.touches[1].clientY;
+        xdelta = laste.touches[1].clientX - starte.touches[1].clientX;
+        ydelta = laste.touches[1].clientY - starte.touches[1].clientY;
     }
-    
+        
     // TESTING FOR A SHORT TOUCH --> TAP
     if(timedelta <= this.DEFINEDVALUES.TapLimit && this._movementWithin(xdelta, ydelta, this.DEFINEDVALUES.VarianceLimit)){
         // it's a tap --> there are no further gestures to be expected
@@ -162,7 +174,7 @@ TouchHandler.prototype.TouchEndHandler = function(e){
     if(this.ExpectTouch && timedelta <= this.DEFINEDVALUES.SwipeTimeLimit && !this._movementWithin(xdelta,ydelta, this.DEFINEDVALUES.SwipeTrackLimit)){
         this.ExpectTouch = false;
         
-        var dir = this._getDirection(xdelta, ydelta);
+        var dir = this._getDirectionObject(xdelta, ydelta);
         
         if(!this.Finger2.Detected){
             this.OnSwipeFinger1(dir);
@@ -178,6 +190,11 @@ TouchHandler.prototype.TouchEndHandler = function(e){
     this.EventObjects.TouchMoveEvent = false; // Start- and EndEventObject will be overwritten in the next guesture but MoveEventObject only if the guesture moves - to be sure => clean it up
     this.Finger1.Detected = false;
     this.Finger2.Detected = false;
+//    this.Finger1.X = -1;
+//    this.Finger1.Y = -1;
+//    this.Finger2.X = -1;
+//    this.Finger2.Y = -1;
+    
     this.ExpectTouch = false;
     
     if(this.PreventDefault)
@@ -188,12 +205,6 @@ TouchHandler.prototype.Update = function(){
     
     if(!this.ExpectTouch)
         return false;
-    
-    // an update function is needed if a touch pi is implemented
-    /* OLD CODE
-
-     */
-    
 };
 
 TouchHandler.prototype._movementWithin = function(x,y,limit){
@@ -202,8 +213,17 @@ TouchHandler.prototype._movementWithin = function(x,y,limit){
     else
         false;
 };
-
-TouchHandler.prototype._getDirection = function(x,y){
+/**
+ * returns the direction object from the x,y-difference of the touch start and touch end
+ * {X,Y} with X,Y : [-1|0|1]
+ * -1 -> change in negative X or Y
+ * 0 -> no change
+ * 1 -> change in positive X or Y 
+ * @param {number} x - difference in x direction
+ * @param {number} y - difference in y direction
+ * @returns {Object|Boolean}
+ */
+TouchHandler.prototype._getDirectionObject = function(x,y){
     var dir;
     if(arguments.length >= 2){
         // testing if horizontal swipe (x) or vertical swipe (y) is bigger
@@ -223,75 +243,111 @@ TouchHandler.prototype._getDirection = function(x,y){
         return dir;
     } 
     
-    if(arguments.length == 1){
-        dir = x; // the first parameter (x) was meant to be the 0,1 direction object
-        if(dir.Y == 0)
-            return dir.X==1 ? "right" : "left";
+    return false;
+};
+
+/**
+ * Transforms a direction object into the respective word of the english language
+ * @param {type} dir
+ * @returns {String|Boolean}
+ */
+TouchHandler.prototype._getSwipeDirection = function(dir){
+    if(arguments.length === 1){
+        if(dir.Y === 0)
+            return (dir.X ===1) ? "right" : "left";
         else
-            return dir.Y == 1 ? "down" : "up";
+            return (dir.Y === 1) ? "down" : "up";
     }
     
     return false;
 };
 
+/**
+ * Triggers all Listeners registered to a tap with finger 1
+ * @returns {undefined}
+ */
 TouchHandler.prototype.OnTapFinger1 = function(){
     console.log("Finger1 Tap");
     if(this.FakeMouseClick){
         this.Engine.Input.FakeMouseClick(this.Finger1.X, this.Finger1.Y);
     }
     
-    var l;
+    var cbo;
     for(var i=0; this.Finger1.TapListener.length; i++){
-        l = this.Finger1.TapListener[i];
-        Callback.CallObject(l);
+        cbo = this.Finger1.TapListener[i];
+        Callback.CallObject(cbo);
     }
 };
-
+/**
+ * Triggers all Listeners registered to a tap with finger 2 (1st finger resting on the screen, 2nd finger does the tapping)
+ * @returns {undefined}
+ */
 TouchHandler.prototype.OnTapFinger2 = function(){
     console.log("Finger2 Tap");
-    var l;
+    var cbo;
     for(var i=0; this.Finger2.TapListener.length; i++){
-        l = this.Finger2.TapListener[i];
-        Callback.CallObject(l);
+        cbo = this.Finger2.TapListener[i];
+        Callback.CallObject(cbo);
     }
 };
-
+/**
+ * Triggers all Listeners registered to a long tap with finger 1
+ * @returns {undefined}
+ */
 TouchHandler.prototype.OnLongTapFinger1 = function(){
     console.log("Finger1 LongTap");
-    var l;
+    var cbo;
     for(var i=0; this.Finger1.LongTapListener.length; i++){
-        l = this.Finger1.LongTapListener[i];
-        Callback.CallObject(l);
+        cbo = this.Finger1.LongTapListener[i];
+        Callback.CallObject(cbo);
     }
 };
-
+/**
+ * Triggers all Listeners registered to a long tap with finger 2 (1st finger resting on the screen, 2nd finger does the long tapping)
+ * @returns {undefined}
+ */
 TouchHandler.prototype.OnLongTapFinger2 = function(){
     console.log("Finger2 LongTap");
-    var l;
+    var cbo;
     for(var i=0; this.Finger2.LongTapListener.length; i++){
-        l = this.Finger2.LongTapListener[i];
-        Callback.CallObject(l);
+        cbo = this.Finger2.LongTapListener[i];
+        Callback.CallObject(cbo);
     }
 };
-
+/**
+ * Triggers all Listeners registered to a swipe with finger 1
+ * @param {object} dir - holds the information of the swipe direction and will be given to the registered callbacks as their 2nd argument
+ * @returns {undefined}
+ */
 TouchHandler.prototype.OnSwipeFinger1 = function(dir){
-    console.log("Finger1 " + this._getDirection(dir) + " swipe - " + JSON.stringify(dir));
-    var l;
+    console.log("Finger1 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
+    var cbo;
     for(var i=0; this.Finger1.SwipeListener.length; i++){
-        l = this.Finger1.SwipeListener[i];
-        Callback.CallObject(l, dir);
+        cbo = this.Finger1.SwipeListener[i];
+        Callback.CallObject(cbo, dir);
     }
 };
-
+/**
+ * Triggers all Listeners registered to a swipe with finger 2 (first finger resting on the screen, 2nd finger does the swiping)
+ * @param {object} dir - holds the information of the swipe direction and will be given to the registered callbacks as their 2nd argument
+ * @returns {undefined}
+ */
 TouchHandler.prototype.OnSwipeFinger2 = function(dir){
-    console.log("Finger2 " + this._getDirection(dir) + " swipe - " + JSON.stringify(dir));
-    var l;
-    for(var i=0; this.Finger1.SwipeListener.length; i++){
-        l = this.Finger1.SwipeListener[i];
-        Callback.CallObject(l, dir);
+    console.log("Finger2 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
+    var cbo;
+    for(var i=0; this.Finger2.SwipeListener.length; i++){
+        cbo = this.Finger2.SwipeListener[i];
+        Callback.CallObject(cbo, dir);
     }
 };
 
+/**
+ * adds/registers a new Listener (callback-object) to a touch event
+ * @param {string} eventtype - name of the event found in the collection 'TouchHandler.prototype.Types'
+ * @param {object} listener - callback-object
+ * (for swipe listener only: 2nd argument will be object of {X:-1|0|1,Y:-1|0|1})
+ * @returns {undefined}
+ */
 TouchHandler.prototype.AddEventListener = function(eventtype, cbo){
     switch(eventtype){
         case "tapfinger1" : this.Finger1.TapListener.push(cbo);break;
@@ -302,4 +358,17 @@ TouchHandler.prototype.AddEventListener = function(eventtype, cbo){
         case "swipefinger2" : this.Finger2.SwipeListener.push(cbo);break;
         default : console.log("could not add event listener with type "+eventtype);
     }
+};
+
+/**
+ * collection of the touch event types
+ * @type object
+ */
+TouchHandler.prototype.Types = {
+    TapFinger1 : "tapfinger1",
+    TapFinger2 : "tapfinger2",
+    LongTapFinger1 : "longtapfinger1",
+    LongTapFinger2 : "longtapfinger2",
+    SwipeFinger1 : "swipefinger1",
+    SwipeFinger2 : "swipefinger2"
 };

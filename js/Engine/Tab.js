@@ -58,10 +58,8 @@ Tab.prototype.BackgroundColor = "#aaa";
 Tab.prototype.BackgroundColorSelected = "#ccc";
 Tab.prototype.BreaklineColor = "#666";
 
-
 /**
- * Gets called at the end of the constructor function
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Tab.prototype.Initialize = function(){
     
@@ -213,7 +211,9 @@ Tab.prototype.Update = function(){
     }
     
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Tab.prototype.ProcessInput = function(){
     
     // adding request for the tab

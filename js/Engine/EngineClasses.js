@@ -115,6 +115,10 @@ HashTable.prototype.GetDistribution = function(){
 // ########################################################
 // ########################################################
 
+/**
+ * a class that provides random numbers
+ * @type static class
+ */
 var Random = {};
 /**
  * Returns a number between a minimum and a maximum - both inclusivly
@@ -181,6 +185,13 @@ Random.GetTimestamp = function(min, max, unit){
 // ########################################################
 // ########################################################
 
+/**
+ * Callback class - capsulates a function with its this-object and parameters
+ * @param {type} that
+ * @param {type} func
+ * @param {type} parameter
+ * @returns {Callback}
+ */
 function Callback(that, func, parameter){
     
     // if Callback was instanciated with an object
@@ -201,19 +212,33 @@ function Callback(that, func, parameter){
             this.parameters.push(arguments[i]);
     }
 };
-
+/**
+ * Triggers the function
+ * @returns {undefined}
+ */
 Callback.prototype.Call = function(){
     if(this.OneParameter)
         this.function.call(this.that, this.parameters[0]);
     else
         this.function.apply(this.that, this.parameters);
 };
-
-Callback.CallObject = function(obj,para2){
-    if(typeof obj === "object" && typeof obj.function === "function")
-        obj.function.call(obj.that, obj.parameter,para2);
+/**
+ * Calls/triggers a callback-object
+ * @type static method
+ * @param {type} obj
+ * @returns {undefined}
+ */
+Callback.CallObject = function(obj, extra){
+    if(typeof obj === "object" && typeof obj.function === "function"){
+        obj.function.call(obj.that, obj.parameter, extra);
+    }
+        
 };
 
+/**
+ * Transform an instance of the class into in object and returns it
+ * @returns {Callback.prototype.ToObject.EngineClassesAnonym$2}
+ */
 Callback.prototype.ToObject = function(){
      return { that:this.that, function:this.function, parameter:this.parameters};
 };
@@ -224,7 +249,7 @@ Callback.prototype.ToObject = function(){
 
 /**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority
- * @param {Boolean} nop Flag if an enqueued element without given priority gets priority of zero (true) or the current highest priority + 1 (false and default)
+ * @param {Boolean} nop - Flag if an enqueued element without given priority gets priority of zero (true) or the current highest priority + 1 (false and default)
  * @returns {PriorityQueue}
  */
 function PriorityQueue(nop){
@@ -339,7 +364,12 @@ PriorityQueue.prototype.Sort = function(desc){
     this._quicksort(0, this.heap.length-1);
     this.Sorted = true;
 };
-
+/**
+ * compare function for the quicksort algorithm
+ * @param {object} a
+ * @param {object} b
+ * @returns {Boolean}
+ */
 PriorityQueue.prototype._comp = function(a,b){
     if(this._desc){
         return a.priority > b.priority;
@@ -347,7 +377,12 @@ PriorityQueue.prototype._comp = function(a,b){
         return a.priority < b.priority;
     }
 };
-
+/**
+ * swap function for the quicksort algorithm
+ * @param {object} i
+ * @param {object} j
+ * @returns {undefined}
+ */
 PriorityQueue.prototype._swap = function(i, j){
     // IMPORTANT: Javascript automatically uses internally reference by pointer when it comes to objects
     // switching the pointer
@@ -355,7 +390,12 @@ PriorityQueue.prototype._swap = function(i, j){
     this.heap[i] = this.heap[j];
     this.heap[j] = temp;
 };
-
+/**
+ * quicksort algorithm that is used by the Sort-method
+ * @param {object} left
+ * @param {object} right
+ * @returns {undefined}
+ */
 PriorityQueue.prototype._quicksort = function(left, right) {
  
     if (left < right) {
@@ -434,7 +474,10 @@ PriorityQueue.prototype.DeleteMergedElements = function(){
     this.HighestPriority = hp;
     this.length = this.heap.length;
 };
-
+/**
+ * deletes all entries in the Priority Queue
+ * @returns {undefined}
+ */
 PriorityQueue.prototype.Flush = function(){
     this.heap = [];
     this.HighestPriority = 0;
@@ -446,11 +489,28 @@ PriorityQueue.prototype.Flush = function(){
 // ########################################################
 // ########################################################
 
+/**
+ * represents an ordinary queue - FIFO - first in first out
+ * @returns {Queue}
+ */
 function Queue(){
     this.vals = [];
 }
+/**
+ * enqueues an object
+ * @param {object} val
+ * @returns {boolean}
+ */
 Queue.prototype.Enqueue = function(val){return this.vals.push(val);};
+/**
+ * Dequeues the first enqueued object, deletes it from the queue
+ * @returns {object}
+ */
 Queue.prototype.Dequeue = function(){return this.vals.shift();};
+/**
+ * returns true if queue is empty, false if otherwise
+ * @returns {Boolean}
+ */
 Queue.prototype.isEmpty = function(){if(this.vals.length<=0)return true; else return false;};
 
 // ########################################################
@@ -459,10 +519,10 @@ Queue.prototype.isEmpty = function(){if(this.vals.length<=0)return true; else re
 
 /**
  * @description Encapsulates a function which is called periodically 
- * @param {object} ref object will be the first parameter of the function f
- * @param {type} f a function, which will be called the number of times as given in fps 
- * @param {type} fps determines how often the function f will be called in a second
- * @param {type} [optional] framestotal determines how often the function will be called in total
+ * @param {object} ref - object will be the first parameter of the function f
+ * @param {function} f - a function, which will be called the number of times as given in fps 
+ * @param {integer} fps - determines how often the function f will be called in a second
+ * @param {number} framestotal - determines how often the function will be called in total (optional)
  * @returns {Timer}
  */
 function Timer(ref, f, fps, framestotal){
@@ -490,26 +550,52 @@ function Timer(ref, f, fps, framestotal){
         f.call(that.ref, that.ref);
     };
 }
+/**
+ * starts the timer calling the function with the object ref as its first argument and Counter equal to zero
+ * @returns {undefined}
+ */
 Timer.prototype.Start = function(){
         this.Reset();
         this.internal = window.setInterval(this.Function, this.Milli, this);
         this.Active = true;
 };
+/**
+ * Resets the counter to zero
+ * @returns {undefined}
+ */
 Timer.prototype.Reset = function(){
         this.Counter = 0;
 };
+/**
+ * stops the timer and reset the counter
+ * @returns {undefined}
+ */
 Timer.prototype.Stop = function(){
+        this.Reset();
         window.clearInterval(this.internal);
         this.Active = false;
 };
+/**
+ * starts the timer calling the function with the object ref as its first argument and Counter same when it was paused
+ * @returns {undefined}
+ */
 Timer.prototype.Continue = function(){
         this.internal = window.setInterval(this.Function, this.Milli, this);
         this.Active = true;
 };
+/**
+ * pauses the timer (counter stays the same)
+ * @returns {undefined}
+ */
 Timer.prototype.Pause = function(){
         window.clearInterval(this.internal);
         this.Active = false;
 };
+/**
+ * sets the number of total calls until the timer stops itself
+ * @param {type} t
+ * @returns {undefined}
+ */
 Timer.prototype.SetTotal = function(t){
         this.Total = t;
 };
@@ -533,6 +619,11 @@ function Point(x,y){
 // ########################################################
 // ########################################################
 
+/**
+ * Represents a class, which is used in the engine
+ * it's possible to add a function that is called not every frame but every multiple of a certain number
+ * @returns {Counter}
+ */
 function Counter(){
     EngineObject.call(this);
     // Javascript Integer limit = 2^53 = 9007199254740992
@@ -542,7 +633,9 @@ function Counter(){
 }
 Counter.prototype = Object.create(EngineObject.prototype);
 Counter.prototype.constructor = Counter;
-
+/**
+ * @see README_DOKU.txt
+ */
 Counter.prototype.Update = function () {
 
     this.Frames++;
@@ -557,11 +650,35 @@ Counter.prototype.Update = function () {
 
 };
 
+/**
+ * Adds function, which is packed in a Counter-Object, is not called every frame but every multiple of the number in co.every
+ * returns the ref number, which is needed for removing it
+ * @param {counter object} co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+ * @param {number} prior - priority within the counter
+ * @param {string} name
+ * @returns {number}
+ */
 Counter.prototype.AddCounterFunction = function (co, prior, name) {
-    // co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
     return this.CounterFunctions.Enqueue(co, prior, name);
 };
-
+/**
+ * Adds a callback-object, which is not called every frame but every multiple of the number in 'every'
+ * returns the ref number, which is needed for removing it
+ * @param {callback object} co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+ * @param {number} every
+ * @param {number} prior - priority within the counter
+ * @param {string} name
+ * @returns {number}
+ */
+Counter.prototype.AddCallbackObject = function (cbo, every,  prior, name) {
+    cbo.every = every;
+    return this.CounterFunctions.Enqueue(cbo, prior, name);
+};
+/**
+ * removes the counter function that belongs to the ref number
+ * @param {number} ref
+ * @returns {undefined}
+ */
 Counter.prototype.RemoveCounterFunction = function (ref) {
     this.CounterFunctions.DeleteByReferenceNumber(ref);
 };

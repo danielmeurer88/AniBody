@@ -1,9 +1,8 @@
 
 /**
- * Creates circles narrowing to the spot
- * @param {Object} area object of rectangle or circle
- * @param {Number} flow_ms Amount of milliseconds that needs to darken the screen
- * @param {Number} ms Amount of milliseconds that the screen stays darken
+ * Creates circles narrowing to the spot (area)
+ * @param {Object} area - object of rectangle or circle
+ * @param {Number} ms - time of the spotting in milliseconds
  * @returns {Spotting}
  */
 function Spotting(area, ms){
@@ -41,7 +40,9 @@ Spotting.prototype = Object.create(ABO.prototype);
 Spotting.prototype.constructor = Spotting;
 
 Spotting.prototype.DefaultColor = "red";
-
+/**
+ * @see README_DOKU.txt
+ */
 Spotting.prototype.Initialize = function () {
     this._getSpot(this.Area);
     
@@ -59,6 +60,11 @@ Spotting.prototype.Initialize = function () {
     
 };
 
+/**
+ * get the center (spot) of the area
+ * @param {type} a
+ * @returns {undefined}
+ */
 Spotting.prototype._getSpot = function (a) {
 
     // finding the centroid of the area
@@ -131,29 +137,5 @@ Spotting.prototype._createForegroundDrawFunctionObject = function(){
     
     return {that: this, parameter:this.Engine, function:f};
     
-};
-
-Spotting.prototype._createUpdateFunctionObject = function(){
-    
-    var f = function(){
-        
-        if(this.Following){
-            
-        }
-        
-    };
-    
-    return {that: this, parameter:this.Engine, function:f};
-    
-};
-
-/**
- * Moves highlighted area
- * @param {number} dx
- * @param {number} dy
- * @returns {undefined}
- */
-Spotting.prototype.Follow = function(instance, attr){
-
 };
 

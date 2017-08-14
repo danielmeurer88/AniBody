@@ -1,11 +1,11 @@
 /**
- * Stellt eine Switch in dem Versuch "Elektrolytischer Trog" dar.
- * Wird automatisch von der Klasse "Wanne" erstellt
- * @param {type} x
- * @param {type} y
- * @param {type} width
- * @param {type} height
- * @param {type} type - "Stab" oder "Zylinder"
+ * represents a switch which state can be changed to off and on - by changing states it will trigger a function (callback-object)
+ * @param {number} x
+ * @param {number} y
+ * @param {number} width
+ * @param {number} height
+ * @param {object} cbo - callback-object, which will be triggered if the switch has been switched
+ * @param {bool} on - boolean that holds the informatif if the switch starts activated or not
  * @returns {Switch}
  */
 function Switch(x, y, width, height, cbo, on){
@@ -74,7 +74,9 @@ Switch.prototype.DefaultColorOff = "red";
 
 Switch.prototype.DefaultRounding = 4;
 
-
+/**
+ * @see README_DOKU.txt
+ */
 Switch.prototype.Initialize = function(){
     this.AddMouseHandler();
     
@@ -130,7 +132,9 @@ Switch.prototype.SetCallbackObject = function(cbo){
     
     this.CallbackObject = cbo;
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Switch.prototype.Draw = function(c){
     c.save();
     var ir = this._innerRectDepth;
@@ -208,13 +212,17 @@ Switch.prototype.Draw = function(c){
     
     c.restore();
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Switch.prototype.Update = function(){
     if(this.IsMouseOver){
         this.Engine.Input.Mouse.Cursor.Set("pointer");
     }
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Switch.prototype.ProcessInput = function(){
     this.Engine.Input.MouseHandler.AddHoverRequest(this.GetArea(0,this.Rounding), this, "IsMouseOver");    
 };

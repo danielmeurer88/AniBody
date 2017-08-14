@@ -67,13 +67,15 @@ RPGPortal.prototype.Update = function(){
             var mm = this.Engine.MediaManager;
             this.OldMoveCounter = this.Engine.Terrain.MoveCounter;
             
-            mm.Require(req, new Callback(this,function(){
+            var cbo = function(){
                 
                 this.Engine.Terrain.CleanObjectQ();
                 this.Engine.Terrain.SetTerrain(this.ToTerrain);
                 this.Traveler.SetCurrentField(this.ToField);
                 
-            },this));
+            }.getCallbackObject(this, this);
+            
+            mm.Require(req, cbo);
             
             
         }

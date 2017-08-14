@@ -177,11 +177,8 @@ Button.prototype._getClass = function (obj) {
     }
     return con;    
 };
-
 /**
- * will be called at the end of the constructor function and it can be seen as an
- * extension of it
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Button.prototype.Initialize = function () {
     
@@ -244,10 +241,7 @@ Button.prototype.AddMouseHandler = function(prior, name){
 };
 
 /**
- * removes the mouse left click handler
- * @param {Number} prior priority of the PriorityQueue of LeftClick handlers(optional)
- * @param {string} name (optional)
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Button.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
 
@@ -288,10 +282,8 @@ Button.prototype._deregisterHoverImageDrawing = function(){
     this.Engine.RemoveForegroundDrawFunctionObject(this._ref_reghov);
     this._ref_reghov = null
 };
-
 /**
- * ProcessInput()
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Button.prototype.ProcessInput = function () {
           
@@ -300,10 +292,8 @@ Button.prototype.ProcessInput = function () {
     this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
      
 };
-
 /**
- * Update()
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Button.prototype.Update = function () {
     
@@ -365,11 +355,8 @@ Button.prototype.Update = function () {
         this.GetLabelWidth();
     this.OldState = this.State;
 };
-
 /**
- * Draw
- * @param {2DCanvasContext} c
- * @returns {undefined}
+ * @see README_DOKU.txt
  */
 Button.prototype.Draw = function (c) {
 
@@ -606,7 +593,6 @@ Button.prototype.SetMask = function (m) {
 
 /**
  * @description Saves the current mask as the DefaultMask
- * @param {Object} m Mask Object
  * @returns {undefined}
  */
 Button.prototype.SaveMask = function () {
@@ -626,9 +612,10 @@ Button.prototype.ApplyDefaultMask = function () {
 
 /**
  * @description Changes the appearance - should only be called from SetMask()
- * @param {Object} s0
- * @param {Object} s1
- * @param {Object} s2
+ * @param {Object} s0 - object, which contents of the state 0 values
+ * @param {Object} s1 - object, which contents of the state 1 values
+ * @param {Object} s2 - object, which contents of the state 3 values
+ * @param {Object} sv - object, which contents of the rest of the necessary values
  * @returns {undefined}
  */
 Button.prototype.SetAppearance = function (s0, s1, s2, sv) {
@@ -1499,7 +1486,12 @@ Button.prototype.AddButtonEffectOnlyLightning = function(depth, stops){
     this.ButtonLayout = img;
     
 };
-
+/**
+ * adds an 3D Button effect to the button
+ * @param {type} depth
+ * @param {type} stops
+ * @returns {undefined}
+ */
 Button.prototype.AddButtonEffect = function(depth, stops){
     
     if(isNaN(depth))
@@ -1637,15 +1629,32 @@ Button.prototype.AddButtonEffect = function(depth, stops){
     this.ButtonLayout = img;
     
 };
-
+/**
+ * Sets the counter - if counter is higher than zero it displayes the counter number
+ * @param {number} c
+ * @returns {undefined}
+ */
 Button.prototype.SetCounter = function (c) {if(!isNaN(c) || c >= 0)this._counter = c;};
-
+/**
+ * returns the counter number
+ * @returns {Number}
+ */
 Button.prototype.GetCounter = function () {return this._counter;};
-
+/**
+ * increment the counter number
+ * @returns {undefined}
+ */
 Button.prototype.IncreaseCounter = function () {this._counter++;};
-
+/**
+ * decrement the counter number
+ * @returns {undefined}
+ */
 Button.prototype.DecreaseCounter = function () {if(this._counter)this._counter--;};
-
+/**
+ * set urgency status - true = the button shows a exclamation mark in the bottom right corner
+ * @param {bool} ur
+ * @returns {undefined}
+ */
 Button.prototype.SetUrgency = function (ur) {
     if(typeof ur === "undefined")
         this._urgency = false;
@@ -1653,7 +1662,10 @@ Button.prototype.SetUrgency = function (ur) {
         this._urgency = ur;
     
 };
-
+/**
+ * sets rounding feature to the button - it would form a round buttom if width and hight have the same size
+ * @returns {undefined}
+ */
 Button.prototype.Circlize = function () {
     var min = Math.min(this.Width, this.Height);
     this.Rounding = min/2;
