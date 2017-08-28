@@ -423,6 +423,86 @@ Engine.prototype.Download = function (name, data) {
 };
 
 /**
+ * Request the fullscreen mode for the canvas and returns true if the browser knows the feature
+ * @returns {boolean}
+ */
+Engine.prototype.RequestFullscreen = function(){
+    // try fullscreen
+    var can = this.Canvas;
+    var done = false;
+
+    // standard
+    if(!done && can.requestFullscreen){
+        can.requestFullscreen();
+        done = true;
+    }
+
+    if(!done && can.webkitRequestFullscreen){
+        can.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        done = true;
+    }
+
+    if(!done && can.mozRequestFullScreen){
+        can.mozRequestFullScreen();
+        done = true;
+    }
+
+    if(!done && can.msRequestFullscreen){
+        can.msRequestFullscreen();
+        done = true;
+    }
+
+    // TODO : check if canvas has the CSS pseudo-selectors! if not: set them
+    // more info: https://developers.google.com/web/updates/2011/10/Let-Your-Content-Do-the-Talking-Fullscreen-API
+    /*
+    div:-webkit-full-screen {
+        width: 100% !important;
+    }
+    div:-moz-full-screen {
+        width: 100% !important;
+    }
+    div:-ms-fullscreen {
+        width: 100% !important;
+    }
+    div:fullscreen {
+        width: 100% !important;
+    }
+    */
+
+    return done;
+};
+
+/**
+ * Exit fullscreen mode for the canvas
+ * @returns {undefined}
+ */
+Engine.prototype.ExitFullscreen = function(){
+
+    var done = false;
+
+    // standard
+    if(!done && document.exitFullscreen){
+        document.exitFullscreen();
+        done = true;
+    }
+
+    if(!done && document.webkitExitFullscreen){
+        document.webkitExitFullscreen();
+        done = true;
+    }
+
+    if(!done && document.mozCancelFullScreen){
+        document.mozCancelFullScreen();
+        done = true;
+    }
+
+    if(!done && document.msExitFullscreen){
+        document.msExitFullscreen();
+        done = true;
+    }
+};
+
+/**
  * @description Returns the object at index i
  * @param {integer} i
  * @returns {result}

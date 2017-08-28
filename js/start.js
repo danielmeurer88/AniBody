@@ -76,6 +76,17 @@ function menu_callback(engine){
     engine.AddObject(b2, 1);
         
     engine.Start();
+
+    $("#fs_btn").click(function(){
+           engine.RequestFullscreen();
+
+           var f = function(en){
+                en.ExitFullscreen();
+           };
+
+           window.setTimeout(f, 2000, engine);
+
+    });
     
 }
 
