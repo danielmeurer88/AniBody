@@ -32,7 +32,6 @@ function Spotting(area, ms){
     this.NumberCircles = 3;
     
     this._ref_dfo = null;
-    this._ref_ufo = null;
 
 this.Initialize();
 }
@@ -89,14 +88,9 @@ Spotting.prototype.Start = function(cbo){
     var dfo = this._createForegroundDrawFunctionObject();
     this._ref_dfo = this.Engine.AddForegroundDrawFunctionObject(dfo);
     
-    var ufo = this._createUpdateFunctionObject();
-    this._ref_ufo = this.Engine.AddUpdateFunctionObject(ufo);
-    
     var endf= function(that,cbo){
         that.Engine.RemoveForegroundDrawFunctionObject(that._ref_dfo);
         that._ref_dfo = null;
-        that.Engine.RemoveUpdateFunctionObject(that._ref_ufo);
-        that._ref_ufo = null;
         if(typeof cbo !== "undefined")
             cbo.function.call(cbo.that, cbo.parameter);
     };
@@ -138,4 +132,3 @@ Spotting.prototype._createForegroundDrawFunctionObject = function(){
     return {that: this, parameter:this.Engine, function:f};
     
 };
-
