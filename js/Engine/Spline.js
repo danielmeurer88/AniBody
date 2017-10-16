@@ -22,6 +22,7 @@ function Spline() {
     
     this._useDashedLine = false;
     this._dashedLineValues = [0,0];
+    this._close = false;
 
     this.DrawPoints = false;
     
@@ -421,4 +422,8 @@ Spline.prototype._getFirstControlPoints = function (rhs) {
         x[n - i - 1] -= tmp[n - i] * x[n - i]; // Backsubstitution.
 
     return x;
+};
+
+Spline.prototype.SetCloseSpline = function (state) {
+    this._close = state;
 };

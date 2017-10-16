@@ -88,8 +88,29 @@ function menu_callback(engine){
 
     });
     
+    testSpline(engine);
 }
 
 function start_help(engine){
     new Alert("in developement").Start();
+}
+
+function testSpline(engine){
+    
+    var w = engine.Canvas.width;
+    var h = engine.Canvas.height;
+    var sp = new Spline();
+    
+    sp.SetColor("red");
+    sp.DrawPoints = true;
+    
+    sp.SetCloseSpline(true);
+    
+    sp.AddPoint({x:w*0.65, y:h*0.99});
+    sp.AddPoint({x:w*0.38, y:h*0.9});
+    sp.AddPoint({x:w*0.15, y:h*0.7});
+    sp.AddPoint({x:w*0.35, y:h*0.65});
+    sp.AddPoint({x:w*0.63, y:h*0.55});
+    
+    engine.AddObject(sp);
 }
