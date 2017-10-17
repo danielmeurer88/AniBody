@@ -107,9 +107,7 @@ function testSpline(engine){
     sp.SetCloseSpline(true);
     
     sp.AddPoint({x:w*0.65, y:h*0.99});
-    sp.AddPoint({x:w*0.38, y:h*0.9});
     sp.AddPoint({x:w*0.15, y:h*0.7});
-    sp.AddPoint({x:w*0.35, y:h*0.65});
     sp.AddPoint({x:w*0.63, y:h*0.55});
     
     engine.AddObject(sp);

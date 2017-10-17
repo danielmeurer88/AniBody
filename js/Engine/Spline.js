@@ -118,6 +118,24 @@ Spline.prototype.Draw = function (c) {
                     );
             c.stroke();
         }
+        
+        if(this._close){
+            var endi = this.Points.length - 1;
+            p1 = this.Points[endi];
+            cp1 = this.FirstControlPoints[endi];
+            cp2 = this.SecondControlPoints[endi];
+            p2 = this.Points[0];
+                
+            c.beginPath();
+            c.moveTo(p1.x, p1.y);
+            c.bezierCurveTo(
+                    cp1.x, cp1.y,
+                    cp2.x, cp2.y,
+                    p2.x, p2.y
+                    );
+            c.stroke();
+        }
+        
     }
         
     // drawing the points if wished
@@ -349,6 +367,12 @@ Spline.prototype._calculateCurveControlPoints = function () {
         knots.push({
             x: this.Points[i].x,
             y: this.Points[i].y
+        });
+    }
+    if(this._close){
+        knots.push({
+            x: this.Points[0].x,
+            y: this.Points[0].y
         });
     }
 
