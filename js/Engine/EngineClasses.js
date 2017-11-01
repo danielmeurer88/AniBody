@@ -127,10 +127,36 @@ var Random = {};
  * @param {number} decimals
  * @returns {Number}
  */
+Random.GetNumberOld = function(min, max, decimals){
+    
+    // Testing needed
+    
+    if(isNaN(min))
+    min = 0;
+    if(isNaN(max))
+        if(Number && Number.MAX_SAFE_INTEGER)
+            max = Number.MAX_SAFE_INTEGER;
+        else
+            max = Math.pow(2, 53) - 1;
+        
+    if(isNaN(decimals))
+        decimals = 0;
+    
+    var ran = Math.random() * Math.pow(10, decimals+6);
+    min *= Math.pow(10, decimals);
+    max *= Math.pow(10, decimals);
+    ran = ran % (max - min + 1) + min;
+    return (Math.round(ran)/Math.pow(10, decimals));
+};
+
 Random.GetNumber = function(min, max, decimals){
-    if(typeof min === "undefined" || isNaN(min))
-        min = 0;
-    if(typeof max === "undefined" || isNaN(max))
+    if(window.crypto || window.crypto.getRandomValues){
+        return Random.GetNumberOld(min, max, decimals);
+    }
+    
+    if(isNaN(min))
+    min = 0;
+    if(isNaN(max))
         if(Number && Number.MAX_SAFE_INTEGER)
             max = Number.MAX_SAFE_INTEGER;
         else
@@ -139,9 +165,15 @@ Random.GetNumber = function(min, max, decimals){
     if(typeof decimals === "undefined" || isNaN(decimals))
         decimals = 0;
     
-    var ran = Math.random() * Math.pow(10, decimals);
+    var array = new Uint32Array(3);
+    window.crypto.getRandomValues(array);
     
-    return (Math.round((ran * max) + min)/Math.pow(10, decimals));
+    var num = array[0] + array[1] + array[2];
+    max *= Math.pow(10, decimals);
+    min *= Math.pow(10, decimals);
+    num = num % (max - min + 1) + min;
+    num /= Math.pow(10, decimals);
+    return num;
 };
 /**
  * Returns a timestamp from now minus a random timespan
@@ -180,10 +212,9 @@ Random.GetTimestamp = function(min, max, unit){
     return lim;
     
 };
-
 /**
- * Figurative speaking: Drawing 1 lot from a bowl. How many lots of a kind exists in the bowl can be different
- * @example Random.DrawLots(["A","B"],[8, 2]) --> the bowl has 8+2 lots in it.
+ * Figuratively speaking: Drawing 1 lot from a bowl. How many lots of a kind exists in the bowl can be different
+ * @example Random.DrawLot(["A","B"],[8, 2]) --> the bowl has 8+2 lots in it.
  * 8x "A" and 2x "B". The call will draw 1 lot and return it
  * @param {object-array} lots
  * @param {number-array} lotschance
