@@ -676,13 +676,13 @@ String.prototype.format = function(){
 
     "{ae} {oe} {ue} {Ae} {Oe} {Ue} {ss}".decodeURI()
 
-    Ä = %C3%84
-    Ö = %C3%96
-    Ü = %C3%9C
-    ä = %C3%A4
-    ö = %C3%B6
-    ü = %C3%BC
-    ß = %C3%9F
+    Ã„ = %C3%84
+    Ã– = %C3%96
+    Ãœ = %C3%9C
+    Ã¤ = %C3%A4
+    Ã¶ = %C3%B6
+    Ã¼ = %C3%BC
+    ÃŸ = %C3%9F
 
  */
 /**
@@ -880,13 +880,13 @@ String._downloadUTF8Table = function(){
 
     "{ae} {oe} {ue} {Ae} {Oe} {Ue} {ss}".decodeURI()
 
-    Ä = %C3%84
-    Ö = %C3%96
-    Ü = %C3%9C
-    ä = %C3%A4
-    ö = %C3%B6
-    ü = %C3%BC
-    ß = %C3%9F
+    Ã„ = %C3%84
+    Ã– = %C3%96
+    Ãœ = %C3%9C
+    Ã¤ = %C3%A4
+    Ã¶ = %C3%B6
+    Ã¼ = %C3%BC
+    ÃŸ = %C3%9F
 
  */
 /**
@@ -1612,4 +1612,22 @@ function buttonLayout(box, depth, stops){
     
     return img;
     
+}
+
+/**
+ * Makes sure that an attribute of an object is within a given range
+ * @param {object} obj - Object of the attribute, which will be forced into a range
+ * @param {string} attr - name of the attribute
+ * @param {number} min value of the range: default is 0
+ * @param {number} max value of the range: default is 100
+ * @returns undefined
+ */
+function forceRange(obj, attr, min, max){
+    if(arguments.length < 2) throw "No attribute defined as argument";
+    
+    if(isNaN(min)) min = 0;
+    if(isNaN(max)) max = 100;
+    
+    if(obj[attr] < min) obj[attr] = min;
+    if(obj[attr] > max) obj[attr] = max;
 }
