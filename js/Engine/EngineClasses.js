@@ -181,6 +181,55 @@ Random.GetTimestamp = function(min, max, unit){
     
 };
 
+/**
+ * Figurative speaking: Drawing 1 lot from a bowl. How many lots of a kind exists in the bowl can be different
+ * @example Random.DrawLots(["A","B"],[8, 2]) --> the bowl has 8+2 lots in it.
+ * 8x "A" and 2x "B". The call will draw 1 lot and return it
+ * @param {object-array} lots
+ * @param {number-array} lotschance
+ * @returns {object}
+ */
+Random.DrawLot = function(lots, lotsChances){
+    
+    if(arguments.length < 1) throw "ArgumentException: Too less arguments";
+    
+    if(isNaN(lots.length) || isNaN(lotsChances.length))
+        throw "ArgumentException: Arguments need to be arrays";
+    
+    if(lots.length !== lotsChances.length)
+        throw "ArgumentException: Arrays need to be the same size";
+    
+    var i;
+    // find out how many decimals are after the dot
+    var getDecimals = function(num){
+        var str = num.toString();
+        var i = str.indexOf(".");
+        if(i < 0) return 0;
+        str = str.substr(i+1);
+        return str.length;
+    };
+    
+    var decimals = 0;
+    for(i=0; i<lotsChances.length; i++){
+        decimals = Math.max(decimals,getDecimals(lotsChances[i]));
+    }
+    
+    var chanceSum = 0;
+    for(i=0; i<lotsChances.length; i++)
+        chanceSum += lotsChances[i];
+    
+    var rnd = Random.GetNumber(0, chanceSum, decimals);
+    var classmin = 0;
+    var classmax = 0;
+    for(i=0; i<lots.length; i++){
+        classmax += lotsChances[i];
+        if(rnd >= classmin && rnd < classmax)
+            return lots[i];
+        classmin = classmax;
+    }
+    return lots[lots.length-1];
+};
+
 // ########################################################
 // ########################################################
 // ########################################################
