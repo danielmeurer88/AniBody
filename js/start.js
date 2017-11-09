@@ -9,6 +9,7 @@ $(document).ready(function () {
     waterglass.AddGroup("room1");
 
     var mediapack = [
+        new Image("./img_rpg/logo.png", "gamedev"),
         new Image("./img_rpg/button_0.png", "button_state_0"),
         new Image("./img_rpg/button_1.png", "button_state_1"),
         new Image("./img_rpg/button_2.png", "button_state_2"),
@@ -89,6 +90,15 @@ function menu_callback(engine){
     });
     
     testSpline(engine);
+    
+    engine.TestImg = engine.MediaManager.GetImage("gamedev");
+    engine.TestImgV = engine.TestImg.getVerticallyFlippedImage();
+    engine.TestImgH = engine.TestImg.getHorizontallyFlippedImage();
+    
+    engine.AddForegroundDrawFunctionObject(function(){    
+        this.Context.drawImage( engine.TestImg, 10, 500- engine.TestImg.height-5);
+        this.Context.drawImage(this.TestImgV, 10, 500);
+    }.getCallbackObject(engine));
 }
 
 function start_help(engine){

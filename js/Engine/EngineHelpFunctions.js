@@ -37,6 +37,48 @@ window.ImageData.prototype.setPixel = function(x,y,r,g,b,a){
 HTMLImageElement.prototype.ImageData = "undefined";
 
 /**
+ * gets the vertically flipped image of this image
+ * @returns {Image}
+ */
+HTMLImageElement.prototype.getVerticallyFlippedImage = function(){
+    var can = document.createElement("canvas");
+    can.width = this.width;
+    can.height = this.height;
+    var con = can.getContext("2d");
+    
+    con.translate(0, this.height);
+    con.scale(1,-1);
+    con.drawImage(this,0,0);
+    
+    var url = can.toDataURL();
+    var img = document.createElement("IMG");
+    img.src = url;
+    
+    return img;
+};
+
+/**
+ * gets the horizontally flipped image of this image
+ * @returns {Image}
+ */
+HTMLImageElement.prototype.getHorizontallyFlippedImage = function(){
+    var can = document.createElement("canvas");
+    can.width = this.width;
+    can.height = this.height;
+    var con = can.getContext("2d");
+    
+    con.translate(can.width, 0);
+    con.scale(-1,1);
+    con.drawImage(this,0,0);
+    
+    var url = can.toDataURL();
+    var img = document.createElement("IMG");
+    img.src = url;
+    
+    return img;
+};
+
+/**
  * gets the image data of image, saves it and returns it
  * @returns {ImageData}
  */
