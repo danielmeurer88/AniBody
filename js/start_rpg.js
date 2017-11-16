@@ -15,7 +15,7 @@ function rpg_callback(engine){
     //var topterr = createTerrain("rpg", "room1", "rpg_img", "rpg_structure", 60);
     var topterr = new RPGTerrain("room1", "rpg_img", "rpg_structure", 60);
     // creating a rpg camera
-    this.SetCamera(this.GetNewCamera("rpg"));
+    this.SetCamera(new RPGCamera());
     // setting the terrain as the active terrain
     this.SetTerrain(topterr);
     

@@ -1,115 +1,14 @@
 /**
- * HashTable for Key/Value-pairs
- * @param {type} maxLists
- * @returns {HashTable}
+ * Default Camera - used when the user's field of view is not bigger as the canvas
+ * @returns {DefaultCamera}
  */
-function HashTable(maxLists){
-    this._lists = [];
-    this._maxLists = maxLists || 25;
+function DefaultCamera(){
+    ABO.call(this);
+    this.Type = "Camera";
+    this.Name = "default";
 }
-/**
- * hash function of the HastTable-Class - get the charCode of every letter of the key and returns the sum
- * @param {string} key
- * @returns {Number}
- */
-HashTable.prototype._hashFunction = function(key){
-    
-    if(typeof key === "undefined")
-        throw {Message:"HashTable_Error: undefined key"};
-    
-    if(typeof key !== "string")
-        key = key.toString();
-    
-    var val = 0;
-    
-    for(var i=0; i<key.length; i++){
-        val += key.charCodeAt(i);
-    };
-    return val;
-};
-
-/**
- * Get the index of the list (array), in which the value will be saved or is saved
- * @param {string} key
- * @returns {Number|Object.prototype._hashFunction.val|type}
- */
-HashTable.prototype._getListNum = function(key){
-    return this._hashFunction(key) % this._maxLists;
-};
-
-/**
- * Saves a new key/value-pair
- * @param {string} key
- * @param {object} value
- * @returns {undefined}
- */
-HashTable.prototype.Set = function(key, value){
-    var listnum = this._getListNum(key);
-    
-    if(typeof this._lists[listnum] === "undefined"){
-        this._lists[listnum] = [];
-    }
-    this._lists[listnum].push({key:key, value:value});
-};
-
-/**
- * Gets the value of a given key
- * @param {string} key
- * @returns {object}
- */
-HashTable.prototype.Get = function(key){
-    var listnum = this._getListNum(key);
-    
-    if(typeof this._lists[listnum] === "undefined"){
-        throw {Message:"HashTable_Error: undefined list for key: " + key};
-    }
-    for(var i=0; i<this._lists[listnum].length; i++){
-        if(key === this._lists[listnum][i].key)
-            return this._lists[listnum][i].value;
-    }
-    throw {Message:"HashTable_Error: cannot find value for key: " + key};
-};
-
-/**
- * Gets the value of a given key along with internal data
- * @param {string} key
- * @returns {object}
- */
-HashTable.prototype.DebugGet = function(key){
-    var listnum = this._getListNum(key);
-    var obj = {Messages : false, key:key, value:false, hashedKey : listnum};
-    
-    if(typeof this._lists[listnum] === "undefined"){
-        obj.Messages = "HashTable_Error: undefined list for key: " + key;
-    }
-    if(!obj.Messages){
-        for(var i=0; i<this._lists[listnum].length; i++){
-            if(key === this._lists[listnum][i].key)
-                obj.value = this._lists[listnum][i].value;
-        }
-        if(obj.value === false)
-            obj.Messages = "HashTable_Error: cannot find value for key: " + key;
-    }
-    return obj;
-};
-
-/**
- * returns Array of all values and how they are distributed within the hash table
- * @returns {Array}
- */
-HashTable.prototype.GetDistribution = function(){
-    var arr = [];
-    for(var i=0; i<this._lists.length; i++){
-        if(typeof this._lists[i] === "undefined")
-            arr.push("List " + i + " is empty");
-        else
-            if(this._lists[i].length > 1)
-                arr.push("List " + i + " has " + this._lists[i].length + " key/value-pairs");
-            else
-                arr.push("List " + i + " has " + this._lists[i].length + " key/value-pair");
-    }
-    return arr;
-};
+DefaultCamera.prototype = Object.create(ABO.prototype);
+DefaultCamera.prototype.constructor = DefaultCamera;
 
 // ########################################################
 // ########################################################
@@ -266,68 +165,6 @@ Random.DrawLot = function(lots, lotsChances){
 // ########################################################
 
 /**
- * Callback class - capsulates a function with its this-object and parameters
- * @param {type} that
- * @param {type} func
- * @param {type} parameter
- * @returns {Callback}
- */
-function Callback(that, func, parameter){
-    
-    // if Callback was instanciated with an object
-    if(that.function){
-        this.that = that.that;
-        this.function = that.function;
-        this.parameters = [that.parameter];
-    }else{
-        this.function = func;
-        this.that = that;
-        this.parameters = [parameter];
-    }
-    
-    this.OneParameter = true;
-    if(arguments.length > 3){
-        this.OneParameter = false;
-        for(var i = 3; i < arguments.length; i++)
-            this.parameters.push(arguments[i]);
-    }
-};
-/**
- * Triggers the function
- * @returns {undefined}
- */
-Callback.prototype.Call = function(){
-    if(this.OneParameter)
-        this.function.call(this.that, this.parameters[0]);
-    else
-        this.function.apply(this.that, this.parameters);
-};
-/**
- * Calls/triggers a callback-object
- * @type static method
- * @param {type} obj
- * @returns {undefined}
- */
-Callback.CallObject = function(obj, extra){
-    if(typeof obj === "object" && typeof obj.function === "function"){
-        obj.function.call(obj.that, obj.parameter, extra);
-    }
-        
-};
-
-/**
- * Transform an instance of the class into in object and returns it
- * @returns {Callback.prototype.ToObject.EngineClassesAnonym$2}
- */
-Callback.prototype.ToObject = function(){
-     return { that:this.that, function:this.function, parameter:this.parameters};
-};
-
-// ########################################################
-// ########################################################
-// ########################################################
-
-/**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority
  * @param {Boolean} nop - Flag if an enqueued element without given priority gets priority of zero (true) or the current highest priority + 1 (false and default)
  * @returns {PriorityQueue}
@@ -340,9 +177,13 @@ function PriorityQueue(nop){
     // if false it gets the highest priority + 1
     this.NoPriorityThenZero = nop ? nop : false;
     this.Sorted = false;
-    this.length = 0;
     this._refnums = 0;
 }
+
+Object.defineProperty(PriorityQueue.prototype, "length", {get: function(){
+        return this.heap.length;
+}});
+
 /**
  * @description Adds a new element of the given data to the queue and returns refnum
  * @param {object} data 
@@ -360,7 +201,6 @@ PriorityQueue.prototype.Enqueue = function(data, priority, name){
         priority = priority || typeof priority == "number" ? priority : ++this.HighestPriority;
     
     this.Sorted = false;
-    this.length++;
     var obj = {data:data, priority:priority, origin:"enqueued", refnum : this._refnums++, name:name};
     this.heap.push(obj);
     return obj.refnum;
@@ -418,7 +258,6 @@ PriorityQueue.prototype.ElementIsEnqueued = function(data){
  */
 PriorityQueue.prototype.Dequeue = function(){
     if(this.heap.length>0){
-        this.length--;
         return this.heap.shift().data;
     }
     else
@@ -529,7 +368,6 @@ PriorityQueue.prototype.Merge = function(b){
         b.heap[i].origin = "merged";
         this.heap.push( b.heap[i] );
     }
-    this.length = this.heap.length;
     if(this.HighestPriority < b.HighestPriority)
         this.HighestPriority = b.HighestPriority;
 };
@@ -552,7 +390,6 @@ PriorityQueue.prototype.DeleteMergedElements = function(){
     }
     this.heap = temp;
     this.HighestPriority = hp;
-    this.length = this.heap.length;
 };
 /**
  * deletes all entries in the Priority Queue
@@ -562,36 +399,7 @@ PriorityQueue.prototype.Flush = function(){
     this.heap = [];
     this.HighestPriority = 0;
     this.Sorted = false;
-    this.length = 0;
 };
-
-// ########################################################
-// ########################################################
-// ########################################################
-
-/**
- * represents an ordinary queue - FIFO - first in first out
- * @returns {Queue}
- */
-function Queue(){
-    this.vals = [];
-}
-/**
- * enqueues an object
- * @param {object} val
- * @returns {boolean}
- */
-Queue.prototype.Enqueue = function(val){return this.vals.push(val);};
-/**
- * Dequeues the first enqueued object, deletes it from the queue
- * @returns {object}
- */
-Queue.prototype.Dequeue = function(){return this.vals.shift();};
-/**
- * returns true if queue is empty, false if otherwise
- * @returns {Boolean}
- */
-Queue.prototype.isEmpty = function(){if(this.vals.length<=0)return true; else return false;};
 
 // ########################################################
 // ########################################################
@@ -679,21 +487,6 @@ Timer.prototype.Pause = function(){
 Timer.prototype.SetTotal = function(t){
         this.Total = t;
 };
-
-// ########################################################
-// ########################################################
-// ########################################################
-
-/**
- * @deprecated an easy object is simplier to use and it is quicker
- * @param {type} x
- * @param {type} y
- * @returns {Point}
- */
-function Point(x,y){
-    this.X = x;
-    this.Y = y;
-}
 
 // ########################################################
 // ########################################################

@@ -1,23 +1,23 @@
 
-function Engine(html_id) {
+function Anibody(html_id) {
 
     // ### INFO
     this.Info = {
         Engine: "AniBody",
-        Version: "0.96",
+        Version: "0.97",
         Author: "Daniel Meurer",
         Project: "Developing",
-        LastUpdated: "2017_08_08_h17" // year_month_day_hhour
+        LastUpdated: "2017_11_16_h23" // year_month_day_hhour
     };
 
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
     if ($ && $.fn) {
-        if (!$.EngineArray) {
-            $.EngineArray = [];
+        if (!$.AnibodyArray) {
+            $.AnibodyArray = [];
         }
-        this.EI = $.EngineArray.length;
-        $.EngineArray.push(this);
-        $.Engine = this;
+        this.EI = $.AnibodyArray.length;
+        $.AnibodyArray.push(this);
+        $.Anibody = this;
     } else {
         this.Info.Error = "jQuery is probably not set up";
         return false;
@@ -53,21 +53,19 @@ function Engine(html_id) {
     this.IsCanvasFitToScreen = false;
 
     this.Context;// the context of the canvas object
-    this.Camera = {SelectedCamera: false, Cameras: false};// place holder for all needed camera (in later progress it will be possible to have more than just one camera)
+    this.Camera = {SelectedCamera: null, Cameras: []};// place holder for all needed camera (in later progress it will be possible to have more than just one camera)
     this.Counter;// the variable for the counter object
     this.Log = [];// most error messages are sent here
     this.ProcessInputFunctions = new PriorityQueue();// array of all functions, which the user added and which concern the input processing
-    this.UpdateFunctions = new PriorityQueue();
-    ; // PriorityQueue of all functions, which the user added and which concern the update process
+    this.UpdateFunctions = new PriorityQueue();// PriorityQueue of all functions, which the user added and which concern the update process
     this.ForegroundDrawFunctionObjects = new PriorityQueue();// PriorityQueue of Callback-Objects to draw the functions in the background
-    this.ImageData = null;// the variable for the ImageData of the canvas, if need be. maybe deprecated
     this.FPS = 25;// the amount of frames per second (default: 25)
     this.Timer; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
 
-    this.MediaManager = {};
+    this.MediaManager = null;
     // terrain holds the data of a game world. if not further declared a default terrain with the same size as the canvas object will be set
-    this.Terrain = {};
-    this.DebugWindow = {};
+    this.Terrain = null;
+    this.DebugWindow = null;
 
     this.OverlayImages = [];
 
@@ -88,25 +86,25 @@ function Engine(html_id) {
 /**
  * @description Returns the engine and can be saved in a new variable. Needed when there are more Engines in a website
  * Every new instance of Engine overwrites $.Engine
- * <i>every new instance is saved in $.EngineArray</i>
- * @returns {Engine.prototype}
+ * <i>every new instance is saved in $.AnibodyArray</i>
+ * @returns {Anibody.prototype}
  */
-Engine.prototype.GetEngine = function () {
+Anibody.prototype.GetEngine = function () {
     return this;
 };
 
 /**
  * @description Getter so that an Engine instance does not have to call a global variable
  */
-Object.defineProperty(Engine.prototype, "Engine", {get: function () {
-        return $.EngineArray[this.EI];
+Object.defineProperty(Anibody.prototype, "Engine", {get: function () {
+        return $.AnibodyArray[this.EI];
     }});
 
 // Takes up the role of the constructor
-Engine.prototype.Initialize = function () {
+Anibody.prototype.Initialize = function () {
 
     if (this.Flags.MediaManager) {
-        this.MediaManager = new MediaManager();
+        this.MediaManager = new Anibody.util.MediaManager();
         this.MediaManager.EI = this.EI;
     }
     // it checks if it's a div container
@@ -146,50 +144,45 @@ Engine.prototype.Initialize = function () {
     this.DebugWindow = new DebugWindow();
 
 };
+
 /**
  * @description before it starts the Engine, it checks if there is a Terrain object and a Camera selected, if not default objects are initialized
  */
-Engine.prototype.Start = function () {
+Anibody.prototype.Start = function () {
 
-    if (!this.Engine.Terrain.Type)
-        this.Engine.SetTerrain(new DefaultTerrain());
+    if (!this.Terrain)
+        this.SetTerrain(new DefaultTerrain());
 
-    if (!this.Engine.Camera.SelectedCamera || !this.Engine.Camera.SelectedCamera.Type)
-        this.Engine.Camera.SelectedCamera = this.GetNewCamera("default");
+    if (!this.Camera.SelectedCamera){
+        this.Camera.SelectedCamera = new DefaultCamera();
+        this.Camera.Cameras.push(this.Camera.SelectedCamera);
+    }
 
-    this.Engine.Objects.Queue.Sort();
+    this.Objects.Queue.Sort();
     if (this.Flags.ConstantLoop)
-        this.Engine.Timer.Start();
+        this.Timer.Start();
 };
 
 /**
  * @description stops the Engine
  */
-Engine.prototype.Stop = function () {
-    if (this.Flags.ConstantLoop)
-        this.Timer.Stop();
-};
+Anibody.prototype.Stop = function () {this.Timer.Stop();};
 /**
  * continues updating objects
  * @returns {undefined}
  */
-Engine.prototype.Continue = function () {
-    this.Paused = false
-};
+Anibody.prototype.Continue = function () {this.Paused = false;};
 /**
  * pauses updating objects
  * @returns {undefined}
  */
-Engine.prototype.Pause = function () {
-    this.Paused = true
-};
-
+Anibody.prototype.Pause = function () {this.Paused = true};
 /**
  * function applies the game loop - it starts
  * ProcessInput(), Update() and Draw()
  * @returns {undefined}
  */
-Engine.prototype.Frame = function () {
+Anibody.prototype.Frame = function () {
     var e = arguments[0];
     e.ProcessInput();
     if (!e.Paused) {
@@ -203,7 +196,7 @@ Engine.prototype.Frame = function () {
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
-Engine.prototype.AddProcessInputFunction = function (pio, prio) {
+Anibody.prototype.AddProcessInputFunction = function (pio, prio) {
     var ref = this.ProcessInputFunctions.Enqueue(pio, prio);
     this.ProcessInputFunctions.Sort();
     return ref;
@@ -213,14 +206,14 @@ Engine.prototype.AddProcessInputFunction = function (pio, prio) {
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
-Engine.prototype.RemoveProcessInputFunction = function (ref) {
+Anibody.prototype.RemoveProcessInputFunction = function (ref) {
     this.ProcessInputFunctions.DeleteByReferenceNumber(ref);
 };
 /**
  * @description the function, which calls all functions concerning to process the user input
  * @returns {undefined}
  */
-Engine.prototype.ProcessInput = function () {
+Anibody.prototype.ProcessInput = function () {
 
     // set cursor to default - maybe an other object changes the cursor later in the same frame.
     this.Input.Mouse.Cursor.default();
@@ -255,7 +248,7 @@ Engine.prototype.ProcessInput = function () {
  * @param {number} prior - priority (optional)
  * @returns {reference number}
  */
-Engine.prototype.AddUpdateFunctionObject = function (ufo, prior) {
+Anibody.prototype.AddUpdateFunctionObject = function (ufo, prior) {
     return this.UpdateFunctions.Enqueue(ufo, prior);
 };
 /**
@@ -263,14 +256,14 @@ Engine.prototype.AddUpdateFunctionObject = function (ufo, prior) {
  * @param {number} ref reference number
  * @returns {undefined}
  */
-Engine.prototype.RemoveUpdateFunctionObject = function (ref) {
+Anibody.prototype.RemoveUpdateFunctionObject = function (ref) {
     this.UpdateFunctions.DeleteByReferenceNumber(ref);
 };
 /**
  * @description the function, which calls all functions concerning to have the need to be updated every frame
  * @returns {undefined}
  */
-Engine.prototype.Update = function () {
+Anibody.prototype.Update = function () {
 
     // get the actual position of the canvas
     this.Input.CalculateCanvasPosition();
@@ -328,7 +321,7 @@ Engine.prototype.Update = function () {
  * Draws on the canvas
  * @returns {undefined}
  */
-Engine.prototype.Draw = function () {
+Anibody.prototype.Draw = function () {
 
     var c = this.Context;
     c.save();
@@ -380,7 +373,7 @@ Engine.prototype.Draw = function () {
  * @param {number} prior - priority (optional)
  * @returns {reference number}
  */
-Engine.prototype.AddForegroundDrawFunctionObject = function (fdfo, prior) {
+Anibody.prototype.AddForegroundDrawFunctionObject = function (fdfo, prior) {
     return this.ForegroundDrawFunctionObjects.Enqueue(fdfo, prior);
 };
 
@@ -389,7 +382,7 @@ Engine.prototype.AddForegroundDrawFunctionObject = function (fdfo, prior) {
  * @param {number} ref reference number
  * @returns {undefined}
  */
-Engine.prototype.RemoveForegroundDrawFunctionObject = function (ref) {
+Anibody.prototype.RemoveForegroundDrawFunctionObject = function (ref) {
     this.ForegroundDrawFunctionObjects.DeleteByReferenceNumber(ref);
 };
 
@@ -398,7 +391,7 @@ Engine.prototype.RemoveForegroundDrawFunctionObject = function (ref) {
  * @param {string} name of the file 
  * @returns {undefined}
  */
-Engine.prototype.Download = function (name, data) {
+Anibody.prototype.Download = function (name, data) {
 
     if (typeof data === "undefined")
         data = this.Canvas.toDataURL();
@@ -426,7 +419,7 @@ Engine.prototype.Download = function (name, data) {
  * Request the fullscreen mode for the canvas and returns true if the browser knows the feature
  * @returns {boolean}
  */
-Engine.prototype.RequestFullscreen = function(){
+Anibody.prototype.RequestFullscreen = function(){
     // try fullscreen
     var can = this.Canvas;
     var done = false;
@@ -476,7 +469,7 @@ Engine.prototype.RequestFullscreen = function(){
  * Exit fullscreen mode for the canvas
  * @returns {undefined}
  */
-Engine.prototype.ExitFullscreen = function(){
+Anibody.prototype.ExitFullscreen = function(){
 
     var done = false;
 
@@ -507,7 +500,7 @@ Engine.prototype.ExitFullscreen = function(){
  * @param {integer} i
  * @returns {result}
  */
-Engine.prototype.GetObject = function (i) {
+Anibody.prototype.GetObject = function (i) {
     if (i < this.Objects.Queue.heap.length)
         return this.Objects.Queue.heap[i].data;
     else
@@ -519,7 +512,7 @@ Engine.prototype.GetObject = function (i) {
  * @param {Number} priority you can add an optional priority, which will influence the order of the objects
  * @returns {Number} reference number, can be used to remove the object
  */
-Engine.prototype.AddObject = function (obj, pr) {
+Anibody.prototype.AddObject = function (obj, pr) {
     obj.EI = this.EI;
     return this.Objects.Queue.Enqueue(obj, pr);
 };
@@ -529,7 +522,7 @@ Engine.prototype.AddObject = function (obj, pr) {
  * @param {Number} ref reference number given when the soon-to-be-removed object was added
  * @returns {result}
  */
-Engine.prototype.RemoveObject = function (ref) {
+Anibody.prototype.RemoveObject = function (ref) {
     return this.Objects.Queue.DeleteByReferenceNumber(ref);
 };
 
@@ -538,7 +531,7 @@ Engine.prototype.RemoveObject = function (ref) {
  * @param {object} ob
  * @returns {undefined}
  */
-Engine.prototype.SetSelectedObject = function (ob) {
+Anibody.prototype.SetSelectedObject = function (ob) {
     this.Objects.SelectedObject = ob;
 };
 
@@ -546,7 +539,7 @@ Engine.prototype.SetSelectedObject = function (ob) {
  * @description returns the selected object
  * @returns {result}
  */
-Engine.prototype.GetSelectedObject = function () {
+Anibody.prototype.GetSelectedObject = function () {
     return this.Objects.SelectedObject;
 };
 /**
@@ -556,9 +549,9 @@ Engine.prototype.GetSelectedObject = function () {
  * (this command) 
  * @param {String} id
  * @param {String} codename
- * @returns {Engine.prototype.AddOutsideElement.el|Boolean}
+ * @returns {Anibody.prototype.AddOutsideElement.el|Boolean}
  */
-Engine.prototype.AddOutsideElement = function (id, codename) {
+Anibody.prototype.AddOutsideElement = function (id, codename) {
 
     var el = {
         element: $("#" + id),
@@ -579,7 +572,7 @@ Engine.prototype.AddOutsideElement = function (id, codename) {
  * @param {type} codename
  * @returns {jQuery-applicable HTML-Element|false}
  */
-Engine.prototype.GetOutsideElement = function (codename) {
+Anibody.prototype.GetOutsideElement = function (codename) {
     for (var i = 0; i < this.OutsideElement.length; i++)
         if (this.OutsideElement[i].codename === codename)
             return this.OutsideElement[i].element;
@@ -590,9 +583,8 @@ Engine.prototype.GetOutsideElement = function (codename) {
  * empties the object queue (the scene)
  * @returns {undefined}
  */
-Engine.prototype.FlushQueue = function () {
+Anibody.prototype.FlushQueue = function () {
     this.Objects.Queue.Flush();
-    this.length = 0;
     this.SelectedObject = "undefined";
 };
 
@@ -601,7 +593,7 @@ Engine.prototype.FlushQueue = function () {
  * @param {Terrain} t
  * @returns {result}
  */
-Engine.prototype.SetTerrain = function (t) {
+Anibody.prototype.SetTerrain = function (t) {
     t.EI = this.EI;
     this.Terrain = t;
 };
@@ -611,7 +603,7 @@ Engine.prototype.SetTerrain = function (t) {
  * @param {String} the type of the physic
  * @returns {undefined}
  */
-Engine.prototype.FlushScene = function () {
+Anibody.prototype.FlushScene = function () {
     this.Objects.Queue.Flush();
     this.MediaManager.Flush();
 };
@@ -620,51 +612,28 @@ Engine.prototype.FlushScene = function () {
  * @param {Error} err
  * @returns {undefined}
  */
-Engine.prototype.HandleError = function (err) {
+Anibody.prototype.HandleError = function (err) {
     this.Log.push(err);
-};
-/**
- * Creates and returns a new camera of a certain type or default
- * @param {string} type (optional)
- * @returns {Camera}
- */
-Engine.prototype.GetNewCamera = function (type) {
-    var cam;
-
-    if (!type || type == "default") {
-        cam = new DefaultCamera();
-    }
-
-    if (type == "platform") {
-        cam = new PlatformCamera();
-    }
-
-    if (type == "rpg") {
-        cam = new RPGCamera();
-    }
-
-    cam.EI = this.EI;
-    return cam;
 };
 /**
  * Returns the currently selected camera
  * @returns {Camera}
  */
-Engine.prototype.GetCamera = function () {
+Anibody.prototype.GetCamera = function () {
     return this.Camera.SelectedCamera;
 };
 /**
  * Sets the currently selected camera
  * @returns {undefined}
  */
-Engine.prototype.SetCamera = function (cam) {
+Anibody.prototype.SetCamera = function (cam) {
     this.Camera.SelectedCamera = cam;
 };
 /**
  * yetTODO
  * @returns {undefined}
  */
-Engine.prototype.ActivateFullScreen_yetTODO = function () {
+Anibody.prototype.ActivateFullScreen_yetTODO = function () {
     var elem = this.Canvas;
 
     var w = $(window).width();
@@ -687,7 +656,7 @@ Engine.prototype.ActivateFullScreen_yetTODO = function () {
  * @param {number} nof - number of frames
  * @returns {undefined}
  */
-Engine.prototype.AddOverlayImage = function (img, x, y, w, h, nof) {
+Anibody.prototype.AddOverlayImage = function (img, x, y, w, h, nof) {
     nof = nof || 1;
     w = w || img.width;
     h = h || img.height;
@@ -699,7 +668,7 @@ Engine.prototype.AddOverlayImage = function (img, x, y, w, h, nof) {
  * @param {function} f costum function but most browsers block costum functions and a default message will be displayed
  * @returns {undefined}
  */
-Engine.prototype.LockUnload = function (f) {
+Anibody.prototype.LockUnload = function (f) {
 
     var onbeforeunload = function (e) {
         return false;
@@ -727,7 +696,7 @@ Engine.prototype.LockUnload = function (f) {
  * Let's the user leave the window without an confirm message
  * @returns {undefined}
  */
-Engine.prototype.UnlockUnload = function () {
+Anibody.prototype.UnlockUnload = function () {
 
     $(window).unbind("beforeunload");
 
@@ -744,7 +713,7 @@ Engine.prototype.UnlockUnload = function () {
 
 //#################################### Input
 // holds information and provides functions around user input
-Engine.prototype.Input = {
+Anibody.prototype.Input = {
 
     // will be the anibody engine
     Engine: false,
@@ -2042,7 +2011,7 @@ Engine.prototype.Input = {
  * @description Adding a local storage function to the Engine, so values can be saved beyond sessions
  * @returns 
  */
-Engine.prototype.Storage = {
+Anibody.prototype.Storage = {
     Pre: "AniBody_",
     // flag wether browser allows html5-local storage or engine needs to use cookies as pieces
     BrowserAllowsLocalStorage: false,
@@ -2072,13 +2041,13 @@ Engine.prototype.Storage = {
 
         // UpdateObject();
         if (this.ObjectString.length < 3) {
-            this.Engine.HandleError({code: 101, msg: "Storage is empty"});
+            this.HandleError({code: 101, msg: "Storage is empty"});
         } else {
             var str = this.ObjectString;
             this.Object = JSON.parse(str);
         }
 
-        $(window).unload(this.Engine, function (e) {
+        $(window).unload(this, function (e) {
             var engine = e.data;
             engine.Storage.WriteStorageToBrowser();
         });
@@ -2110,7 +2079,7 @@ Engine.prototype.Storage = {
             return res;
         else {
             e = {code: 404, msg: "Storage has no attribute called " + name};
-            this.Engine.HandleError(e);
+            this.HandleError(e);
             return e;
         }
     },
@@ -2140,7 +2109,7 @@ Engine.prototype.Storage = {
                 this.Object[key] = "undefined";
             } catch (e) {
                 e = {code: 403, msg: "Storage has no attribute called " + key};
-                this.Engine.HandleError(e);
+                this.HandleError(e);
             }
     },
 
@@ -2156,7 +2125,7 @@ Engine.prototype.Storage = {
 
 };
 
-Engine.prototype.Font = {
+Anibody.prototype.Font = {
 
     Default: "10px sans-serif",
 
@@ -2225,7 +2194,7 @@ Engine.prototype.Font = {
  * prints the image of a given data url or just the image of the current canvas state
  * @param {string} url - data url of an image (optional)
  * @returns {undefined} */
-Engine.prototype.Print = function (url) {
+Anibody.prototype.Print = function (url) {
     if (typeof url === "undefined")
         url = this.Canvas.toDataURL();
 
@@ -2242,4 +2211,82 @@ Engine.prototype.Print = function (url) {
         ifr.remove();
     }, 1000);
 
+};
+
+//************************************************
+// Abstract Methods
+Anibody.SetPackage = function(/*strings*/){
+    var i=0;
+    var pp = "";
+    for(i=0; i<arguments.length; i++)
+        if(typeof arguments[i] !== "string"){
+            this.log("Cannot create package", "ArgumentException");
+            return;
+        }
+    
+    //var el = window["Anibody"];
+    var el = window;
+    var newel;
+    for(i=0; i<arguments.length; i++){
+        newel = el[arguments[i]];
+        if(typeof newel === "undefined"){
+            el[arguments[i]] = {};
+        }
+        el = el[arguments[i]];    
+    }
+    
+};
+
+Anibody.CallObject = function(obj, useApply){
+    useApply = obj.useApply;
+    if(typeof useApply === "undefined")
+        useApply = false;
+    if(typeof obj === "object" && typeof obj.function === "function"){
+        if(useApply)
+            obj.function.apply(obj.that, obj.parameter);
+        else
+            obj.function.call(obj.that, obj.parameter);
+    }
+        
+};
+
+Anibody.import = function(package, alias){
+    
+    if(arguments.length <= 0) return;
+    
+    
+    if(typeof alias !== "string"){
+        if(package && package.name)
+            alias = package.name;
+        else{
+            alias = package.constructor.toString();
+            var ifunc = alias.indexOf("function ");
+            var ibracket = alias.indexOf("(");
+            if(ifunc === 0){
+                alias = alias.substr(9, ibracket - 9);
+            }
+        }
+    }
+
+    if(alias.length <= 0){
+        this.log("Cannot import " + package.toString(), "EmptyStringException");
+        return;
+    }
+    if(alias === "Function"){
+        this.log("Cannot import " + alias, "AnonymousFunctionException");
+        return;
+    }
+    
+    //check first if it is already imported
+    if(typeof window[alias] !== "undefined"){
+        return;
+    }
+    window[alias] = package; 
+};
+
+Anibody.importAll = function(package){
+    if(arguments.length <= 0) return;
+    for(var name in package){
+        Anibody.import(name);
+    }
 };

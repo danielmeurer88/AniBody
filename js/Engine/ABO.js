@@ -6,11 +6,12 @@
 function EngineObject(){
     this.EI = 0; // Engine Index (the index of the engine, to which this object belongs in the $.EngineArray!
     this.UniqueID = this._getUniqueID();
-    this.X = 0;
-    this.Y = 0;
-    this.Type = "Object";
-    this.OnTerrain = false;
 }
+/**
+ * @see README_DOKU.txt
+ */
+EngineObject.prototype.ProcessInput = function(){return false;};
+
 /**
  * @see README_DOKU.txt
  */
@@ -23,7 +24,7 @@ EngineObject.prototype._getUniqueID = function(){
 
 // defining a default getter to the EngineObject constructor function
 Object.defineProperty(EngineObject.prototype, "Engine", {get: function(){
-        return $.EngineArray[this.EI];
+        return $.AnibodyArray[this.EI];
 }});
 
 /**
@@ -35,6 +36,8 @@ function ABO(){ // AniBodyObject
     EngineObject.call(this);
     this.Attributes = {};
     this.Name = "";
+    this.X = 0;
+    this.Y=0;
     this.Width = 0;
     this.Height = 0;
 }
@@ -45,11 +48,6 @@ ABO.prototype.constructor = ABO;
  * @see README_DOKU.txt
  */
 ABO.prototype.Draw = function(){return false;};
-/**
- * @see README_DOKU.txt
- */
-ABO.prototype.ProcessInput = function(){return false;};
-
 /**
  * Returns an object that contains the needed value to create an rectangle at
  * the current position of the ABO-Object plus a given offset

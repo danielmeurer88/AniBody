@@ -25,7 +25,7 @@ MouseHandler.prototype.constructor = MouseHandler;
  */
 MouseHandler.prototype.Initialize = function(){
     
-    // if it's a favorit browsers
+    // if it's a firefox browsers
     if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
     // increase wheel limiter
         this.WheelLimiter = 1.5;

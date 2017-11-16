@@ -1,5 +1,5 @@
 function RPGCamera(){
-    EngineObject.call(this);
+    ABO.call(this);
     this.Type = "Camera";
     this.Name = "OnSelectedField";
 
@@ -36,5 +36,5 @@ function RPGCamera(){
         }
     };
 }
-RPGCamera.prototype = Object.create(EngineObject.prototype);
+RPGCamera.prototype = Object.create(ABO.prototype);
 RPGCamera.prototype.constructor = RPGCamera;

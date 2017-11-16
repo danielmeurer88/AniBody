@@ -1,5 +1,5 @@
 /**
- * Monitors the attribute of an object triggers a callback object whenever the value changes
+ * Monitors the attribute of an object, triggers a callback object whenever the value changes
  * @param {object} obj Object
  * @param {string} attr
  * @param {object} cbo (optional)
