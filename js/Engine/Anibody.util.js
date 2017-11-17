@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "util");
+
 /**
  * Default Camera - used when the user's field of view is not bigger as the canvas
  * @returns {DefaultCamera}
@@ -161,8 +163,43 @@ Random.DrawLot = function(lots, lotsChances){
 };
 
 // ########################################################
+/**
+ * @deprecated description
+ * @returns {Queue}
+ */
+function Queue() {
+  this.vals = [];
+}
+Queue.prototype.Enqueue = function(a) {
+  return this.vals.push(a);
+};
+Queue.prototype.Dequeue = function() {
+  return this.vals.shift();
+};
+Queue.prototype.isEmpty = function() {
+  return 0 >= this.vals.length ? !0 : !1;
+};
 // ########################################################
-// ########################################################
+
+// ########
+/**
+ * @deprecated only used by rpg classes
+ * @returns {Callback}
+ */
+function Callback(a, b, c) {
+  a["function"] ? (this.that = a.that, this["function"] = a["function"], this.parameters = [a.parameter]) : (this["function"] = b, this.that = a, this.parameters = [c]);
+  this.OneParameter = !0;
+  if (3 < arguments.length) {
+    this.OneParameter = !1;
+    for (var d = 3; d < arguments.length; d++) {
+      this.parameters.push(arguments[d]);
+    }
+  }
+}
+Callback.prototype.Call = function() {
+  this.OneParameter ? this["function"].call(this.that, this.parameters[0]) : this["function"].apply(this.that, this.parameters);
+};
+// ++++++++
 
 /**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority
@@ -493,67 +530,67 @@ Timer.prototype.SetTotal = function(t){
 // ########################################################
 
 /**
- * Represents a class, which is used in the engine
- * it's possible to add a function that is called not every frame but every multiple of a certain number
- * @returns {Counter}
+ * Represents a class, which is used to trigger functions every given number of frames
+ * @returns {IntervalHandler}
  */
-function Counter(){
+Anibody.util.IntervalHandler = function IntervalHandler(){
     EngineObject.call(this);
     // Javascript Integer limit = 2^53 = 9007199254740992
     // (Number of Frames with 25 fps after 5 days) = 25*60*60*24*5 = 10.800.000
     this.Frames = 0;
-    this.CounterFunctions = new PriorityQueue();
+    this.IntervalFunctions = new PriorityQueue();
 }
-Counter.prototype = Object.create(EngineObject.prototype);
-Counter.prototype.constructor = Counter;
+Anibody.util.IntervalHandler.prototype = Object.create(EngineObject.prototype);
+Anibody.util.IntervalHandler.prototype.constructor = Anibody.util.IntervalHandler;
 /**
  * @see README_DOKU.txt
  */
-Counter.prototype.Update = function () {
+Anibody.util.IntervalHandler.prototype.Update = function () {
 
     this.Frames++;
-    var cf = this.CounterFunctions.heap;
+    var cf = this.IntervalFunctions.heap;
     var d;
     for (var i = 0; i < cf.length; i++) {
         d = cf[i].data;
         d.that = d.that ? d.that : this.Engine;
         if (this.Frames % d.every == 0)
-            d.function.call(d.that, d.parameter);
+            Anibody.CallObject(d);
     }
 
 };
 
 /**
- * Adds function, which is packed in a Counter-Object, is not called every frame but every multiple of the number in co.every
+ * Adds function, which is packed in a Interval-Object, is not called every frame but every multiple of the number in co.every
  * returns the ref number, which is needed for removing it
- * @param {counter object} co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+ * @param {counter object} co - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
  * @param {number} prior - priority within the counter
  * @param {string} name
  * @returns {number}
  */
-Counter.prototype.AddCounterFunction = function (co, prior, name) {
-    return this.CounterFunctions.Enqueue(co, prior, name);
+Anibody.util.IntervalHandler.prototype.AddIntervalFunction = function (co, prior, name) {
+    return this.IntervalFunctions.Enqueue(co, prior, name);
 };
 /**
  * Adds a callback-object, which is not called every frame but every multiple of the number in 'every'
  * returns the ref number, which is needed for removing it
- * @param {callback object} co - Counter Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+ * @param {callback object} co - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
  * @param {number} every
  * @param {number} prior - priority within the counter
  * @param {string} name
  * @returns {number}
  */
-Counter.prototype.AddCallbackObject = function (cbo, every,  prior, name) {
-    cbo.every = every;
-    return this.CounterFunctions.Enqueue(cbo, prior, name);
+Anibody.util.IntervalHandler.prototype.AddCallbackObject = function (cbo, every,  prior, name) {
+    if(typeof every === "undefined") every = 1;
+    cbo.every = (typeof cbo.every === "undefined") ? every : 1;
+    return this.IntervalFunctions.Enqueue(cbo, prior, name);
 };
 /**
  * removes the counter function that belongs to the ref number
  * @param {number} ref
  * @returns {undefined}
  */
-Counter.prototype.RemoveCounterFunction = function (ref) {
-    this.CounterFunctions.DeleteByReferenceNumber(ref);
+Anibody.util.IntervalHandler.prototype.RemoveIntervalFunction = function (ref) {
+    this.IntervalFunctions.DeleteByReferenceNumber(ref);
 };
 
 // ########################################################

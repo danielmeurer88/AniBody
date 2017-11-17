@@ -48,7 +48,7 @@ Anibody.util.MediaManager.prototype.Draw = function (c) {
 
     if (this.Loading) {
 
-        var center = {x: this.Engine.SelectedCanvas.width / 2, y: this.Engine.SelectedCanvas.height / 2};
+        var center = {x: this.Engine.Canvas.width / 2, y: this.Engine.Canvas.height / 2};
         var bar = {
             x: center.x / 2,
             width: center.x,

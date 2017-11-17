@@ -101,7 +101,7 @@ Sprite.prototype.SetSprite = function(codename, flagList, speed){
         var f = function (that) {
             that.Index++;
         };
-        this.Engine.Counter.AddCounterFunction({
+        this.Engine.IntervalHandler.AddIntervalFunction({
             parameter: this,
             function: f,
             every: this.Speed

@@ -9,7 +9,9 @@ function Anibody(html_id) {
         Project: "Developing",
         LastUpdated: "2017_11_16_h23" // year_month_day_hhour
     };
-
+    
+    this.CurrentFrame = 0;
+    
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
     if ($ && $.fn) {
         if (!$.AnibodyArray) {
@@ -31,7 +33,9 @@ function Anibody(html_id) {
     this.Flags.MediaManager = true;
     this.Flags.TouchHandler = true;
     this.Flags._useFakeMouseClick = true;
-    this.Flags.AntiHoverEffect = false;
+    this.Flags.DebugWindow = false;
+    this.Flags.Storage = false;
+    this.Flags.IntervalHandler = true;
 
     // ### PROPERTIES - STATE OF ENGINE
     this.Paused = false;
@@ -52,15 +56,15 @@ function Anibody(html_id) {
     this.IsTouchDevice = false;
     this.IsCanvasFitToScreen = false;
 
-    this.Context;// the context of the canvas object
+    this.Context = null;// the context of the canvas object
     this.Camera = {SelectedCamera: null, Cameras: []};// place holder for all needed camera (in later progress it will be possible to have more than just one camera)
-    this.Counter;// the variable for the counter object
+    this.IntervalHandler = null;// the variable for the counter object
     this.Log = [];// most error messages are sent here
     this.ProcessInputFunctions = new PriorityQueue();// array of all functions, which the user added and which concern the input processing
     this.UpdateFunctions = new PriorityQueue();// PriorityQueue of all functions, which the user added and which concern the update process
     this.ForegroundDrawFunctionObjects = new PriorityQueue();// PriorityQueue of Callback-Objects to draw the functions in the background
     this.FPS = 25;// the amount of frames per second (default: 25)
-    this.Timer; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
+    this.Timer = null; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
 
     this.MediaManager = null;
     // terrain holds the data of a game world. if not further declared a default terrain with the same size as the canvas object will be set
@@ -131,17 +135,22 @@ Anibody.prototype.Initialize = function () {
 
     this.Objects.Queue = new PriorityQueue();
 
-    // set the Counter function running
-    this.Counter = new Counter();// the variable for the counter object
-    this.AddUpdateFunctionObject({function: this.Counter.Update, parameter: this.Counter, that: this.Counter});
+    // set the IntervalHandler function running
+    if(this.Flags.IntervalHandler)
+        this.IntervalHandler = new Anibody.util.IntervalHandler();// the variable for the counter object
+    
+    this.AddUpdateFunctionObject({function: this.IntervalHandler.Update, that: this.IntervalHandler});
 
     if (this.Flags.ConstantLoop)
         this.Timer = new Timer(this, this.Frame, this.FPS);
 
-    this.Storage.Engine = this;
-    this.Storage.InitStorage();
-
-    this.DebugWindow = new DebugWindow();
+    if(this.Flags.Storage){
+        this.Storage.Engine = this;
+        this.Storage.InitStorage();
+    }
+    
+    if(this.Flags.DebugWindow)
+        this.DebugWindow = new DebugWindow();
 
 };
 
@@ -183,6 +192,7 @@ Anibody.prototype.Pause = function () {this.Paused = true};
  * @returns {undefined}
  */
 Anibody.prototype.Frame = function () {
+    this.CurrentFrame++;
     var e = arguments[0];
     e.ProcessInput();
     if (!e.Paused) {

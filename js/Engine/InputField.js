@@ -84,13 +84,11 @@ InputField.prototype.DefaultSelectedColor = "#fff";
 InputField.prototype.Initialize = function () {
 
     // creating an interval function to ensure the blinking of the cursor
-    this.Engine.Counter.AddCounterFunction({
-        parameter: this,
-        function: function (ob) {
-            ob.CursorVisible = !ob.CursorVisible;
-        },
-        every: 12
-    });
+    var ms = 800;
+    var changef = function (that) {
+        that.CursorVisible = !that.CursorVisible;
+    };
+    window.setInterval(changef, ms, this);
     
     var onkeydownfunc = function(e){
         var that = e.data.object;        

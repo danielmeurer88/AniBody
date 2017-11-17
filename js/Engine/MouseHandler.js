@@ -149,7 +149,7 @@ MouseHandler.prototype.MouseClickHandler = function(){
         var event = {
             GoThrough: true,
             Timestamp: Date.now(),
-            Frame: this.Engine.Counter.Frames,
+            Frame: this.Engine.CurrentFrame,
             Type: "leftclick",
             Mouse : this.Engine.Input.Mouse
         };

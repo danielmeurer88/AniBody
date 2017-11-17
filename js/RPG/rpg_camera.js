@@ -7,14 +7,24 @@ function RPGCamera(){
     this.CenterVertical = true;
 
     this.Update = function(){
-
+        var fcenter;
+        var w = this.Engine.Canvas.width;
+        var h = this.Engine.Canvas.height;
+        
         var sObj = this.Engine.GetSelectedObject();
-        var fcenter = {
+        if(sObj === null){
+            fcenter = {
+            X : (w/2),
+            Y : (h/2)
+        };
+        }else{
+            fcenter = {
             X : sObj.Center.X + (sObj.Width/2),
             Y : sObj.Center.Y + (sObj.Height/2)
         };
-        var w = this.Engine.Canvas.width;
-        var h = this.Engine.Canvas.height;
+        }
+        
+        
 
         if(sObj){
             if(this.CenterVertical){
