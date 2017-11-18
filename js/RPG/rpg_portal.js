@@ -1,5 +1,5 @@
 function RPGPortal(from, fx, fy, to, tx, ty){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.FromTerrain = from;
     this.FromPos = {X:fx, Y:fy};
     this.FromField;
@@ -15,7 +15,7 @@ function RPGPortal(from, fx, fy, to, tx, ty){
     
 this.Initialize();
 }
-RPGPortal.prototype = Object.create(ABO.prototype);
+RPGPortal.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGPortal.prototype.constructor = RPGPortal;
 
 RPGPortal.prototype.Initialize = function(){

@@ -1,6 +1,6 @@
 
 function Toaster(type, title, txt, ms) {
-    EngineObject.call(this);
+    Anibody.classes.ABO.call(this);
     this.X = 0;
     this.Y = 0;
     this.Width = 0;
@@ -60,7 +60,7 @@ function Toaster(type, title, txt, ms) {
 
     this.Initialize();
 }
-Toaster.prototype = Object.create(EngineObject.prototype);
+Toaster.prototype = Object.create(Anibody.classes.ABO.prototype);
 Toaster.prototype.constructor = Toaster;
 
 Toaster.BlockMode = false;

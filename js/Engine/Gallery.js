@@ -10,7 +10,7 @@
  * @returns {Gallery}
  */
 function Gallery(x,y,w,h, t, th){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X = x;
     this.Y = y;
@@ -69,7 +69,7 @@ function Gallery(x,y,w,h, t, th){
     
 this.Initialize();
 }
-Gallery.prototype = Object.create(ABO.prototype);
+Gallery.prototype = Object.create(Anibody.classes.ABO.prototype);
 Gallery.prototype.constructor = Gallery;
 
 Gallery.prototype.TitleColor = "#ddd";
@@ -531,7 +531,7 @@ Gallery.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 2)
         offsety = offsetx;
     
-    if(item instanceof ABO){
+    if(item instanceof Anibody.classes.ABO){
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });
         this.AdjustItemsPosition();
     }

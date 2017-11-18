@@ -6,7 +6,7 @@
  * @returns {Highlighting}
  */
 function Highlighting(area, flow_ms, ms){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.X=area.x;
     this.Y=area.y;
     this.Width=area.width || area.radius*2;
@@ -47,7 +47,7 @@ function Highlighting(area, flow_ms, ms){
     this._instructionMode = false;
         
 }
-Highlighting.prototype = Object.create(ABO.prototype);
+Highlighting.prototype = Object.create(Anibody.classes.ABO.prototype);
 Highlighting.prototype.constructor = Highlighting;
 
 Highlighting.prototype.OutsideColor = "rgba(0,0,0,0.8)";

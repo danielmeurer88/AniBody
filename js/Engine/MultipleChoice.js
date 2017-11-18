@@ -6,7 +6,7 @@
  * @returns {MultipleChoice}
  */
 function MultipleChoice(text,labels, cbos){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X=0;
     this.Y=0;
@@ -63,7 +63,7 @@ function MultipleChoice(text,labels, cbos){
     
 this.Initialize();
 }
-MultipleChoice.prototype = Object.create(ABO.prototype);
+MultipleChoice.prototype = Object.create(Anibody.classes.ABO.prototype);
 MultipleChoice.prototype.constructor = MultipleChoice;
 
 MultipleChoice.prototype.ContentBoxColor = "#999";

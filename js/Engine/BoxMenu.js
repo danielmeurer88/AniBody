@@ -10,7 +10,7 @@
  * @returns {BoxMenu}
  */
 function BoxMenu(x,y,w,h, t, th){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X = x;
     this.Y = y;
@@ -67,7 +67,7 @@ function BoxMenu(x,y,w,h, t, th){
     
 this.Initialize();
 }
-BoxMenu.prototype = Object.create(ABO.prototype);
+BoxMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
 BoxMenu.prototype.constructor = BoxMenu;
 
 BoxMenu.prototype.TitleColor = "#ddd";
@@ -514,7 +514,7 @@ BoxMenu.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 2)
         offsety = 0;
     
-    if(item instanceof ABO){
+    if(item instanceof Anibody.classes.ABO){
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });
         this.AdjustItemsPosition();
     }

@@ -6,7 +6,7 @@
  */
 function RPGPlayer(width, height) {
 
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
 
     this.DebugCurrentField = true;
     this.Height = height;
@@ -41,7 +41,7 @@ function RPGPlayer(width, height) {
 
     this.Initialize();
 }
-RPGPlayer.prototype = Object.create(ABO.prototype);
+RPGPlayer.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGPlayer.prototype.constructor = RPGPlayer;
 RPGPlayer.prototype.Initialize = function () {
 

@@ -9,7 +9,7 @@
  * @returns {Switch}
  */
 function Switch(x, y, width, height, cbo, on){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X = x;
     this.Y = y;
@@ -60,7 +60,7 @@ function Switch(x, y, width, height, cbo, on){
     
 this.Initialize();
 }
-Switch.prototype = Object.create(ABO.prototype);
+Switch.prototype = Object.create(Anibody.classes.ABO.prototype);
 Switch.prototype.constructor = Switch;
 
 Switch.prototype.DefaultBackgroundColor = "grey";

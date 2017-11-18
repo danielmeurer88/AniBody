@@ -7,7 +7,7 @@
  * @returns {Button}
  */
 function Button(x, y, width, height) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
         
     this.Type = "Button";
     this.X = x || 0;
@@ -100,7 +100,7 @@ function Button(x, y, width, height) {
     this.Initialize();
 }
 
-Button.prototype = Object.create(ABO.prototype);
+Button.prototype = Object.create(Anibody.classes.ABO.prototype);
 Button.prototype.constructor = Button;
 
 Button.prototype.DefaultMask = null;

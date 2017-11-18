@@ -1,5 +1,5 @@
 function RPGImageObject(codename,cf/* (optional), scale*/){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.CurrentField = cf;
     this.X = cf.X;
@@ -21,7 +21,7 @@ function RPGImageObject(codename,cf/* (optional), scale*/){
     this.TerrainImage = true;
     
 }
-RPGImageObject.prototype = Object.create(ABO.prototype);
+RPGImageObject.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGImageObject.prototype.constructor = RPGImageObject;
 
 RPGImageObject.prototype.Draw = function(c){

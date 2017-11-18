@@ -5,7 +5,7 @@
  * @returns {Tab}
  */
 function Tab(label, owner){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.TIN = this.UniqueID; // tab indentification number
     this.Label = label;
@@ -50,7 +50,7 @@ function Tab(label, owner){
     
 this.Initialize();
 }
-Tab.prototype = Object.create(ABO.prototype);
+Tab.prototype = Object.create(Anibody.classes.ABO.prototype);
 Tab.prototype.constructor = Tab;
 
 Tab.prototype.FontColor = "#000";
@@ -314,7 +314,7 @@ Tab.prototype.AddItem = function(item, offsetx, offsety, depthcorrection){
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });
     }
     
-    if(item instanceof ABO){
+    if(item instanceof Anibody.classes.ABO){
         if(item === "break" && this.Items.length <= 0)return;
         
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });

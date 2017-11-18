@@ -1,6 +1,6 @@
 
 function RPGMouse(){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.Mouse = this.Engine.Input.Mouse;
     
     this.LeftClickFunctions = [];
@@ -11,7 +11,7 @@ function RPGMouse(){
     this.Terrain;
 this.Initialize();    
 }
-RPGMouse.prototype = Object.create(ABO.prototype);
+RPGMouse.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGMouse.prototype.constructor = RPGMouse;
 
 RPGMouse.prototype.Initialize = function(){

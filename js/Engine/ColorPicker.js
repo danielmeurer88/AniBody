@@ -8,7 +8,7 @@
  * @returns {ColorPicker}
  */
 function ColorPicker(x,y,width, cpcbo){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.ColorPickedCallbackObject = cpcbo;
     
@@ -64,7 +64,7 @@ function ColorPicker(x,y,width, cpcbo){
     
 this.Initialize();
 }
-ColorPicker.prototype = Object.create(ABO.prototype);
+ColorPicker.prototype = Object.create(Anibody.classes.ABO.prototype);
 ColorPicker.prototype.constructor = ColorPicker;
 
 /**

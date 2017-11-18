@@ -7,7 +7,7 @@
 
 function Sprite() {
     
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.Image; // the whole image
 
@@ -87,7 +87,7 @@ function Sprite() {
 
     this.Constructor();
 }
-Sprite.prototype = Object.create(ABO.prototype);
+Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
 Sprite.prototype.constructor = Sprite;
 
 Sprite.prototype.SetSprite = function(codename, flagList, speed){
@@ -121,7 +121,7 @@ Sprite.prototype.Update = function(){
 // ######################################
 
 function Clipping(startx, starty, clipWidth, clipHeight, numClippings, flagNames) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.X = startx;
     this.Y = starty;
     this.Numbers = numClippings;
@@ -164,6 +164,6 @@ function Clipping(startx, starty, clipWidth, clipHeight, numClippings, flagNames
         return str;
     };
 }
-Clipping.prototype = Object.create(ABO.prototype);
+Clipping.prototype = Object.create(Anibody.classes.ABO.prototype);
 Clipping.prototype.constructor = Clipping;
 

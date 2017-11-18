@@ -4,7 +4,7 @@
  * @returns {TouchPie}
  */
 function TouchPie(){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.Color = "#bbb";
     this.ColorSelected = "#999";
@@ -34,7 +34,7 @@ function TouchPie(){
     
 this.Initialize();    
 }
-TouchPie.prototype = Object.create(ABO.prototype);
+TouchPie.prototype = Object.create(Anibody.classes.ABO.prototype);
 TouchPie.prototype.constructor = TouchPie;
 /**
  * @see README_DOKU.txt

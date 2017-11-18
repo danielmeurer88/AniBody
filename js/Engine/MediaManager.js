@@ -7,7 +7,7 @@ Anibody.SetPackage("Anibody", "util"); // checks if the object Anibody.util exis
  * @returns {MediaManager}
  */
 Anibody.util.MediaManager = function MediaManager() {
-    EngineObject.call(this);
+    Anibody.classes.ABO.call(this);
 
     this.Pictures = new Map();
     this.Sounds = new Map();
@@ -23,7 +23,7 @@ Anibody.util.MediaManager = function MediaManager() {
     this.Loading = false;
 
 }
-Anibody.util.MediaManager.prototype = Object.create(EngineObject.prototype);
+Anibody.util.MediaManager.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.util.MediaManager.prototype.constructor = Anibody.util.MediaManager;
 
 Anibody.util.MediaManager.prototype.DefaultBarColor = "green";

@@ -160,10 +160,10 @@ Anibody.prototype.Initialize = function () {
 Anibody.prototype.Start = function () {
 
     if (!this.Terrain)
-        this.SetTerrain(new DefaultTerrain());
+        this.SetTerrain(new Anibody.classes.DefaultTerrain());
 
     if (!this.Camera.SelectedCamera){
-        this.Camera.SelectedCamera = new DefaultCamera();
+        this.Camera.SelectedCamera = new Anibody.classes.DefaultCamera();
         this.Camera.Cameras.push(this.Camera.SelectedCamera);
     }
 

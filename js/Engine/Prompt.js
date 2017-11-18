@@ -6,7 +6,7 @@
  * @returns {Prompt}
  */
 function Prompt(m, cbo, numpad){
-    EngineObject.call(this);
+    Anibody.classes.ABO.call(this);
     
     if(typeof numpad === "undefined")
         numpad = false;
@@ -107,7 +107,7 @@ function Prompt(m, cbo, numpad){
 this.Initialize();
 }
 
-Prompt.prototype = Object.create(EngineObject.prototype);
+Prompt.prototype = Object.create(Anibody.classes.ABO.prototype);
 Prompt.prototype.constructor = Prompt;
 
 Prompt.prototype.DefaultBackgroundColor = "#ccc";

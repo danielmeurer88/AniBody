@@ -1,16 +1,4 @@
-Anibody.SetPackage("Anibody", "util");
-
-/**
- * Default Camera - used when the user's field of view is not bigger as the canvas
- * @returns {DefaultCamera}
- */
-function DefaultCamera(){
-    ABO.call(this);
-    this.Type = "Camera";
-    this.Name = "default";
-}
-DefaultCamera.prototype = Object.create(ABO.prototype);
-DefaultCamera.prototype.constructor = DefaultCamera;
+Anibody.SetPackage("Anibody", "util"); // checks if the object Anibody.util exists and if not creates it
 
 // ########################################################
 // ########################################################
@@ -161,45 +149,6 @@ Random.DrawLot = function(lots, lotsChances){
     }
     return lots[lots.length-1];
 };
-
-// ########################################################
-/**
- * @deprecated description
- * @returns {Queue}
- */
-function Queue() {
-  this.vals = [];
-}
-Queue.prototype.Enqueue = function(a) {
-  return this.vals.push(a);
-};
-Queue.prototype.Dequeue = function() {
-  return this.vals.shift();
-};
-Queue.prototype.isEmpty = function() {
-  return 0 >= this.vals.length ? !0 : !1;
-};
-// ########################################################
-
-// ########
-/**
- * @deprecated only used by rpg classes
- * @returns {Callback}
- */
-function Callback(a, b, c) {
-  a["function"] ? (this.that = a.that, this["function"] = a["function"], this.parameters = [a.parameter]) : (this["function"] = b, this.that = a, this.parameters = [c]);
-  this.OneParameter = !0;
-  if (3 < arguments.length) {
-    this.OneParameter = !1;
-    for (var d = 3; d < arguments.length; d++) {
-      this.parameters.push(arguments[d]);
-    }
-  }
-}
-Callback.prototype.Call = function() {
-  this.OneParameter ? this["function"].call(this.that, this.parameters[0]) : this["function"].apply(this.that, this.parameters);
-};
-// ++++++++
 
 /**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority
@@ -534,13 +483,13 @@ Timer.prototype.SetTotal = function(t){
  * @returns {IntervalHandler}
  */
 Anibody.util.IntervalHandler = function IntervalHandler(){
-    EngineObject.call(this);
+    Anibody.classes.EngineObject.call(this);
     // Javascript Integer limit = 2^53 = 9007199254740992
     // (Number of Frames with 25 fps after 5 days) = 25*60*60*24*5 = 10.800.000
     this.Frames = 0;
     this.IntervalFunctions = new PriorityQueue();
 }
-Anibody.util.IntervalHandler.prototype = Object.create(EngineObject.prototype);
+Anibody.util.IntervalHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
 Anibody.util.IntervalHandler.prototype.constructor = Anibody.util.IntervalHandler;
 /**
  * @see README_DOKU.txt

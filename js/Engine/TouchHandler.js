@@ -6,7 +6,7 @@
  * @returns {TouchHandler}
  */
 function TouchHandler(){
-    EngineObject.call(this);
+    Anibody.classes.EngineObject.call(this);
     
     // FLAGS
     this.PreventDefault = true;
@@ -61,7 +61,7 @@ function TouchHandler(){
     
 this.Initialize();
 }
-TouchHandler.prototype = Object.create(EngineObject.prototype);
+TouchHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
 TouchHandler.prototype.constructor = TouchHandler;
 /**
  * @see README_DOKU.txt

@@ -1061,6 +1061,7 @@ Array.prototype.shuffle = function(rounds){
 };
 /**
  * Deletes the element of the specific index and returns it on success
+ * inline-deleting: no new Array is created
  * @param {Number} index
  * @returns {Array-Element}
  */
@@ -1241,13 +1242,6 @@ function createImageNN(can, by){
     newimg.src = url;
 
     return newimg;
-}
-
-// shim if needed
-if (!Date.now) {
-  Date.now = function now() {
-    return new Date().getTime();
-  };
 }
 
 /**

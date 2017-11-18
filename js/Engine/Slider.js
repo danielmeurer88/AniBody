@@ -8,7 +8,7 @@
  * @returns {Slider}
  */
 function Slider(x,y,width,height){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X = x;
     this.Y = y
@@ -43,7 +43,7 @@ function Slider(x,y,width,height){
     
 this.Initialize();
 }
-Slider.prototype = Object.create(ABO.prototype);
+Slider.prototype = Object.create(Anibody.classes.ABO.prototype);
 Slider.prototype.constructor = Slider;
 
 Slider.prototype.DefaultColor = "rgba(100,100,120,1)";

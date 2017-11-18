@@ -2,7 +2,7 @@
 function RPGActivationField(constant, parameter){
     this.DebugDraw = true;
     
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.Constant = constant ? constant : false;
     this.FramesActivated = 0;
     this.Activator;
@@ -15,7 +15,7 @@ function RPGActivationField(constant, parameter){
     
     this.ActivationFunction = function(){};
 }
-RPGActivationField.prototype = Object.create(ABO.prototype);
+RPGActivationField.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGActivationField.prototype.constructor = RPGActivationField;
 
 RPGActivationField.prototype.Update = function(){

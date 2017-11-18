@@ -3,7 +3,7 @@
  * @returns {MouseHandler}
  */
 function MouseHandler(){
-    EngineObject.call(this);
+    Anibody.classes.EngineObject.call(this);
     
     this.LeftMouseClickHandlerCBOs = new PriorityQueue();
     this.RightMouseClickHandlerCBOs = new PriorityQueue();
@@ -18,7 +18,7 @@ function MouseHandler(){
     
 this.Initialize();
 }
-MouseHandler.prototype = Object.create(EngineObject.prototype);
+MouseHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
 MouseHandler.prototype.constructor = MouseHandler;
 /**
  * @see README_DOKU.txt

@@ -6,7 +6,7 @@
  * @returns {Spotting}
  */
 function Spotting(area, ms){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.Area = area;
     
@@ -35,7 +35,7 @@ function Spotting(area, ms){
 
 this.Initialize();
 }
-Spotting.prototype = Object.create(ABO.prototype);
+Spotting.prototype = Object.create(Anibody.classes.ABO.prototype);
 Spotting.prototype.constructor = Spotting;
 
 Spotting.prototype.DefaultColor = "red";

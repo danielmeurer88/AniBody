@@ -7,7 +7,7 @@
  * @returns {SlideMenu}
  */
 function SlideMenu(attto, dist) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.Tabs = [];
     this.OpenTab = null;
@@ -19,7 +19,7 @@ function SlideMenu(attto, dist) {
     // overall needed depth, which will be regarded by all tabs
     this.NeededDepth = 0;
 }
-SlideMenu.prototype = Object.create(ABO.prototype);
+SlideMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
 SlideMenu.prototype.constructor = SlideMenu;
 
 /**

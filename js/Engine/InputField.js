@@ -9,7 +9,7 @@
  */
 function InputField(x, y, width, height, padding) {
 
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
 
     this.Active = true;
 
@@ -71,7 +71,7 @@ function InputField(x, y, width, height, padding) {
 this.Initialize();
 }
 
-InputField.prototype = Object.create(ABO.prototype);
+InputField.prototype = Object.create(Anibody.classes.ABO.prototype);
 InputField.prototype.constructor = InputField;
 
 InputField.prototype.DefaultUnselectedColor = "#eee";

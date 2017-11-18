@@ -4,14 +4,14 @@
  * @returns {ABOPresenter}
  */
 function ABOPresenter(abo){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X=0;
     this.Y=0;
     this.Width;
     this.Height;
     
-    if(abo instanceof ABO){
+    if(abo instanceof Anibody.classes.ABO){
         this.ABO = abo;
         this._ready = true;
     }else
@@ -50,7 +50,7 @@ function ABOPresenter(abo){
     
 this.Initialize();
 }
-ABOPresenter.prototype = Object.create(ABO.prototype);
+ABOPresenter.prototype = Object.create(Anibody.classes.ABO.prototype);
 ABOPresenter.prototype.constructor = ABOPresenter;
 
 ABOPresenter.prototype.ContentBoxColor = "#999";
@@ -306,7 +306,7 @@ ABOPresenter.prototype.SetStopFunction = function (stopcbo) {
  * @returns {Animation}
  */
 function Animation(x, y, codename, numpics, jumpevery, reverseAfter) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.Type = "Animation";
 
     if(typeof reverseAfter === "undefined")
@@ -345,7 +345,7 @@ function Animation(x, y, codename, numpics, jumpevery, reverseAfter) {
 
 this.Initialize();
 }
-Animation.prototype = Object.create(ABO.prototype);
+Animation.prototype = Object.create(Anibody.classes.ABO.prototype);
 Animation.prototype.constructor = Animation;
 
 /**
@@ -486,7 +486,7 @@ Animation.prototype.SetMaxIterations = function (i) {
  * @returns {ImageObject}
  */
 function ImageObject(codename, x, y/* (optional), scale*/) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.X = x;
     this.Y = y;
     
@@ -508,7 +508,7 @@ function ImageObject(codename, x, y/* (optional), scale*/) {
 
 this.Initialize();    
 }
-ImageObject.prototype = Object.create(ABO.prototype);
+ImageObject.prototype = Object.create(Anibody.classes.ABO.prototype);
 ImageObject.prototype.constructor = ImageObject;
 /**
  * @see README_DOKU.txt
@@ -553,7 +553,7 @@ ImageObject.prototype.Update = function () {
  * @returns {ABText}
  */
 function ABText(x, y, txt, fh) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     this.X = x;
     this.Y = y;
     this.Width = false;
@@ -568,7 +568,7 @@ function ABText(x, y, txt, fh) {
 
     this.Initialize();
 }
-ABText.prototype = Object.create(ABO.prototype);
+ABText.prototype = Object.create(Anibody.classes.ABO.prototype);
 ABText.prototype.constructor = ABText;
 
 ABText.prototype.DefaultFontColor = "black";

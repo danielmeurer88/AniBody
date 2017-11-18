@@ -7,7 +7,7 @@
  * @returns {Monitor}
  */
 function Monitor(obj, attr, cbo, name){
-    EngineObject.call(this);
+    Anibody.classes.EngineObject.call(this);
     
     if(typeof name !== "undefined" && name!==false && name !== null)
         this.Name = name;
@@ -31,7 +31,7 @@ function Monitor(obj, attr, cbo, name){
 
 this.Initialize();
 }
-Monitor.prototype = Object.create(EngineObject.prototype);
+Monitor.prototype = Object.create(Anibody.classes.EngineObject.prototype);
 Monitor.prototype.constructor = Monitor;
 Monitor.Counter = 0;
 

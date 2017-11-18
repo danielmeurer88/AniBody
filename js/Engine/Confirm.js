@@ -5,7 +5,7 @@
  * @returns {Confirm}
  */
 function Confirm(text, cbo) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
 
     this.X = 0;
     this.Y = 0;
@@ -59,7 +59,7 @@ function Confirm(text, cbo) {
 
     this.Initialize();
 }
-Confirm.prototype = Object.create(ABO.prototype);
+Confirm.prototype = Object.create(Anibody.classes.ABO.prototype);
 Confirm.prototype.constructor = Confirm;
 
 Confirm.prototype.ContentBoxColor = "#999";

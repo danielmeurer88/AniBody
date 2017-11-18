@@ -4,7 +4,7 @@
  * @returns {Spline}
  */
 function Spline() {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
 
     this.Canvas = {
         width : this.Engine.Canvas.width,
@@ -31,7 +31,7 @@ function Spline() {
 
     this.Initialize();
 }
-Spline.prototype = Object.create(ABO.prototype);
+Spline.prototype = Object.create(Anibody.classes.ABO.prototype);
 Spline.prototype.constructor = Spline;
 /**
  * @see README_DOKU.txt

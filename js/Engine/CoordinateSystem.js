@@ -9,7 +9,7 @@
  * @returns {CoordinateSystem}
  */
 function CoordinateSystem(x, y, w, h, opt) {
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
 
     /* Standard Attributes */
     this.X = x;
@@ -66,7 +66,7 @@ function CoordinateSystem(x, y, w, h, opt) {
 
     this.Initialize();
 }
-CoordinateSystem.prototype = Object.create(ABO.prototype);
+CoordinateSystem.prototype = Object.create(Anibody.classes.ABO.prototype);
 CoordinateSystem.prototype.constructor = CoordinateSystem;
 /**
  * @see README_DOKU.txt

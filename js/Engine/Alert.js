@@ -4,7 +4,7 @@
  * @returns {Alert}
  */
 function Alert(text){
-    ABO.call(this);
+    Anibody.classes.ABO.call(this);
     
     this.X=0;
     this.Y=0;
@@ -50,7 +50,7 @@ function Alert(text){
     
 this.Initialize();
 }
-Alert.prototype = Object.create(ABO.prototype);
+Alert.prototype = Object.create(Anibody.classes.ABO.prototype);
 Alert.prototype.constructor = Alert;
 
 Alert.prototype.ContentBoxColor = "#999";
