@@ -119,7 +119,7 @@ InputField.prototype.Initialize = function () {
 InputField.prototype.Update = function () {
 
     var m = this.Engine.Input.Mouse;
-    var k = this.Engine.Input.Key;
+    var k = this.Engine.Input.Keys;
 
     // left click on the input field
     if (m.Left.FramesUp == 1 && this.IsMouseOver) {

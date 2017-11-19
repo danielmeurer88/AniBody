@@ -1,9 +1,5 @@
 Anibody.SetPackage("Anibody", "util"); // checks if the object Anibody.util exists and if not creates it
 
-// ########################################################
-// ########################################################
-// ########################################################
-
 /**
  * a class that provides random numbers
  * @type static class

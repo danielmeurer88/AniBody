@@ -11,7 +11,7 @@ function TouchHandler(){
     // FLAGS
     this.PreventDefault = true;
     this.PreventScrolling = true;
-    this.FakeMouseClick = true; //flag if a (short) tap will call for a fake mouse click - useful if the default will be prevented
+    this.FakeMouseClick = this.Engine.Flags.Touch2FakeMouseClick; //flag if a (short) tap will call for a fake mouse click - useful if the default will be prevented
     // a FakeMouseClick will only be recognized by the AniBody-Engine as a real mouse click in the MouseHandler
     
     // DEFINED VALUES
@@ -269,7 +269,7 @@ TouchHandler.prototype._getSwipeDirection = function(dir){
 TouchHandler.prototype.OnTapFinger1 = function(){
     console.log("Finger1 Tap");
     if(this.FakeMouseClick){
-        this.Engine.Input.FakeMouseClick(this.Finger1.X, this.Finger1.Y);
+        this.Engine.Input.Mouse.FakeMouseClick(this.Finger1.X, this.Finger1.Y);
     }
     
     var cbo;

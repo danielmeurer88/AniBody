@@ -266,30 +266,30 @@ function level_rpg_Input(engine){
         var e = arguments[0];
         
          if(!e.Paused){
-            if(e.Input.Key.A.Pressed && e.Objects.SelectedObject)
+            if(e.Input.Keys.A.Pressed && e.Objects.SelectedObject)
                 e.Objects.SelectedObject.Move({X:-1,Y:0});
 
-            if(e.Input.Key.D.Pressed && e.Objects.SelectedObject)
+            if(e.Input.Keys.D.Pressed && e.Objects.SelectedObject)
                 e.Objects.SelectedObject.Move({X:1,Y:0});
             
-            if(e.Input.Key.W.Pressed && e.Objects.SelectedObject)
+            if(e.Input.Keys.W.Pressed && e.Objects.SelectedObject)
                 e.Objects.SelectedObject.Move({X:0,Y:-1});
 
-            if(e.Input.Key.S.Pressed && e.Objects.SelectedObject)
+            if(e.Input.Keys.S.Pressed && e.Objects.SelectedObject)
                 e.Objects.SelectedObject.Move({X:0,Y:1});
             
-             if(e.Input.Key.Space.FramesPressed == 1){
+             if(e.Input.Keys.Space.FramesPressed == 1){
                  e.Objects.SelectedObject.Interact();
             }
             
-            if(e.Input.Key.I.FramesPressed == 1 && e.Objects.SelectedObject){
+            if(e.Input.Keys.I.FramesPressed == 1 && e.Objects.SelectedObject){
                 if(e.Objects.SelectedObject.ItemBag.isOpen())
                     e.Objects.SelectedObject.ItemBag.Close();
                 else
                     e.Objects.SelectedObject.ItemBag.Open();
             }
             
-            if(e.Input.Key.U.FramesPressed == 1 && e.Objects.SelectedObject){
+            if(e.Input.Keys.U.FramesPressed == 1 && e.Objects.SelectedObject){
                 e.Objects.SelectedObject.ItemBag.UseItem();
             }
             
