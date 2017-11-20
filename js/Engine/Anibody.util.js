@@ -1,4 +1,4 @@
-Anibody.SetPackage("Anibody", "util"); // checks if the object Anibody.util exists and if not creates it
+ // checks if the object Anibody.util exists and if not creates it
 
 /**
  * a class that provides random numbers
@@ -493,13 +493,12 @@ Anibody.util.IntervalHandler.prototype.constructor = Anibody.util.IntervalHandle
 Anibody.util.IntervalHandler.prototype.Update = function () {
 
     this.Frames++;
-    var cf = this.IntervalFunctions.heap;
+    var intf = this.IntervalFunctions;
     var d;
-    for (var i = 0; i < cf.length; i++) {
-        d = cf[i].data;
-        d.that = d.that ? d.that : this.Engine;
-        if (this.Frames % d.every == 0)
-            Anibody.CallObject(d);
+    for (var i = 0; i < intf.length; i++) {
+        intf[i].that = intf[i].that ? intf[i].that : this.Engine;
+        if (this.Frames % intf[i].every == 0)
+            Anibody.CallObject(intf[i]);
     }
 
 };
@@ -507,27 +506,31 @@ Anibody.util.IntervalHandler.prototype.Update = function () {
 /**
  * Adds function, which is packed in a Interval-Object, is not called every frame but every multiple of the number in co.every
  * returns the ref number, which is needed for removing it
- * @param {counter object} co - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+ * @param {counter object} intf - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
  * @param {number} prior - priority within the counter
  * @param {string} name
  * @returns {number}
  */
-Anibody.util.IntervalHandler.prototype.AddIntervalFunction = function (co, prior, name) {
-    return this.IntervalFunctions.Enqueue(co, prior, name);
+Anibody.util.IntervalHandler.prototype.AddIntervalFunction = function (intf, every) {
+    if(typeof every === "undefined") every = 1;
+    intf.every = (typeof intf.every === "undefined") ? every : 1;
+    
+    this.IntervalFunctions.push(intf)
+    return this.IntervalFunctions.length - 1;
 };
 /**
  * Adds a callback-object, which is not called every frame but every multiple of the number in 'every'
  * returns the ref number, which is needed for removing it
- * @param {callback object} co - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
+ * @param {callback object} intf - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
  * @param {number} every
- * @param {number} prior - priority within the counter
- * @param {string} name
  * @returns {number}
  */
-Anibody.util.IntervalHandler.prototype.AddCallbackObject = function (cbo, every,  prior, name) {
+Anibody.util.IntervalHandler.prototype.AddCallbackObject = function (intf, every) {
     if(typeof every === "undefined") every = 1;
-    cbo.every = (typeof cbo.every === "undefined") ? every : 1;
-    return this.IntervalFunctions.Enqueue(cbo, prior, name);
+    intf.every = (typeof intf.every === "undefined") ? every : 1;
+    
+    this.IntervalFunctions.push(intf)
+    return this.IntervalFunctions.length - 1;
 };
 /**
  * removes the counter function that belongs to the ref number
@@ -535,9 +538,5 @@ Anibody.util.IntervalHandler.prototype.AddCallbackObject = function (cbo, every,
  * @returns {undefined}
  */
 Anibody.util.IntervalHandler.prototype.RemoveIntervalFunction = function (ref) {
-    this.IntervalFunctions.DeleteByReferenceNumber(ref);
+    this.IntervalFunctions.delete(ref);
 };
-
-// ########################################################
-// ########################################################
-// ########################################################
