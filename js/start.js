@@ -32,8 +32,6 @@ $(document).ready(function () {
         new Anibody.util.Sound({path: "./music/alongway.mp3", codename: "girl_background", group:"room2"})
     ];
     
-    console.log(engine.Objects.Queue.length);
-    
     engine.MediaManager.SetMediaPack(  mediapack, menu_callback.getCallbackObject(engine,engine));
 
     
@@ -87,7 +85,7 @@ function menu_callback(engine){
                 en.ExitFullscreen();
            };
 
-           window.setTimeout(f, 2000, engine);
+           window.setTimeout(f, 3000, engine);
 
     });
     
@@ -104,6 +102,7 @@ function menu_callback(engine){
 }
 
 function start_help(engine){
+    Anibody.import(Anibody.ui.Alert);
     new Alert("in developement").Start();
 }
 

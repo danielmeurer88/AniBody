@@ -110,7 +110,7 @@ Switch.prototype.Switch = function(cbo){
         cbo = this.CallbackObject;
     
     window.setTimeout(function(cbo){
-        Callback.CallObject(cbo);
+        Anibody.CallObject(cbo);
     }, ms/2, cbo);
 };
 

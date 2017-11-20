@@ -832,6 +832,10 @@ Anibody.SetPackage = function(/*strings*/){
 };
 
 Anibody.CallObject = function(obj, useApply){
+    
+    if(typeof obj !== "object")
+        return;
+    
     useApply = obj.useApply;
     if(typeof useApply === "undefined")
         useApply = false;

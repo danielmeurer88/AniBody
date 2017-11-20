@@ -1,152 +1,6 @@
  // checks if the object Anibody.util exists and if not creates it
 
 /**
- * a class that provides random numbers
- * @type static class
- */
-var Random = {};
-/**
- * Returns a number between a minimum and a maximum - both inclusivly
- * @param {number} min
- * @param {number} max
- * @param {number} decimals
- * @returns {Number}
- */
-Random.GetNumberOld = function(min, max, decimals){
-    
-    // Testing needed
-    
-    if(isNaN(min))
-    min = 0;
-    if(isNaN(max))
-        if(Number && Number.MAX_SAFE_INTEGER)
-            max = Number.MAX_SAFE_INTEGER;
-        else
-            max = Math.pow(2, 53) - 1;
-        
-    if(isNaN(decimals))
-        decimals = 0;
-    
-    var ran = Math.random() * Math.pow(10, decimals+6);
-    min *= Math.pow(10, decimals);
-    max *= Math.pow(10, decimals);
-    ran = ran % (max - min + 1) + min;
-    return (Math.round(ran)/Math.pow(10, decimals));
-};
-
-Random.GetNumber = function(min, max, decimals){
-    if(window.crypto || window.crypto.getRandomValues){
-        return Random.GetNumberOld(min, max, decimals);
-    }
-    
-    if(isNaN(min))
-    min = 0;
-    if(isNaN(max))
-        if(Number && Number.MAX_SAFE_INTEGER)
-            max = Number.MAX_SAFE_INTEGER;
-        else
-            max = Math.pow(2, 53) - 1;
-        
-    if(typeof decimals === "undefined" || isNaN(decimals))
-        decimals = 0;
-    
-    var array = new Uint32Array(3);
-    window.crypto.getRandomValues(array);
-    
-    var num = array[0] + array[1] + array[2];
-    max *= Math.pow(10, decimals);
-    min *= Math.pow(10, decimals);
-    num = num % (max - min + 1) + min;
-    num /= Math.pow(10, decimals);
-    return num;
-};
-/**
- * Returns a timestamp from now minus a random timespan
- * @param {number} min minimum
- * @param {number} max maximum
- * @param {string} time unit (ms|s|min|h|d|w|y) leapyear not included in calculation
- * @returns {Number}
- */
-Random.GetTimestamp = function(min, max, unit){
-    if(typeof unit === "undefined")
-        unit = "s";
-    var num = Random.GetNumber(min, max);
-    
-    var lim = Date.now();
-    if(unit === "ms" || unit === "mil")
-        lim -= num;
-    
-    if(unit === "s")
-        lim -= num * 1000;
-    
-    if(unit === "min")
-        lim -= num * 1000 * 60;
-    
-    if(unit === "h")
-        lim -= num * 1000 * 60 * 60;
-    
-    if(unit === "d")
-        lim -= num * 1000 * 60 * 60 * 24;
-    
-    if(unit === "w")
-        lim -= num * 1000 * 60 * 60 * 24 * 7;
-    
-    if(unit === "y")
-        lim -= num * 1000 * 60 * 60 * 24 * 365;
-    
-    return lim;
-    
-};
-/**
- * Figuratively speaking: Drawing 1 lot from a bowl. How many lots of a kind exists in the bowl can be different
- * @example Random.DrawLot(["A","B"],[8, 2]) --> the bowl has 8+2 lots in it.
- * 8x "A" and 2x "B". The call will draw 1 lot and return it
- * @param {object-array} lots
- * @param {number-array} lotschance
- * @returns {object}
- */
-Random.DrawLot = function(lots, lotsChances){
-    
-    if(arguments.length < 1) throw "ArgumentException: Too less arguments";
-    
-    if(isNaN(lots.length) || isNaN(lotsChances.length))
-        throw "ArgumentException: Arguments need to be arrays";
-    
-    if(lots.length !== lotsChances.length)
-        throw "ArgumentException: Arrays need to be the same size";
-    
-    var i;
-    // find out how many decimals are after the dot
-    var getDecimals = function(num){
-        var str = num.toString();
-        var i = str.indexOf(".");
-        if(i < 0) return 0;
-        str = str.substr(i+1);
-        return str.length;
-    };
-    
-    var decimals = 0;
-    for(i=0; i<lotsChances.length; i++){
-        decimals = Math.max(decimals,getDecimals(lotsChances[i]));
-    }
-    
-    var chanceSum = 0;
-    for(i=0; i<lotsChances.length; i++)
-        chanceSum += lotsChances[i];
-    
-    var rnd = Random.GetNumber(0, chanceSum, decimals);
-    var classmin = 0;
-    var classmax = 0;
-    for(i=0; i<lots.length; i++){
-        classmax += lotsChances[i];
-        if(rnd >= classmin && rnd < classmax)
-            return lots[i];
-        classmin = classmax;
-    }
-    return lots[lots.length-1];
-};
-
-/**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority
  * @param {Boolean} nop - Flag if an enqueued element without given priority gets priority of zero (true) or the current highest priority + 1 (false and default)
  * @returns {PriorityQueue}
@@ -483,7 +337,7 @@ Anibody.util.IntervalHandler = function IntervalHandler(){
     // Javascript Integer limit = 2^53 = 9007199254740992
     // (Number of Frames with 25 fps after 5 days) = 25*60*60*24*5 = 10.800.000
     this.Frames = 0;
-    this.IntervalFunctions = new PriorityQueue();
+    this.IntervalFunctions = [];
 }
 Anibody.util.IntervalHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
 Anibody.util.IntervalHandler.prototype.constructor = Anibody.util.IntervalHandler;
@@ -513,25 +367,12 @@ Anibody.util.IntervalHandler.prototype.Update = function () {
  */
 Anibody.util.IntervalHandler.prototype.AddIntervalFunction = function (intf, every) {
     if(typeof every === "undefined") every = 1;
-    intf.every = (typeof intf.every === "undefined") ? every : 1;
+    intf.every = (typeof intf.every !== "undefined") ? intf.every : 1;
     
     this.IntervalFunctions.push(intf)
     return this.IntervalFunctions.length - 1;
 };
-/**
- * Adds a callback-object, which is not called every frame but every multiple of the number in 'every'
- * returns the ref number, which is needed for removing it
- * @param {callback object} intf - Interval Object, which contents of : { that: that, parameter: obj, function : func, every : frame_number };
- * @param {number} every
- * @returns {number}
- */
-Anibody.util.IntervalHandler.prototype.AddCallbackObject = function (intf, every) {
-    if(typeof every === "undefined") every = 1;
-    intf.every = (typeof intf.every === "undefined") ? every : 1;
-    
-    this.IntervalFunctions.push(intf)
-    return this.IntervalFunctions.length - 1;
-};
+
 /**
  * removes the counter function that belongs to the ref number
  * @param {number} ref

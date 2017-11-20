@@ -275,7 +275,7 @@ TouchHandler.prototype.OnTapFinger1 = function(){
     var cbo;
     for(var i=0; this.Finger1.TapListener.length; i++){
         cbo = this.Finger1.TapListener[i];
-        Callback.CallObject(cbo);
+        Anibody.CallObject(cbo);
     }
 };
 /**
@@ -287,7 +287,7 @@ TouchHandler.prototype.OnTapFinger2 = function(){
     var cbo;
     for(var i=0; this.Finger2.TapListener.length; i++){
         cbo = this.Finger2.TapListener[i];
-        Callback.CallObject(cbo);
+        Anibody.CallObject(cbo);
     }
 };
 /**
@@ -299,7 +299,7 @@ TouchHandler.prototype.OnLongTapFinger1 = function(){
     var cbo;
     for(var i=0; this.Finger1.LongTapListener.length; i++){
         cbo = this.Finger1.LongTapListener[i];
-        Callback.CallObject(cbo);
+        Anibody.CallObject(cbo);
     }
 };
 /**
@@ -311,7 +311,7 @@ TouchHandler.prototype.OnLongTapFinger2 = function(){
     var cbo;
     for(var i=0; this.Finger2.LongTapListener.length; i++){
         cbo = this.Finger2.LongTapListener[i];
-        Callback.CallObject(cbo);
+        Anibody.CallObject(cbo);
     }
 };
 /**
@@ -324,7 +324,7 @@ TouchHandler.prototype.OnSwipeFinger1 = function(dir){
     var cbo;
     for(var i=0; this.Finger1.SwipeListener.length; i++){
         cbo = this.Finger1.SwipeListener[i];
-        Callback.CallObject(cbo, dir);
+        Anibody.CallObject(cbo, dir);
     }
 };
 /**
@@ -337,7 +337,7 @@ TouchHandler.prototype.OnSwipeFinger2 = function(dir){
     var cbo;
     for(var i=0; this.Finger2.SwipeListener.length; i++){
         cbo = this.Finger2.SwipeListener[i];
-        Callback.CallObject(cbo, dir);
+        Anibody.CallObject(cbo, dir);
     }
 };
 

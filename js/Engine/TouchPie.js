@@ -195,7 +195,7 @@ TouchPie.prototype.Trigger = function(){
         return;
     
     var cbo = this.COArray[this.SelectedPiePiece];
-    Callback.CallObject(cbo);
+    Anibody.CallObject(cbo);
     this.Enabled = false;
 };
 

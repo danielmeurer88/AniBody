@@ -3,7 +3,7 @@
  * @param {string} text - the text, which will be shown to the user
  * @returns {Alert}
  */
-function Alert(text){
+Anibody.ui.Alert = function Alert(text){
     Anibody.classes.ABO.call(this);
     
     this.X=0;
@@ -50,23 +50,23 @@ function Alert(text){
     
 this.Initialize();
 }
-Alert.prototype = Object.create(Anibody.classes.ABO.prototype);
-Alert.prototype.constructor = Alert;
+Anibody.ui.Alert.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Alert.prototype.constructor = Anibody.ui.Alert;
 
-Alert.prototype.ContentBoxColor = "#999";
-Alert.prototype.BoxBorderColor = "black";
-Alert.prototype.BoxColor = "#ccc";
-Alert.prototype.BoxFontColor = "#fff";
-Alert.prototype.OutsideColor = "rgba(0,0,0,0.8)";
-Alert.prototype.DefaultRounding = 10;
-Alert.prototype.DefaultFontHeight = 18;
-Alert.prototype.DefaultBoxPadding = 5;
-Alert.prototype.DefaultRowSpace = 4;
+Anibody.ui.Alert.prototype.ContentBoxColor = "#999";
+Anibody.ui.Alert.prototype.BoxBorderColor = "black";
+Anibody.ui.Alert.prototype.BoxColor = "#ccc";
+Anibody.ui.Alert.prototype.BoxFontColor = "#fff";
+Anibody.ui.Alert.prototype.OutsideColor = "rgba(0,0,0,0.8)";
+Anibody.ui.Alert.prototype.DefaultRounding = 10;
+Anibody.ui.Alert.prototype.DefaultFontHeight = 18;
+Anibody.ui.Alert.prototype.DefaultBoxPadding = 5;
+Anibody.ui.Alert.prototype.DefaultRowSpace = 4;
 
 /**
  * @see README_DOKU.txt
  */
-Alert.prototype.Initialize = function () {
+Anibody.ui.Alert.prototype.Initialize = function () {
     
     this._createTextImage();
     
@@ -79,7 +79,7 @@ Alert.prototype.Initialize = function () {
  * transformed into an image. 
  * @returns {undefined}
  */
-Alert.prototype._createTextImage = function () {
+Anibody.ui.Alert.prototype._createTextImage = function () {
     
     // creating an offscreen canvas with the specific width and height
     var off = document.createElement("CANVAS");
@@ -191,10 +191,10 @@ Alert.prototype._createTextImage = function () {
     
 };
 /**
- * recalculate the necessary size of the Alert.
+ * recalculate the necessary size of the Anibody.ui.Alert.
  * @returns {undefined}
  */
-Alert.prototype._recalculateSizes = function () {
+Anibody.ui.Alert.prototype._recalculateSizes = function () {
     
     var margin = this.BoxPadding;    
     var can = this.Engine.Canvas;
@@ -217,7 +217,7 @@ Alert.prototype._recalculateSizes = function () {
  * creates a foreground draw function object, that is ready to be registered
  * @returns {object}
  */
-Alert.prototype._createForegroundDrawFunctionObject = function(){
+Anibody.ui.Alert.prototype._createForegroundDrawFunctionObject = function(){
     
     var f = function(c){
         c.save();
@@ -269,7 +269,7 @@ Alert.prototype._createForegroundDrawFunctionObject = function(){
  * creates a process input function object, that is ready to be registered
  * @returns {object}
  */
-Alert.prototype._createProcessInputFunctionObject = function(){
+Anibody.ui.Alert.prototype._createProcessInputFunctionObject = function(){
     
     var f = function(en){
                 
@@ -314,7 +314,7 @@ Alert.prototype._createProcessInputFunctionObject = function(){
  * creates a update function object, that is ready to be registered
  * @returns {object}
  */
-Alert.prototype._createUpdateFunctionObject = function(){
+Anibody.ui.Alert.prototype._createUpdateFunctionObject = function(){
     
     var f = function(en){
         
@@ -331,7 +331,7 @@ Alert.prototype._createUpdateFunctionObject = function(){
  * creates a Mouse handler object, that is ready to be registered
  * @returns {object}
  */
-Alert.prototype._createMouseHandlerObject = function(){
+Anibody.ui.Alert.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
@@ -354,7 +354,7 @@ Alert.prototype._createMouseHandlerObject = function(){
  * Starts/Opens the Presenter dialog box
  * @returns {undefined}
  */
-Alert.prototype.Start = function (cbo) {
+Anibody.ui.Alert.prototype.Start = function (cbo) {
     this.Active = true;
     
     new Flow(this, "Opacity", 1, 600,{
@@ -379,7 +379,7 @@ Alert.prototype.Start = function (cbo) {
  * Stops the presenter dialog - will be called by the class
  * @returns {undefined}
  */
-Alert.prototype.Stop = function () {
+Anibody.ui.Alert.prototype.Stop = function () {
     this.Active = false;
     
     this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);
@@ -391,5 +391,5 @@ Alert.prototype.Stop = function () {
     this.Engine.RemoveProcessInputFunction(this._ref_ip);
     this._ref_ip = null;
     
-    Callback.CallObject(this._cbo);
+    Anibody.CallObject(this._cbo);
 };

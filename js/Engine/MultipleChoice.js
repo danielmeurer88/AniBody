@@ -27,7 +27,7 @@ function MultipleChoice(text,labels, cbos){
             that:this,
             parameter:cbos[i],
             function:function(cbo){
-                Callback.CallObject(cbo);
+                Anibody.CallObject(cbo);
                 this.Stop();
             }
         };
@@ -447,5 +447,5 @@ MultipleChoice.prototype.Stop = function () {
  * @returns {undefined}
  */
 MultipleChoice.prototype.IllegalStop = function () {
-    Callback.CallObject(this.OnIllegalStopCBO);
+    Anibody.CallObject(this.OnIllegalStopCBO);
 };

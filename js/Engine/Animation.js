@@ -228,11 +228,11 @@ ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
     
     if(typeof abostartfunc !== "undefined"){
         this.StartFunction = abostartfunc;
-        Callback.CallObject(abostartfunc);
+        Anibody.CallObject(abostartfunc);
         found=true;
     }
     if(!found && this.StartFunction){
-        Callback.CallObject(this.StartFunction);
+        Anibody.CallObject(this.StartFunction);
     }
     
     if(typeof abostopfunc !== "undefined")
@@ -263,7 +263,7 @@ ABOPresenter.prototype.Stop = function () {
     this.Active = false;
     
     if(this.StopFunction)
-       Callback.CallObject(this.StopFunction);
+       Anibody.CallObject(this.StopFunction);
     
     this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);
     this._ref_draw = null;

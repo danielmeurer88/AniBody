@@ -241,7 +241,7 @@ MouseHandler.prototype.ResolveHoverRequest = function(){
             
             // check if it is a callback object
             if(a.function && typeof a.function.function === "function")
-                Callback.CallObject(a.function);
+                Anibody.CallObject(a.function);
             
             found = true;
         }

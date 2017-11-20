@@ -101,7 +101,7 @@ Highlighting.prototype.Start = function(cbo){
         high.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",high._ref_mhan);
         
         window.clearTimeout(high._ref_timeout);
-        Callback.CallObject(high.CallbackObject);
+        Anibody.CallObject(high.CallbackObject);
     };
     
     this._ref_mhan = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick",{that:this, function:function(){
@@ -161,7 +161,7 @@ Highlighting.prototype._createForegroundDrawFunctionObject = function(){
         }
         
         if(!found && this.Type === "function"){
-            Callback.CallObject(this.CallbackAreaFunction);
+            Anibody.CallObject(this.CallbackAreaFunction);
             found = true;
         }
         

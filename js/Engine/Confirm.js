@@ -364,7 +364,7 @@ Confirm.prototype._createMouseHandlerObject = function () {
 
         if (this.IsMouseOverYes) {
             this.Stop();
-            Callback.CallObject(this.ConfirmCallback)
+            Anibody.CallObject(this.ConfirmCallback)
         }
         if (this.IsMouseOverBackground || this.IsMouseOverNo) {
             this.Stop();
