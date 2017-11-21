@@ -35,7 +35,6 @@ Object.defineProperty(Anibody.classes.EngineObject.prototype, "Engine", {get: fu
  */
 Anibody.classes.ABO = function ABO(){ // AniBodyObject
     Anibody.classes.EngineObject.call(this);
-    this.Attributes = {};
     this.Name = "";
     this.X = 0;
     this.Y=0;
@@ -105,6 +104,81 @@ Anibody.classes.ABO.prototype.Delete = function(){
     // TODO
     // automatic removing? - ref number need to be saved in every object
 };
+
+/**
+ * ABOs that must not be added to the Anibody.Object-Queueu
+ * the class can register ProcessInput(), Update() and Draw() by themself
+ * - should be deregistered by user of the widget
+ * @returns {Anibody.classes.ABO}
+ */
+Anibody.classes.Widget = function Widget(){ // Widget
+    Anibody.classes.ABO.call(this);
+    
+    this._refIP = null;
+    this._ipPriority = 1;
+    this._refU = null;
+    this._uPriority = 1;
+    this._refD = null;
+    this._dPriority = 1;
+    
+};
+
+Anibody.classes.Widget.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.classes.Widget.prototype.constructor = Anibody.classes.Widget;
+
+Anibody.classes.Widget.prototype.Register = function(){
+    if(this._refIP === null)
+        this._refIP = this.Engine.AddProcessInputFunction({
+            function : function(){
+                this.ProcessInput();
+            },
+            that : this
+        },this._ipPriority);
+    
+    if(this._refU === null)
+        this._refU = this.Engine.AddUpdateFunctionObject({
+            function : function(){
+                this.Update();
+            },
+            that : this
+        },this._uPriority);
+    
+    if(this._refD === null)
+        this._refD = this.Engine.AddForegroundDrawFunctionObject({
+            function : function(c){
+                this.Draw(c);
+            },
+            that : this
+        },this._dPriority);
+};
+Anibody.classes.Widget.prototype.Deregister = function(){
+    if(this._refIP !== null){
+        this.Engine.RemoveProcessInputFunction(this._refIP);
+        this._refIP = null;
+    }
+    
+    if(this._refU !== null){
+        this.Engine.RemoveUpdateFunction(this._refU);
+        this._refU = null;
+    }
+    
+    if(this._refD !== null){
+        this.Engine.RemoveForegroundDrawFunctionObject(this._refD);
+        this._refD = null;
+    }
+};
+/**
+ * @see README_DOKU.txt
+ */
+Anibody.classes.Widget.prototype.ProcessInput = function(){return false;};
+/**
+ * @see README_DOKU.txt
+ */
+Anibody.classes.Widget.prototype.Update = function(){return false;};
+/**
+ * @see README_DOKU.txt
+ */
+Anibody.classes.Widget.prototype.Draw = function(c){return false;};
 
 /**
  * Default Camera - used when the user's field of view is not bigger as the canvas

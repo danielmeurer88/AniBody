@@ -4,13 +4,8 @@
  * @param {callback-object} cbo - a callback-object, which contents a function that will triggered if the user confirms the given text
  * @returns {Confirm}
  */
-function Confirm(text, cbo) {
+Anibody.ui.Confirm = function Confirm(text, cbo) {
     Anibody.classes.ABO.call(this);
-
-    this.X = 0;
-    this.Y = 0;
-    this.Width;
-    this.Height;
 
     // the quotient, which will be multiplied with the canvas width to calculate the width of the alert box
     this.ContentWidthQuotient = 0.6;
@@ -22,10 +17,10 @@ function Confirm(text, cbo) {
 
     this.ConfirmCallback = cbo;
 
-    this.Rounding = Confirm.prototype.DefaultRounding;
-    this.FontHeight = Confirm.prototype.DefaultFontHeight;
-    this.BoxPadding = Confirm.prototype.DefaultBoxPadding;
-    this.RowSpace = Confirm.prototype.DefaultRowSpace;
+    this.Rounding = Anibody.ui.Confirm.prototype.DefaultRounding;
+    this.FontHeight = Anibody.ui.Confirm.prototype.DefaultFontHeight;
+    this.BoxPadding = Anibody.ui.Confirm.prototype.DefaultBoxPadding;
+    this.RowSpace = Anibody.ui.Confirm.prototype.DefaultRowSpace;
     this.FontPadding = this.BoxPadding;
 
     // the whole confirm dialog box
@@ -59,23 +54,23 @@ function Confirm(text, cbo) {
 
     this.Initialize();
 }
-Confirm.prototype = Object.create(Anibody.classes.ABO.prototype);
-Confirm.prototype.constructor = Confirm;
+Anibody.ui.Confirm.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Confirm.prototype.constructor = Anibody.ui.Confirm;
 
-Confirm.prototype.ContentBoxColor = "#999";
-Confirm.prototype.BoxBorderColor = "black";
-Confirm.prototype.BoxColor = "#ccc";
-Confirm.prototype.BoxFontColor = "#fff";
-Confirm.prototype.OutsideColor = "rgba(0,0,0,0.8)";
-Confirm.prototype.DefaultRounding = 10;
-Confirm.prototype.DefaultFontHeight = 18;
-Confirm.prototype.DefaultBoxPadding = 5;
-Confirm.prototype.DefaultRowSpace = 4;
+Anibody.ui.Confirm.prototype.ContentBoxColor = "#999";
+Anibody.ui.Confirm.prototype.BoxBorderColor = "black";
+Anibody.ui.Confirm.prototype.BoxColor = "#ccc";
+Anibody.ui.Confirm.prototype.BoxFontColor = "#fff";
+Anibody.ui.Confirm.prototype.OutsideColor = "rgba(0,0,0,0.8)";
+Anibody.ui.Confirm.prototype.DefaultRounding = 10;
+Anibody.ui.Confirm.prototype.DefaultFontHeight = 18;
+Anibody.ui.Confirm.prototype.DefaultBoxPadding = 5;
+Anibody.ui.Confirm.prototype.DefaultRowSpace = 4;
 
 /**
  * @see README_DOKU.txt
  */
-Confirm.prototype.Initialize = function () {
+Anibody.ui.Confirm.prototype.Initialize = function () {
 
     this._createTextImage();
 
@@ -89,7 +84,7 @@ Confirm.prototype.Initialize = function () {
  * transformed into an image. 
  * @returns {undefined}
  */
-Confirm.prototype._createTextImage = function () {
+Anibody.ui.Confirm.prototype._createTextImage = function () {
 
     // creating an offscreen canvas with the specific width and height
     var off = document.createElement("CANVAS");
@@ -205,7 +200,7 @@ Confirm.prototype._createTextImage = function () {
  * recalculate the necessary size of the Confirm.
  * @returns {undefined}
  */
-Confirm.prototype._recalculateSizes = function () {
+Anibody.ui.Confirm.prototype._recalculateSizes = function () {
 
     var margin = this.BoxPadding;
     var can = this.Engine.Canvas;
@@ -230,7 +225,7 @@ Confirm.prototype._recalculateSizes = function () {
  * creates a foreground draw function object, that is ready to be registered
  * @returns {object}
  */
-Confirm.prototype._createForegroundDrawFunctionObject = function () {
+Anibody.ui.Confirm.prototype._createForegroundDrawFunctionObject = function () {
 
     var f = function (c) {
         c.save();
@@ -288,7 +283,7 @@ Confirm.prototype._createForegroundDrawFunctionObject = function () {
  * creates a process input function object, that is ready to be registered
  * @returns {object}
  */
-Confirm.prototype._createProcessInputFunctionObject = function () {
+Anibody.ui.Confirm.prototype._createProcessInputFunctionObject = function () {
 
     var f = function (en) {
 
@@ -339,7 +334,7 @@ Confirm.prototype._createProcessInputFunctionObject = function () {
  * creates a update function object, that is ready to be registered
  * @returns {object}
  */
-Confirm.prototype._createUpdateFunctionObject = function () {
+Anibody.ui.Confirm.prototype._createUpdateFunctionObject = function () {
 
     var f = function (en) {
 
@@ -356,7 +351,7 @@ Confirm.prototype._createUpdateFunctionObject = function () {
  * creates a Mouse handler object, that is ready to be registered
  * @returns {object}
  */
-Confirm.prototype._createMouseHandlerObject = function () {
+Anibody.ui.Confirm.prototype._createMouseHandlerObject = function () {
 
     var f = function (e) {
 
@@ -380,7 +375,7 @@ Confirm.prototype._createMouseHandlerObject = function () {
  * Starts/Opens the Presenter dialog box
  * @returns {undefined}
  */
-Confirm.prototype.Start = function () {
+Anibody.ui.Confirm.prototype.Start = function () {
     this.Active = true;
 
     new Flow(this, "Opacity", 1, 600, {
@@ -404,7 +399,7 @@ Confirm.prototype.Start = function () {
  * Stops the presenter dialog - will be called by the class
  * @returns {undefined}
  */
-Confirm.prototype.Stop = function () {
+Anibody.ui.Confirm.prototype.Stop = function () {
     this.Active = false;
 
     this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);

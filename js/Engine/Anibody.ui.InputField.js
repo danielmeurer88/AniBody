@@ -7,7 +7,7 @@
  * @param {type} padding
  * @returns {InputField}
  */
-function InputField(x, y, width, height, padding) {
+Anibody.ui.InputField = function InputField(x, y, width, height, padding) {
 
     Anibody.classes.ABO.call(this);
 
@@ -42,7 +42,7 @@ function InputField(x, y, width, height, padding) {
     this.OldState = -1;
 
     // [0] = unselected, [1] = selected
-    this.FillStyle = [InputField.prototype.DefaultUnselectedColor, InputField.prototype.DefaultSelectedColor];
+    this.FillStyle = [Anibody.ui.InputField.prototype.DefaultUnselectedColor, Anibody.ui.InputField.prototype.DefaultSelectedColor];
 
     // Cursor
     this.CSSMouseCursor = [
@@ -71,17 +71,17 @@ function InputField(x, y, width, height, padding) {
 this.Initialize();
 }
 
-InputField.prototype = Object.create(Anibody.classes.ABO.prototype);
-InputField.prototype.constructor = InputField;
+Anibody.ui.InputField.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.InputField.prototype.constructor = Anibody.ui.InputField;
 
-InputField.prototype.DefaultUnselectedColor = "#eee";
-InputField.prototype.DefaultSelectedColor = "#fff";
+Anibody.ui.InputField.prototype.DefaultUnselectedColor = "#eee";
+Anibody.ui.InputField.prototype.DefaultSelectedColor = "#fff";
 
 /**
  * can be seen as an extension of the constructor function
  * @returns {undefined}
  */
-InputField.prototype.Initialize = function () {
+Anibody.ui.InputField.prototype.Initialize = function () {
 
     // creating an interval function to ensure the blinking of the cursor
     var ms = 800;
@@ -116,7 +116,7 @@ InputField.prototype.Initialize = function () {
  * Update
  * @returns {undefined}
  */
-InputField.prototype.Update = function () {
+Anibody.ui.InputField.prototype.Update = function () {
 
     var m = this.Engine.Input.Mouse;
     var k = this.Engine.Input.Keys;
@@ -169,7 +169,7 @@ InputField.prototype.Update = function () {
  * ProcessInput
  * @returns {undefined}
  */
-InputField.prototype.ProcessInput = function () {
+Anibody.ui.InputField.prototype.ProcessInput = function () {
     this.Engine.Input.MouseHandler.AddHoverRequest(this.GetArea(0,0), this, "IsMouseOver");
 };
 
@@ -178,7 +178,7 @@ InputField.prototype.ProcessInput = function () {
  * @param {2dCanvasContext} c
  * @returns {undefined}
  */
-InputField.prototype.Draw = function (c) {
+Anibody.ui.InputField.prototype.Draw = function (c) {
 
     c.save();
     
@@ -247,7 +247,7 @@ InputField.prototype.Draw = function (c) {
  * @param {string} key
  * @returns {undefined}
  */
-InputField.prototype.BindToStorageEntry = function (key) {
+Anibody.ui.InputField.prototype.BindToStorageEntry = function (key) {
     if (typeof key === "string" && key.length > 0) {
         var txt = this.Engine.Storage.ReadFromStorage(key);
         if (txt.code) {
@@ -265,7 +265,7 @@ InputField.prototype.BindToStorageEntry = function (key) {
  * @param {type} mpos
  * @returns {undefined}
  */
-InputField.prototype.ChangeCursorPosAccordingTo = function (mpos) { // tmpos is the current mouse position relatively to zero point of the terrain!!!
+Anibody.ui.InputField.prototype.ChangeCursorPosAccordingTo = function (mpos) { // tmpos is the current mouse position relatively to zero point of the terrain!!!
 
     this.CursorPosChanged = true;
 
@@ -308,7 +308,7 @@ InputField.prototype.ChangeCursorPosAccordingTo = function (mpos) { // tmpos is 
  * Sets the cursor to the end of the input
  * @returns {undefined}
  */
-InputField.prototype.SetCursorPosToEnd = function () { 
+Anibody.ui.InputField.prototype.SetCursorPosToEnd = function () { 
     this.CursorPosChanged = true;
     this.CursorPos = this.Text.length;
 };
@@ -317,7 +317,7 @@ InputField.prototype.SetCursorPosToEnd = function () {
 * @description Adds a single letter to the Text attribute of the InputField where the cursor is
  * @param {String} add
  * @returns {undefined} */
-InputField.prototype.AddLetter = function (add) {
+Anibody.ui.InputField.prototype.AddLetter = function (add) {
     if (!add || add.length > 1)
         return;
     
@@ -334,7 +334,7 @@ InputField.prototype.AddLetter = function (add) {
 /**
 * @description Remove one letter from the Text where the cursor is
  * @returns {undefined} */
-InputField.prototype.RemoveLetter = function () {
+Anibody.ui.InputField.prototype.RemoveLetter = function () {
     if (this.Text.length > 0) {
         var a, b;
         if (this.CursorPos > 0)
@@ -354,7 +354,7 @@ InputField.prototype.RemoveLetter = function () {
 * @description Calculates the off value regarding the current off value and the limits cmax, cmin
 * @returns {undefined}
  */
-InputField.prototype._checkText = function () {
+Anibody.ui.InputField.prototype._checkText = function () {
     if (this.CursorWidth - this.off >= this.cmax)
         this.off += this.step;
 
@@ -371,7 +371,7 @@ InputField.prototype._checkText = function () {
  * @param {object} limFailCbo
  * @returns {undefined}
  */
-InputField.prototype.AddCharLimiter = function (lim, limFailCbo) {
+Anibody.ui.InputField.prototype.AddCharLimiter = function (lim, limFailCbo) {
     
     if(typeof lim === "function"){
     

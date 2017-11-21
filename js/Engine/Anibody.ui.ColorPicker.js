@@ -1,4 +1,4 @@
-
+// TODO - turn colorpicker into a widget
 /**
  * A class which opens a dialog box that allows the user to select a certain color
  * @param {type} x the amount of pixels from the canvas nullpoint to the dialog box 
@@ -7,7 +7,7 @@
  * @param {type} cpcbo a Callback-Object, which contents the function, which will be trigged when the user selects a color and presses ok
  * @returns {ColorPicker}
  */
-function ColorPicker(x,y,width, cpcbo){
+Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
     Anibody.classes.ABO.call(this);
     
     this.ColorPickedCallbackObject = cpcbo;
@@ -64,13 +64,13 @@ function ColorPicker(x,y,width, cpcbo){
     
 this.Initialize();
 }
-ColorPicker.prototype = Object.create(Anibody.classes.ABO.prototype);
-ColorPicker.prototype.constructor = ColorPicker;
+Anibody.ui.ColorPicker.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.ColorPicker.prototype.constructor = Anibody.ui.ColorPicker;
 
 /**
  * @see README_DOKU.txt
  */
-ColorPicker.prototype.Initialize = function () {
+Anibody.ui.ColorPicker.prototype.Initialize = function () {
     
     var c = this.Engine.Context;
     this.StripGradient = c.createLinearGradient(
@@ -98,7 +98,7 @@ ColorPicker.prototype.Initialize = function () {
  * @param {type} c the context of the canvas the color picker belongs to
  * @returns {undefined}
  */
-ColorPicker.prototype.Draw = function(c, noborder){
+Anibody.ui.ColorPicker.prototype.Draw = function(c, noborder){
 
     if(this.Opacity == 0) return;
     
@@ -160,7 +160,7 @@ ColorPicker.prototype.Draw = function(c, noborder){
  * Function is used when the color picker is showed to the user
  * @returns {undefined}
  */
-ColorPicker.prototype.AddMouseHandler = function(){
+Anibody.ui.ColorPicker.prototype.AddMouseHandler = function(){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter: this.Engine,
@@ -198,11 +198,11 @@ ColorPicker.prototype.AddMouseHandler = function(){
  * Function is used when color picker is hidden
  * @returns {undefined}
  */
-ColorPicker.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
+Anibody.ui.ColorPicker.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
 /**
  * @see README_DOKU.txt
  */
-ColorPicker.prototype.Update = function(){
+Anibody.ui.ColorPicker.prototype.Update = function(){
     // no need for updating if the color picker is not being shown
     if(this.Opacity == 0) return;
     
@@ -217,7 +217,7 @@ ColorPicker.prototype.Update = function(){
 /**
  * @see README_DOKU.txt
  */
-ColorPicker.prototype.ProcessInput = function(){
+Anibody.ui.ColorPicker.prototype.ProcessInput = function(){
     // no need for updating if the color picker is not being shown
     if(this.Opacity == 0) return;
     
@@ -265,7 +265,7 @@ ColorPicker.prototype.ProcessInput = function(){
 /**
  * @see README_DOKU.txt
  */
-ColorPicker.prototype.Show = function(){
+Anibody.ui.ColorPicker.prototype.Show = function(){
 
     new Flow(this, "Opacity", 1, 1000, {that:this, function:function(){
             this.AddMouseHandler();
@@ -274,7 +274,7 @@ ColorPicker.prototype.Show = function(){
 /**
  * @see README_DOKU.txt
  */
-ColorPicker.prototype.Hide = function(){
+Anibody.ui.ColorPicker.prototype.Hide = function(){
     this.Opacity = 0;
     this.RemoveMouseHandler();
 };
@@ -284,7 +284,7 @@ ColorPicker.prototype.Hide = function(){
  * @param {type} y the y-position of the click
  * @returns {undefined}
  */
-ColorPicker.prototype.ClickOnStrip = function(x,y){
+Anibody.ui.ColorPicker.prototype.ClickOnStrip = function(x,y){
     
     var c = this.Engine.Context;
     this.Draw(c, true); // drawing without borders, which could ruin the selection
@@ -299,7 +299,7 @@ ColorPicker.prototype.ClickOnStrip = function(x,y){
  * @param {type} y the y-position of the click
  * @returns {undefined}
  */
-ColorPicker.prototype.ClickOnBox = function(x,y){
+Anibody.ui.ColorPicker.prototype.ClickOnBox = function(x,y){
     var c = this.Engine.Context;
     this.Draw(c, true); // drawing without borders, which could ruin the selection
     var imageData = c.getImageData(x, y, 1, 1).data;
@@ -311,7 +311,7 @@ ColorPicker.prototype.ClickOnBox = function(x,y){
  * the color picker will be closed and the callback function will be called
  * @returns {undefined}
  */
-ColorPicker.prototype.ClickOnPreview = function(){
+Anibody.ui.ColorPicker.prototype.ClickOnPreview = function(){
     var cb = this.ColorPickedCallbackObject;
     this.Hide();
     if(cb){
@@ -324,6 +324,6 @@ ColorPicker.prototype.ClickOnPreview = function(){
  * @param {type} cbo callback-function object
  * @returns {undefined}
  */
-ColorPicker.prototype.SetColorPickedCallbackObject = function(cbo){
+Anibody.ui.ColorPicker.prototype.SetColorPickedCallbackObject = function(cbo){
     this.ColorPickedCallbackObject = cbo;
 };

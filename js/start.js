@@ -9,7 +9,7 @@ $(document).ready(function () {
     waterglass.AddGroup("room1");
 
     var mediapack = [
-        new Picture("./img_rpg/logo.png", "gamedev"),
+        new Picture("./img_rpg/logo.png", "logo"),
         new Picture("./img_rpg/button_0.png", "button_state_0"),
         new Picture("./img_rpg/button_1.png", "button_state_1"),
         new Picture("./img_rpg/button_2.png", "button_state_2"),
@@ -57,6 +57,7 @@ function menu_callback(engine){
     engine.AddObject(b1, 2);
 
     // input Area
+    Anibody.import(Anibody.ui.InputField);
     var ia = new InputField(10, 10, 300);
     engine.AddObject(ia);
 
@@ -65,10 +66,10 @@ function menu_callback(engine){
         X:"center", Y: 220, Width:250, Height:60,
         DisplayType : "image",
         Codename : ["button_state_0", "button_state_1", "button_state_2"],
-        Label : "Not implemented yet",
+        Label : "Test Button",
         TextColor: "white", FontHeight: 18,
         TriggerCallbackObject : function (engine) {
-                start_help(engine)
+                start_test(engine);
             }.getCallbackObject(engine, engine),
         HoverText : "Startet das Spiel"
     });
@@ -89,21 +90,29 @@ function menu_callback(engine){
 
     });
     
-    testSpline(engine);
+    //testSpline(engine);
     
-    engine.TestImg = engine.MediaManager.GetImage("gamedev");
+    engine.TestImg = engine.MediaManager.GetImage("logo");
     engine.TestImgV = engine.TestImg.getVerticallyFlippedImage();
     engine.TestImgH = engine.TestImg.getHorizontallyFlippedImage();
     
     engine.AddForegroundDrawFunctionObject(function(){    
-        this.Context.drawImage( engine.TestImg, 10, 500- engine.TestImg.height-5);
         this.Context.drawImage(this.TestImgV, 10, 500);
+        this.Context.drawImage( engine.TestImg, 10, 500- engine.TestImg.height-5);
+        this.Context.drawImage( engine.TestImgH, 10 + engine.TestImg.width + 5, 500);
     }.getCallbackObject(engine));
 }
 
-function start_help(engine){
-    Anibody.import(Anibody.ui.Alert);
-    new Alert("in developement").Start();
+function start_test(engine){
+    var cbo = function(color, para){
+        
+        Anibody.import(Anibody.ui.Alert);
+        new Alert(["this button is made for easy testing", color, para]).Start();
+    }.getCallbackObject(engine, "blabla");
+    
+    Anibody.import(Anibody.classes.Widget);
+    var w = new Widget();
+    w.Register();
 }
 
 function testSpline(engine){
