@@ -47,7 +47,7 @@ Anibody.util.Storage.prototype.Initialize = function () {
 
     // UpdateObject();
     if (this.ObjectString.length < 3) {
-        console.log("Storage is empty");
+        //console.log("Storage is empty");
     } else {
         var str = this.ObjectString;
         this.Object = JSON.parse(str);

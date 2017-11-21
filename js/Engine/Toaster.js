@@ -139,7 +139,7 @@ Toaster.prototype.Open = function () {
                 }
     });
     
-    this._refPIF = this.Engine.AddProcessInputFunction({
+    this._refPIF = this.Engine.AddProcessInputFunctionObject({
         that: this, parameter: true, function:
                 function () {
 
@@ -190,7 +190,7 @@ Toaster.prototype.Close = function () {
     this._refUF;
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._refMH);
     this._refMH = null;
-    this.Engine.RemoveProcessInputFunction(this._refPIF);
+    this.Engine.RemoveProcessInputFunctionObject(this._refPIF);
     this._refPIF = null;
     
     Toaster.CurrentInstance = null;

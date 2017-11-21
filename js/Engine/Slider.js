@@ -51,16 +51,16 @@ Slider.prototype.DefaultColor = "rgba(100,100,120,1)";
  * @see README_DOKU.txt
  */
 Slider.prototype.Initialize = function(){
-    this.AddProcessInputFunction();
+    this.AddProcessInputFunctionObject();
     this.AddMouseHandler();
 };
 /**
  * adds the process input function that enables the dragging the handler
  * @returns {undefined}
  */
-Slider.prototype.AddProcessInputFunction = function(){
+Slider.prototype.AddProcessInputFunctionObject = function(){
 
-    this._ref = this.Engine.AddProcessInputFunction({
+    this._ref = this.Engine.AddProcessInputFunctionObject({
         parameter: this.Engine,
         that: this,
         function: function (engine) {
@@ -82,7 +82,7 @@ Slider.prototype.AddProcessInputFunction = function(){
  * Removes process input function
  * @returns {undefined}
  */
-Slider.prototype.RemoveProcessInputFunction = function(){this.Engine.RemoveProcessInputFunction(this._ref);};
+Slider.prototype.RemoveProcessInputFunctionObject = function(){this.Engine.RemoveProcessInputFunctionObject(this._ref);};
 
 /**
  * @see README_DOKU.txt

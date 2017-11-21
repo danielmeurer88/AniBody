@@ -5,10 +5,9 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "0.97",
+        Version: "0.98",
         Author: "Daniel Meurer",
-        Project: "Developing",
-        LastUpdated: "2017_11_16_h23" // year_month_day_hhour
+        LastUpdated: "2017_11_21_h12" // year_month_day_hhour
     };
     
     this.CurrentFrame = 0;
@@ -64,8 +63,8 @@ function Anibody(html_id) {
     this.Camera = {SelectedCamera: null, Cameras: []};// place holder for all needed camera (in later progress it will be possible to have more than just one camera)
     this.IntervalHandler = null;// the variable for the counter object
     this.Log = [];// most error messages are sent here
-    this.ProcessInputFunctions = null;// array of all functions, which the user added and which concern the input processing
-    this.UpdateFunctions = null;// PriorityQueue of all functions, which the user added and which concern the update process
+    this.ProcessInputFunctionObjects = null;// array of all functions, which the user added and which concern the input processing
+    this.UpdateFunctionObjects = null;// PriorityQueue of all functions, which the user added and which concern the update process
     this.ForegroundDrawFunctionObjects = null;// PriorityQueue of Callback-Objects to draw the functions in the background
     this.FPS = 25;// the amount of frames per second (default: 25)
     this.Timer = null; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
@@ -138,8 +137,8 @@ Anibody.prototype.Initialize = function () {
 
     this.Objects.Queue = new PriorityQueue();
     
-    this.ProcessInputFunctions = new PriorityQueue();// array of all functions, which the user added and which concern the input processing
-    this.UpdateFunctions = new PriorityQueue();// PriorityQueue of all functions, which the user added and which concern the update process
+    this.ProcessInputFunctionObjects = new PriorityQueue();// array of all functions, which the user added and which concern the input processing
+    this.UpdateFunctionObjects = new PriorityQueue();// PriorityQueue of all functions, which the user added and which concern the update process
     this.ForegroundDrawFunctionObjects = new PriorityQueue();// PriorityQueue of Callback-Objects to draw the functions in the background
     
     // set the IntervalHandler function running
@@ -211,9 +210,9 @@ Anibody.prototype.Frame = function () {
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
-Anibody.prototype.AddProcessInputFunction = function (pio, prio) {
-    var ref = this.ProcessInputFunctions.Enqueue(pio, prio);
-    this.ProcessInputFunctions.Sort();
+Anibody.prototype.AddProcessInputFunctionObject = function (pio, prio) {
+    var ref = this.ProcessInputFunctionObjects.Enqueue(pio, prio);
+    this.ProcessInputFunctionObjects.Sort();
     return ref;
 };
 /**
@@ -221,8 +220,8 @@ Anibody.prototype.AddProcessInputFunction = function (pio, prio) {
  * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
  * @returns {undefined}
  */
-Anibody.prototype.RemoveProcessInputFunction = function (ref) {
-    this.ProcessInputFunctions.DeleteByReferenceNumber(ref);
+Anibody.prototype.RemoveProcessInputFunctionObject = function (ref) {
+    this.ProcessInputFunctionObjects.DeleteByReferenceNumber(ref);
 };
 /**
  * @description the function, which calls all functions concerning to process the user input
@@ -243,8 +242,8 @@ Anibody.prototype.ProcessInput = function () {
     }
 
     var pif;
-    for (var i = 0; i < this.ProcessInputFunctions.heap.length; i++) {
-        pif = this.ProcessInputFunctions.heap[i].data;
+    for (var i = 0; i < this.ProcessInputFunctionObjects.heap.length; i++) {
+        pif = this.ProcessInputFunctionObjects.heap[i].data;
         pif.function.call(pif.that, pif.parameter);
     }
 
@@ -257,22 +256,22 @@ Anibody.prototype.ProcessInput = function () {
 };
 
 /**
- * Adds an UpdateFunction (Object={that,function,parameter}) to an PriorityQueue,
+ * Adds an UpdateFunctionObject (Object={that,function,parameter}) to an PriorityQueue,
  * whose functions will be updated in the Update-Function
  * @param {object} ufo - UpdateFunctionObject
  * @param {number} prior - priority (optional)
  * @returns {reference number}
  */
 Anibody.prototype.AddUpdateFunctionObject = function (ufo, prior) {
-    return this.UpdateFunctions.Enqueue(ufo, prior);
+    return this.UpdateFunctionObjects.Enqueue(ufo, prior);
 };
 /**
- * Removes the UpdateFunction that is referenced by the argument
+ * Removes the UpdateFunctionObject that is referenced by the argument
  * @param {number} ref reference number
  * @returns {undefined}
  */
 Anibody.prototype.RemoveUpdateFunctionObject = function (ref) {
-    this.UpdateFunctions.DeleteByReferenceNumber(ref);
+    this.UpdateFunctionObjects.DeleteByReferenceNumber(ref);
 };
 /**
  * @description the function, which calls all functions concerning to have the need to be updated every frame
@@ -291,8 +290,8 @@ Anibody.prototype.Update = function () {
 
     var o;
     // invoke update functions, which are externly included by the programmer of the engine
-    for (var i = 0; i < this.UpdateFunctions.heap.length; i++) {
-        o = this.UpdateFunctions.heap[i].data;
+    for (var i = 0; i < this.UpdateFunctionObjects.heap.length; i++) {
+        o = this.UpdateFunctionObjects.heap[i].data;
         o.function.call(o.that, o.parameter);
     }
 

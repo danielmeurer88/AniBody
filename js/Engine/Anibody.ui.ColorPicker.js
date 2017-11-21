@@ -8,7 +8,7 @@
  * @returns {ColorPicker}
  */
 Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
-    Anibody.classes.ABO.call(this);
+    Anibody.classes.Widget.call(this);
     
     this.ColorPickedCallbackObject = cpcbo;
     
@@ -64,7 +64,7 @@ Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
     
 this.Initialize();
 }
-Anibody.ui.ColorPicker.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.ColorPicker.prototype = Object.create(Anibody.classes.Widget.prototype);
 Anibody.ui.ColorPicker.prototype.constructor = Anibody.ui.ColorPicker;
 
 /**
@@ -266,7 +266,8 @@ Anibody.ui.ColorPicker.prototype.ProcessInput = function(){
  * @see README_DOKU.txt
  */
 Anibody.ui.ColorPicker.prototype.Show = function(){
-
+    
+    this.Register(); // Widget.Register()
     new Flow(this, "Opacity", 1, 1000, {that:this, function:function(){
             this.AddMouseHandler();
     }}).Start();
@@ -277,6 +278,7 @@ Anibody.ui.ColorPicker.prototype.Show = function(){
 Anibody.ui.ColorPicker.prototype.Hide = function(){
     this.Opacity = 0;
     this.RemoveMouseHandler();
+    this.Deregister(); // Widget.Deregister()
 };
 /**
  * the user clicked on the strip and on a color which will be displayed in the box in more shades

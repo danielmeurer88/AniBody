@@ -73,7 +73,7 @@ Highlighting.prototype.Start = function(cbo){
     var dfo = this._createForegroundDrawFunctionObject();
     this._ref_dfo = this.Engine.AddForegroundDrawFunctionObject(dfo);
     
-    this._ref_pifo = this.Engine.AddProcessInputFunction({
+    this._ref_pifo = this.Engine.AddProcessInputFunctionObject({
         that: this, parameter: true, function:
                 function () {
 
@@ -96,7 +96,7 @@ Highlighting.prototype.Start = function(cbo){
                 
         high.Engine.RemoveForegroundDrawFunctionObject(high._ref_dfo);
         high._ref_dfo = null;
-        high.Engine.RemoveProcessInputFunction(high._ref_pifo);
+        high.Engine.RemoveProcessInputFunctionObject(high._ref_pifo);
         high._ref_pifo = null;
         high.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",high._ref_mhan);
         

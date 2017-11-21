@@ -83,7 +83,7 @@ Gallery.prototype.Initialize = function(){
     
     // the registration of the mouse click
 
-    this.AddProcessInputFunction();
+    this.AddProcessInputFunctionObject();
     
     this.AddMouseHandler();
 };
@@ -147,9 +147,9 @@ Gallery.prototype.AddMouseHandler = function(){
  * which allows scrolling the handle or dragging/moving the whole box
  * @returns {undefined}
  */
-Gallery.prototype.AddProcessInputFunction = function(){
+Gallery.prototype.AddProcessInputFunctionObject = function(){
 
-    this._ref_PIF = this.Engine.AddProcessInputFunction({
+    this._ref_PIF = this.Engine.AddProcessInputFunctionObject({
         parameter: this.Engine,
         that: this,
         function: function (engine) {
@@ -184,9 +184,9 @@ Gallery.prototype.RemoveMouseHandler = function(){
  * Removes the Process Input Function - called when the BoxMenu is supposed to be deleted
  * @returns {undefined}
  */
-Gallery.prototype.RemoveProcessInputFunction = function(){
+Gallery.prototype.RemoveProcessInputFunctionObject = function(){
     if(this._ref_PIF!= null){
-        this.Engine.RemoveProcessInputFunction(this._ref_PIF);
+        this.Engine.RemoveProcessInputFunctionObject(this._ref_PIF);
         this._ref_PIF = null;
     }
 };
@@ -654,7 +654,7 @@ Gallery.prototype.MoveTo = function(x,y){
  */
 Gallery.prototype.Close = function(x,y){
     this.RemoveMouseHandler();
-    this.RemoveProcessInputFunction();
+    this.RemoveProcessInputFunctionObject();
     // TODO ...
     this.Closed = true;
     this.TrulyClosed = true;

@@ -455,7 +455,7 @@ Prompt.prototype.Start = function(){
     this.InputField.Selected = true;
     // defines and registers the needed "process input"-function
     var ipfo = this._createProcessInputFunctionObject();
-    this._ref_ip = this.Engine.AddProcessInputFunction(ipfo);
+    this._ref_ip = this.Engine.AddProcessInputFunctionObject(ipfo);
     // defines and registers the needed "(foreground)-draw"-function
     var fdfo = this._createForegroundDrawFunctionObject();
     this._ref_draw = this.Engine.AddForegroundDrawFunctionObject(fdfo);
@@ -485,7 +485,7 @@ Prompt.prototype.Stop = function(){
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
     this._ref_mhan = null;
     
-    this.Engine.RemoveProcessInputFunction(this._ref_ip);
+    this.Engine.RemoveProcessInputFunctionObject(this._ref_ip);
     this._ref_ip = null;
 };
 

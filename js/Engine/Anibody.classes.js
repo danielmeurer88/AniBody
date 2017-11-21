@@ -128,7 +128,7 @@ Anibody.classes.Widget.prototype.constructor = Anibody.classes.Widget;
 
 Anibody.classes.Widget.prototype.Register = function(){
     if(this._refIP === null)
-        this._refIP = this.Engine.AddProcessInputFunction({
+        this._refIP = this.Engine.AddProcessInputFunctionObject({
             function : function(){
                 this.ProcessInput();
             },
@@ -153,12 +153,12 @@ Anibody.classes.Widget.prototype.Register = function(){
 };
 Anibody.classes.Widget.prototype.Deregister = function(){
     if(this._refIP !== null){
-        this.Engine.RemoveProcessInputFunction(this._refIP);
+        this.Engine.RemoveProcessInputFunctionObject(this._refIP);
         this._refIP = null;
     }
     
     if(this._refU !== null){
-        this.Engine.RemoveUpdateFunction(this._refU);
+        this.Engine.RemoveUpdateFunctionObject(this._refU);
         this._refU = null;
     }
     

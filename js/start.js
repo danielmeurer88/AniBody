@@ -110,9 +110,9 @@ function start_test(engine){
         new Alert(["this button is made for easy testing", color, para]).Start();
     }.getCallbackObject(engine, "blabla");
     
-    Anibody.import(Anibody.classes.Widget);
-    var w = new Widget();
-    w.Register();
+    Anibody.import(Anibody.ui.ColorPicker);
+    var cp = new ColorPicker(5,5,450, cbo);
+    cp.Show();
 }
 
 function testSpline(engine){

@@ -295,7 +295,7 @@ function level_rpg_Input(engine){
             
         }
     };
-    engine.AddProcessInputFunction( { function : f, parameter : engine } );
+    engine.AddProcessInputFunctionObject( { function : f, parameter : engine } );
 
     
     /* +++++++ TOUCH HANDLER +++++ */

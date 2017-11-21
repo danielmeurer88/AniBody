@@ -413,7 +413,7 @@ MultipleChoice.prototype.Start = function () {
     }).Start();
     
     var ipfo = this._createProcessInputFunctionObject();
-    this._ref_ip = this.Engine.AddProcessInputFunction(ipfo);
+    this._ref_ip = this.Engine.AddProcessInputFunctionObject(ipfo);
     
     var fdfo = this._createForegroundDrawFunctionObject();
     this._ref_draw = this.Engine.AddForegroundDrawFunctionObject(fdfo);
@@ -438,7 +438,7 @@ MultipleChoice.prototype.Stop = function () {
     this._ref_upd = null;
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
     this._ref_mhan = null;
-    this.Engine.RemoveProcessInputFunction(this._ref_ip);
+    this.Engine.RemoveProcessInputFunctionObject(this._ref_ip);
     this._ref_ip = null;
 };
 
