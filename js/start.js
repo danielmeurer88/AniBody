@@ -41,6 +41,8 @@ function menu_callback(engine){
     
     // ------------------------------------------------ adding objects to the engine
     /* BUTTON RPG */
+    
+    Anibody.import(Anibody.ui.Button);
 
     var b1 = new Button({
         X:"center", Y: 120, Width:250, Height:60,
@@ -96,23 +98,31 @@ function menu_callback(engine){
     engine.TestImgV = engine.TestImg.getVerticallyFlippedImage();
     engine.TestImgH = engine.TestImg.getHorizontallyFlippedImage();
     
+    engine.test = 2;
+    
     engine.AddForegroundDrawFunctionObject(function(){    
         this.Context.drawImage(this.TestImgV, 10, 500);
         this.Context.drawImage( engine.TestImg, 10, 500- engine.TestImg.height-5);
         this.Context.drawImage( engine.TestImgH, 10 + engine.TestImg.width + 5, 500);
+        
+        this.Context.fillText( engine.test, 350,engine.Canvas.height - 100);
     }.getCallbackObject(engine));
 }
 
 function start_test(engine){
-    var cbo = function(color, para){
-        
-        Anibody.import(Anibody.ui.Alert);
-        new Alert(["this button is made for easy testing", color, para]).Start();
-    }.getCallbackObject(engine, "blabla");
+    var cbo = function(para){
+        new Anibody.ui.Alert(["this button is made for easy testing", para]).Start();
+    }.getCallbackObject(engine, "blabla 111");
     
-    Anibody.import(Anibody.ui.ColorPicker);
-    var cp = new ColorPicker(5,5,450, cbo);
-    cp.Show();
+    var cbo2 = function(para){
+        new Anibody.ui.Alert(["this button is made for easy testing", para]).Start();
+    }.getCallbackObject(engine, "blabla 222");
+    
+    Anibody.import(Anibody.ui.MultipleChoice, "MC");
+    var cp = new MC("Choose some option and finalize your FATE ... hahahahaha", ["Op 1", "Op 2", "Cancel"]
+    , [cbo, cbo2, false]);
+    cp.Start();
+
 }
 
 function testSpline(engine){

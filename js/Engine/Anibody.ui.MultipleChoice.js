@@ -5,8 +5,8 @@
  * @param {callobject-array} cbos
  * @returns {MultipleChoice}
  */
-function MultipleChoice(text,labels, cbos){
-    Anibody.classes.ABO.call(this);
+Anibody.ui.MultipleChoice = function MultipleChoice(text,labels, cbos){
+    Anibody.classes.Widget.call(this);
     
     this.X=0;
     this.Y=0;
@@ -37,13 +37,13 @@ function MultipleChoice(text,labels, cbos){
     this.MustDecide = true;
     this.OnIllegalStopCBO = function(){
         var txt = "Sie m{ue}ssen eine Entscheidung treffen!".decodeURI();
-        new Toaster("error", "Fehler", txt, 4000).Open();
+        new Anibody.ui.Toaster("error", "Fehler", txt, 4000).Open();
     }.getCallbackObject(this);
         
-    this.Rounding = MultipleChoice.prototype.DefaultRounding;
-    this.FontHeight = MultipleChoice.prototype.DefaultFontHeight;
-    this.BoxPadding = MultipleChoice.prototype.DefaultBoxPadding;
-    this.RowSpace = MultipleChoice.prototype.DefaultRowSpace;
+    this.Rounding = Anibody.ui.MultipleChoice.prototype.DefaultRounding;
+    this.FontHeight = Anibody.ui.MultipleChoice.prototype.DefaultFontHeight;
+    this.BoxPadding = Anibody.ui.MultipleChoice.prototype.DefaultBoxPadding;
+    this.RowSpace = Anibody.ui.MultipleChoice.prototype.DefaultRowSpace;
     this.FontPadding = this.BoxPadding;
     
     // the whole dialog box
@@ -56,31 +56,29 @@ function MultipleChoice(text,labels, cbos){
         
     this.Opacity = 0;
     
-    this._ref_ip = null;
-    this._ref_draw = null;
-    this._ref_upd = null;
     this._ref_mhan = null;
     
 this.Initialize();
-}
-MultipleChoice.prototype = Object.create(Anibody.classes.ABO.prototype);
-MultipleChoice.prototype.constructor = MultipleChoice;
+};
 
-MultipleChoice.prototype.ContentBoxColor = "#999";
-MultipleChoice.prototype.BoxBorderColor = "black";
-MultipleChoice.prototype.BoxColor = "#ccc";
-MultipleChoice.prototype.BoxFontColor = "#fff";
-MultipleChoice.prototype.OutsideColor = "rgba(0,0,0,0.8)";
-MultipleChoice.prototype.DefaultRounding = 10;
-MultipleChoice.prototype.DefaultFontHeight = 18;
-MultipleChoice.prototype.DefaultBoxPadding = 5;
-MultipleChoice.prototype.DefaultRowSpace = 4;
+Anibody.ui.MultipleChoice.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.MultipleChoice.prototype.constructor = Anibody.ui.MultipleChoice;
+
+Anibody.ui.MultipleChoice.prototype.ContentBoxColor = "#999";
+Anibody.ui.MultipleChoice.prototype.BoxBorderColor = "black";
+Anibody.ui.MultipleChoice.prototype.BoxColor = "#ccc";
+Anibody.ui.MultipleChoice.prototype.BoxFontColor = "#fff";
+Anibody.ui.MultipleChoice.prototype.OutsideColor = "rgba(0,0,0,0.8)";
+Anibody.ui.MultipleChoice.prototype.DefaultRounding = 10;
+Anibody.ui.MultipleChoice.prototype.DefaultFontHeight = 18;
+Anibody.ui.MultipleChoice.prototype.DefaultBoxPadding = 5;
+Anibody.ui.MultipleChoice.prototype.DefaultRowSpace = 4;
 
 /**
  * Can be seen as an extension of the constructor function
  * @returns {undefined}
  */
-MultipleChoice.prototype.Initialize = function () {
+Anibody.ui.MultipleChoice.prototype.Initialize = function () {
     
     this._createTextImage();
     this._initSizes();
@@ -93,7 +91,7 @@ MultipleChoice.prototype.Initialize = function () {
  * transformed into an image. 
  * @returns {undefined}
  */
-MultipleChoice.prototype._createTextImage = function () {
+Anibody.ui.MultipleChoice.prototype._createTextImage = function () {
     
     // creating an offscreen canvas with the specific width and height
     var off = document.createElement("CANVAS");
@@ -208,7 +206,7 @@ MultipleChoice.prototype._createTextImage = function () {
  * calculates needed sizes and creates one button per choice
  * @returns {undefined}
  */
-MultipleChoice.prototype._initSizes = function () {
+Anibody.ui.MultipleChoice.prototype._initSizes = function () {
     
     var margin = this.BoxPadding;    
     var can = this.Engine.Canvas;
@@ -254,7 +252,7 @@ MultipleChoice.prototype._initSizes = function () {
  * recalculate the necessary size of the MultipleChoice.
  * @returns {undefined}
  */
-MultipleChoice.prototype._recalculateSizes = function () {
+Anibody.ui.MultipleChoice.prototype._recalculateSizes = function () {
     
     var margin = this.BoxPadding;    
     var can = this.Engine.Canvas;
@@ -281,9 +279,8 @@ MultipleChoice.prototype._recalculateSizes = function () {
  * creates a foreground draw function object, that is ready to be registered
  * @returns {object}
  */
-MultipleChoice.prototype._createForegroundDrawFunctionObject = function(){
+Anibody.ui.MultipleChoice.prototype.Draw = function(c){
     
-    var f = function(c){
         c.save();
 
         c.globalAlpha = this.Opacity;
@@ -316,18 +313,13 @@ MultipleChoice.prototype._createForegroundDrawFunctionObject = function(){
         c.strokeVariousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding);
         c.restore();
         
-    };
-    
-    return {that:this, function:f, parameter: this.Engine.Context};
 };
 /**
  * creates a process input function object, that is ready to be registered
  * @returns {object}
  */
-MultipleChoice.prototype._createProcessInputFunctionObject = function(){
-    
-    var f = function(en){
-                
+Anibody.ui.MultipleChoice.prototype.ProcessInput = function(){
+        
         var box = this.ContentBox;
         
         var area = {
@@ -356,34 +348,26 @@ MultipleChoice.prototype._createProcessInputFunctionObject = function(){
         for(var i=0; i<this.Buttons.length; i++){
             this.Buttons[i].ProcessInput();
         }
-        
-    };
-    
-    return {that:this, function:f, parameter: this.Engine};
+
 };
 /**
  * creates a update function object, that is ready to be registered
  * @returns {object}
  */
-MultipleChoice.prototype._createUpdateFunctionObject = function(){
+Anibody.ui.MultipleChoice.prototype.Update = function(){
     
-    var f = function(en){
-        
         this._recalculateSizes();
                 
         for(var i=0; i<this.Buttons.length; i++){
             this.Buttons[i].Update();
         }
         
-    };
-    
-    return {that:this, function:f, parameter: this.Engine};
 };
 /**
  * creates a Mouse handler object, that is ready to be registered
  * @returns {object}
  */
-MultipleChoice.prototype._createMouseHandlerObject = function(){
+Anibody.ui.MultipleChoice.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
@@ -405,21 +389,14 @@ MultipleChoice.prototype._createMouseHandlerObject = function(){
  * Starts/Opens the Presenter dialog box
  * @returns {undefined}
  */
-MultipleChoice.prototype.Start = function () {
+Anibody.ui.MultipleChoice.prototype.Start = function () {
     this.Active = true;
     
     new Flow(this, "Opacity", 1, 600,{
         that:this, parameter:true, function: function(p){}
     }).Start();
     
-    var ipfo = this._createProcessInputFunctionObject();
-    this._ref_ip = this.Engine.AddProcessInputFunctionObject(ipfo);
-    
-    var fdfo = this._createForegroundDrawFunctionObject();
-    this._ref_draw = this.Engine.AddForegroundDrawFunctionObject(fdfo);
-    
-    var upd = this._createUpdateFunctionObject();
-    this._ref_upd = this.Engine.AddUpdateFunctionObject(upd);
+    this.Register(); // Widget-Method
     
     var mhand = this._createMouseHandlerObject();
     this._ref_mhan = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick",mhand);
@@ -429,23 +406,19 @@ MultipleChoice.prototype.Start = function () {
  * Stops the presenter dialog - will be called by the class
  * @returns {undefined}
  */
-MultipleChoice.prototype.Stop = function () {
+Anibody.ui.MultipleChoice.prototype.Stop = function () {
     this.Active = false;
     
-    this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);
-    this._ref_draw = null;
-    this.Engine.RemoveUpdateFunctionObject(this._ref_upd);
-    this._ref_upd = null;
+    this.Deregister(); // Widget-Method
+    
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
     this._ref_mhan = null;
-    this.Engine.RemoveProcessInputFunctionObject(this._ref_ip);
-    this._ref_ip = null;
 };
 
 /**
  * Function, that handles an illegal stop - will be called by the class
  * @returns {undefined}
  */
-MultipleChoice.prototype.IllegalStop = function () {
+Anibody.ui.MultipleChoice.prototype.IllegalStop = function () {
     Anibody.CallObject(this.OnIllegalStopCBO);
 };

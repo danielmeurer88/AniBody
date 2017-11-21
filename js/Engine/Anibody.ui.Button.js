@@ -6,7 +6,7 @@
  * @param {Number} height
  * @returns {Button}
  */
-function Button(x, y, width, height) {
+Anibody.ui.Button = function Button(x, y, width, height) {
     Anibody.classes.ABO.call(this);
         
     this.Type = "Button";
@@ -20,8 +20,8 @@ function Button(x, y, width, height) {
     this.HoverImage = false; // which will be saved here
     this.HoverFramesLimit = 25; // number of frames, the mouse has to hover over the button until the hoverimage is displayed
     this.HoverPosition = {x:0, y:0}; // position, where the imagewill be drawn - best position will be calculated in an extra function later
-    this.HoverFontHeight = Button.prototype.DefaultHoverFontHeight;
-    this.HoverFontColor = Button.prototype.DefaultHoverFontColor;
+    this.HoverFontHeight = Anibody.ui.Button.prototype.DefaultHoverFontHeight;
+    this.HoverFontColor = Anibody.ui.Button.prototype.DefaultHoverFontColor;
     
     this.OldState = -1;
     this.State = 0; // 0 - not clicked, 1 - is about to click|mouse down over button , 2 - clicked
@@ -47,17 +47,17 @@ function Button(x, y, width, height) {
     this.FontType = ["sans-serif", "sans-serif", "sans-serif"];
     // how the box depending on the state is displayed
     this.DisplayType = ["color", "color", "color"]; // string-array: "image", "color", "both"
-    this.Rounding = Button.prototype.DefaultRounding;
+    this.Rounding = Anibody.ui.Button.prototype.DefaultRounding;
     
     this.ColorCode = [];
     // single array element must be copied because javascript copies array by reference
-    this.ColorCode[0] = Button.prototype.DefaultColorCode[0];
-    this.ColorCode[1] = Button.prototype.DefaultColorCode[1];
-    this.ColorCode[2] = Button.prototype.DefaultColorCode[2];
+    this.ColorCode[0] = Anibody.ui.Button.prototype.DefaultColorCode[0];
+    this.ColorCode[1] = Anibody.ui.Button.prototype.DefaultColorCode[1];
+    this.ColorCode[2] = Anibody.ui.Button.prototype.DefaultColorCode[2];
     
     this.Codename = [false, false, false]; // the codename of the images
     
-    this.HoverShadeColor = Button.prototype.DefaultHoverShadeColor
+    this.HoverShadeColor = Anibody.ui.Button.prototype.DefaultHoverShadeColor
     
     this.Padding = 0;
     this.TextAlign = "center";
@@ -72,9 +72,9 @@ function Button(x, y, width, height) {
     // single array element must be copied because if you copy the default array and later
     // you change the elements of the instance array -> you also change the default array (copy by reference)
     this.FontColor = [];
-    this.FontColor[0] = Button.prototype.DefaultFontColor[0];
-    this.FontColor[1] = Button.prototype.DefaultFontColor[1];
-    this.FontColor[2] = Button.prototype.DefaultFontColor[2];
+    this.FontColor[0] = Anibody.ui.Button.prototype.DefaultFontColor[0];
+    this.FontColor[1] = Anibody.ui.Button.prototype.DefaultFontColor[1];
+    this.FontColor[2] = Anibody.ui.Button.prototype.DefaultFontColor[2];
     
     this.Active = true;
     this.ActivationFunctionObject = {function : function(p){ return this.Active;}, that : this, parameter : {}};
@@ -83,14 +83,14 @@ function Button(x, y, width, height) {
     this._ref_reghov = null;
     
     this._counter = 0;
-    this._counterBorderColor = Button.prototype.DefaultCounterBorderColor;
-    this._counterBackgroundColor = Button.prototype.DefaultCounterBackgroundColor;
-    this._counterFontColor = Button.prototype.DefaultCounterFontColor;
+    this._counterBorderColor = Anibody.ui.Button.prototype.DefaultCounterBorderColor;
+    this._counterBackgroundColor = Anibody.ui.Button.prototype.DefaultCounterBackgroundColor;
+    this._counterFontColor = Anibody.ui.Button.prototype.DefaultCounterFontColor;
     
     this._urgency = false;
-    this._urgencyBorderColor = Button.prototype.DefaultUrgencyBorderColor;
-    this._urgencyBackgroundColor = Button.prototype.DefaultUrgencyBackgroundColor;
-    this._urgencyFontColor = Button.prototype.DefaultUrgencyFontColor;
+    this._urgencyBorderColor = Anibody.ui.Button.prototype.DefaultUrgencyBorderColor;
+    this._urgencyBackgroundColor = Anibody.ui.Button.prototype.DefaultUrgencyBackgroundColor;
+    this._urgencyFontColor = Anibody.ui.Button.prototype.DefaultUrgencyFontColor;
     
     // if an argument is an object, it will be checked if it contains attributes that defines the button
     for(var i=0; i<arguments.length; i++)
@@ -98,30 +98,30 @@ function Button(x, y, width, height) {
             this._handleObject(arguments[i]);
     
     this.Initialize();
-}
+};
 
-Button.prototype = Object.create(Anibody.classes.ABO.prototype);
-Button.prototype.constructor = Button;
+Anibody.ui.Button.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Button.prototype.constructor = Anibody.ui.Button;
 
-Button.prototype.DefaultMask = null;
+Anibody.ui.Button.prototype.DefaultMask = null;
 
-Button.prototype.DefaultRounding = 4;
-Button.prototype.DefaultHoverRowSpace = 3;
-Button.prototype.DefaultHoverPadding = 4;
-Button.prototype.DefaultHoverFontHeight = 14;
-Button.prototype.DefaultFontColor = ["black", "black", "black"];
-Button.prototype.DefaultHoverBackgroundColor = "#eee";
-Button.prototype.DefaultHoverFontColor = "black";
-Button.prototype.DefaultColorCode = ["#cfcfcf", "#bdbdbd", "#666"];
-Button.prototype.DefaultHoverShadeColor = "rgba(0,0,0,0.2)";
+Anibody.ui.Button.prototype.DefaultRounding = 4;
+Anibody.ui.Button.prototype.DefaultHoverRowSpace = 3;
+Anibody.ui.Button.prototype.DefaultHoverPadding = 4;
+Anibody.ui.Button.prototype.DefaultHoverFontHeight = 14;
+Anibody.ui.Button.prototype.DefaultFontColor = ["black", "black", "black"];
+Anibody.ui.Button.prototype.DefaultHoverBackgroundColor = "#eee";
+Anibody.ui.Button.prototype.DefaultHoverFontColor = "black";
+Anibody.ui.Button.prototype.DefaultColorCode = ["#cfcfcf", "#bdbdbd", "#666"];
+Anibody.ui.Button.prototype.DefaultHoverShadeColor = "rgba(0,0,0,0.2)";
 
-Button.prototype.DefaultCounterBorderColor = ["red", "red", "red"];
-Button.prototype.DefaultCounterBackgroundColor = ["white", "white", "white"];
-Button.prototype.DefaultCounterFontColor = ["red", "red", "red"];
+Anibody.ui.Button.prototype.DefaultCounterBorderColor = ["red", "red", "red"];
+Anibody.ui.Button.prototype.DefaultCounterBackgroundColor = ["white", "white", "white"];
+Anibody.ui.Button.prototype.DefaultCounterFontColor = ["red", "red", "red"];
 
-Button.prototype.DefaultUrgencyBorderColor = ["white", "white", "white"];
-Button.prototype.DefaultUrgencyBackgroundColor = ["red", "red", "red"];
-Button.prototype.DefaultUrgencyFontColor = ["white", "white", "white"];
+Anibody.ui.Button.prototype.DefaultUrgencyBorderColor = ["white", "white", "white"];
+Anibody.ui.Button.prototype.DefaultUrgencyBackgroundColor = ["red", "red", "red"];
+Anibody.ui.Button.prototype.DefaultUrgencyFontColor = ["white", "white", "white"];
 
 /**
  * Checkf it the given object contains any attr that may define the instance
@@ -130,7 +130,7 @@ Button.prototype.DefaultUrgencyFontColor = ["white", "white", "white"];
  * @param {object} obj
  * @returns {undefined}
  */
-Button.prototype._handleObject = function (obj) {
+Anibody.ui.Button.prototype._handleObject = function (obj) {
     var _thisclass;
     var _objclass;
     
@@ -167,7 +167,7 @@ Button.prototype._handleObject = function (obj) {
  * @param {anything} obj
  * @returns {String}
  */
-Button.prototype._getClass = function (obj) {
+Anibody.ui.Button.prototype._getClass = function (obj) {
     if(typeof obj === "undefined") return "undefined";
     var con = obj.constructor.toString();
     var ifunc = con.indexOf("function ");
@@ -180,7 +180,7 @@ Button.prototype._getClass = function (obj) {
 /**
  * @see README_DOKU.txt
  */
-Button.prototype.Initialize = function () {
+Anibody.ui.Button.prototype.Initialize = function () {
     
     if(this.X === "center"){
         var c = this.Engine.Canvas;
@@ -197,7 +197,7 @@ Button.prototype.Initialize = function () {
     this.GetLabelWidth(0);
     
     //applies the default mask if one is set
-    if(Button.prototype.DefaultMask != null)
+    if(Anibody.ui.Button.prototype.DefaultMask != null)
         this.ApplyDefaultMask();
     
     // gets the images from the MediaManager if needed
@@ -225,7 +225,7 @@ Button.prototype.Initialize = function () {
  * @param {string} name (optional)
  * @returns {undefined}
  */
-Button.prototype.AddMouseHandler = function(prior, name){
+Anibody.ui.Button.prototype.AddMouseHandler = function(prior, name){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter : this.Engine,
@@ -243,7 +243,7 @@ Button.prototype.AddMouseHandler = function(prior, name){
 /**
  * @see README_DOKU.txt
  */
-Button.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
+Anibody.ui.Button.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
 
 /**
  * the drawing of the transformed hover text will be registered as a foreground draw function
@@ -251,7 +251,7 @@ Button.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.
  * - the function, which will be registered can be seen as an extension of the draw-function but it will be executed in the foreground
  * @returns {undefined}
  */
-Button.prototype._registerHoverImageDrawing = function(){
+Anibody.ui.Button.prototype._registerHoverImageDrawing = function(){
     
     // if _ref_reghov is not null that means it was already registered
     if(this._ref_reghov != null) return; 
@@ -277,7 +277,7 @@ Button.prototype._registerHoverImageDrawing = function(){
  * deregistration of the foreground draw function
  * @returns {undefined}
  */
-Button.prototype._deregisterHoverImageDrawing = function(){
+Anibody.ui.Button.prototype._deregisterHoverImageDrawing = function(){
     if(this._ref_reghov == null) return; 
     this.Engine.RemoveForegroundDrawFunctionObject(this._ref_reghov);
     this._ref_reghov = null
@@ -285,7 +285,7 @@ Button.prototype._deregisterHoverImageDrawing = function(){
 /**
  * @see README_DOKU.txt
  */
-Button.prototype.ProcessInput = function () {
+Anibody.ui.Button.prototype.ProcessInput = function () {
           
     var area = this.GetArea(0, this.Rounding);
      
@@ -295,7 +295,7 @@ Button.prototype.ProcessInput = function () {
 /**
  * @see README_DOKU.txt
  */
-Button.prototype.Update = function () {
+Anibody.ui.Button.prototype.Update = function () {
     
     // activation function checks if the button must be active or not
     var afo = this.ActivationFunctionObject;
@@ -358,7 +358,7 @@ Button.prototype.Update = function () {
 /**
  * @see README_DOKU.txt
  */
-Button.prototype.Draw = function (c) {
+Anibody.ui.Button.prototype.Draw = function (c) {
 
     c.save();
 
@@ -466,7 +466,7 @@ Button.prototype.Draw = function (c) {
  * @param {anything} val3
  * @returns {Array}
  */
-Button.prototype.Set = function (attr, val, val2, val3) {
+Anibody.ui.Button.prototype.Set = function (attr, val, val2, val3) {
     if(arguments.length < 3){
         val2 = val;
     }
@@ -486,7 +486,7 @@ Button.prototype.Set = function (attr, val, val2, val3) {
  * @param {Number} cd
  * @returns {undefined}
  */
-Button.prototype.SetCoolDown = function (cd) {
+Anibody.ui.Button.prototype.SetCoolDown = function (cd) {
     this.CoolDown = cd;
 };
 
@@ -495,7 +495,7 @@ Button.prototype.SetCoolDown = function (cd) {
  * behold th argorithmn, what happens when the button is clicked
  * @returns {undefined}
  */
-Button.prototype.Trigger = function (extern) {
+Anibody.ui.Button.prototype.Trigger = function (extern) {
     var tco;
     
     if(extern){
@@ -523,7 +523,7 @@ Button.prototype.Trigger = function (extern) {
  * @param {Number} state (optional)
  * @returns {undefined}
  */
-Button.prototype.GetLabelWidth = function (state) {
+Anibody.ui.Button.prototype.GetLabelWidth = function (state) {
 
     state = arguments.length <= 0 ? this.State : state;
 
@@ -544,7 +544,7 @@ Button.prototype.GetLabelWidth = function (state) {
  * @param {String} name Name (optional)
  * @returns {undefined}
  */
-Button.prototype.SetTriggerCallbackObject = function (tco, prior, name) {
+Anibody.ui.Button.prototype.SetTriggerCallbackObject = function (tco, prior, name) {
     if(this._ref != null)
         this.RemoveMouseHandler();
     
@@ -560,7 +560,7 @@ Button.prototype.SetTriggerCallbackObject = function (tco, prior, name) {
  * @param {Object} afo ActivationFunctionObject
  * @returns {undefined}
  */
-Button.prototype.SetActiveFunctionObject = function (afo) {
+Anibody.ui.Button.prototype.SetActiveFunctionObject = function (afo) {
     if(afo.that === "self"){
         afo.that = this;
     }
@@ -571,7 +571,7 @@ Button.prototype.SetActiveFunctionObject = function (afo) {
  * @description Returns the current appearance (Mask) of the button.
  * @returns {Object}
  */
-Button.prototype.GetMask = function () {
+Anibody.ui.Button.prototype.GetMask = function () {
     // { DisplayType: "string", Code: "string", Label: "string", Cursor: "string", TextColor: "string", FontHeight: Number, FontType: "string" }
     return {
         State0: {DisplayType: this.DisplayType[0], ColorCode: this.ColorCode[0], Codename:this.Codename[0], Label: this.Label[0], Cursor: this.CSSMouseCursor[0], TextColor: this.FontColor[0], FontHeight: this.FontHeight[0], FontType: this.FontType[0]},
@@ -587,7 +587,7 @@ Button.prototype.GetMask = function () {
  * @param {Object} m Mask Object
  * @returns {undefined}
  */
-Button.prototype.SetMask = function (m) {
+Anibody.ui.Button.prototype.SetMask = function (m) {
     this.SetAppearance(m.State0, m.State1, m.State2, m.SingleValues);
 };
 
@@ -595,17 +595,17 @@ Button.prototype.SetMask = function (m) {
  * @description Saves the current mask as the DefaultMask
  * @returns {undefined}
  */
-Button.prototype.SaveMask = function () {
-    Button.prototype.DefaultMask = this.GetMask();
+Anibody.ui.Button.prototype.SaveMask = function () {
+    Anibody.ui.Button.prototype.DefaultMask = this.GetMask();
 };
 
 /**
  * @description The button takes on the appearance, saved as the default mask
  * @returns {undefined}
  */
-Button.prototype.ApplyDefaultMask = function () {
-    if(Button.prototype.DefaultMask!=null)
-        this.SetAppearance(Button.prototype.DefaultMask.State0, Button.prototype.DefaultMask.State1, Button.prototype.DefaultMask.State2, Button.prototype.DefaultMask.SingleValues);
+Anibody.ui.Button.prototype.ApplyDefaultMask = function () {
+    if(Anibody.ui.Button.prototype.DefaultMask!=null)
+        this.SetAppearance(Anibody.ui.Button.prototype.DefaultMask.State0, Anibody.ui.Button.prototype.DefaultMask.State1, Anibody.ui.Button.prototype.DefaultMask.State2, Anibody.ui.Button.prototype.DefaultMask.SingleValues);
     else
         return false;
 };
@@ -618,7 +618,7 @@ Button.prototype.ApplyDefaultMask = function () {
  * @param {Object} sv - object, which contents of the rest of the necessary values
  * @returns {undefined}
  */
-Button.prototype.SetAppearance = function (s0, s1, s2, sv) {
+Anibody.ui.Button.prototype.SetAppearance = function (s0, s1, s2, sv) {
 
     // optimales Objekt
     /*
@@ -717,7 +717,7 @@ Button.prototype.SetAppearance = function (s0, s1, s2, sv) {
  * @param {type} vertical - images are vertically aligned if true or by default
  * @returns {undefined}
  */
-Button.prototype.SetImagesThroughSprite = function (codename,vertical) {
+Anibody.ui.Button.prototype.SetImagesThroughSprite = function (codename,vertical) {
     
     if(arguments.length <= 1)
         vertical = true; 
@@ -768,7 +768,7 @@ Button.prototype.SetImagesThroughSprite = function (codename,vertical) {
  * if this is true
  * @returns {undefined}
  */
-Button.prototype.SetPadding = function (padding,widthcorrection) {
+Anibody.ui.Button.prototype.SetPadding = function (padding,widthcorrection) {
     
     if(arguments.length <= 0)
         padding = 0;
@@ -803,7 +803,7 @@ Button.prototype.SetPadding = function (padding,widthcorrection) {
  * @param {number} state
  * @returns {undefined}
  */
-Button.prototype.LoadImage = function (codename,state) {
+Anibody.ui.Button.prototype.LoadImage = function (codename,state) {
     
     if(typeof codename === "undefined") return false;
     
@@ -823,7 +823,7 @@ Button.prototype.LoadImage = function (codename,state) {
  * @param {number} startfh - the font height, with which the function starts testing
  * @returns {undefined}
  */
-Button.prototype.AddTextAsImage = function (texts, startfh) {
+Anibody.ui.Button.prototype.AddTextAsImage = function (texts, startfh) {
     
     // our text need to fit in the box
     var box = {
@@ -970,7 +970,7 @@ Button.prototype.AddTextAsImage = function (texts, startfh) {
  * @param {string|string-array} texts
  * @returns {undefined}
  */
-Button.prototype.SetHoverText = function (texts) {
+Anibody.ui.Button.prototype.SetHoverText = function (texts) {
     
     // making sure that the 1 parameter is an array of strings
     if(typeof texts === "string")
@@ -988,7 +988,7 @@ Button.prototype.SetHoverText = function (texts) {
  * @param {Number} fh Font Height of the text(optional)
  * @returns {undefined}
  */
-Button.prototype._createHoverImage = function (fh) {
+Anibody.ui.Button.prototype._createHoverImage = function (fh) {
     
     var texts = this.HoverText;
     
@@ -1016,8 +1016,8 @@ Button.prototype._createHoverImage = function (fh) {
     // set a maximum value for the later used width
     var width = this.Engine.Canvas.width / 3;
     
-    var padding = Button.prototype.DefaultHoverPadding; // the distance between the the border of the image and the text
-    var rowspace = Button.prototype.DefaultHoverRowSpace; // the distance between the text rows
+    var padding = Anibody.ui.Button.prototype.DefaultHoverPadding; // the distance between the the border of the image and the text
+    var rowspace = Anibody.ui.Button.prototype.DefaultHoverRowSpace; // the distance between the text rows
     // gets the length of all words
     var c = this.Engine.Context;
     c.save();
@@ -1119,7 +1119,7 @@ Button.prototype._createHoverImage = function (fh) {
  * Saves it in HoverPosition
  * @returns {undefined}
  */
-Button.prototype._findHoverPosition = function () {
+Anibody.ui.Button.prototype._findHoverPosition = function () {
     
     var can = this.Engine.Canvas;
     var center = {x:can.width/2, y:can.height/2}; // centroid of canvas
@@ -1184,7 +1184,7 @@ Button.prototype._findHoverPosition = function () {
  * @param {type} nof number of frames
  * @returns {undefined}
  */
-Button.prototype.SetHoverFramesLimit = function (nof) {
+Anibody.ui.Button.prototype.SetHoverFramesLimit = function (nof) {
     this.HoverFramesLimit = nof;
 };
 
@@ -1192,7 +1192,7 @@ Button.prototype.SetHoverFramesLimit = function (nof) {
  * Inflates the deflated button
  * @returns {undefined}
  */
-Button.prototype.Inflate = function () {
+Anibody.ui.Button.prototype.Inflate = function () {
     this.Width = this._inflated.width;
     this.Height = this._inflated.height;
 };
@@ -1201,7 +1201,7 @@ Button.prototype.Inflate = function () {
  * Deflates the button
  * @returns {undefined}
  */
-Button.prototype.Deflate = function () {
+Anibody.ui.Button.prototype.Deflate = function () {
     this._inflated.width = this.Width;
     this._inflated.height = this.Height;
     this.Width = 0;
@@ -1216,7 +1216,7 @@ Button.prototype.Deflate = function () {
  * @param {array} stops - [stop[,stop...]], stop = {stop:Number [0,1], color: colorcode string}
  * @returns {undefined}
  */
-Button.prototype.AddInnerButtonLayout = function(depth,stops){
+Anibody.ui.Button.prototype.AddInnerButtonLayout = function(depth,stops){
     
     // create 9 (imaginary) boxes according to the values in the arguments (box, depth)
     // tl = top-left, top, tr = top-right
@@ -1403,7 +1403,7 @@ Button.prototype.AddInnerButtonLayout = function(depth,stops){
     
 };
 
-Button.prototype.AddButtonEffectOnlyLightning = function(depth, stops){
+Anibody.ui.Button.prototype.AddButtonEffectOnlyLightning = function(depth, stops){
     
     if(isNaN(depth))
         depth = Math.floor(this.Height/8);
@@ -1492,7 +1492,7 @@ Button.prototype.AddButtonEffectOnlyLightning = function(depth, stops){
  * @param {type} stops
  * @returns {undefined}
  */
-Button.prototype.AddButtonEffect = function(depth, stops){
+Anibody.ui.Button.prototype.AddButtonEffect = function(depth, stops){
     
     if(isNaN(depth))
         depth = Math.floor(this.Height/8);
@@ -1634,28 +1634,28 @@ Button.prototype.AddButtonEffect = function(depth, stops){
  * @param {number} c
  * @returns {undefined}
  */
-Button.prototype.SetCounter = function (c) {if(!isNaN(c) || c >= 0)this._counter = c;};
+Anibody.ui.Button.prototype.SetCounter = function (c) {if(!isNaN(c) || c >= 0)this._counter = c;};
 /**
  * returns the counter number
  * @returns {Number}
  */
-Button.prototype.GetCounter = function () {return this._counter;};
+Anibody.ui.Button.prototype.GetCounter = function () {return this._counter;};
 /**
  * increment the counter number
  * @returns {undefined}
  */
-Button.prototype.IncreaseCounter = function () {this._counter++;};
+Anibody.ui.Button.prototype.IncreaseCounter = function () {this._counter++;};
 /**
  * decrement the counter number
  * @returns {undefined}
  */
-Button.prototype.DecreaseCounter = function () {if(this._counter)this._counter--;};
+Anibody.ui.Button.prototype.DecreaseCounter = function () {if(this._counter)this._counter--;};
 /**
  * set urgency status - true = the button shows a exclamation mark in the bottom right corner
  * @param {bool} ur
  * @returns {undefined}
  */
-Button.prototype.SetUrgency = function (ur) {
+Anibody.ui.Button.prototype.SetUrgency = function (ur) {
     if(typeof ur === "undefined")
         this._urgency = false;
     else
@@ -1666,7 +1666,7 @@ Button.prototype.SetUrgency = function (ur) {
  * sets rounding feature to the button - it would form a round buttom if width and hight have the same size
  * @returns {undefined}
  */
-Button.prototype.Circlize = function () {
+Anibody.ui.Button.prototype.Circlize = function () {
     var min = Math.min(this.Width, this.Height);
     this.Rounding = min/2;
 };

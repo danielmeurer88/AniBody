@@ -4,7 +4,7 @@
  * @returns {Alert}
  */
 Anibody.ui.Alert = function Alert(text){
-    Anibody.classes.ABO.call(this);
+    Anibody.classes.Widget.call(this);
     
     this.X=0;
     this.Y=0;
@@ -41,16 +41,13 @@ Anibody.ui.Alert = function Alert(text){
         
     this.Opacity = 0;
     
-    this._ref_ip = null;
-    this._ref_draw = null;
-    this._ref_upd = null;
     this._ref_mhan = null;
     
     this._cbo = false;
     
 this.Initialize();
 }
-Anibody.ui.Alert.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Alert.prototype = Object.create(Anibody.classes.Widget.prototype);
 Anibody.ui.Alert.prototype.constructor = Anibody.ui.Alert;
 
 Anibody.ui.Alert.prototype.ContentBoxColor = "#999";
@@ -217,115 +214,99 @@ Anibody.ui.Alert.prototype._recalculateSizes = function () {
  * creates a foreground draw function object, that is ready to be registered
  * @returns {object}
  */
-Anibody.ui.Alert.prototype._createForegroundDrawFunctionObject = function(){
-    
-    var f = function(c){
-        c.save();
+Anibody.ui.Alert.prototype.Draw = function(c){
+    c.save();
 
-        c.globalAlpha = this.Opacity;
-        c.fillStyle = this.OutsideColor;
-        c.fillRect(0,0,c.canvas.width, c.canvas.height);
-        
-        
-        var box = this.ContentBox;
-        c.beginPath();
-        c.variousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding);
-        c.clip();
-        
-        c.fillStyle = this.ContentBoxColor;
-        c.fillVariousRoundedRect(box.x, box.y, box.width, box.height, 0);
-        
-        // drawing text
-        c.drawImage(this.ImageText, this.ContentBox.x, this.ContentBox.y)
+    c.globalAlpha = this.Opacity;
+    c.fillStyle = this.OutsideColor;
+    c.fillRect(0,0,c.canvas.width, c.canvas.height);
 
-        c.restore();
-        c.save();
 
+    var box = this.ContentBox;
+    c.beginPath();
+    c.variousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding);
+    c.clip();
+
+    c.fillStyle = this.ContentBoxColor;
+    c.fillVariousRoundedRect(box.x, box.y, box.width, box.height, 0);
+
+    // drawing text
+    c.drawImage(this.ImageText, this.ContentBox.x, this.ContentBox.y)
+
+    c.restore();
+    c.save();
+
+
+    // Ok
+    var box = this.OkBox;
+    c.setFontHeight(box.height*0.5);
+
+    c.fillStyle = this.BoxColor;
+    c.fillVariousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding/3*2);
+    c.fillStyle = this.BoxFontColor;
+    c.fillSpinnedText(box.x + box.width/2, box.y + box.height/2,"OK",0);
+
+    c.restore();
+
+    c.save();
+    c.strokeStyle = this.BoxBorderColor;
+    c.lineWidth = 5;
+
+    var box = this.ContentBox;
+    c.strokeVariousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding);
+    c.restore();
         
-        // Ok
-        var box = this.OkBox;
-        c.setFontHeight(box.height*0.5);
-        
-        c.fillStyle = this.BoxColor;
-        c.fillVariousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding/3*2);
-        c.fillStyle = this.BoxFontColor;
-        c.fillSpinnedText(box.x + box.width/2, box.y + box.height/2,"OK",0);
-        
-        c.restore();
-        
-        c.save();
-        c.strokeStyle = this.BoxBorderColor;
-        c.lineWidth = 5;
-        
-        var box = this.ContentBox;
-        c.strokeVariousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding);
-        c.restore();
-        
-    };
-    
-    return {that:this, function:f, parameter: this.Engine.Context};
 };
 /**
  * creates a process input function object, that is ready to be registered
  * @returns {object}
  */
-Anibody.ui.Alert.prototype._createProcessInputFunctionObject = function(){
-    
-    var f = function(en){
-                
-        var box = this.ContentBox;
-        
-        var area = {
-            function:function(c){
-                // creating a negative winding rectangle path that equals to -1
-                c.moveTo(0,0);
-                c.lineTo(0, c.canvas.height);
-                c.lineTo(c.canvas.width, c.canvas.height);
-                c.lineTo(c.canvas.width, 0);
-                c.lineTo(0, 0);
-                // now content box as positive
-                c.rect(box.x, box.y, box.width, box.height);
-            },
-            type:"function"
-        };
-        
-        this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverBackground");
-        
-        var area = {
-            x:box.x, y:box.y, width:box.width, height:box.height, rounding:0,
-            type:"rrect"
-        };
-        
-        this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverContent");
-        
-        box = this.OkBox;
-        area = {
-            x:box.x, y:box.y, width:box.width, height:box.height, rounding:0,
-            type:"rrect"
-        };
-        this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverOk");
-        
-        
+Anibody.ui.Alert.prototype.ProcessInput = function(){
+           
+    var box = this.ContentBox;
+
+    var area = {
+        function:function(c){
+            // creating a negative winding rectangle path that equals to -1
+            c.moveTo(0,0);
+            c.lineTo(0, c.canvas.height);
+            c.lineTo(c.canvas.width, c.canvas.height);
+            c.lineTo(c.canvas.width, 0);
+            c.lineTo(0, 0);
+            // now content box as positive
+            c.rect(box.x, box.y, box.width, box.height);
+        },
+        type:"function"
     };
-    
-    return {that:this, function:f, parameter: this.Engine};
+
+    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverBackground");
+
+    var area = {
+        x:box.x, y:box.y, width:box.width, height:box.height, rounding:0,
+        type:"rrect"
+    };
+
+    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverContent");
+
+    box = this.OkBox;
+    area = {
+        x:box.x, y:box.y, width:box.width, height:box.height, rounding:0,
+        type:"rrect"
+    };
+    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverOk");
+        
 };
 /**
  * creates a update function object, that is ready to be registered
  * @returns {object}
  */
-Anibody.ui.Alert.prototype._createUpdateFunctionObject = function(){
+Anibody.ui.Alert.prototype.Update = function(){
     
-    var f = function(en){
+    this._recalculateSizes();
+
+    if(this.IsMouseOverOk)
+        this.Engine.Input.Mouse.Cursor.Set("pointer");
         
-        this._recalculateSizes();
-                
-        if(this.IsMouseOverOk)
-            this.Engine.Input.Mouse.Cursor.Set("pointer");
-        
-    };
-    
-    return {that:this, function:f, parameter: this.Engine};
 };
 /**
  * creates a Mouse handler object, that is ready to be registered
@@ -361,14 +342,7 @@ Anibody.ui.Alert.prototype.Start = function (cbo) {
         that:this, parameter:true, function: function(p){}
     }).Start();
     
-    var ipfo = this._createProcessInputFunctionObject();
-    this._ref_ip = this.Engine.AddProcessInputFunctionObject(ipfo);
-    
-    var fdfo = this._createForegroundDrawFunctionObject();
-    this._ref_draw = this.Engine.AddForegroundDrawFunctionObject(fdfo);
-    
-    var upd = this._createUpdateFunctionObject();
-    this._ref_upd = this.Engine.AddUpdateFunctionObject(upd);
+    this.Register(); // Widget.Register();
     
     var mhand = this._createMouseHandlerObject();
     this._ref_mhan = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick",mhand);
@@ -382,14 +356,10 @@ Anibody.ui.Alert.prototype.Start = function (cbo) {
 Anibody.ui.Alert.prototype.Stop = function () {
     this.Active = false;
     
-    this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);
-    this._ref_draw = null;
-    this.Engine.RemoveUpdateFunctionObject(this._ref_upd);
-    this._ref_upd = null;
+    this.Deregister();
+    
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
     this._ref_mhan = null;
-    this.Engine.RemoveProcessInputFunctionObject(this._ref_ip);
-    this._ref_ip = null;
     
     Anibody.CallObject(this._cbo);
 };

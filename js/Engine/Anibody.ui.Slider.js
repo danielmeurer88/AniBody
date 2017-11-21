@@ -7,7 +7,7 @@
  * @param {type} height the height of the handle
  * @returns {Slider}
  */
-function Slider(x,y,width,height){
+Anibody.ui.Slider = function Slider(x,y,width,height){
     Anibody.classes.ABO.call(this);
     
     this.X = x;
@@ -37,20 +37,24 @@ function Slider(x,y,width,height){
     this._ref = null;
     this._ref_mh = null;
     
+    this._boundAttr = null;
+    this._boundObj = null;
+    
     this._noValueChange = false;
     
-    this.Color = Slider.prototype.DefaultColor;
+    this.Color = Anibody.ui.Slider.prototype.DefaultColor;
     
 this.Initialize();
-}
-Slider.prototype = Object.create(Anibody.classes.ABO.prototype);
-Slider.prototype.constructor = Slider;
+};
 
-Slider.prototype.DefaultColor = "rgba(100,100,120,1)";
+Anibody.ui.Slider.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Slider.prototype.constructor = Anibody.ui.Slider;
+
+Anibody.ui.Slider.prototype.DefaultColor = "rgba(100,100,120,1)";
 /**
  * @see README_DOKU.txt
  */
-Slider.prototype.Initialize = function(){
+Anibody.ui.Slider.prototype.Initialize = function(){
     this.AddProcessInputFunctionObject();
     this.AddMouseHandler();
 };
@@ -58,7 +62,7 @@ Slider.prototype.Initialize = function(){
  * adds the process input function that enables the dragging the handler
  * @returns {undefined}
  */
-Slider.prototype.AddProcessInputFunctionObject = function(){
+Anibody.ui.Slider.prototype.AddProcessInputFunctionObject = function(){
 
     this._ref = this.Engine.AddProcessInputFunctionObject({
         parameter: this.Engine,
@@ -82,13 +86,13 @@ Slider.prototype.AddProcessInputFunctionObject = function(){
  * Removes process input function
  * @returns {undefined}
  */
-Slider.prototype.RemoveProcessInputFunctionObject = function(){this.Engine.RemoveProcessInputFunctionObject(this._ref);};
+Anibody.ui.Slider.prototype.RemoveProcessInputFunctionObject = function(){this.Engine.RemoveProcessInputFunctionObject(this._ref);};
 
 /**
  * @see README_DOKU.txt
  * fulfills the user expectations - when user clicks on the slide bar the handler jumps to the mouse and changes to the correct value
  */
-Slider.prototype.AddMouseHandler = function(){
+Anibody.ui.Slider.prototype.AddMouseHandler = function(){
     this._ref_mh = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter: this.Engine,
         that: this,
@@ -112,7 +116,7 @@ Slider.prototype.AddMouseHandler = function(){
 /**
  * @see README_DOKU.txt
  */
-Slider.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mh);};
+Anibody.ui.Slider.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mh);};
 
 /**
  * Only needed if the user is dragging the handler. Calculates the position of
@@ -120,7 +124,7 @@ Slider.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.
  * value regarding the limits
  * @returns {undefined}
  */
-Slider.prototype.Update = function(){
+Anibody.ui.Slider.prototype.Update = function(){
     
     var m = this.Engine.Input.Mouse.Position;
     
@@ -160,11 +164,16 @@ Slider.prototype.Update = function(){
         }
         
     this._oldValue = this.Value;
+    
+    if(this._boundObj !== null && this._boundAttr != null){
+        this._boundObj[this._boundAttr] = this.Value;
+    }
+    
 };
 /**
  * @see README_DOKU.txt
  */
-Slider.prototype.ProcessInput = function(){
+Anibody.ui.Slider.prototype.ProcessInput = function(){
     
     var area = {
         x: this.X,
@@ -194,7 +203,7 @@ Slider.prototype.ProcessInput = function(){
  * @param {type} c context of the canvas
  * @returns {undefined}
  */
-Slider.prototype.Draw = function(c){
+Anibody.ui.Slider.prototype.Draw = function(c){
     c.save();
     
     // Slider
@@ -217,7 +226,7 @@ Slider.prototype.Draw = function(c){
  * Returns the calculated value
  * @returns {Number}
  */
-Slider.prototype.GetValue = function(){
+Anibody.ui.Slider.prototype.GetValue = function(){
     return this.Value;
 };
 
@@ -226,7 +235,7 @@ Slider.prototype.GetValue = function(){
  * @param {Number} v - new value
  * @returns {boolean} true if successful
  */
-Slider.prototype.SetValue = function(v){
+Anibody.ui.Slider.prototype.SetValue = function(v){
     
     if(v < this.ValueLimits[0] || v > this.ValueLimits[1])
         return false;
@@ -256,7 +265,7 @@ Slider.prototype.SetValue = function(v){
  * @param {Number} high
  * @returns {undefined}
  */
-Slider.prototype.SetLimits = function(low, high){
+Anibody.ui.Slider.prototype.SetLimits = function(low, high){
     this.ValueLimits = [low, high];
     this.Value = low;
     this.Handle.x = this.X;
@@ -271,6 +280,20 @@ Slider.prototype.SetLimits = function(low, high){
  * Sets old value
  * @returns {undefined}
  */
-Slider.prototype.ResetValue = function(){
+Anibody.ui.Slider.prototype.ResetValue = function(){
     this.SetValue(this._oldValue);
+};
+
+/**
+ * Binds an attribute to the current value of the slider
+ * @param {object} obj
+ * @param {string} attr
+ * @returns {undefined}
+ */
+Anibody.ui.Slider.prototype.BindAttribute = function(obj, attr){
+    if(!obj || !obj[attr]) return;
+    
+    this._boundAttr = attr;
+    this._boundObj = obj;
+    
 };

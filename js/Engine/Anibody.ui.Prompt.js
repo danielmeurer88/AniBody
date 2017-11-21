@@ -5,8 +5,8 @@
  * @param {boolean} numpad - if true then a virtual numpad will be rendered beyond the input field
  * @returns {Prompt}
  */
-function Prompt(m, cbo, numpad){
-    Anibody.classes.ABO.call(this);
+Anibody.ui.Prompt = function Prompt(m, cbo, numpad){
+    Anibody.classes.Widget.call(this);
     
     if(typeof numpad === "undefined")
         numpad = false;
@@ -38,12 +38,12 @@ function Prompt(m, cbo, numpad){
     
     this.InputField = false;
     
-    this.BackgroundColor = Prompt.prototype.DefaultBackgroundColor;
-    this.BorderColor = Prompt.prototype.DefaultBorderColor;
-    this.FontColor = Prompt.prototype.DefaultFontColor;
-    this.ButtonColor = Prompt.prototype.DefaultButtonColor;
-    this.ButtonFontColor = Prompt.prototype.DefaultButtonFontColor;
-    this.OutsideColor = Prompt.prototype.DefaultOutsideColor;
+    this.BackgroundColor = Anibody.ui.Prompt.prototype.DefaultBackgroundColor;
+    this.BorderColor = Anibody.ui.Prompt.prototype.DefaultBorderColor;
+    this.FontColor = Anibody.ui.Prompt.prototype.DefaultFontColor;
+    this.ButtonColor = Anibody.ui.Prompt.prototype.DefaultButtonColor;
+    this.ButtonFontColor = Anibody.ui.Prompt.prototype.DefaultButtonFontColor;
+    this.OutsideColor = Anibody.ui.Prompt.prototype.DefaultOutsideColor;
     
     // standard values for the box
     this.Box = {
@@ -98,38 +98,35 @@ function Prompt(m, cbo, numpad){
     
     this.IsMouseOverNumber = [false,false,false,false,false,false,false,false,false,false];
     
-    this._ref_draw = null;
-    this._ref_update = null;
-    this._ref_pi = null;
     this._ref_mhan = null;
     
     
 this.Initialize();
-}
+};
 
-Prompt.prototype = Object.create(Anibody.classes.ABO.prototype);
-Prompt.prototype.constructor = Prompt;
+Anibody.ui.Prompt.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.Prompt.prototype.constructor = Anibody.ui.Prompt;
 
-Prompt.prototype.DefaultBackgroundColor = "#ccc";
-Prompt.prototype.DefaultBorderColor = "#000";
-Prompt.prototype.DefaultFontColor = "#222";
-Prompt.prototype.DefaultButtonColor = "#aaa";
-Prompt.prototype.DefaultButtonFontColor = "#111";
+Anibody.ui.Prompt.prototype.DefaultBackgroundColor = "#ccc";
+Anibody.ui.Prompt.prototype.DefaultBorderColor = "#000";
+Anibody.ui.Prompt.prototype.DefaultFontColor = "#222";
+Anibody.ui.Prompt.prototype.DefaultButtonColor = "#aaa";
+Anibody.ui.Prompt.prototype.DefaultButtonFontColor = "#111";
 
-Prompt.prototype.DefaultOutsideColor = "rgba(0,0,0,0.6)";
+Anibody.ui.Prompt.prototype.DefaultOutsideColor = "rgba(0,0,0,0.6)";
 
 /**
  * can be seen as an extension of the constructor function
  * @returns {undefined}
  */
-Prompt.prototype.Initialize = function(){
+Anibody.ui.Prompt.prototype.Initialize = function(){
     this._calculateRows();
     this._recalculateBoxValues();
     
     if(this._numPad)
         this.DeleteImage = this._getDeleteImage(this.NumButtonWidth,this.NumButtonHeight);
     
-    this.InputField = new InputField(this.InputBox.x, this.InputBox.y, this.InputBox.width, this.InputBox.height);
+    this.InputField = new Anibody.ui.InputField(this.InputBox.x, this.InputBox.y, this.InputBox.width, this.InputBox.height);
 };
 
 /**
@@ -137,7 +134,7 @@ Prompt.prototype.Initialize = function(){
  * sets the needed sizes for MessageBox accordingly
  * @returns {undefined}
  */
-Prompt.prototype._calculateRows = function(){
+Anibody.ui.Prompt.prototype._calculateRows = function(){
     
     // creating an offscreen canvas with the specific width and height
     var off = document.createElement("CANVAS");
@@ -242,7 +239,7 @@ Prompt.prototype._calculateRows = function(){
  * the new height of the message box leads to the need to recalculate all values
  * @returns {undefined}
  */
-Prompt.prototype._recalculateBoxValues = function(){
+Anibody.ui.Prompt.prototype._recalculateBoxValues = function(){
     
     // at this point, this.MessageBox has been calculated and the width of this.Box too
     
@@ -422,7 +419,7 @@ Prompt.prototype._recalculateBoxValues = function(){
  * moves the prompt box
  * @returns {undefined}
  */
-Prompt.prototype.Move = function(dx,dy){
+Anibody.ui.Prompt.prototype.Move = function(dx,dy){
     // adjusting the other boxes and objects within these boxes, which are relatively placed to this.Box
     this.Box.x += dx;
     this.Box.y += dy;
@@ -450,19 +447,13 @@ Prompt.prototype.Move = function(dx,dy){
  * Starts/Opens the prompt dialog
  * @returns {undefined}
  */
-Prompt.prototype.Start = function(){
+Anibody.ui.Prompt.prototype.Start = function(){
     // started the input field already selected
     this.InputField.Selected = true;
-    // defines and registers the needed "process input"-function
-    var ipfo = this._createProcessInputFunctionObject();
-    this._ref_ip = this.Engine.AddProcessInputFunctionObject(ipfo);
-    // defines and registers the needed "(foreground)-draw"-function
-    var fdfo = this._createForegroundDrawFunctionObject();
-    this._ref_draw = this.Engine.AddForegroundDrawFunctionObject(fdfo);
-    // defines and registers the needed "update"-function
-    var upd = this._createUpdateFunctionObject();
-    this._ref_update = this.Engine.AddUpdateFunctionObject(upd);
-    // defines and registers the needed "mouse handler"-function
+    
+    // widget
+    this.Register();
+    
     var mhand = this._createMouseHandlerObject();
     this._ref_mhan = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick",mhand);
     
@@ -472,28 +463,23 @@ Prompt.prototype.Start = function(){
  * Stops the prompt dialog - will be called by the class
  * @returns {undefined}
  */
-Prompt.prototype.Stop = function(){
+Anibody.ui.Prompt.prototype.Stop = function(){
     
     this.InputField.Selected = false;
     
-    this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);
-    this._ref_draw = null;
-    
-    this.Engine.RemoveUpdateFunctionObject(this._ref_update);
-    this._ref_update = null;
+    // widget
+    this.Deregister();
     
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
     this._ref_mhan = null;
     
-    this.Engine.RemoveProcessInputFunctionObject(this._ref_ip);
-    this._ref_ip = null;
 };
 
 /**
  * creates a Mouse handler object, that is ready to be registered
  * @returns {object}
  */
-Prompt.prototype._createMouseHandlerObject = function(){
+Anibody.ui.Prompt.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
@@ -529,9 +515,8 @@ Prompt.prototype._createMouseHandlerObject = function(){
  * creates a foreground draw function object, that is ready to be registered
  * @returns {object}
  */
-Prompt.prototype._createForegroundDrawFunctionObject = function(){
+Anibody.ui.Prompt.prototype.Draw = function(c){
     
-    var f = function(c){
         c.save();
         
         // outside
@@ -602,25 +587,15 @@ Prompt.prototype._createForegroundDrawFunctionObject = function(){
         c.fillSpinnedText(box.x+box.width/2, box.y+box.height/2, "Abbrechen", 0);
 
         c.restore();
-    };
-    
-    return {that:this, function:f, parameter: this.Engine.Context};
 };
 
 /**
  * creates a process input function object, that is ready to be registered
  * @returns {object}
  */
-Prompt.prototype._createProcessInputFunctionObject = function(){
-    /*
-    this.IsMouseOverBox = false;
-    this.IsMouseOverInputBox = false;
-    this.IsMouseOverOK = false;
-    this.IsMouseOverCancel = false;
-    */
-    var f = function(en){
-        
-        var key = this.Engine.Input.Key;
+Anibody.ui.Prompt.prototype.ProcessInput = function(){
+
+        var key = this.Engine.Input.Keys;
         if(key.Enter.FramesPressed == 2){
             this.ClickOnOK();
         }
@@ -660,20 +635,15 @@ Prompt.prototype._createProcessInputFunctionObject = function(){
         
         if(this.InputField)
             this.InputField.ProcessInput();
-        
-    };
-        
-    return {that:this, function:f, parameter: this.Engine};
+
 };
 
 /**
  * creates a update function object, that is ready to be registered
  * @returns {object}
  */
-Prompt.prototype._createUpdateFunctionObject = function(){
+Anibody.ui.Prompt.prototype.Update = function(){
     
-    var f = function(en){
-          
         var overpad = false;
         for(var i=0; i<this.Numbers.length; i++){
             overpad = overpad || this.IsMouseOverNumber[i];
@@ -687,16 +657,13 @@ Prompt.prototype._createUpdateFunctionObject = function(){
         
         this.Input = this._getInput();
         
-    };
-    
-    return {that:this, function:f, parameter: this.Engine};
 };
 
 /**
  * Returns the string in the input field
  * @returns {string}
  */
-Prompt.prototype._getInput = function(){
+Anibody.ui.Prompt.prototype._getInput = function(){
     return this.InputField.Text;
 };
 
@@ -705,7 +672,7 @@ Prompt.prototype._getInput = function(){
  * @param {type} txt
  * @returns {undefined}
  */
-Prompt.prototype._setInput = function(txt){
+Anibody.ui.Prompt.prototype._setInput = function(txt){
     this.InputField.Text = txt;
 };
 
@@ -716,7 +683,7 @@ Prompt.prototype._setInput = function(txt){
  * @param {object} limFailCbo
  * @returns {undefined}
  */
-Prompt.prototype.AddCharLimiter = function (lim, limFailCbo) {
+Anibody.ui.Prompt.prototype.AddCharLimiter = function (lim, limFailCbo) {
         this.InputField.AddCharLimiter(lim, limFailCbo);
 };
 
@@ -724,7 +691,7 @@ Prompt.prototype.AddCharLimiter = function (lim, limFailCbo) {
  * triggers if user clicks on OK or presses enter
  * @returns {undefined}
  */
-Prompt.prototype.ClickOnOK = function(){
+Anibody.ui.Prompt.prototype.ClickOnOK = function(){
     var cbo = this.CallbackObject;
     if(cbo)
         cbo.function.call(cbo.that, this.Input, cbo.parameter);
@@ -734,7 +701,7 @@ Prompt.prototype.ClickOnOK = function(){
  * triggers if user clicks on Cancel or presses esc
  * @returns {undefined}
  */
-Prompt.prototype.ClickOnCancel = function(){
+Anibody.ui.Prompt.prototype.ClickOnCancel = function(){
     this.Stop();
 };
 
@@ -742,7 +709,7 @@ Prompt.prototype.ClickOnCancel = function(){
  * Creates Delete-Image
  * @returns {undefined}
  */
-Prompt.prototype._getDeleteImage = function(width,height){
+Anibody.ui.Prompt.prototype._getDeleteImage = function(width,height){
     var can = document.createElement("canvas");
     can.width = width;
     can.height = height;

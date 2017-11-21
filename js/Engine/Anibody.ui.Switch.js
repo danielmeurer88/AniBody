@@ -8,7 +8,7 @@
  * @param {bool} on - boolean that holds the informatif if the switch starts activated or not
  * @returns {Switch}
  */
-function Switch(x, y, width, height, cbo, on){
+Anibody.ui.Switch = function Switch(x, y, width, height, cbo, on){
     Anibody.classes.ABO.call(this);
     
     this.X = x;
@@ -59,25 +59,25 @@ function Switch(x, y, width, height, cbo, on){
     this._ref = null;
     
 this.Initialize();
-}
-Switch.prototype = Object.create(Anibody.classes.ABO.prototype);
-Switch.prototype.constructor = Switch;
+};
+Anibody.ui.Switch.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Switch.prototype.constructor = Anibody.ui.Switch;
 
-Switch.prototype.DefaultBackgroundColor = "grey";
-Switch.prototype.DefaultCoverColor = false;
+Anibody.ui.Switch.prototype.DefaultBackgroundColor = "grey";
+Anibody.ui.Switch.prototype.DefaultCoverColor = false;
 
-Switch.prototype.DefaultLabelFontColor = "black";
+Anibody.ui.Switch.prototype.DefaultLabelFontColor = "black";
 
-Switch.prototype.DefaultFontColor = "white";
-Switch.prototype.DefaultColorOn = "green";
-Switch.prototype.DefaultColorOff = "red";
+Anibody.ui.Switch.prototype.DefaultFontColor = "white";
+Anibody.ui.Switch.prototype.DefaultColorOn = "green";
+Anibody.ui.Switch.prototype.DefaultColorOff = "red";
 
-Switch.prototype.DefaultRounding = 4;
+Anibody.ui.Switch.prototype.DefaultRounding = 4;
 
 /**
  * @see README_DOKU.txt
  */
-Switch.prototype.Initialize = function(){
+Anibody.ui.Switch.prototype.Initialize = function(){
     this.AddMouseHandler();
     
     if(!this.CoverColor)
@@ -92,7 +92,7 @@ Switch.prototype.Initialize = function(){
     this._createCoverLayer();
 };
 
-Switch.prototype.Switch = function(cbo){
+Anibody.ui.Switch.prototype.Switch = function(cbo){
     
     this.ON = !this.ON;
     var target;
@@ -113,8 +113,12 @@ Switch.prototype.Switch = function(cbo){
         Anibody.CallObject(cbo);
     }, ms/2, cbo);
 };
-
-Switch.prototype.SetOn = function(state){
+/**
+ * Changes state for the instance and visually
+ * @param {type} state
+ * @returns {undefined}
+ */
+Anibody.ui.Switch.prototype.SetOn = function(state){
     
     this.ON = state;
     var target;
@@ -127,15 +131,16 @@ Switch.prototype.SetOn = function(state){
     
     this.Cover.x = target;
 };
-
-Switch.prototype.SetCallbackObject = function(cbo){
-    
-    this.CallbackObject = cbo;
-};
+/**
+ * Sets a callbackobject, that will be called when user switches state
+ * @param {type} cbo
+ * @returns {undefined}
+ */
+Anibody.ui.Switch.prototype.SetCallbackObject = function(cbo){this.CallbackObject = cbo;};
 /**
  * @see README_DOKU.txt
  */
-Switch.prototype.Draw = function(c){
+Anibody.ui.Switch.prototype.Draw = function(c){
     c.save();
     var ir = this._innerRectDepth;
     
@@ -215,7 +220,7 @@ Switch.prototype.Draw = function(c){
 /**
  * @see README_DOKU.txt
  */
-Switch.prototype.Update = function(){
+Anibody.ui.Switch.prototype.Update = function(){
     if(this.IsMouseOver){
         this.Engine.Input.Mouse.Cursor.Set("pointer");
     }
@@ -223,11 +228,13 @@ Switch.prototype.Update = function(){
 /**
  * @see README_DOKU.txt
  */
-Switch.prototype.ProcessInput = function(){
+Anibody.ui.Switch.prototype.ProcessInput = function(){
     this.Engine.Input.MouseHandler.AddHoverRequest(this.GetArea(0,this.Rounding), this, "IsMouseOver");    
 };
-
-Switch.prototype.AddMouseHandler = function(){
+/**
+ * @see README_DOKU.txt
+ */
+Anibody.ui.Switch.prototype.AddMouseHandler = function(){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter: this.Engine,
@@ -242,9 +249,15 @@ Switch.prototype.AddMouseHandler = function(){
 
 };
 
-Switch.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref); this._ref= null;};
+Anibody.ui.Switch.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref); this._ref= null;};
 
-Switch.prototype._createCoverLayer = function(depth, stops){
+/**
+ * creates the 3D-Effect image and adds it to the property this.CoverLayer
+ * @param {number} depth - (optional) default 10% of the width or the hight (which is the smaller one)
+ * @param {object-array} stops - (optional)
+ * @returns {undefined}
+ */
+Anibody.ui.Switch.prototype._createCoverLayer = function(depth, stops){
     if(isNaN(depth))
         depth = this._innerRectDepth;
     
@@ -313,7 +326,15 @@ Switch.prototype._createCoverLayer = function(depth, stops){
     
 };
 
-Switch.prototype._getRGBA = function(color, alpha, inc_quot){
+/**
+ * gets the rgba code of a given color despite the formation (CSS-String literal, hexdecimal code or rgb code)
+ * adds a given alpha level to it - 1 by default and increase level 
+ * @param {type} color
+ * @param {type} alpha
+ * @param {type} inc_quot
+ * @returns {.Object@call;create._getRGBA.rgbaCode|Object.prototype._getRGBA.rgbaCode|String|Boolean}
+ */
+Anibody.ui.Switch.prototype._getRGBA = function(color, alpha, inc_quot){
     
     var rgbaCode;
     
@@ -353,8 +374,13 @@ Switch.prototype._getRGBA = function(color, alpha, inc_quot){
     
     return rgbaCode;
 };
-
-Switch.prototype.SetLabel = function(text, pos){
+/**
+ * places a text, which is supposed to descripe the function of the switch at a given position
+ * @param {string} text - i.e a name
+ * @param {string} pos - left, top, right or bottom
+ * @returns {undefined}
+ */
+Anibody.ui.Switch.prototype.SetLabel = function(text, pos){
     
     if(typeof text === "string")
         this.Label = text;
