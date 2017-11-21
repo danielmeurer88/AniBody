@@ -135,11 +135,11 @@ Anibody.prototype.Initialize = function () {
 
     this.Input = new Anibody.classes.Input();
 
-    this.Objects.Queue = new PriorityQueue();
+    this.Objects.Queue = new Anibody.util.PriorityQueue();
     
-    this.ProcessInputFunctionObjects = new PriorityQueue();// array of all functions, which the user added and which concern the input processing
-    this.UpdateFunctionObjects = new PriorityQueue();// PriorityQueue of all functions, which the user added and which concern the update process
-    this.ForegroundDrawFunctionObjects = new PriorityQueue();// PriorityQueue of Callback-Objects to draw the functions in the background
+    this.ProcessInputFunctionObjects = new Anibody.util.PriorityQueue();// the PQ of all callback objects, which the user added and which concern the input processing
+    this.UpdateFunctionObjects = new Anibody.util.PriorityQueue();// the PriorityQueue of all callback objects, which the user added and which concern the update process
+    this.ForegroundDrawFunctionObjects = new Anibody.util.PriorityQueue();// the PriorityQueue of callback objects to draw in the foregroundground
     
     // set the IntervalHandler function running
     if(this.Flags.IntervalHandler){
@@ -148,7 +148,7 @@ Anibody.prototype.Initialize = function () {
     }
     
     if (this.Flags.ConstantLoop)
-        this.Timer = new Timer(this, this.Frame, this.FPS);
+        this.Timer = new Anibody.util.Timer(this, this.Frame, this.FPS);
 
     if(this.Flags.Storage){
         this.Storage = new Anibody.util.Storage();
@@ -256,7 +256,7 @@ Anibody.prototype.ProcessInput = function () {
 };
 
 /**
- * Adds an UpdateFunctionObject (Object={that,function,parameter}) to an PriorityQueue,
+ * Adds an UpdateFunctionObject (Object={that,function,parameter}) to the PriorityQueue,
  * whose functions will be updated in the Update-Function
  * @param {object} ufo - UpdateFunctionObject
  * @param {number} prior - priority (optional)
@@ -380,7 +380,7 @@ Anibody.prototype.Draw = function () {
 };
 
 /**
- * Adds a ForegroundDrawFunction (Object={that,function,parameter}) to an PriorityQueue,
+ * Adds a ForegroundDrawFunction (Object={that,function,parameter}) to the PriorityQueue,
  * whose functions will be drawn at the end of the Draw-Function and therefore rendered
  * in the foreground of the canvas
  * @param {object} fdfo - ForegroundDrawFunctionObject

@@ -626,7 +626,7 @@ Gallery.prototype.MoveTo = function(x,y){
 
     var reldistance = {x: this.Handle.x - this.X, y: this.Handle.y - this.Y};
     
-    var mf = new MultiFlow(
+    var mf = new Anibody.util.MultiFlow(
         [this, this],
         ["X", "Y"],
         [x, y],

@@ -5,9 +5,9 @@
 function MouseHandler(){
     Anibody.classes.EngineObject.call(this);
     
-    this.LeftMouseClickHandlerCBOs = new PriorityQueue();
-    this.RightMouseClickHandlerCBOs = new PriorityQueue();
-    this.WheelHandlerCBOs = new PriorityQueue();
+    this.LeftMouseClickHandlerCBOs = new Anibody.util.PriorityQueue();
+    this.RightMouseClickHandlerCBOs = new Anibody.util.PriorityQueue();
+    this.WheelHandlerCBOs = new Anibody.util.PriorityQueue();
     this.WheelLimiter = 0.1;
     
     this.HoverRequests = [];

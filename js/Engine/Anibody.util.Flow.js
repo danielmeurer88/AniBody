@@ -10,7 +10,7 @@
  * @param {Object} aftereveryframeobject {that,parameter,function}
  * @returns {Flow}
  */
-function MultiFlow(object, attr, targetvalue, duration,callbackobject, aftereveryframeobject){
+Anibody.util.MultiFlow = function MultiFlow(object, attr, targetvalue, duration,callbackobject, aftereveryframeobject){
     this.Object = object;
     this.AttributeString = attr;
     this.TargetValue = targetvalue;
@@ -37,7 +37,7 @@ function MultiFlow(object, attr, targetvalue, duration,callbackobject, afterever
  * Starts the flow process
  * @returns {undefined}
  */
-MultiFlow.prototype.Start = function(){
+Anibody.util.MultiFlow.prototype.Start = function(){
     
     // calculate in how many frames the Flow needs to be ready
     var framesWhenReady = this.FPS * (this.Duration/1000);
@@ -105,7 +105,7 @@ MultiFlow.prototype.Start = function(){
  * returns true if all attributes reached their target value
  * @returns {Boolean}
  */
-MultiFlow.prototype._allReached = function(){
+Anibody.util.MultiFlow.prototype._allReached = function(){
     for(var i=0; i<this.Object.length; i++){
         if(!this.TargetReached[i])
             return false;
@@ -124,7 +124,7 @@ MultiFlow.prototype._allReached = function(){
  * @param {Object} aftereveryframeobject {that,parameter,function}
  * @returns {Flow}
  */
-function Flow(object, attr, targetvalue, duration,callbackobject, aftereveryframeobject){
+Anibody.util.Flow = function Flow(object, attr, targetvalue, duration,callbackobject, aftereveryframeobject){
     this.Object = object;
     this.AttributeString = attr;
     this.TargetValue = targetvalue;
@@ -148,7 +148,7 @@ function Flow(object, attr, targetvalue, duration,callbackobject, aftereveryfram
  * Starts the change process
  * @returns {undefined}
  */
-Flow.prototype.Start = function(){
+Anibody.util.Flow.prototype.Start = function(){
     
     this.StartValue = this.Object[this.AttributeString];
     this.Difference = this.TargetValue - this.StartValue;

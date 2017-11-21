@@ -104,7 +104,7 @@ Anibody.ui.Switch.prototype.Switch = function(cbo){
         target = this.CoverX.Off;
     }
     
-    new Flow(this.Cover, "x", target, ms).Start();
+    new Anibody.util.Flow(this.Cover, "x", target, ms).Start();
     
     if(typeof cbo === "undefined")
         cbo = this.CallbackObject;

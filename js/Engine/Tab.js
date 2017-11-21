@@ -255,7 +255,7 @@ Tab.prototype.Open = function(){
     
     var aim = this.Menu.Depth;
     
-    new Flow(this.SlideMenu, "NeededDepth", aim, 700, {that: this, function:function(){   
+    new Anibody.util.Flow(this.SlideMenu, "NeededDepth", aim, 700, {that: this, function:function(){   
     }}).Start();
 };
 
@@ -263,7 +263,7 @@ Tab.prototype.Close = function(){
     
     var aim = 0;
     
-    new Flow(this.SlideMenu, "NeededDepth", aim, 700, {that: this, function:function(){
+    new Anibody.util.Flow(this.SlideMenu, "NeededDepth", aim, 700, {that: this, function:function(){
         this.IsOpen = false;
         this.Selected = false;
         this.IsMouseOverMenu = false;

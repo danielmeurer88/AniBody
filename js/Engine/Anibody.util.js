@@ -5,7 +5,7 @@
  * @param {Boolean} nop - Flag if an enqueued element without given priority gets priority of zero (true) or the current highest priority + 1 (false and default)
  * @returns {PriorityQueue}
  */
-function PriorityQueue(nop){
+Anibody.util.PriorityQueue = function PriorityQueue(nop){
     this.heap = [];
     this._desc = true;
     this.HighestPriority = 0;
@@ -14,9 +14,9 @@ function PriorityQueue(nop){
     this.NoPriorityThenZero = nop ? nop : false;
     this.Sorted = false;
     this._refnums = 0;
-}
+};
 
-Object.defineProperty(PriorityQueue.prototype, "length", {get: function(){
+Object.defineProperty(Anibody.util.PriorityQueue.prototype, "length", {get: function(){
         return this.heap.length;
 }});
 
@@ -27,7 +27,7 @@ Object.defineProperty(PriorityQueue.prototype, "length", {get: function(){
  * @param {string} name (optional)
  * @returns {Number} the refnum
  */
-PriorityQueue.prototype.Enqueue = function(data, priority, name){
+Anibody.util.PriorityQueue.prototype.Enqueue = function(data, priority, name){
     if(priority && priority > this.HighestPriority)
         this.HighestPriority = priority;
     
@@ -46,7 +46,7 @@ PriorityQueue.prototype.Enqueue = function(data, priority, name){
  * @param {Number} ref
  * @returns {Number} Number of deleted elements
  */
-PriorityQueue.prototype.DeleteByReferenceNumber = function(ref){
+Anibody.util.PriorityQueue.prototype.DeleteByReferenceNumber = function(ref){
     var arr = [];
     var found = 0;
     for(var i=0; i<this.heap.length; i++)
@@ -63,7 +63,7 @@ PriorityQueue.prototype.DeleteByReferenceNumber = function(ref){
  * @param {string} name
  * @returns {Number} Number of deleted elements
  */
-PriorityQueue.prototype.DeleteByName = function(name){
+Anibody.util.PriorityQueue.prototype.DeleteByName = function(name){
     var arr = [];
     var found = 0;
     for(var i=0; i<this.heap.length; i++)
@@ -81,7 +81,7 @@ PriorityQueue.prototype.DeleteByName = function(name){
  * @param {number} priority
  * @returns {Boolean} if successful or not
  */
-PriorityQueue.prototype.ElementIsEnqueued = function(data){
+Anibody.util.PriorityQueue.prototype.ElementIsEnqueued = function(data){
     for(var i=0; i<this.heap.length; i++)
         if(this.heap[i] == data)
             return true;
@@ -92,7 +92,7 @@ PriorityQueue.prototype.ElementIsEnqueued = function(data){
  * @description returns data of the first element
  * @returns data of the first element
  */
-PriorityQueue.prototype.Dequeue = function(){
+Anibody.util.PriorityQueue.prototype.Dequeue = function(){
     if(this.heap.length>0){
         return this.heap.shift().data;
     }
@@ -103,13 +103,13 @@ PriorityQueue.prototype.Dequeue = function(){
  * @description Checks if the queue is empty
  * @returns {Boolean}
  */
-PriorityQueue.prototype.isEmpty = function(){if(this.heap.length<=0)return true; else return false;};
+Anibody.util.PriorityQueue.prototype.isEmpty = function(){if(this.heap.length<=0)return true; else return false;};
 /**
  * @description Sorts the queue by regarding the priority of each element - if no parameter is given with the call then it will be sorted with the highest priority first (in descending order)
  * @param {Boolean} desc if false then sorted in ascending order 
  * @returns {undefined}
  */
-PriorityQueue.prototype.Sort = function(desc){
+Anibody.util.PriorityQueue.prototype.Sort = function(desc){
     if(arguments.length <= 0 || desc){
         this._desc = true;
     }else{
@@ -125,7 +125,7 @@ PriorityQueue.prototype.Sort = function(desc){
  * @param {object} b
  * @returns {Boolean}
  */
-PriorityQueue.prototype._comp = function(a,b){
+Anibody.util.PriorityQueue.prototype._comp = function(a,b){
     if(this._desc){
         return a.priority > b.priority;
     }else{
@@ -138,7 +138,7 @@ PriorityQueue.prototype._comp = function(a,b){
  * @param {object} j
  * @returns {undefined}
  */
-PriorityQueue.prototype._swap = function(i, j){
+Anibody.util.PriorityQueue.prototype._swap = function(i, j){
     // IMPORTANT: Javascript automatically uses internally reference by pointer when it comes to objects
     // switching the pointer
     var temp = this.heap[i];
@@ -151,7 +151,7 @@ PriorityQueue.prototype._swap = function(i, j){
  * @param {object} right
  * @returns {undefined}
  */
-PriorityQueue.prototype._quicksort = function(left, right) {
+Anibody.util.PriorityQueue.prototype._quicksort = function(left, right) {
  
     if (left < right) {
       var pivot = this.heap[left + Math.floor((right - right) / 2)],
@@ -182,7 +182,7 @@ PriorityQueue.prototype._quicksort = function(left, right) {
  * @description Factors and returns an array of the PriorityHeap's data (only)
  * @returns {Array of Heap's data}
  */
-PriorityQueue.prototype.FactorArray = function(){
+Anibody.util.PriorityQueue.prototype.FactorArray = function(){
     var arr = [];
     if(!this.Sorted)
         this.Sort(this._desc);
@@ -198,7 +198,7 @@ PriorityQueue.prototype.FactorArray = function(){
  * @param {PriorityQueue} b The 2nd PriorityQueue
  * @returns {undefined}
  */
-PriorityQueue.prototype.Merge = function(b){ 
+Anibody.util.PriorityQueue.prototype.Merge = function(b){ 
     this.Sorted = false;
     for(var i=0; i<b.heap.length; i++){
         b.heap[i].origin = "merged";
@@ -211,7 +211,7 @@ PriorityQueue.prototype.Merge = function(b){
  * @description Deletes all elements of the PriorityQueue that originates from merging
  * @returns {undefined}
  */
-PriorityQueue.prototype.DeleteMergedElements = function(){ 
+Anibody.util.PriorityQueue.prototype.DeleteMergedElements = function(){ 
     var temp = [];
     var hp=0; // current highest priority of all none merged elements
     for(var i=0; i<this.heap.length; i++){
@@ -231,7 +231,7 @@ PriorityQueue.prototype.DeleteMergedElements = function(){
  * deletes all entries in the Priority Queue
  * @returns {undefined}
  */
-PriorityQueue.prototype.Flush = function(){
+Anibody.util.PriorityQueue.prototype.Flush = function(){
     this.heap = [];
     this.HighestPriority = 0;
     this.Sorted = false;
@@ -249,7 +249,7 @@ PriorityQueue.prototype.Flush = function(){
  * @param {number} framestotal - determines how often the function will be called in total (optional)
  * @returns {Timer}
  */
-function Timer(ref, f, fps, framestotal){
+Anibody.util.Timer = function Timer(ref, f, fps, framestotal){
     this.ref = ref;
     this.Active = false;
     this.internal = null;
@@ -278,7 +278,7 @@ function Timer(ref, f, fps, framestotal){
  * starts the timer calling the function with the object ref as its first argument and Counter equal to zero
  * @returns {undefined}
  */
-Timer.prototype.Start = function(){
+Anibody.util.Timer.prototype.Start = function(){
         this.Reset();
         this.internal = window.setInterval(this.Function, this.Milli, this);
         this.Active = true;
@@ -287,14 +287,14 @@ Timer.prototype.Start = function(){
  * Resets the counter to zero
  * @returns {undefined}
  */
-Timer.prototype.Reset = function(){
+Anibody.util.Timer.prototype.Reset = function(){
         this.Counter = 0;
 };
 /**
  * stops the timer and reset the counter
  * @returns {undefined}
  */
-Timer.prototype.Stop = function(){
+Anibody.util.Timer.prototype.Stop = function(){
         this.Reset();
         window.clearInterval(this.internal);
         this.Active = false;
@@ -303,7 +303,7 @@ Timer.prototype.Stop = function(){
  * starts the timer calling the function with the object ref as its first argument and Counter same when it was paused
  * @returns {undefined}
  */
-Timer.prototype.Continue = function(){
+Anibody.util.Timer.prototype.Continue = function(){
         this.internal = window.setInterval(this.Function, this.Milli, this);
         this.Active = true;
 };
@@ -311,7 +311,7 @@ Timer.prototype.Continue = function(){
  * pauses the timer (counter stays the same)
  * @returns {undefined}
  */
-Timer.prototype.Pause = function(){
+Anibody.util.Timer.prototype.Pause = function(){
         window.clearInterval(this.internal);
         this.Active = false;
 };
@@ -320,7 +320,7 @@ Timer.prototype.Pause = function(){
  * @param {type} t
  * @returns {undefined}
  */
-Timer.prototype.SetTotal = function(t){
+Anibody.util.Timer.prototype.SetTotal = function(t){
         this.Total = t;
 };
 

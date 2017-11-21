@@ -110,19 +110,14 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
-    var cbo = function(para){
-        new Anibody.ui.Alert(["this button is made for easy testing", para]).Start();
-    }.getCallbackObject(engine, "blabla 111");
-    
-    var cbo2 = function(para){
-        new Anibody.ui.Alert(["this button is made for easy testing", para]).Start();
-    }.getCallbackObject(engine, "blabla 222");
-    
-    Anibody.import(Anibody.ui.MultipleChoice, "MC");
-    var cp = new MC("Choose some option and finalize your FATE ... hahahahaha", ["Op 1", "Op 2", "Cancel"]
-    , [cbo, cbo2, false]);
-    cp.Start();
-
+        
+    var abt = new Anibody.visual.ABText(400, 500, "center bottom", 20);
+    abt.Underline = true;
+    abt.TextAlign = "center";
+    abt.TextBaseline = "bottom";
+    abt.Color = "blue";
+    engine.AddObject(abt, 0);
+    abt.FlowResize(200, 10000);
 }
 
 function testSpline(engine){

@@ -65,7 +65,7 @@ Highlighting.prototype.DefaultFontHeight = 14;
  */
 Highlighting.prototype.Start = function(cbo){
         
-    new Flow(this, "Opacity", 1, this.FlowMilliseconds,{
+    new Anibody.util.Flow(this, "Opacity", 1, this.FlowMilliseconds,{
         that:this, parameter:true, function(){
         }
     }).Start();

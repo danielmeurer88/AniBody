@@ -111,7 +111,7 @@ Anibody.ui.Toaster.prototype.Open = function () {
     
     var can = this.Engine.Canvas;
 
-    new Flow(this, "Y", can.height - this.Height, 600, {
+    new Anibody.util.Flow(this, "Y", can.height - this.Height, 600, {
         that: this, parameter: true, function() {
 
             var f = function (t) {
@@ -133,7 +133,7 @@ Anibody.ui.Toaster.prototype.Open = function () {
  */
 Anibody.ui.Toaster.prototype.FlowClose = function () {
     var can = this.Engine.Canvas;
-    new Flow(this, "Y", can.height, 600, {
+    new Anibody.util.Flow(this, "Y", can.height, 600, {
         that: this, parameter: true, function() {
             this.Close();
         }

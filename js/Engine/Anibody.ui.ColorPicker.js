@@ -268,7 +268,7 @@ Anibody.ui.ColorPicker.prototype.ProcessInput = function(){
 Anibody.ui.ColorPicker.prototype.Show = function(){
     
     this.Register(); // Widget.Register()
-    new Flow(this, "Opacity", 1, 1000, {that:this, function:function(){
+    new Anibody.util.Flow(this, "Opacity", 1, 1000, {that:this, function:function(){
             this.AddMouseHandler();
     }}).Start();
 };

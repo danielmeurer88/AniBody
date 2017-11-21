@@ -221,7 +221,7 @@ Anibody.visual.ABOPresenter.prototype.Start = function (abostartfunc, abostopfun
     if(typeof abostopfunc !== "undefined")
         this.StopFunction = abostopfunc;
     
-    new Flow(this, "Opacity", 1, 600,{
+    new Anibody.util.Flow(this, "Opacity", 1, 600,{
         that:this, parameter:true, function: function(p){}
     }).Start();
     
@@ -448,10 +448,10 @@ Anibody.visual.Animation.prototype.SetMaxIterations = function (i) {
 };
 
 /**
- * @description A still image
- * @param {number} codename String of the MediaManager codename
- * @param {number} x x position
- * @param {number} y y position
+ * @description A still image, but position is based on the selected cam
+ * @param {string} codename - String of the MediaManager codename
+ * @param {number} x - x position
+ * @param {number} y - y position
  * @returns {ImageObject}
  */
 Anibody.visual.ImageObject = function ImageObject(codename, x, y/* (optional), scale*/) {
@@ -507,6 +507,15 @@ Anibody.visual.ImageObject.prototype.Update = function () {
         this.Height = this.Image.height;
     }
 };
+
+Anibody.visual.ImageObject.prototype.FlowScale = function (to) {
+    // TODO
+};
+
+Anibody.visual.ImageObject.prototype.FlowMove = function (tox, toy) {
+    // TODO
+};
+
 /**
  * Represents a string
  * @param {number} x
@@ -526,6 +535,8 @@ Anibody.visual.ABText = function ABText(x, y, txt, fh) {
     this.FontHeight = fh || 20;
 
     this.Underline = false;
+    this.TextAlign = "left";
+    this.TextBaseline = "top";
 
     this.Color = ABText.prototype.DefaultFontColor;
 
@@ -564,19 +575,37 @@ Anibody.visual.ABText.prototype.Draw = function (c) {
 
     c.save();
     c.setFontHeight(this.FontHeight);
-    c.textAlign = "left";
-    c.textBaseline = "top";
+    c.textAlign = this.TextAlign;
+    c.textBaseline = this.TextBaseline;
 
     c.fillStyle = this.Color;
     c.fillText(this.Text, this.X, this.Y);
 
     if (this.Underline) {
-        var offset = this.FontHeight / 15;
-        c.lineWidth = offset;
+        var offx = 0;
+        var offy = 0;
+                
+        if(this.TextBaseline === "middle"){
+            offy -= this.Height/2;
+        }
+        
+        if(this.TextBaseline === "bottom"){
+            offy -= this.Height;
+        }
+                
+        if(this.TextAlign === "center"){
+            offx = 0 - this.Width/2;
+        }
+        
+        if(this.TextAlign === "right"){
+            offx = 0 - this.Width;
+        }
+        
+        c.lineWidth = this.FontHeight / 15;
         c.strokeStyle = this.Color;
         c.beginPath();
-        c.moveTo(this.X, this.Y + this.Height + offset);
-        c.lineTo(this.X + this.Width, this.Y + this.Height + offset);
+        c.moveTo(this.X + offx, this.Y + this.Height + offy);
+        c.lineTo(this.X + this.Width + offx, this.Y + this.Height + offy);
         c.stroke();
         c.closePath();
     }
@@ -595,4 +624,21 @@ Anibody.visual.ABText.prototype.Update = function () {};
 Anibody.visual.ABText.prototype.SetText = function (txt) {
     this.Text = txt;
     this.Resize();
+};
+
+Anibody.visual.ABText.prototype.FlowResize = function (to, ms, cbo) {
+    // TODO
+    new Anibody.util.Flow(this, "FontHeight", to, ms, cbo, function(){
+        this.Resize();
+    }.getCallbackObject(this)).Start();
+};
+
+Anibody.visual.ABText.prototype.FlowMove = function (tox, toy, ms, cbo) {
+    // TODO
+    new Anibody.util.MultiFlow(
+            [this, this],
+            ["X", "Y"],
+            [tox, toy],
+            ms, cbo
+        ).Start();
 };

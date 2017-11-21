@@ -91,7 +91,7 @@ RPGPath.prototype.ProcessPath = function(){
         
         // the PriorityQueue - needed to sort out the field with the shortest distance
         // distance will be the priority value
-        curn = new PriorityQueue();
+        curn = new Anibody.util.PriorityQueue();
         
         // nf will be an array of all neighbouring fields
         nf = this.Engine.Terrain.GetFieldNeighbours(this.Current, false);
@@ -201,8 +201,8 @@ RPGPath.prototype.AStar = function(){
 
     var f,g,h;
     var criteria = 0;
-    var openedQ = new PriorityQueue();
-    var closedQ = new PriorityQueue();
+    var openedQ = new Anibody.util.PriorityQueue();
+    var closedQ = new Anibody.util.PriorityQueue();
     var alln;
     
     var inf = 9999;

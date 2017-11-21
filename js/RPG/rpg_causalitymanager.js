@@ -23,7 +23,7 @@ RPGCauser.prototype.constructor = RPGCauser;
 function RPGCausalityManager(){
     Anibody.classes.EngineObject.call(this);
     
-    this.Causers = new PriorityQueue();
+    this.Causers = new Anibody.util.PriorityQueue();
     
 }
 RPGCausalityManager.prototype = Object.create(Anibody.classes.EngineObject.prototype);

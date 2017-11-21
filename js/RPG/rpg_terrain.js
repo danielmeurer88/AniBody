@@ -66,7 +66,7 @@ function RPGTerrain(req, img_code, str_code, fieldsize, tname){
         Y : {From: 0, To:16}
     };
     
-    this.SideQ = new PriorityQueue();
+    this.SideQ = new Anibody.util.PriorityQueue();
     this.SideQHandled = false;
     this.MoveCounter = 0;
     

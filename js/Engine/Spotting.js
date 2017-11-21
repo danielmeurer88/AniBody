@@ -95,7 +95,7 @@ Spotting.prototype.Start = function(cbo){
             cbo.function.call(cbo.that, cbo.parameter);
     };
     
-    new MultiFlow(
+    new Anibody.util.MultiFlow(
             [this.Radius,this.Radius,this.Radius],
             ["0", "1", "2"],
             [this.MinRadius, this.MinRadius, this.MinRadius],

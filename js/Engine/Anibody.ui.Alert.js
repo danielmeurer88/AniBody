@@ -338,7 +338,7 @@ Anibody.ui.Alert.prototype._createMouseHandlerObject = function(){
 Anibody.ui.Alert.prototype.Start = function (cbo) {
     this.Active = true;
     
-    new Flow(this, "Opacity", 1, 600,{
+    new Anibody.util.Flow(this, "Opacity", 1, 600,{
         that:this, parameter:true, function: function(p){}
     }).Start();
     
