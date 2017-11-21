@@ -1,10 +1,10 @@
 /**
- * Presents an ABO-Instance as a dialog
+ * Presents an ABO-Instance as a widget
  * @param {type} abo
  * @returns {ABOPresenter}
  */
-function ABOPresenter(abo){
-    Anibody.classes.ABO.call(this);
+Anibody.visual.ABOPresenter = function ABOPresenter(abo){
+    Anibody.classes.Widget.call(this);
     
     this.X=0;
     this.Y=0;
@@ -24,7 +24,7 @@ function ABOPresenter(abo){
         height:0
     };
     
-    this.Rounding = ABOPresenter.prototype.DefaultRounding;
+    this.Rounding = Anibody.visual.ABOPresenter.prototype.DefaultRounding;
     
     this.OKBox = {
         x:0,
@@ -43,28 +43,26 @@ function ABOPresenter(abo){
     
     this.Opacity = 0;
     
-    this._ref_ip = null;
-    this._ref_draw = null;
-    this._ref_upd = null;
     this._ref_mhan = null;
     
 this.Initialize();
-}
-ABOPresenter.prototype = Object.create(Anibody.classes.ABO.prototype);
-ABOPresenter.prototype.constructor = ABOPresenter;
+};
 
-ABOPresenter.prototype.ContentBoxColor = "#999";
-ABOPresenter.prototype.BoxBorderColor = "black";
-ABOPresenter.prototype.OKBoxColor = "#ccc";
-ABOPresenter.prototype.OKBoxFontColor = "#fff";
-ABOPresenter.prototype.OutsideColor = "rgba(0,0,0,0.8)";
-ABOPresenter.prototype.DefaultRounding = 10;
-ABOPresenter.prototype.DefaultFontHeight = 18;
+Anibody.visual.ABOPresenter.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.visual.ABOPresenter.prototype.constructor = Anibody.visual.ABOPresenter;
+
+Anibody.visual.ABOPresenter.prototype.ContentBoxColor = "#999";
+Anibody.visual.ABOPresenter.prototype.BoxBorderColor = "black";
+Anibody.visual.ABOPresenter.prototype.OKBoxColor = "#ccc";
+Anibody.visual.ABOPresenter.prototype.OKBoxFontColor = "#fff";
+Anibody.visual.ABOPresenter.prototype.OutsideColor = "rgba(0,0,0,0.8)";
+Anibody.visual.ABOPresenter.prototype.DefaultRounding = 10;
+Anibody.visual.ABOPresenter.prototype.DefaultFontHeight = 18;
 
 /**
  * @see README_DOKU.txt
  */
-ABOPresenter.prototype.Initialize = function () {
+Anibody.visual.ABOPresenter.prototype.Initialize = function () {
     
     if(!this._ready) return;
     
@@ -75,7 +73,7 @@ ABOPresenter.prototype.Initialize = function () {
  * recalculate the necessary size of the Presenter. It is possible that the ABO-instance
  * @returns {undefined}
  */
-ABOPresenter.prototype._recalculateSizes = function () {
+Anibody.visual.ABOPresenter.prototype._recalculateSizes = function () {
     
     var margin = 5;    
     var can = this.Engine.Canvas;
@@ -100,9 +98,8 @@ ABOPresenter.prototype._recalculateSizes = function () {
  * creates a foreground draw function object, that is ready to be registered
  * @returns {object}
  */
-ABOPresenter.prototype._createForegroundDrawFunctionObject = function(){
+Anibody.visual.ABOPresenter.prototype.Draw = function(c){
     
-    var f = function(c){
         c.save();
 
         c.globalAlpha = this.Opacity;
@@ -139,18 +136,13 @@ ABOPresenter.prototype._createForegroundDrawFunctionObject = function(){
         c.strokeVariousRoundedRect(box.x, box.y, box.width, box.height, this.Rounding);
         c.restore();
         
-    };
-    
-    return {that:this, function:f, parameter: this.Engine.Context};
 };
 /**
  * creates a process input function object, that is ready to be registered
  * @returns {object}
  */
-ABOPresenter.prototype._createProcessInputFunctionObject = function(){
+Anibody.visual.ABOPresenter.prototype.ProcessInput = function(){
     
-    var f = function(en){
-        
         this.ABO.ProcessInput();
         
         var box = this.ContentBox;
@@ -168,34 +160,25 @@ ABOPresenter.prototype._createProcessInputFunctionObject = function(){
             type:"rrect"
         };
         this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverOK");
-        
-    };
-    
-    return {that:this, function:f, parameter: this.Engine};
+
 };
 /**
  * creates a update function object, that is ready to be registered
  * @returns {object}
  */
-ABOPresenter.prototype._createUpdateFunctionObject = function(){
-    
-    var f = function(en){
-        
+Anibody.visual.ABOPresenter.prototype.Update = function(){
         this.ABO.Update();
         this._recalculateSizes();
                 
         if(this.IsMouseOverOK)
             this.Engine.Input.Mouse.Cursor.Set("pointer");
         
-    };
-    
-    return {that:this, function:f, parameter: this.Engine};
 };
 /**
  * creates a Mouse handler object, that is ready to be registered
  * @returns {object}
  */
-ABOPresenter.prototype._createMouseHandlerObject = function(){
+Anibody.visual.ABOPresenter.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
@@ -220,7 +203,7 @@ ABOPresenter.prototype._createMouseHandlerObject = function(){
  * @param {Callback-Object} abostopfunc - sets the stop function (optional)
  * @returns {undefined}
  */
-ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
+Anibody.visual.ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
     this.Active = true;
     var found =false;
     
@@ -242,14 +225,7 @@ ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
         that:this, parameter:true, function: function(p){}
     }).Start();
     
-    var ipfo = this._createProcessInputFunctionObject();
-    this._ref_ip = this.Engine.AddProcessInputFunctionObject(ipfo);
-    
-    var fdfo = this._createForegroundDrawFunctionObject();
-    this._ref_draw = this.Engine.AddForegroundDrawFunctionObject(fdfo);
-    
-    var upd = this._createUpdateFunctionObject();
-    this._ref_upd = this.Engine.AddUpdateFunctionObject(upd);
+    this.Register(); // Widget-Methode
     
     var mhand = this._createMouseHandlerObject();
     this._ref_mhan = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick",mhand);
@@ -259,27 +235,24 @@ ABOPresenter.prototype.Start = function (abostartfunc, abostopfunc) {
  * Stops the presenter dialog - will be called by the class
  * @returns {undefined}
  */
-ABOPresenter.prototype.Stop = function () {
+Anibody.visual.ABOPresenter.prototype.Stop = function () {
     this.Active = false;
     
     if(this.StopFunction)
        Anibody.CallObject(this.StopFunction);
     
-    this.Engine.RemoveForegroundDrawFunctionObject(this._ref_draw);
-    this._ref_draw = null;
-    this.Engine.RemoveUpdateFunctionObject(this._ref_upd);
-    this._ref_upd = null;
+    this.Deregister(); // Widget-Methode
+    
     this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
     this._ref_mhan = null;
-    this.Engine.RemoveProcessInputFunctionObject(this._ref_ip);
-    this._ref_ip = null;
+
 };
 /**
  * Sets the StartFunction (a function, that is called before the stop of the presenter
  * @param {Callback-Object} startcbo
  * @returns {undefined}
  */
-ABOPresenter.prototype.SetStartFunction = function (startcbo) {
+Anibody.visual.ABOPresenter.prototype.SetStartFunction = function (startcbo) {
     this.StartFunction = startcbo;
 };
 /**
@@ -287,7 +260,7 @@ ABOPresenter.prototype.SetStartFunction = function (startcbo) {
  * @param {Callback-Object} stopcbo
  * @returns {undefined}
  */
-ABOPresenter.prototype.SetStopFunction = function (stopcbo) {
+Anibody.visual.ABOPresenter.prototype.SetStopFunction = function (stopcbo) {
     this.StopFunction = stopcbo;
 };
 
@@ -305,7 +278,7 @@ ABOPresenter.prototype.SetStopFunction = function (stopcbo) {
  * @param {Number} jumpevery - how many frames will pass until this class jumps to the next single image
  * @returns {Animation}
  */
-function Animation(x, y, codename, numpics, jumpevery, reverseAfter) {
+Anibody.visual.Animation = function Animation(x, y, codename, numpics, jumpms, reverseAfter) {
     Anibody.classes.ABO.call(this);
     this.Type = "Animation";
 
@@ -329,7 +302,7 @@ function Animation(x, y, codename, numpics, jumpevery, reverseAfter) {
     this.ImageIndex = 0;
     this.NumberOfPictures = numpics;
 
-    this.JumpEvery = jumpevery;
+    this.MS = jumpms;
     this.Scale = 1;
 
     this.Codename = codename;
@@ -344,20 +317,21 @@ function Animation(x, y, codename, numpics, jumpevery, reverseAfter) {
     this._ref = null;
 
 this.Initialize();
-}
-Animation.prototype = Object.create(Anibody.classes.ABO.prototype);
-Animation.prototype.constructor = Animation;
+};
+
+Anibody.visual.Animation.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.Animation.prototype.constructor = Anibody.visual.Animation;
 
 /**
  * @description Getter
  */
-Object.defineProperty(Animation.prototype, "Image", {get: function () {
+Object.defineProperty(Anibody.visual.Animation.prototype, "Image", {get: function () {
         return this.Images[this.ImageIndex = 0];
 }});
 /**
  * @see README_DOKU.txt
  */
-Animation.prototype.Initialize = function () {
+Anibody.visual.Animation.prototype.Initialize = function () {
     
     this.FullImage = this.Engine.MediaManager.GetImage(this.Codename);
     if (this.FullImage) {
@@ -391,7 +365,7 @@ Animation.prototype.Initialize = function () {
 /**
  * @see README_DOKU.txt
  */
-Animation.prototype.Draw = function (c) {
+Anibody.visual.Animation.prototype.Draw = function (c) {
     if(!this.FullImage || !this.Active)
         return;
     c.drawImage(this.Images[this.ImageIndex], this.X, this.Y, this.Width, this.Height);
@@ -399,7 +373,7 @@ Animation.prototype.Draw = function (c) {
 /**
  * @see README_DOKU.txt
  */
-Animation.prototype.Update = function () {
+Anibody.visual.Animation.prototype.Update = function () {
     if(!this.FullImage)
         this.Initialize();
     
@@ -410,22 +384,21 @@ Animation.prototype.Update = function () {
 /**
  * @see README_DOKU.txt
  */
-Animation.prototype.Start = function () {
+Anibody.visual.Animation.prototype.Start = function () {
     this.Active = true;
     this.ImageIndex = 0;
-    this.AddCounterFunction();
+    this.SetIntervalFunction();
 };
 /**
  * @see README_DOKU.txt
  */
-Animation.prototype.Stop = function () {
+Anibody.visual.Animation.prototype.Stop = function () {
     this.Active = false;
-    this.RemoveCounterFunction();
-    var cbo = this.CallbackObject;
-    cbo.function.call(cbo.that,cbo.parameter);
+    this.ClearIntervalFunction();
+    Anibody.CallObject(this.CallbackObject);
 };
 
-Animation.prototype.SetCallbackObject = function (cbo) {
+Anibody.visual.Animation.prototype.SetCallbackObject = function (cbo) {
     this.CallbackObject = cbo;
 };
 
@@ -434,46 +407,42 @@ Animation.prototype.SetCallbackObject = function (cbo) {
  * everytime x frames passes. (x = this.JumpEvery)
  * @returns {undefined}
  */
-Animation.prototype.AddCounterFunction = function () {
+Anibody.visual.Animation.prototype.SetIntervalFunction = function () {
     // register to the Engine Counter, so that 
     // the Sprite.Index increases one in every x frames, where x is specified in this.FramesBeforeJump
-    var f = function (en) {
-        if(this._countingUp)
-            this.ImageIndex++;
+    var f = function (that) {
+        if(that._countingUp)
+            that.ImageIndex++;
         else
-            this.ImageIndex--;
+            that.ImageIndex--;
         
-        if(this.ImageIndex >= (this.NumberOfPictures-1)){
-            if(this.ReverseAfter){
-                this._countingUp = false;
+        if(that.ImageIndex >= (that.NumberOfPictures-1)){
+            if(that.ReverseAfter){
+                that._countingUp = false;
             }else{
-                this.Iterations++;
-                this.ImageIndex = 0;
+                that.Iterations++;
+                that.ImageIndex = 0;
             }
         }
         
-        if(this.ImageIndex <= 0 && !this._countingUp){
-                this.Iterations++;
-                this.ImageIndex = 0;
-                this._countingUp = true;
+        if(that.ImageIndex <= 0 && !that._countingUp){
+                that.Iterations++;
+                that.ImageIndex = 0;
+                that._countingUp = true;
         }
     };
-    this._ref = this.Engine.Counter.AddCounterFunction({
-        that : this,
-        parameter: this.Engine,
-        function: f,
-        every: this.JumpEvery
-    });
+    this._ref = window.setInterval(f, this.MS, this);
+    
 };
 /**
  * Removes the counter function
  * @returns {undefined}
  */
-Animation.prototype.RemoveCounterFunction = function () {
-    this.Engine.Counter.RemoveCounterFunction(this._ref);
+Anibody.visual.Animation.prototype.ClearIntervalFunction = function () {
+    window.clearInterval(this._ref);
 };
 
-Animation.prototype.SetMaxIterations = function (i) {
+Anibody.visual.Animation.prototype.SetMaxIterations = function (i) {
     this.MaxIterations = i;
     this.Infinite = false;
 };
@@ -485,15 +454,12 @@ Animation.prototype.SetMaxIterations = function (i) {
  * @param {number} y y position
  * @returns {ImageObject}
  */
-function ImageObject(codename, x, y/* (optional), scale*/) {
+Anibody.visual.ImageObject = function ImageObject(codename, x, y/* (optional), scale*/) {
     Anibody.classes.ABO.call(this);
     this.X = x;
     this.Y = y;
-    
     this.Codename = codename;
-    
     this.Image = false;
-    
     this.Width = 0;
     this.Height = 0;
 
@@ -502,18 +468,15 @@ function ImageObject(codename, x, y/* (optional), scale*/) {
     else
         this.Scale = 1;
 
-    // flag, true: Image is part of the terrain (game)
-    // false: Image position is solid, player (camera) position is not considered
-    this.TerrainImage = true;
-
 this.Initialize();    
-}
-ImageObject.prototype = Object.create(Anibody.classes.ABO.prototype);
-ImageObject.prototype.constructor = ImageObject;
+};
+
+Anibody.visual.ImageObject.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.ImageObject.prototype.constructor = Anibody.visual.ImageObject;
 /**
  * @see README_DOKU.txt
  */
-ImageObject.prototype.Initialize = function () {
+Anibody.visual.ImageObject.prototype.Initialize = function () {
         
     if(typeof this.Codename === "string"){
         this.Image = this.Engine.MediaManager.GetImage(this.Codename);
@@ -527,7 +490,7 @@ ImageObject.prototype.Initialize = function () {
 /**
  * @see README_DOKU.txt
  */
-ImageObject.prototype.Draw = function (c) {
+Anibody.visual.ImageObject.prototype.Draw = function (c) {
     var cam = this.Engine.Camera.SelectedCamera;
     
     if (this.Image)
@@ -538,7 +501,7 @@ ImageObject.prototype.Draw = function (c) {
 /**
  * @see README_DOKU.txt
  */
-ImageObject.prototype.Update = function () {
+Anibody.visual.ImageObject.prototype.Update = function () {
     if(this.Width === 0 || this.Height === 0){
         this.Width = this.Image.width;
         this.Height = this.Image.height;
@@ -552,7 +515,7 @@ ImageObject.prototype.Update = function () {
  * @param {number} fh
  * @returns {ABText}
  */
-function ABText(x, y, txt, fh) {
+Anibody.visual.ABText = function ABText(x, y, txt, fh) {
     Anibody.classes.ABO.call(this);
     this.X = x;
     this.Y = y;
@@ -567,16 +530,16 @@ function ABText(x, y, txt, fh) {
     this.Color = ABText.prototype.DefaultFontColor;
 
     this.Initialize();
-}
-ABText.prototype = Object.create(Anibody.classes.ABO.prototype);
-ABText.prototype.constructor = ABText;
+};
+Anibody.visual.ABText.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.ABText.prototype.constructor = Anibody.visual.ABText;
 
-ABText.prototype.DefaultFontColor = "black";
+Anibody.visual.ABText.prototype.DefaultFontColor = "black";
 
 /**
  * @see README_DOKU.txt
  */
-ABText.prototype.Initialize = function () {
+Anibody.visual.ABText.prototype.Initialize = function () {
     this.Resize();
 };
 
@@ -584,7 +547,7 @@ ABText.prototype.Initialize = function () {
  * Calculates the values for the new text
  * @returns {undefined}
  */
-ABText.prototype.Resize = function () {
+Anibody.visual.ABText.prototype.Resize = function () {
     this.Height = this.FontHeight;
     var c = this.Engine.Context;
     c.save();
@@ -597,7 +560,7 @@ ABText.prototype.Resize = function () {
 /**
  * @see README_DOKU.txt
  */
-ABText.prototype.Draw = function (c) {
+Anibody.visual.ABText.prototype.Draw = function (c) {
 
     c.save();
     c.setFontHeight(this.FontHeight);
@@ -623,13 +586,13 @@ ABText.prototype.Draw = function (c) {
 /**
  * @see README_DOKU.txt
  */
-ABText.prototype.Update = function () {};
+Anibody.visual.ABText.prototype.Update = function () {};
 /**
  * Sets the text
  * @param {string} txt
  * @returns {undefined}
  */
-ABText.prototype.SetText = function (txt) {
+Anibody.visual.ABText.prototype.SetText = function (txt) {
     this.Text = txt;
     this.Resize();
 };
