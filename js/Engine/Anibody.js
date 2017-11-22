@@ -132,6 +132,7 @@ Anibody.prototype.Initialize = function () {
     this.Canvas.ScreenRatio = parseInt(this.Canvas.width / this.Canvas.height * 1000) / 1000;
 
     this.Context = this.Canvas.getContext("2d");
+    new Anibody.classes.FontHandler(this.Context);
 
     this.Input = new Anibody.classes.Input();
 
@@ -725,65 +726,6 @@ Anibody.prototype.UnlockUnload = function () {
 
 };
 
-Anibody.prototype.Font = {
-
-    Default: "10px sans-serif",
-
-    Type: {
-        Arial: "Arial",
-        Verdana: "Verdana",
-        TimesNewRoman: "Times New Roman",
-        CourierNew: "Courier New",
-        serif: "serif",
-        sans_serif: "sans-serif",
-        BrowserSpecific: {
-            Caption: "caption",
-            Icon: "icon",
-            Menu: "menu",
-            MessageBox: "message-box",
-            SmallCaption: "small-caption",
-            StatusBar: "status-bar"
-        }
-    },
-
-    Variant: {
-        normal: "normal",
-        small_caps: "small-caps"
-    },
-
-    Style: {
-        normal: "normal",
-        italic: "italic",
-        oblique: "oblique"
-    },
-
-    Weight: {
-        normal: "normal",
-        bold: "bold",
-        bolder: "bolder",
-        lighter: "lighter"
-    },
-
-    /**
-     * 
-     * @param {Canvas.Context} c - context of the target canvas
-     * @param {number|string} params - can be one or more puzzle pieces of a number or a Type, Vaiant, Style or Weight string 
-     * @returns {Boolean}
-     */
-    setContextFontString: function (c) {
-        if (arguments.length == 0)
-            return false;
-        if (arguments.length == 1)
-            c.font = this.Default;
-        var str = "";
-        for (var i = 1; i < arguments.length; i++)
-            if (typeof arguments[i] == "number")
-                str += arguments[i] + "px ";
-            else
-                str += arguments[i] + " ";
-        c.font = str;
-    }
-};
 /**
  * prints the image of a given data url or just the image of the current canvas state
  * @param {string} url - data url of an image (optional)

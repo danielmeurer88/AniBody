@@ -445,19 +445,7 @@ function getRGBA(color, alpha, inc_quot){
     if(typeof inc_quot === "undefined" && isNaN(inc_quot)){
         inc_quot = 0;
     }
-    
-//    // if color is already rgb
-//    if(color.indexOf("rgb(")>=0){
-//        var tmp = color.split(",");
-//        // tmp[0] = "rgb(XXX" -> "rgb(" should be removed
-//        tmp[0] = tmp[0].substr(4);
-//        // tmp[2] = "XXX)" -> ")" should be removed
-//        tmp[2] = tmp[2].substr(0, tmp[2].length-1);
-//        // ["rgba(r", "g", "b" , "a)"];
-//        rgbaCode = "rgba(" + tmp[0] + "," + tmp[1] + "," + tmp[2] + ","+ alpha +")";
-//        return rgbaCode;
-//    }
-    
+        
     var can = document.createElement("CANVAS");
     can.width = 1;
     can.height = 1;
