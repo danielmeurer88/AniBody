@@ -29,7 +29,7 @@ RPGPortal.prototype.Draw = function(c){
     c.save();
     c.fillStyle = "rgba(255,0,0,0.2)";
     
-    if(this.Engine.Terrain == this.FromTerrain){
+    if(this.Engine.Terrain === this.FromTerrain){
         if(this.FromFieldActive){
             c.fillStyle = "rgba(0,255,0,0.2)";
         }else{
@@ -37,7 +37,7 @@ RPGPortal.prototype.Draw = function(c){
         }
         this.FromField.PaintField(c);
     }
-    if(this.Engine.Terrain == this.ToTerrain){
+    if(this.Engine.Terrain === this.ToTerrain){
         if(this.ToFieldActive){
             c.fillStyle = "rgba(0,255,0,0.2)";
         }else{

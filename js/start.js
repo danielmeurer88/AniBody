@@ -110,14 +110,21 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
-        
-    var abt = new Anibody.visual.ABText(400, 500, "center bottom", 20);
-    abt.Underline = true;
-    abt.TextAlign = "center";
-    abt.TextBaseline = "bottom";
-    abt.Color = "blue";
-    engine.AddObject(abt, 0);
-    abt.FlowResize(200, 10000);
+    
+    var cbo = function(){
+        new Anibody.ui.Alert("... ein CBO am Ende des Testens.").Start();
+    }.getCallbackObject(engine);
+    
+    var area = {
+        x:20, y:20,
+        width:300, height:250,
+        rounding : 5,
+        type:"rrect"
+    };    
+    var h = new Anibody.visual.Highlighting(area, 600, 3000);
+    //h.SetInstructionMode(true, "Das ist ein Test");
+    h.SetText("this a testing text - bla bla bla");
+    h.Start(cbo); 
 }
 
 function testSpline(engine){

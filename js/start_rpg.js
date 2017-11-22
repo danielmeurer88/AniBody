@@ -157,6 +157,11 @@ function rpg_callback(engine){
         acF.SetRange(engine.Terrain.GetField(1,4), 2, 2);
         acF.ActivationFunction = function(portal){
             console.log("You are in the Zone");
+            
+            var area = portal.FromField.GetArea(0);
+            var s = new Anibody.visual.Spotting(area, 1000);
+            s.Start();
+            
             portal.Activate();
         };
         topterr.AddObjectToSideQ(acF, prarr.actField);
@@ -175,7 +180,7 @@ function rpg_callback(engine){
                 this.Pushable = false;
                 this.Interacted = true;
                 //
-                new Alert("target reached").Start();
+                new Anibody.ui.Alert("target reached").Start();
             }
         }, subterr.GetField(20,3));
         subterr.AddObjectToSideQ(crate, prarr.crate);

@@ -5,8 +5,8 @@
  * @param {Number} ms Amount of milliseconds that the screen stays darken
  * @returns {Highlighting}
  */
-function Highlighting(area, flow_ms, ms){
-    Anibody.classes.ABO.call(this);
+Anibody.visual.Highlighting = function Highlighting(area, flow_ms, ms, cbo){
+    Anibody.classes.Widget.call(this);
     this.X=area.x;
     this.Y=area.y;
     this.Width=area.width || area.radius*2;
@@ -27,164 +27,162 @@ function Highlighting(area, flow_ms, ms){
     
     this.IsMouseOverCanvas = false;
     
-    this.Padding = Highlighting.prototype.DefaultPadding; // the distance between the the border of the black box and the texts
-    this.RowSpace = Highlighting.prototype.DefaultRowSpace; // the distance between the text rows
-    this.FontHeight = Highlighting.prototype.DefaultFontHeight;
+    this.Padding = Anibody.visual.Highlighting.prototype.DefaultPadding; // the distance between the the border of the black box and the texts
+    this.RowSpace = Anibody.visual.Highlighting.prototype.DefaultRowSpace; // the distance between the text rows
+    this.FontHeight = Anibody.visual.Highlighting.prototype.DefaultFontHeight;
     this.TextImage = false;
     this.TextImageBox = {x:0, y:0, width:0, height:0};
     this._text;
     
     // callback-object that will be called when the highlighting is over
-    this.CallbackObject = {that:this, function:function(){return;}, parameter:"default"};
+    this.CallbackObject = cbo || {that:this, function:function(){return;}, parameter:"default"};
     
     this.FlowMilliseconds = flow_ms;
     this.Milliseconds = ms + this.FlowMilliseconds;
-    this._ref_dfo = null;
+
     this._ref_mhan = null;
     this._ref_timeout = null;
     this._ref_pifo = null;
     
     this._instructionMode = false;
         
-}
-Highlighting.prototype = Object.create(Anibody.classes.ABO.prototype);
-Highlighting.prototype.constructor = Highlighting;
+};
 
-Highlighting.prototype.OutsideColor = "rgba(0,0,0,0.8)";
-Highlighting.prototype.TitleColor = "white";
-Highlighting.prototype.TextBoxBackgroundColor = "black";
-Highlighting.prototype.TextBoxFontColor = "white";
+Anibody.visual.Highlighting.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.visual.Highlighting.prototype.constructor = Anibody.visual.Highlighting;
 
-Highlighting.prototype.DefaultPadding = 8; // the distance between the the border of the black box and the texts
-Highlighting.prototype.DefaultRowSpace = 5; // the distance between the text rows
-Highlighting.prototype.DefaultFontHeight = 14;
+Anibody.visual.Highlighting.prototype.OutsideColor = "rgba(0,0,0,0.8)";
+Anibody.visual.Highlighting.prototype.TitleColor = "white";
+Anibody.visual.Highlighting.prototype.TextBoxBackgroundColor = "black";
+Anibody.visual.Highlighting.prototype.TextBoxFontColor = "white";
+
+Anibody.visual.Highlighting.prototype.DefaultPadding = 8; // the distance between the the border of the black box and the texts
+Anibody.visual.Highlighting.prototype.DefaultRowSpace = 5; // the distance between the text rows
+Anibody.visual.Highlighting.prototype.DefaultFontHeight = 14;
 
 /**
  * Starts the process (register a draw function) and ends it automatically (deregister)
  * @returns {undefined}
  */
-Highlighting.prototype.Start = function(cbo){
-        
-    new Anibody.util.Flow(this, "Opacity", 1, this.FlowMilliseconds,{
-        that:this, parameter:true, function(){
-        }
-    }).Start();
+Anibody.visual.Highlighting.prototype.Start = function(cbo){
+    //console.log("Highlighting.Start()");
     
-    var dfo = this._createForegroundDrawFunctionObject();
-    this._ref_dfo = this.Engine.AddForegroundDrawFunctionObject(dfo);
+    this.Register(); // Widget.Register();
     
-    this._ref_pifo = this.Engine.AddProcessInputFunctionObject({
-        that: this, parameter: true, function:
-                function () {
-
-                    var area = {
-                        function : function(c){
-                            c.rect(0,0,c.canvas.width, c.canvas.height);
-                        },
-                        type : "function"
-                    };
-                    
-                    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverCanvas");
-                                        
-                }
-    });
-    
+    new Anibody.util.Flow(this, "Opacity", 1, this.FlowMilliseconds,
+    {that:this, function:function(){
+            //console.log("Highlighting - Flow End");
+    }}).Start();
+            
     if(typeof cbo === "object")
         this.CallbackObject = cbo;
     
     var closef= function(high){
-                
-        high.Engine.RemoveForegroundDrawFunctionObject(high._ref_dfo);
-        high._ref_dfo = null;
-        high.Engine.RemoveProcessInputFunctionObject(high._ref_pifo);
-        high._ref_pifo = null;
-        high.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",high._ref_mhan);
-        
         window.clearTimeout(high._ref_timeout);
-        Anibody.CallObject(high.CallbackObject);
+        high.Stop();
     };
     
     this._ref_mhan = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick",{that:this, function:function(){
             closef(this);
-    }, parameter: this.Engine});
+    }});
     
     if(!this._instructionMode)
         this._ref_timeout = window.setTimeout(closef, this.Milliseconds, this);
 };
 
 /**
- * Creates a ForegroundDrawFunctionObject, which consists mainly of a drawing function, that will be used by the Engine
- * @returns {Highlighting.prototype._createForegroundDrawFunctionObject.HighlightingAnonym$1}
+ * Starts the process (register a draw function) and ends it automatically (deregister)
+ * @returns {undefined}
  */
-Highlighting.prototype._createForegroundDrawFunctionObject = function(){
+Anibody.visual.Highlighting.prototype.Stop = function(){
+    //console.log("Highlighting.Stop()");
+    this.Deregister();
+    this.Opacity = 0;
+    this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref_mhan);
+    
+    Anibody.CallObject(this.CallbackObject);
+};
+
+/**
+ * ProcessInput
+ */
+Anibody.visual.Highlighting.prototype.ProcessInput = function(){
+    var area = {
+        function : function(c){
+            c.rect(0,0,c.canvas.width, c.canvas.height);
+        },
+        type : "function"
+    };
+
+    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOverCanvas");
+};
+
+/**
+ * Draw
+ */
+Anibody.visual.Highlighting.prototype.Draw = function(c){
     
     // reaching the whished results through the knowledge of "non-zero winding number rule"
     
-    var f = function(c){
-        
-        var can = this.Engine.Canvas;
-        c.save();
-        c.globalAlpha = this.Opacity;
-        
-        c.beginPath();
-        c.fillStyle = this.OutsideColor;
-        
-        // creating a negative winding rectangle path that equals to -1
-        c.moveTo(0,0);
-        c.lineTo(0, can.height);
-        c.lineTo(can.width, can.height);
-        c.lineTo(can.width, 0);
-        c.lineTo(0, 0);
-        
-        // then create a positve winding rectangle or circle on top of it that equals to zero again
-        var found = false;
-        
-        if(!found && this.Type === "rect"){
-            c.rect(this.X, this.Y, this.Width, this.Height);
-            found = true;
-        }
-        
-        if(!found && this.Type === "rrect"){
-            c.variousRoundedRect(this.X, this.Y, this.Width, this.Height, this.Rounding);
-            found = true;
-        }
-        
-        if(!found && this.Type === "vrrect"){
-            var r = this.Roundings;
-            c.variousRoundedRect(this.X, this.Y, this.Width, this.Height, r[0]||0, r[1]||0, r[2]||0, r[3]||0);
-            found = true;
-        }
-        
-        if(!found && this.Type === "circle"){
-            c.circle(this.X, this.Y, this.Radius, true);
-            found = true;
-        }
-        
-        if(!found && this.Type === "function"){
-            Anibody.CallObject(this.CallbackAreaFunction);
-            found = true;
-        }
-        
-        // resulting in a path that covers the whole screen except a little area somewhere in the middle
-        c.fill();
-        
-        if(this.TextImage){
-            var b = this.TextImageBox;
-            c.drawImage(this.TextImage, b.x, b.y);
-        }
-        
-        c.fillStyle = this.TitleColor;
-        c.setFontHeight(this.TitleFontHeight);
-        c.textAlign = "left";
-        c.textBaseline = "top";
-        
-        c.fillText(this.Title, 10, 10);
-        
-        c.restore();
-    };
-    
-    return {that: this, parameter:this.Engine, function:f};
-    
+    var can = this.Engine.Canvas;
+    c.save();
+    c.globalAlpha = this.Opacity;
+
+    c.beginPath();
+    c.fillStyle = this.OutsideColor;
+
+    // creating a negative winding rectangle path that equals to -1
+    c.moveTo(0,0);
+    c.lineTo(0, can.height);
+    c.lineTo(can.width, can.height);
+    c.lineTo(can.width, 0);
+    c.lineTo(0, 0);
+
+    // then create a positve winding rectangle or circle on top of it that equals to zero again
+    var found = false;
+
+    if(!found && this.Type === "rect"){
+        c.rect(this.X, this.Y, this.Width, this.Height);
+        found = true;
+    }
+
+    if(!found && this.Type === "rrect"){
+        c.variousRoundedRect(this.X, this.Y, this.Width, this.Height, this.Rounding);
+        found = true;
+    }
+
+    if(!found && this.Type === "vrrect"){
+        var r = this.Roundings;
+        c.variousRoundedRect(this.X, this.Y, this.Width, this.Height, r[0]||0, r[1]||0, r[2]||0, r[3]||0);
+        found = true;
+    }
+
+    if(!found && this.Type === "circle"){
+        c.circle(this.X, this.Y, this.Radius, true);
+        found = true;
+    }
+
+    if(!found && this.Type === "function"){
+        Anibody.CallObject(this.CallbackAreaFunction);
+        found = true;
+    }
+
+    // resulting in a path that covers the whole screen except a little area somewhere in the middle
+    c.fill();
+
+    if(this.TextImage){
+        var b = this.TextImageBox;
+        c.drawImage(this.TextImage, b.x, b.y);
+    }
+
+    c.fillStyle = this.TitleColor;
+    c.setFontHeight(this.TitleFontHeight);
+    c.textAlign = "left";
+    c.textBaseline = "top";
+
+    c.fillText(this.Title, 10, 10);
+
+    c.restore();
 };
 
 /**
@@ -197,7 +195,7 @@ Highlighting.prototype._createForegroundDrawFunctionObject = function(){
  * @param {type} relpoint [1|2|3|4] (optional)
  * @returns {undefined}
  */
-Highlighting.prototype.AddText = function(texts, position, relpoint){
+Anibody.visual.Highlighting.prototype.SetText = function(texts, position, relpoint){
     this._text = texts;
     // making sure that the 1 parameter is an array of strings
     if(typeof texts === "string")
@@ -315,13 +313,18 @@ Highlighting.prototype.AddText = function(texts, position, relpoint){
 };
 
 /**
+ * @see Highlighting.SetText()
+ */
+Anibody.visual.Highlighting.prototype.AddText = function(texts, position, relpoint){this.SetText(texts, position, relpoint);};
+
+/**
  * Calculates the best position for text or uses an user-defined position for the text
  * @param {x:Number,y:Number} p offset position (optional)
  * @param {Number} rel number of the rectanglized point [1|2|3|4] to which the
  * user-defined position relates (optional)
  * @returns {undefined}
  */
-Highlighting.prototype._calculateBestTextPosition = function(p, rel){
+Anibody.visual.Highlighting.prototype._calculateBestTextPosition = function(p, rel){
     
     var can = this.Engine.Canvas;
     var center = {x:can.width/2, y:can.height/2}; // centroid of canvas
@@ -443,7 +446,7 @@ Highlighting.prototype._calculateBestTextPosition = function(p, rel){
  * @param {number} fh - font height of the title
  * @returns {undefined}
  */
-Highlighting.prototype.AddTitle = function(text, fh){
+Anibody.visual.Highlighting.prototype.AddTitle = function(text, fh){
     this.Title = text;
     this.TitleFontHeight = fh || 26;
 };
@@ -452,7 +455,7 @@ Highlighting.prototype.AddTitle = function(text, fh){
  * @param {number} inc - pixel
  * @returns {undefined}
  */
-Highlighting.prototype.IncreaseArea = function(inc){
+Anibody.visual.Highlighting.prototype.IncreaseArea = function(inc){
     if(this.Type === "circle"){
         this.Radius += inc;
     }else{
@@ -469,7 +472,7 @@ Highlighting.prototype.IncreaseArea = function(inc){
  * @param {number} r
  * @returns {undefined}
  */
-Highlighting.prototype.RoundingArea = function(r){
+Anibody.visual.Highlighting.prototype.RoundingArea = function(r){
     this.Rounding = r;
     this.Type = "rrect";
 };
@@ -480,7 +483,7 @@ Highlighting.prototype.RoundingArea = function(r){
  * @param {number} dy
  * @returns {undefined}
  */
-Highlighting.prototype.MoveArea = function(dx, dy){
+Anibody.visual.Highlighting.prototype.MoveArea = function(dx, dy){
     this.X += dx;
     this.Y += dy;
 };
@@ -489,7 +492,7 @@ Highlighting.prototype.MoveArea = function(dx, dy){
  * @param {type} cbo
  * @returns {undefined}
  */
-Highlighting.prototype.AddCallbackObject = function(cbo){
+Anibody.visual.Highlighting.prototype.AddCallbackObject = function(cbo){
     this.CallbackObject = cbo;
 };
 /**
@@ -497,7 +500,7 @@ Highlighting.prototype.AddCallbackObject = function(cbo){
  * @param {type} title
  * @returns {undefined}
  */
-Highlighting.prototype.SetInstructionMode = function(bool, title){
+Anibody.visual.Highlighting.prototype.SetInstructionMode = function(bool, title){
     this._instructionMode = bool;
     if(bool && typeof title !== "undefined")
         this.AddTitle(title);

@@ -66,7 +66,7 @@ Anibody.classes.ABO.prototype.GetArea = function(off, rounding){
     var area;
     
     if(rounding !== "circle")
-        if(rounding == 0)
+        if(rounding === 0)
             area = {
                 x : this.X - off,
                 y : this.Y - off,
