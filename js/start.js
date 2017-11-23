@@ -3,8 +3,6 @@ $(document).ready(function () {
 
     var engine = new Anibody("PlayDiv");
     
-    engine.Context.FontHandler.Lock();
-    
     Anibody.import(Anibody.util.Picture);
 
     var waterglass = new Picture({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
