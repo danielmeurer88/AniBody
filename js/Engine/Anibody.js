@@ -5,7 +5,7 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "0.9.9",
+        Version: "0.9.10",
         Author: "Daniel Meurer",
         LastUpdated: "2017_11_22_h11" // year_month_day_hhour
     };
@@ -73,6 +73,7 @@ function Anibody(html_id) {
     // terrain holds the data of a game world. if not further declared a default terrain with the same size as the canvas object will be set
     this.Terrain = null;
     this.DebugWindow = null;
+    this.Consolero = null;
 
     this.OverlayImages = [];
 
@@ -157,6 +158,8 @@ Anibody.prototype.Initialize = function () {
     
     if(this.Flags.DebugWindow)
         this.DebugWindow = new DebugWindow();
+    
+    this.Consolero = new Anibody.debug.Consolero();
 };
 
 /**
@@ -826,6 +829,6 @@ Anibody.import = function(package, alias){
 Anibody.importAll = function(package){
     if(arguments.length <= 0) return;
     for(var name in package){
-        Anibody.import(name);
+        Anibody.import(package[name]);
     }
 };
