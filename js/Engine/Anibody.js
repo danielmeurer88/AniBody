@@ -133,6 +133,8 @@ Anibody.prototype.Initialize = function () {
     this.Canvas.ScreenRatio = parseInt(this.Canvas.width / this.Canvas.height * 1000) / 1000;
 
     this.Context = this.Canvas.getContext("2d");
+    
+    // attaches a FontHandler to the Context
     new Anibody.classes.FontHandler(this.Context);
 
     this.Input = new Anibody.classes.Input();

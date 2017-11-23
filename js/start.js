@@ -3,6 +3,8 @@ $(document).ready(function () {
 
     var engine = new Anibody("PlayDiv");
     
+    engine.Context.FontHandler.Lock();
+    
     Anibody.import(Anibody.util.Picture);
 
     var waterglass = new Picture({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
@@ -94,19 +96,18 @@ function menu_callback(engine){
     
     //testSpline(engine);
     
-    engine.TestImg = engine.MediaManager.GetImage("logo");
-    engine.TestImgV = engine.TestImg.getVerticallyFlippedImage();
-    engine.TestImgH = engine.TestImg.getHorizontallyFlippedImage();
+    var w = new Anibody.classes.Widget();
+    w.TestImg = engine.MediaManager.GetImage("logo");
+    w.TestImgV = w.TestImg.getVerticallyFlippedImage();
+    w.TestImgH = w.TestImg.getHorizontallyFlippedImage();
+    w.Draw = function(c){
+        c.drawImage(this.TestImgV, 10, 500);
+        c.drawImage(this.TestImg, 10, 500- this.TestImg.height-5);
+        c.drawImage(this.TestImgH, 10 + this.TestImg.width + 5, 500);
+    };
     
-    engine.test = 2;
-    
-    engine.AddForegroundDrawFunctionObject(function(){    
-        this.Context.drawImage(this.TestImgV, 10, 500);
-        this.Context.drawImage( engine.TestImg, 10, 500- engine.TestImg.height-5);
-        this.Context.drawImage( engine.TestImgH, 10 + engine.TestImg.width + 5, 500);
-        
-        this.Context.fillText( engine.test, 350,engine.Canvas.height - 100);
-    }.getCallbackObject(engine));
+    w.Register();
+    window.setTimeout(function(w){w.Deregister();}, 2500, w);
 }
 
 function start_test(engine){
