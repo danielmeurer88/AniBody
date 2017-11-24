@@ -779,7 +779,7 @@ Anibody.SetPackage = function(/*strings*/){
 
 Anibody.CallObject = function(obj, useApply){
     
-    if(typeof obj !== "object")
+    if(typeof obj !== "object" || obj === null) // javascript sees null as an object
         return;
     
     useApply = obj.useApply;

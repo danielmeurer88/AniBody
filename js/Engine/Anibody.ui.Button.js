@@ -232,7 +232,7 @@ Anibody.ui.Button.prototype.AddMouseHandler = function(prior, name){
         that : this,
         function : function(e, engine){
             if(this.Active && this.IsMouseOver){
-                e.GoThrough = false;
+                e.Handled = true;
                 this.Trigger();
             }   
         }

@@ -3,8 +3,17 @@
 
 // needs to be renovated and tested
 
-// ######################################
+// -- needs too much memory - should be written from the scratch
 
+
+// ######################################
+/**
+ * A sprite is a single image, which consists of many same-sized pictures of an objects
+ * all positioned in a grid. Every row in the grid consists of images, which combined together,
+ * makes up a single animation (here: the class Clipping is used)
+ * 
+ * @returns {Anibody.visual.Sprite}
+ */
 Anibody.visual.Sprite = function Sprite() {
     Anibody.classes.ABO.call(this);
 
@@ -34,12 +43,17 @@ Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 Anibody.visual.Sprite.prototype.Initialize = function () {
 };
 
+/**
+ * Adds one or several Clippings to the Sprite
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.AddClipping = function (/* clippings seperated by commas */) {
     var temp;
     for (var i = 0; i < arguments.length; i++) {
         temp = arguments[i];
         temp.EI = this.EI;
-        this.Clippings.push(temp);
+        if(temp instanceof Anibody.visual.Clipping)
+            this.Clippings.push(temp);
     }
 };
 

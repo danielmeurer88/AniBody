@@ -182,7 +182,7 @@ Anibody.visual.ABOPresenter.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
-        e.GoThrough = false;
+        e.Handled = true;
         
         if(this.IsMouseOverOK){
             this.Stop();
@@ -518,13 +518,13 @@ Anibody.visual.ImageObject.prototype.FlowMove = function (tox, toy) {
 
 /**
  * Represents a string
- * @param {number} x
- * @param {number} y
  * @param {string} txt
+ * @param {number} x 
+ * @param {number} y
  * @param {number} fh
  * @returns {ABText}
  */
-Anibody.visual.ABText = function ABText(x, y, txt, fh) {
+Anibody.visual.ABText = function ABText(txt, x, y, fh) {
     Anibody.classes.ABO.call(this);
     this.X = x;
     this.Y = y;
@@ -612,10 +612,6 @@ Anibody.visual.ABText.prototype.Draw = function (c) {
 
     c.restore();
 };
-/**
- * @see README_DOKU.txt
- */
-Anibody.visual.ABText.prototype.Update = function () {};
 /**
  * Sets the text
  * @param {string} txt

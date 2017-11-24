@@ -96,13 +96,13 @@ Anibody.nav.BoxMenu.prototype.AddMouseHandler = function(){
             if(this.IsMouseOverMinimize){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnMinimize();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
             if(this.IsMouseOverClose){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnClose();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
         }
@@ -116,7 +116,7 @@ Anibody.nav.BoxMenu.prototype.AddMouseHandler = function(){
                 var d = e.Delta;
                 this._scrolling = true;
                 this.UpdateHandle(d);
-                e.GoThrough = false;
+                e.Handled = true;
             }
                         
         }

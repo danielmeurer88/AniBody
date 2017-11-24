@@ -115,13 +115,13 @@ Anibody.nav.Gallery.prototype.AddMouseHandler = function(){
             if(this.IsMouseOverMinimize){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnMinimize();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
             if(this.IsMouseOverClose){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnClose();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
         }
@@ -136,7 +136,7 @@ Anibody.nav.Gallery.prototype.AddMouseHandler = function(){
                 var d = { X : e.Delta.Y, Y: e.Delta.X};
                 this._scrolling = true;
                 this.UpdateHandle(d);
-                e.GoThrough = false;
+                e.Handled = true;
             }
                         
         }

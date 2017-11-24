@@ -316,7 +316,7 @@ Anibody.ui.Alert.prototype._createMouseHandlerObject = function(){
     
     var f = function(e){
         
-        e.GoThrough = false;
+        e.Handled = true;
         
         if(this.IsMouseOverOk){
             this.Stop();

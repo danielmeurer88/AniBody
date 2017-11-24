@@ -241,7 +241,7 @@ Anibody.ui.Switch.prototype.AddMouseHandler = function(){
         that: this,
         function: function (e, engine) {
             if(this.IsMouseOver){
-                e.GoThrough=false;
+                e.Handled=true;
                 this.Switch();
             }
         }

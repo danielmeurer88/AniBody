@@ -93,7 +93,7 @@ Anibody.visual.CoordinateSystem.prototype.AddMouseHandler = function(){
         function: function (e, engine) {
 
             if (this.IsMouseOver) {
-                e.GoThrough = false;
+                e.Handled = true;
                 var c = this.OnClickCBO;
                 c.function.call(c.that, c.parameter);
             }

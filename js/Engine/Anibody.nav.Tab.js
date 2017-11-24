@@ -91,7 +91,7 @@ Anibody.nav.Tab.prototype.AddMouseHandler = function(){
         function : function(e, engine){
             
                 if(this.IsMouseOver){
-                    e.GoThrough = false;
+                    e.Handled = true;
                     if(!this.IsOpen)
                         this.Open();
                     else
@@ -99,7 +99,7 @@ Anibody.nav.Tab.prototype.AddMouseHandler = function(){
                 }
 
                 if(this.IsMouseOverMenu){
-                    e.GoThrough = false;
+                    e.Handled = true;
                 }
         }
     }, 1000);

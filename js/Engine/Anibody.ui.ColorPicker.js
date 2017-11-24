@@ -175,17 +175,17 @@ Anibody.ui.ColorPicker.prototype.AddMouseHandler = function(){
             y = mpos.Y;
             
             if (this.IsMouseOverStrip) {
-                e.GoThrough = false;
+                e.Handled = true;
                 this.ClickOnStrip(x,y);
             }
 
             if (this.IsMouseOverBox) {
-                e.GoThrough = false;
+                e.Handled = true;
                 this.ClickOnBox(x,y);
             }
             
             if (this.IsMouseOverPreview) {
-                e.GoThrough = false;
+                e.Handled = true;
                 this.ClickOnPreview();
             }
         }

@@ -44,14 +44,14 @@ Anibody.classes.Input.MouseHandler.prototype.WheelHandler = function(dx, dy){
     var arr = this.WheelHandlerCBOs.heap;
     var d;
     var event = {
-        GoThrough : true,
+        Handled : false,
         Timestamp : Date.now(),
         Frame : this.Engine.CurrentFrames,
         Delta : { X : dx*this.WheelLimiter, Y : dy*this.WheelLimiter },
         Type : "wheel"
     };
 
-    for(var i=0; event.GoThrough && i<arr.length; i++){
+    for(var i=0; !event.Handled && i<arr.length; i++){
         d = arr[i].data;
         d.function.call(d.that, event, d.parameter);
     }
@@ -147,20 +147,20 @@ Anibody.classes.Input.MouseHandler.prototype.MouseClickHandler = function(){
         var arr = this.LeftMouseClickHandlerCBOs.heap;
         var d;
         var event = {
-            GoThrough: true,
+            Handled: false,
             Timestamp: Date.now(),
             Frame: this.Engine.CurrentFrame,
             Type: "leftclick",
             Mouse : this.Engine.Input.Mouse
         };
 
-        for (var i = 0; event.GoThrough && i < arr.length; i++) {
+        for (var i = 0; !event.Handled && i < arr.length; i++) {
             d = arr[i].data;
             d.function.call(d.that, event, d.parameter);
         }
         mouse.Left.BusyFrames = 5;
         
-        //if(!event.GoThrough)console.log("LC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
+        //if(!event.Handled)console.log("LC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
     }
 
     this._oldLeftFramesDown = this.Engine.Input.Mouse.Left.FramesDown;
@@ -172,19 +172,19 @@ Anibody.classes.Input.MouseHandler.prototype.MouseClickHandler = function(){
         var arr = this.RightMouseClickHandlerCBOs.heap;
         var d;
         var event = {
-            GoThrough: true,
+            Handled: false,
             Timestamp: Date.now(),
             Frame: this.Engine.CurrentFrame,
             Type: "rightclick"
         };
 
-        for (var i = 0; event.GoThrough && i < arr.length; i++) {
+        for (var i = 0; !event.Handled && i < arr.length; i++) {
             d = arr[i].data;
             d.function.call(d.that, event, d.parameter);
         }
         mouse.Right.BusyFrames = 5;
         
-        //if(!event.GoThrough)console.log("RC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
+        //if(!event.Handled)console.log("RC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
     }
 
     this._oldRightFramesDown = this.Engine.Input.Mouse.Right.FramesDown;
