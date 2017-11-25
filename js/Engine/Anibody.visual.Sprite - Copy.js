@@ -1,18 +1,38 @@
 
+// ++++++++++++++++++++++++++++++++++++++
 
-Anibody.visual.Sprite = function Sprite(codename) {
+// needs to be renovated and tested
+
+// -- needs too much memory - should be written from the scratch
+
+
+// ######################################
+/**
+ * A sprite is a single image, which consists of many same-sized pictures of an objects
+ * all positioned in a grid. Every row in the grid consists of images, which combined together,
+ * makes up a single animation (here: the class Clipping is used)
+ * 
+ * @returns {Anibody.visual.Sprite}
+ */
+Anibody.visual.Sprite = function Sprite() {
     Anibody.classes.ABO.call(this);
 
-    this.Image = {complete : false}; // the whole image
-    this.Codename = codename;
-    
+    this.Image = null; // the whole image
+    this.DrawImage = null; // a canvas, on which the needed Clip is drawn - it can be drawn with context.drawImage(this.DrawImage, x, y)
+
+    this._offCanvas = null;
+    this.Context = null;
+
     this.Clippings = [];
     this.FlagList = {}; // an object full of booleans, which specifically tells which clipping should be used for drawing
 
     this.Index = 0;
+    this.Codename = null;
+    this.Speed = 6;
+
     this.ActiveClipping = null;
-    this.FPS = 6;
-    this.Milli = 1000/this.FPS;
+
+    this.Error = false;
 
     this.Initialize();
 };
@@ -21,20 +41,6 @@ Anibody.visual.Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
 Anibody.visual.Sprite.prototype.Initialize = function () {
-    if(this.Image && !this.Image.complete){
-        this.LoadImage();
-    }
-};
-
-/**
- * Adds one or several Clippings to the Sprite
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.LoadImage = function (codename) {
-    if(typeof codename === "undefined")
-        codename = this.Codename;
-    if(this.MediaManager)
-        this.Image = this.MediaManager.GetPicture(codename);
 };
 
 /**
@@ -51,11 +57,7 @@ Anibody.visual.Sprite.prototype.AddClipping = function (/* clippings seperated b
     }
 };
 
-/**
- * 
- * @returns {Array}
- */
-Anibody.visual.Sprite.prototype._getActiveFlags = function () {
+Anibody.visual.Sprite.prototype.GetActiveFlags = function () {
     var name;
     var actives = [];
     for (name in this.FlagList) {
@@ -65,8 +67,8 @@ Anibody.visual.Sprite.prototype._getActiveFlags = function () {
     return actives;
 };
 
-Anibody.visual.Sprite.prototype._getActiveClipping = function () {
-    var actives = this._getActiveFlags(); // actives is a string array of all flags, whose value is true
+Anibody.visual.Sprite.prototype.GetActiveClipping = function () {
+    var actives = this.GetActiveFlags(); // actives is a string array of all flags, whose value is true
     var cur; // current regarded clipping
 
     for (var c = 0; c < this.Clippings.length; c++) {
@@ -79,28 +81,30 @@ Anibody.visual.Sprite.prototype._getActiveClipping = function () {
 };
 
 Anibody.visual.Sprite.prototype.UpdateActiveClipping = function () {
-    this.ActiveClipping = this._getActiveClipping();
+    this.ActiveClipping = this.GetActiveClipping();
     this.ActiveClipping.SpriteIndex = this.Index;
     this.ActiveClipping.CalculateDrawClip();
 
-    
+    this._offCanvas = document.createElement("CANVAS");
+    this._offCanvas.width = this.ActiveClipping.Draw.Width;
+    this._offCanvas.height = this.ActiveClipping.Draw.Height;
+    this.Context = this._offCanvas.getContext("2d");
+
+    var s = this;
+    var ac = s.ActiveClipping;
+
+    this.Context.drawImage(this.Image, /* sprite img */
+            ac.Draw.X, ac.Draw.Y, /* where on the sprite to start clipping (x, y) */
+            ac.Draw.Width, ac.Draw.Height, /* where on the sprite to end? clipping (width, height) */
+            0, 0, ac.Draw.Width, ac.Draw.Height /* where on the canvas (x, y, width, height) */
+            );
     //this.DrawImage = this.Context.getImageData(0, 0, this._offCanvas.width, this._offCanvas.height);
     this.DrawImage = this._offCanvas;
 };
 
-Anibody.visual.Sprite.prototype.Draw = function (c) {
-    var s = this;
-    var ac = s.ActiveClipping;
-
-    c.drawImage(this.Image, /* sprite img */
-        ac.Draw.X, ac.Draw.Y, /* where on the sprite to start clipping (x, y) */
-        ac.Draw.Width, ac.Draw.Height, /* where on the sprite to end? clipping (width, height) */
-        0, 0, ac.Draw.Width, ac.Draw.Height /* where on the canvas (x, y, width, height) */
-    );
-};
-
 Anibody.visual.Sprite.prototype.SetSprite = function (codename, flagList, speed) {
     this.Codename = codename;
+    this.Speed = (speed) ? speed : 6;
 
     this.Image = this.Engine.MediaManager.GetImage(this.Codename);
     if (!this.Image)
@@ -121,8 +125,6 @@ Anibody.visual.Sprite.prototype.SetSprite = function (codename, flagList, speed)
 Anibody.visual.Sprite.prototype.Update = function () {
     this.UpdateActiveClipping();
 };
-Anibody.visual.Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
-Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
 // ++++++++++++++++++++++++++++++++++++++
 

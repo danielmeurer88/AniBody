@@ -416,8 +416,8 @@ Array.prototype.getIndex = function(el){
  * @param {object} parameter
  * @returns {object}
  */
-Function.prototype.getCallbackObject = function(that, parameter){
-    return {that:that, function:this, parameter:parameter};
+Function.prototype.getCallbackObject = function(that, parameter, useApply){
+    return {that:that, function:this, parameter:parameter, useApply : useApply};
 };
 
 /**

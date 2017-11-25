@@ -2,7 +2,7 @@
  * a class that provides random numbers
  * @type static class
  */
-Anibody.static.Random = {};
+Anibody.static.Random = function Random(){};
 /**
  * Returns a number between a minimum and a maximum - both inclusivly
  * @param {number} min

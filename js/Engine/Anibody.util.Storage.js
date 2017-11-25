@@ -14,6 +14,8 @@ Anibody.util.Storage = function Storage() {
     // flag wether browser allows html5-local storage or engine needs to use cookies as pieces
     this.BrowserAllowsLocalStorage = false;
 
+    this._isNotSync = false;
+
     this.Object = null;
     this.ObjectString = "";
 
@@ -23,6 +25,17 @@ Anibody.util.Storage.prototype = Object.create(Anibody.classes.EngineObject.prot
 Anibody.util.Storage.prototype.constructor = Anibody.util.Storage;
 
 Anibody.util.Storage.Instance = null;
+
+/**
+ * returns the Storage
+ * @returns {Anibody.util.Storage.Instance}
+ */
+Anibody.util.Storage.GetInstance = function(){
+    if(Anibody.util.Storage.Instance !== null)
+        return Anibody.util.Storage.Instance;
+    else
+        return new Anibody.util.Storage();
+};
 
 /**
  * @description Function initiliazes the storage by testing wether the HTML5-Local Storage feature is availible or not and invokes the needed functions for restoring the storage
@@ -54,9 +67,22 @@ Anibody.util.Storage.prototype.Initialize = function () {
         this.Object = JSON.parse(str);
     }
 
-    $(window).unload(this, function (e) {
-        e.data._syncBrowser();
+    this._isNotSync = false;
+
+    window.addEventListener('beforeunload', function (e) {
+        var st = Anibody.util.Storage.GetInstance();
+        if(st._isNotSync){    
+            st._syncBrowser();
+        } 
     });
+
+    window.addEventListener('unload', function(event) {
+        var st = Anibody.util.Storage.GetInstance();
+        if(st._isNotSync){    
+            st._syncBrowser();
+        } 
+      }, this);
+	
     
     if(Anibody.util.Storage.Instance === null)
         Anibody.util.Storage.Instance = this;
@@ -100,6 +126,8 @@ Anibody.util.Storage.prototype.Write = function (key, val) {
     this.Object[key] = val;
     // updating ObjectString by stringify complete Object
     this.ObjectString = JSON.stringify(this.Object);
+    this._isNotSync = true;
+    this._syncBrowser();
     return val;
 };
 
@@ -115,6 +143,8 @@ Anibody.util.Storage.prototype.Delete = function (key) {
     } else
         try {
             this.Object[key] = "undefined";
+            this._isNotSync = true;
+            this._syncBrowser();
         } catch (e) {
             e = {code: 403, msg: "Storage has no attribute called " + key};
             this.HandleError(e);
@@ -128,5 +158,6 @@ Anibody.util.Storage.prototype.Delete = function (key) {
 Anibody.util.Storage.prototype._syncBrowser = function () {
     if (this.BrowserAllowsLocalStorage) {
         localStorage[this.Pre] = this.ObjectString;
+        this._isNotSync = false;
     }
 };

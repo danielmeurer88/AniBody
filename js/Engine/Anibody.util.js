@@ -381,3 +381,75 @@ Anibody.util.IntervalHandler.prototype.AddIntervalFunction = function (intf, eve
 Anibody.util.IntervalHandler.prototype.RemoveIntervalFunction = function (ref) {
     this.IntervalFunctions.delete(ref);
 };
+
+// ########################################################
+// ########################################################
+// ########################################################
+
+/**
+ * Counts from the beginning of a range to the end of it. Increasing or decreasing every
+ * passing time period specified in 'ms' and calling the callbackobject with the current
+ * counted value as the first argument of the incapsulated function
+ * @param {number-array} range - beginning and end number
+ * @param {number} ms - time period
+ * @param {type} cbo - callbackobject
+ * @returns {Anibody.util.Counter}
+ */
+Anibody.util.Counter = function Counter(range, ms, cbo){
+    this.StartV = range[0];
+    this.EndV = range[1];
+    this.CurrentV = range[0];
+    this.Milliseconds = ms;
+    this.Callbackobject = cbo;
+    this._intRef = null;
+    if(this.StartV < this.EndV)
+        this._increasing = true;
+    else
+        this._increasing = false;
+};
+/**
+ * Starts counting
+ * @returns {undefined}
+ */
+Anibody.util.Counter.prototype.Start = function(){
+    
+    var f = function(that){
+        
+        var cbo = {function:that.Callbackobject.function, that:that.Callbackobject.that};
+        if(that.Callbackobject.useApply){
+            cbo.parameter = [that.CurrentV].concat(that.Callbackobject.parameter);
+        } 
+        else
+            cbo.parameter = [that.CurrentV, that.Callbackobject.parameter];
+        
+        cbo.useApply = true;
+        
+        Anibody.CallObject(cbo, true);
+        
+        if(that._increasing){
+            that.CurrentV++;
+            if(that.CurrentV > that.EndV){
+                that.Stop();
+            }
+        }else{
+            that.CurrentV--;
+            if(that.CurrentV < that.EndV){
+                that.Stop();
+            }
+        }
+        
+        
+    };
+    
+    f(this);
+    
+    this._intRef = window.setInterval(f, this.Milliseconds, this);
+};
+/**
+ * ends counting - will be called automatically from the instance when the end is reached
+ * @returns {undefined}
+ */
+Anibody.util.Counter.prototype.Stop = function(){
+    window.clearInterval(this._intRef);
+    this._intRef = null;
+};

@@ -5,7 +5,7 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.0.0",
+        Version: "1.0.1",
         Author: "Daniel Meurer",
         LastUpdated: "2017_11_22_h11" // year_month_day_hhour
     };

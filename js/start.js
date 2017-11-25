@@ -114,21 +114,14 @@ function start_test(engine){
         new Anibody.ui.Alert("... ein CBO am Ende des Testens.").Start();
     }.getCallbackObject(engine);
     
-    Anibody.import(Anibody.visual.ABText);
-    var x = 50;
-    var y = 300;
-    var t1 = new ABText("Test 1", x, y);
-    t1.Color = "red";
-    var t2 = new ABText("Test 22", x + 50, y + 50);
-    t2.Underline = true;
-    t2.FlowMove(x + 220, y + 200, 2500);
-    var t3 = new ABText("xx333xx Test", x + 110, y + 100);
-    t3.FlowResize(45, 2000);
-    t3.Color = "rgba(0,0,255,0.5)";
+    var f = function(i, para){
+        
+        console.log("Count " + i + " with " + arguments.length + " arguments");
+        
+    }.getCallbackObject(engine, ["p1", "p2", "p3"], true);
     
-    engine.AddObject(t1);
-    engine.AddObject(t2);
-    engine.AddObject(t3);
+    var c = new Anibody.util.Counter([10,0], 500, f);
+    c.Start();
     
 }
 
