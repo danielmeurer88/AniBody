@@ -1,6 +1,6 @@
 
 
-Anibody.visual.Sprite = function Sprite(codename) {
+Anibody.visual.Sprite = function Sprite(codename, x, y) {
     Anibody.classes.ABO.call(this);
 
     this.Image = {complete : false}; // the whole image
@@ -9,10 +9,11 @@ Anibody.visual.Sprite = function Sprite(codename) {
     this.Clippings = [];
     this.FlagList = {}; // an object full of booleans, which specifically tells which clipping should be used for drawing
 
-    this.Index = 0;
+    this.X = x;
+    this.Y = y;
+
+    this.OldClipping = null;
     this.ActiveClipping = null;
-    this.FPS = 6;
-    this.Milli = 1000/this.FPS;
 
     this.Initialize();
 };
@@ -78,24 +79,13 @@ Anibody.visual.Sprite.prototype._getActiveClipping = function () {
 
 };
 
-Anibody.visual.Sprite.prototype.UpdateActiveClipping = function () {
-    this.ActiveClipping = this._getActiveClipping();
-    this.ActiveClipping.SpriteIndex = this.Index;
-    this.ActiveClipping.CalculateDrawClip();
-
-    
-    //this.DrawImage = this.Context.getImageData(0, 0, this._offCanvas.width, this._offCanvas.height);
-    this.DrawImage = this._offCanvas;
-};
-
 Anibody.visual.Sprite.prototype.Draw = function (c) {
-    var s = this;
-    var ac = s.ActiveClipping;
+    var ac = this.ActiveClipping;
 
     c.drawImage(this.Image, /* sprite img */
-        ac.Draw.X, ac.Draw.Y, /* where on the sprite to start clipping (x, y) */
-        ac.Draw.Width, ac.Draw.Height, /* where on the sprite to end? clipping (width, height) */
-        0, 0, ac.Draw.Width, ac.Draw.Height /* where on the canvas (x, y, width, height) */
+        ac.X, ac.Y, /* where on the sprite to start clipping (x, y) */
+        ac.Width, ac.Height, /* where on the sprite to end? clipping (width, height) */
+        this.X, this.Y, ac.Width, ac.Height /* where on the canvas (x, y, width, height) */
     );
 };
 
@@ -119,32 +109,72 @@ Anibody.visual.Sprite.prototype.SetSprite = function (codename, flagList, speed)
 };
 
 Anibody.visual.Sprite.prototype.Update = function () {
-    this.UpdateActiveClipping();
+    this.ActiveClipping = this._getActiveClipping();
+    
+    if(this.ActiveClipping !== this.OldClipping){
+        this.OldClipping.Stop();
+        this.ActiveClipping.Start();
+    }
+    this.OldClipping = this.ActiveClipping;
 };
 Anibody.visual.Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
-// ++++++++++++++++++++++++++++++++++++++
 
-// needs to be renovated and tested
-
-// ######################################
-
-Anibody.visual.Clipping = function Clipping(startx, starty, clipWidth, clipHeight, numClippings, flagNames) {
+/**
+ * A clipping is a row of pictures which will be a special animation
+ * @param {type} startx
+ * @param {type} starty
+ * @param {type} clipWidth
+ * @param {type} clipHeight
+ * @param {type} numClippings
+ * @param {type} flagNames
+ * @returns {Anibody.visual.Clipping}
+ */
+Anibody.visual.Clipping = function Clipping(startx, starty, clipWidth, clipHeight, numClippings, speed, flagNames) {
     Anibody.classes.ABO.call(this);
+    this.StartX = startx;
+    this.StartY = starty
     this.X = startx;
     this.Y = starty;
-    this.Numbers = numClippings;
+    this.Width = clipWidth;
+    this.Height = clipHeight;
+    this.Current = 0;
+    this.Amount = numClippings;
     this.FlagNames = flagNames;
+    
+    this.Speed = speed;
 
     this.SpriteIndex = 0;
 
-    this.Draw = {X: 0, Y: 0, Width: clipWidth, Height: clipHeight};
-
+    this.Counter = null;
+this.Initialize();
 };
 Anibody.visual.Clipping.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.visual.Clipping.prototype.constructor = Anibody.visual.Clipping;
 
+Anibody.visual.Clipping.prototype.Initialize = function () {
+    
+    var cbo = function(i){
+        this.X = this.StartX + this.Width*i;       
+    }.getCallbackObject(this);
+    
+    this.Counter = new Anibody.util.Counter([0,this.Amount-1], this.Speed, cbo, false);
+};
+
+Anibody.visual.Clipping.prototype.Start = function () {
+    this.Counter.Start();
+};
+
+Anibody.visual.Clipping.prototype.Stop = function () {
+    this.Counter.Stop();
+};
+
+/**
+ * checks if all in an argument given flags are equal to the flags of this instance
+ * @param {array of strings} actives - the name of the flags
+ * @returns {boolean}
+ */
 Anibody.visual.Clipping.prototype.IsCorrectClipping = function (actives) {
     var curActive;
     var correct = true;
@@ -161,19 +191,4 @@ Anibody.visual.Clipping.prototype.IsCorrectClipping = function (actives) {
     }
 
     return correct;
-};
-
-Anibody.visual.Clipping.prototype.CalculateDrawClip = function () {
-    var curclip = this.SpriteIndex % this.Numbers;
-    this.Draw.X = this.X + this.Draw.Width * curclip;
-    this.Draw.Y = this.Y;
-};
-
-Anibody.visual.Clipping.prototype.GetDebugString = function () {
-    var str = "";
-    for (var i = 0; i < this.FlagNames.length - 1; i++)
-        str += this.FlagNames[i] + ",";
-    if (this.FlagNames.length > 0)
-        str += this.FlagNames[this.FlagNames.length - 1];
-    return str;
 };

@@ -395,7 +395,8 @@ Anibody.util.IntervalHandler.prototype.RemoveIntervalFunction = function (ref) {
  * @param {type} cbo - callbackobject
  * @returns {Anibody.util.Counter}
  */
-Anibody.util.Counter = function Counter(range, ms, cbo){
+Anibody.util.Counter = function Counter(range, ms, cbo, loop){
+    
     this.StartV = range[0];
     this.EndV = range[1];
     this.CurrentV = range[0];
@@ -406,6 +407,8 @@ Anibody.util.Counter = function Counter(range, ms, cbo){
         this._increasing = true;
     else
         this._increasing = false;
+    
+    this.Loop = loop?loop:false;
 };
 /**
  * Starts counting
@@ -429,12 +432,18 @@ Anibody.util.Counter.prototype.Start = function(){
         if(that._increasing){
             that.CurrentV++;
             if(that.CurrentV > that.EndV){
-                that.Stop();
+                if(that.Loop)
+                    that.CurrentV = that.StartV;
+                else
+                    that.Stop();
             }
         }else{
             that.CurrentV--;
             if(that.CurrentV < that.EndV){
-                that.Stop();
+                if(that.Loop)
+                    that.CurrentV = that.StartV;
+                else
+                    that.Stop();
             }
         }
         
@@ -452,4 +461,12 @@ Anibody.util.Counter.prototype.Start = function(){
 Anibody.util.Counter.prototype.Stop = function(){
     window.clearInterval(this._intRef);
     this._intRef = null;
+};
+
+/**
+ * sets the the state of counting in a loop
+ * @returns {undefined}
+ */
+Anibody.util.Counter.prototype.Stop = function(state){
+    this.Loop = state
 };

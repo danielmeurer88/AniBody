@@ -13,6 +13,7 @@ $(document).ready(function () {
         new Picture("./img_rpg/button_0.png", "button_state_0"),
         new Picture("./img_rpg/button_1.png", "button_state_1"),
         new Picture("./img_rpg/button_2.png", "button_state_2"),
+        new Picture("./img_rpg/sprite_test.png", "sprite_test"),
         new Picture({path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"]}),
         new Picture({path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure"}),
         new Picture({path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group:"room2"}),
@@ -110,18 +111,14 @@ function menu_callback(engine){
 
 function start_test(engine){
     
-    var cbo = function(){
-        new Anibody.ui.Alert("... ein CBO am Ende des Testens.").Start();
-    }.getCallbackObject(engine);
+    var width = 85.33;
+    var height = 85.375;
     
-    var f = function(i, para){
-        
-        console.log("Count " + i + " with " + arguments.length + " arguments");
-        
-    }.getCallbackObject(engine, ["p1", "p2", "p3"], true);
+    var bow = new Anibody.visual.Sprite("sprite_test", 300, 400);
+    var def = new Anibody.visual.Clipping(width*3,0, width, height, 9, 400, ["default"]);
+    bow.AddClipping(def);
     
-    var c = new Anibody.util.Counter([10,0], 500, f);
-    c.Start();
+    engine.AddObject(bow);
     
 }
 
