@@ -34,7 +34,7 @@ Anibody.static.Random.GetNumberOld = function(min, max, decimals){
 
 Anibody.static.Random.GetNumber = function(min, max, decimals){
     if(window.crypto || window.crypto.getRandomValues){
-        return Random.GetNumberOld(min, max, decimals);
+        return Anibody.static.Random.GetNumberOld(min, max, decimals);
     }
     
     if(isNaN(min))
@@ -68,7 +68,7 @@ Anibody.static.Random.GetNumber = function(min, max, decimals){
 Anibody.static.Random.GetTimestamp = function(min, max, unit){
     if(typeof unit === "undefined")
         unit = "s";
-    var num = Random.GetNumber(min, max);
+    var num = Anibody.static.Random.GetNumber(min, max);
     
     var lim = Date.now();
     if(unit === "ms" || unit === "mil")
@@ -142,6 +142,38 @@ Anibody.static.Random.DrawLot = function(lots, lotsChances){
         classmin = classmax;
     }
     return lots[lots.length-1];
+};
+
+/**
+ * creates an interval, which calls an callbackobject at random within a given range of milliseconds.
+ * returns an objects with the function clearInterval() to end the interval
+ * @param {object} cbo - callback object
+ * @param {number} min - minimum of the range in milliseconds
+ * @param {number} max - maximum of the range in milliseconds
+ * @returns {object}
+ */
+Anibody.static.Random.SetRandomInterval = function(cbo, min, max){
+    
+    if(typeof cbo === "undefined" || isNaN(min) || isNaN(max)) return false;
+    
+    var obj = {
+        ref : 0,
+        clearInterval : function(){
+            return window.clearTimeout(this.ref);
+        }
+    };
+    
+    var f = function(){
+        
+        Anibody.CallObject(cbo);
+        var rnd_inner = Anibody.static.Random.GetNumber(min, max);
+        obj.ref = window.setTimeout(f, rnd_inner);
+        
+    }
+    var rnd_outer = Anibody.static.Random.GetNumber(min, max);
+    obj.ref = window.setTimeout(f, rnd_outer);
+    
+    return obj;
 };
 
 /**

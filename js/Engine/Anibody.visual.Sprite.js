@@ -7,6 +7,7 @@ Anibody.visual.Sprite = function Sprite(codename, x, y) {
     this.Codename = codename;
     
     this.Clippings = [];
+    this.DefaultClipping = null;
     this.FlagList = {}; // an object full of booleans, which specifically tells which clipping should be used for drawing
 
     this.X = x;
@@ -53,11 +54,26 @@ Anibody.visual.Sprite.prototype.AddClipping = function (/* clippings seperated b
             temp.Image = this.Image;
             temp.EI = this.EI;
             this.Clippings.push(temp);
+            
+            if(typeof temp.FlagNames === "string" && temp.FlagNames === "default"){
+                this.DefaultClipping = temp;
+            }
+            
             for(var attr in temp.FlagNames){
                 this.FlagList[temp.FlagNames[attr]] = false;
             }
         }
     }
+};
+
+Anibody.visual.Sprite.prototype.SetAllFlags = function (state) {
+    for(var name in this.FlagList){
+        this.FlagList[name] = state;
+    }
+};
+
+Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
+        this.FlagList[flagname] = state;
 };
 
 /**
@@ -84,46 +100,74 @@ Anibody.visual.Sprite.prototype._getActiveClipping = function () {
         if (cur)
             return this.Clippings[c];
     }
+    return false;
 
 };
 
-Anibody.visual.Sprite.prototype.Update = function (c) {
+Anibody.visual.Sprite.prototype.Update = function () {
     this.ActiveClipping = this._getActiveClipping();
-};
-
-Anibody.visual.Sprite.prototype.Draw = function (c) {
-    var ac = this.ActiveClipping;
     
-    c.save();
-    c.translate(this.X, this.Y);
-    ac.Draw(c);
-    c.restore();
+    if(!this.ActiveClipping && this.DefaultClipping){
+        this.ActiveClipping = this.DefaultClipping;
+    }
+    
+    if(this.ActiveClipping !== this.OldClipping){
+        if(this.OldClipping!==null)
+            this.OldClipping.Stop();
+        this.ActiveClipping.Start();
+    }
+    
+    this.OldClipping = this.ActiveClipping;
     
 };
 
 /**
- * A clipping is a row of pictures which will be a special animation
- * @param {type} startx
- * @param {type} starty
- * @param {type} clipWidth
- * @param {type} clipHeight
- * @param {type} numClippings
- * @param {string array} flagNames - string array of boolean names that need to be true to be the correct clipping
- * in a sprite
+ * Resets ActiveClipping
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.ResetActiveClipping = function () {
+    if(this.ActiveClipping)
+        this.ActiveClipping.Reset();
+    
+};
+
+/**
+ * Resets DefaultClipping
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.ResetDefaultClipping = function () {
+    if(this.DefaultClipping)
+        this.DefaultClipping.Reset();
+};
+
+Anibody.visual.Sprite.prototype.Draw = function (c) { 
+    c.save();
+    c.translate(this.X, this.Y);
+    this.ActiveClipping.Draw(c);
+    c.restore();
+};
+
+/**
+ * A clipping is a row of pictures which represents an animation
+ * @param {object} firstClip - object of x,y,width,height of the first clipped picture
+ * @param {number} numClips - the names of the booleans that describe this Clipping (should be unique among the Clippings in a Sprite)
+ * @param {number} fps - frames per second
+ * @param {array} flagName - names of the booleans in Sprite.FlagList that need to be true to choose this Clipping
+ * @param {string} playtype - string "once" or "loop" mode 
  * @returns {Anibody.visual.Clipping}
  */
-Anibody.visual.Clipping = function Clipping(startx, starty, clipWidth, clipHeight, numClippings, fps, flagNames) {
+Anibody.visual.Clipping = function Clipping(firstClip, numClips, fps, flagNames, playtype) {
     Anibody.classes.ABO.call(this);
-    this.StartX = startx;
-    this.StartY = starty;
+    this.StartX = firstClip.x;
+    this.StartY = firstClip.y;
 
-    this.X = startx;
-    this.Y = starty;
-    this.Width = clipWidth;
-    this.Height = clipHeight;
+    this.X = firstClip.x;
+    this.Y = firstClip.y;
+    this.Width = firstClip.width;
+    this.Height = firstClip.height;
     this.Current = 0;
-    this.Amount = numClippings;
-    this.FlagNames = flagNames;
+    this.Amount = numClips;
+    this.FlagNames = flagNames; // string or [strings,..]
     
     this.Speed = 1000/fps;
     this.offCanvas = null;
@@ -132,7 +176,10 @@ Anibody.visual.Clipping = function Clipping(startx, starty, clipWidth, clipHeigh
     
     this.SpriteIndex = 0;
 
+    playtype = (typeof playtype === "string") ? playtype : "loop";
+    this.PlayType = playtype; // "once", "loop"
     this.Counter = null;
+    
 this.Initialize();
 };
 Anibody.visual.Clipping.prototype = Object.create(Anibody.classes.ABO.prototype);
@@ -159,8 +206,13 @@ Anibody.visual.Clipping.prototype.Initialize = function () {
     }.getCallbackObject(this);
     
     this.Counter = new Anibody.util.Counter([0,this.Amount-1], this.Speed, cbo, false);
-    this.Counter.SetLoop(true);
-    this.Counter.Start();
+    
+    if(this.PlayType === "once"){
+        this.Counter.SetLoop(false);
+    }else{
+        this.Counter.SetLoop(true);
+    }
+    
 };
 
 Anibody.visual.Clipping.prototype.Start = function () {
@@ -169,6 +221,10 @@ Anibody.visual.Clipping.prototype.Start = function () {
 
 Anibody.visual.Clipping.prototype.Stop = function () {
     this.Counter.Stop();
+};
+
+Anibody.visual.Clipping.prototype.Reset = function () {
+    this.Counter.Reset();
 };
 
 Anibody.visual.Clipping.prototype.Draw = function (c) {
@@ -196,4 +252,29 @@ Anibody.visual.Clipping.prototype.IsCorrectClipping = function (actives) {
     }
 
     return correct;
+};
+
+/**
+ * A clipping is a row of pictures which represents an animation
+ * @param {number} startx - x of the first clipped picture
+ * @param {number} starty - y of the first clipped picture
+ * @param {number} numClips - the names of the booleans that describe this Clipping (should be unique among the Clippings in a Sprite)
+ * @param {number} fps - frames per second
+ * @param {array} flagName - names of the booleans in Sprite.FlagList that need to be true to choose this Clipping
+ * @param {string} playtype - string "once" or "loop" mode 
+ * @returns {Anibody.visual.Clipping}
+ */
+Anibody.visual.Clipping.prototype.Template = function (startx, starty, flagNames, obj) {
+    var numClips = this.Amount;
+    var fps = 1000/this.Speed;
+    var playtype = this.PlayType;
+    
+    if(typeof obj !== "undefined"){
+        if(typeof obj.NumberOfClips !== "undefined") numClips = obj.NumberOfClips;
+        if(typeof obj.FPS !== "undefined") fps = obj.FPS;
+        if(typeof obj.PlayType !== "undefined") playtype = obj.PlayType;
+    }
+    
+    var cl = new Anibody.visual.Clipping({x:startx,y:starty,width:this.Width, height:this.Height}, numClips, fps, flagNames, playtype);
+    return cl;
 };

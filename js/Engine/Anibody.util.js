@@ -473,7 +473,7 @@ Anibody.util.Counter.prototype.SetLoop = function(state){
  * resets
  * @returns {undefined}
  */
-Anibody.util.Counter.prototype.Reset = function(state){
+Anibody.util.Counter.prototype.Reset = function(){
     this.Stop();
     this.CurrentV = this.StartV;
     this.Start();

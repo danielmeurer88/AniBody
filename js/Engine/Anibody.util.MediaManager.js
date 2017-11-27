@@ -83,7 +83,10 @@ Anibody.util.MediaManager.prototype.Draw = function (c) {
  */
 Anibody.util.MediaManager.prototype.GetPicture = function (codename) {
     try{
-        return this.Pictures.get(codename).Data;
+        if(typeof codename === "string")
+            return this.Pictures.get(codename).Data;
+        else
+            return codename;
     }catch(e){
         return false;
     }
@@ -91,6 +94,7 @@ Anibody.util.MediaManager.prototype.GetPicture = function (codename) {
 /**
  * returns the first picture whose codename matches the searched string
  * @param {string} codename
+ * @deprecated the Class' name is Picture, therefore the name of this method should be GetPicture
  * @returns {image/false}
  */
 Anibody.util.MediaManager.prototype.GetImage = function (codename) {return this.GetPicture(codename);};
