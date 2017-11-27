@@ -5,7 +5,7 @@
  * @param {string} desc (optional)
  * @returns {Task}
  */
-function Task(name, desc){
+Anibody.util.Task = function Task(name, desc){
     this.Name = name || "task";
     this.Description = desc || "";
     
@@ -17,12 +17,12 @@ function Task(name, desc){
     
     this.DoneCallback = {that:this, parameter:"default", function:function(p){console.log(this.Name + " done: "+p);}};
     this.FailedCallback = {that:this, parameter:"default", function:function(p){console.log(this.Name + " failed: "+p);}};
-}
+};
 /**
  * Checks if task is done by checking if every non-optional step is done.
  * @returns {Boolean}
  */
-Task.prototype.IsDone = function(){
+Anibody.util.Task.prototype.IsDone = function(){
     var done = true;
     for(var i=0; done && i<this.Steps.length; i++)
         if(this.Steps[i].Done || this.Steps[i].Optional)
@@ -37,7 +37,7 @@ Task.prototype.IsDone = function(){
  * @param {object} cbo
  * @returns {undefined}
  */
-Task.prototype.SetCallbackWhenDone = function(cbo){
+Anibody.util.Task.prototype.SetCallbackWhenDone = function(cbo){
     this.DoneCallback = cbo;
 };
 /**
@@ -45,14 +45,14 @@ Task.prototype.SetCallbackWhenDone = function(cbo){
  * @param {object} cbo
  * @returns {undefined}
  */
-Task.prototype.SetCallbackWhenFailed = function(cbo){
+Anibody.util.Task.prototype.SetCallbackWhenFailed = function(cbo){
     this.FailedCallback = cbo;
 };
 
 /**
  * @returns {Number} Progress as quotient [0,1]
  */
-Task.prototype.GetProgress = function(){
+Anibody.util.Task.prototype.GetProgress = function(){
     var steps = 0;
     var stepsDone = 0;
     for(var i=0;i<this.Steps.length; i++){
@@ -74,7 +74,7 @@ Task.prototype.GetProgress = function(){
  * Checks if task has failed by checking if there is at least one, non-optional step, that has failed.
  * @returns {Boolean}
  */
-Task.prototype.HasFailed = function(){
+Anibody.util.Task.prototype.HasFailed = function(){
     for(var i=0;i<this.Steps.length; i++)
         if(this.Steps[i].Failed && !this.Steps[i].Optional)
             return true;
@@ -84,7 +84,7 @@ Task.prototype.HasFailed = function(){
  * Checks if task is done or has failed and calls the respective callback-object
  * @returns {undefined}
  */
-Task.prototype._check = function(){
+Anibody.util.Task.prototype._check = function(){
         
     if(this.IsDone()){
         var cbo = this.DoneCallback;
@@ -103,7 +103,7 @@ Task.prototype._check = function(){
  * @param {Step} step
  * @returns {Object}
  */
-Task.prototype.AddStep = function(step/*, [required steps]*/){
+Anibody.util.Task.prototype.AddStep = function(step/*, [required steps]*/){
     
     var recognized = 0;
     
@@ -131,7 +131,7 @@ Task.prototype.AddStep = function(step/*, [required steps]*/){
  * @param {string} failtext - text that will often be rendered to the user when this steps is the reason why the task fails
  * @returns {Object.prototype.createStep.step|Step|Boolean}
  */
-Task.prototype.createStep = function(id, desc, req_not_met_text, canfail, failtext){
+Anibody.util.Task.prototype.createStep = function(id, desc, req_not_met_text, canfail, failtext){
     
     if(this.GetStepById(id)){
         console.log(id + " already exists");
@@ -147,7 +147,7 @@ Task.prototype.createStep = function(id, desc, req_not_met_text, canfail, failte
  * @param {string} id
  * @returns {Step|false}
  */
-Task.prototype.GetStepById = function(id){
+Anibody.util.Task.prototype.GetStepById = function(id){
     for(var i=0; i<this.Steps.length; i++)
         if(this.Steps[i].Id === id)
             return this.Steps[i];
@@ -159,7 +159,7 @@ Task.prototype.GetStepById = function(id){
  * @param {string} id
  * @returns {object}
  */
-Task.prototype.DoStep = function(id){
+Anibody.util.Task.prototype.DoStep = function(id){
     var step = this.GetStepById(id);
     if(!step) return {step:false, successful: false};
     
@@ -182,7 +182,7 @@ Task.prototype.DoStep = function(id){
  * Creates an Image of the undone, done and failed steps of the Task
  * @returns {object}
  */
-Task.prototype._createsImage = function(){
+Anibody.util.Task.prototype._createsImage = function(){
     
     var fontColor = "black";
     var padding = 5;
@@ -335,7 +335,7 @@ Task.prototype._createsImage = function(){
  * @param {string} failtext - text that will often be rendered to the user when this steps is the reason why the task fails
  * @returns {Step}
  */
-function Step(id, desc, req_not_met_text, canfail, failtext){
+Anibody.util.Step = function Step(id, desc, req_not_met_text, canfail, failtext){
     
     if(typeof canfail === "undefined")
         canfail = false;
@@ -353,12 +353,12 @@ function Step(id, desc, req_not_met_text, canfail, failtext){
     this.RequirementNotMetText = req_not_met_text;
     
     this.Optional = false;
-}
+};
 /**
  * Returns array of all required steps, which are undone
  * @returns {Array[Steps]}
  */
-Step.prototype.GetRequiredUndoneSteps = function(){
+Anibody.util.Step.prototype.GetRequiredUndoneSteps = function(){
     var req = [];
     for(var i=0;i<this.RequiredSteps.length; i++)
         if(!this.RequiredSteps[i].Done)

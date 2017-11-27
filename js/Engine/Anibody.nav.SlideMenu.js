@@ -6,7 +6,7 @@
  * @param {Number} dist the distance between the first Tab and the next Nullpoint of the opposite axis
  * @returns {SlideMenu}
  */
-function SlideMenu(attto, dist) {
+Anibody.nav.SlideMenu = function SlideMenu(attto, dist) {
     Anibody.classes.ABO.call(this);
     
     this.Tabs = [];
@@ -18,9 +18,9 @@ function SlideMenu(attto, dist) {
     
     // overall needed depth, which will be regarded by all tabs
     this.NeededDepth = 0;
-}
-SlideMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
-SlideMenu.prototype.constructor = SlideMenu;
+};
+Anibody.nav.SlideMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.SlideMenu.prototype.constructor = Anibody.nav.SlideMenu;
 
 /**
  * SlideMenu is drawn
@@ -28,7 +28,7 @@ SlideMenu.prototype.constructor = SlideMenu;
  * @param {type} c Engine's canvas
  * @returns {undefined}
  */
-SlideMenu.prototype.Draw = function(c){
+Anibody.nav.SlideMenu.prototype.Draw = function(c){
     c.save();
 
     for(var i=0; i<this.Tabs.length; i++){
@@ -43,7 +43,7 @@ SlideMenu.prototype.Draw = function(c){
  * @param {type} c Engine's canvas
  * @returns {undefined}
  */
-SlideMenu.prototype.Update = function(){
+Anibody.nav.SlideMenu.prototype.Update = function(){
     
     var mouse = this.Engine.Input.Mouse;
     for(var i=0; i<this.Tabs.length; i++){
@@ -57,7 +57,7 @@ SlideMenu.prototype.Update = function(){
  * @param {type} c Engine's canvas
  * @returns {undefined}
  */
-SlideMenu.prototype.ProcessInput = function(){
+Anibody.nav.SlideMenu.prototype.ProcessInput = function(){
     
     for(var i=0; i<this.Tabs.length; i++){
         this.Tabs[i].ProcessInput();
@@ -69,7 +69,7 @@ SlideMenu.prototype.ProcessInput = function(){
  * @param {String} label Tab's label
  * @returns {Tab}
  */
-SlideMenu.prototype.AddTab = function(label){
+Anibody.nav.SlideMenu.prototype.AddTab = function(label){
     var tab = new Tab(label, this);
     
     var p = {x : 0, y: 0};
@@ -91,7 +91,7 @@ SlideMenu.prototype.AddTab = function(label){
  * @param {Boolean} quick
  * @returns {undefined}
  */
-SlideMenu.prototype.CloseAllTabs = function(quick){
+Anibody.nav.SlideMenu.prototype.CloseAllTabs = function(quick){
     if(this.OpenTab!==null)
     if(quick){
         this.OpenTab.QuickClose();
@@ -105,7 +105,7 @@ SlideMenu.prototype.CloseAllTabs = function(quick){
  * @param {string} name
  * @returns {Array}
  */
-SlideMenu.prototype.GetTabsByName = function(name){
+Anibody.nav.SlideMenu.prototype.GetTabsByName = function(name){
     
     var arr = [];
     
@@ -119,7 +119,7 @@ SlideMenu.prototype.GetTabsByName = function(name){
  * removes all necessary handlers so that this slidemenu can be ignored/deleted
  * @returns {undefined}
  */
-SlideMenu.prototype.Delete = function(){
+Anibody.nav.SlideMenu.prototype.Delete = function(){
     
     for(var i=0; i<this.Tabs.length; i++){
         this.Tabs[i].RemoveMouseHandler();

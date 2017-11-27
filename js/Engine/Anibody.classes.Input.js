@@ -1,4 +1,3 @@
-Anibody.SetPackage("Anibody", "classes");
 
 Anibody.classes.Input = function Input() {
     Anibody.classes.EngineObject.call(this);
@@ -44,13 +43,13 @@ Anibody.classes.Input.prototype.Initialize = function () {
 
     if(this.Engine.Flags.MouseInput){
         this.Mouse = new Anibody.classes.Input.Mouse();
-        this.MouseHandler = new MouseHandler();
+        this.MouseHandler = new Anibody.classes.Input.MouseHandler();
     }
     
     this.RegisterResizeEvent();
 
     if(this.Engine.Flags.TouchHandler)
-        this.TouchHandler = new TouchHandler();
+        this.TouchHandler = new Anibody.classes.Input.TouchHandler();
 
 };
 

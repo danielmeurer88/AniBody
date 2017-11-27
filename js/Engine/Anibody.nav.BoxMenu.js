@@ -9,7 +9,7 @@
  * @param {Number} th height of the title stripe
  * @returns {BoxMenu}
  */
-function BoxMenu(x,y,w,h, t, th){
+Anibody.nav.BoxMenu = function BoxMenu(x,y,w,h, t, th){
     Anibody.classes.ABO.call(this);
     
     this.X = x;
@@ -66,18 +66,18 @@ function BoxMenu(x,y,w,h, t, th){
     this._ref_W = null;
     
 this.Initialize();
-}
-BoxMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
-BoxMenu.prototype.constructor = BoxMenu;
+};
+Anibody.nav.BoxMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.BoxMenu.prototype.constructor = Anibody.nav.BoxMenu;
 
-BoxMenu.prototype.TitleColor = "#ddd";
-BoxMenu.prototype.Color = "#eee";
-BoxMenu.prototype.HandleColor = "#999";
+Anibody.nav.BoxMenu.prototype.TitleColor = "#ddd";
+Anibody.nav.BoxMenu.prototype.Color = "#eee";
+Anibody.nav.BoxMenu.prototype.HandleColor = "#999";
 
 /**
  * @see README_DOKU.txt
  */
-BoxMenu.prototype.Initialize = function(){
+Anibody.nav.BoxMenu.prototype.Initialize = function(){
     
     // the registration of the mouse click
     this.AddProcessInputFunctionObject();
@@ -86,7 +86,7 @@ BoxMenu.prototype.Initialize = function(){
 /**
  * @see README_DOKU.txt
  */
-BoxMenu.prototype.AddMouseHandler = function(){
+Anibody.nav.BoxMenu.prototype.AddMouseHandler = function(){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter : this.Engine,
@@ -96,13 +96,13 @@ BoxMenu.prototype.AddMouseHandler = function(){
             if(this.IsMouseOverMinimize){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnMinimize();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
             if(this.IsMouseOverClose){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnClose();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
         }
@@ -116,7 +116,7 @@ BoxMenu.prototype.AddMouseHandler = function(){
                 var d = e.Delta;
                 this._scrolling = true;
                 this.UpdateHandle(d);
-                e.GoThrough = false;
+                e.Handled = true;
             }
                         
         }
@@ -128,7 +128,7 @@ BoxMenu.prototype.AddMouseHandler = function(){
  * which allows scrolling the handle or dragging/moving the whole box
  * @returns {undefined}
  */
-BoxMenu.prototype.AddProcessInputFunctionObject = function(){
+Anibody.nav.BoxMenu.prototype.AddProcessInputFunctionObject = function(){
 
     this._ref_PIF = this.Engine.AddProcessInputFunctionObject({
         parameter: this.Engine,
@@ -156,7 +156,7 @@ BoxMenu.prototype.AddProcessInputFunctionObject = function(){
 /**
  * @see README_DOKU.txt
  */
-BoxMenu.prototype.RemoveMouseHandler = function(){
+Anibody.nav.BoxMenu.prototype.RemoveMouseHandler = function(){
     if(this._ref!=null){
         this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);
         this._ref=null;
@@ -166,7 +166,7 @@ BoxMenu.prototype.RemoveMouseHandler = function(){
  * Removes the Process Input Function - called when the BoxMenu is supposed to be deleted
  * @returns {undefined}
  */
-BoxMenu.prototype.RemoveProcessInputFunctionObject = function(){
+Anibody.nav.BoxMenu.prototype.RemoveProcessInputFunctionObject = function(){
     if(this._ref_PIF!= null){
         this.Engine.RemoveProcessInputFunctionObject(this._ref_PIF);
         this._ref_PIF = null;
@@ -175,7 +175,7 @@ BoxMenu.prototype.RemoveProcessInputFunctionObject = function(){
 /**
  * @see README_DOKU.txt
  */
-BoxMenu.prototype.Draw = function(c){
+Anibody.nav.BoxMenu.prototype.Draw = function(c){
     c.save();
     
     // title
@@ -274,7 +274,7 @@ BoxMenu.prototype.Draw = function(c){
  * gets the combined height of all items
  * @returns {Number}
  */
-BoxMenu.prototype.GetItemsHeight = function(){
+Anibody.nav.BoxMenu.prototype.GetItemsHeight = function(){
     var max = 0;
     for(var i=0; i<this.Items.length; i++){
         max += this.Items[i].item.Height + this.Items[i].offset.y;
@@ -289,7 +289,7 @@ BoxMenu.prototype.GetItemsHeight = function(){
 /**
  * @see README_DOKU.txt
  */
-BoxMenu.prototype.ProcessInput = function(){
+Anibody.nav.BoxMenu.prototype.ProcessInput = function(){
         
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // adding a hover Request for: the whole box
@@ -377,7 +377,7 @@ BoxMenu.prototype.ProcessInput = function(){
 /**
  * @see README_DOKU.txt
  */
-BoxMenu.prototype.Update = function(){
+Anibody.nav.BoxMenu.prototype.Update = function(){
     
     var item;
 
@@ -419,7 +419,7 @@ BoxMenu.prototype.Update = function(){
  * @param {object} d - holds the scroll information
  * @returns {undefined}
  */
-BoxMenu.prototype.UpdateHandle = function(d){
+Anibody.nav.BoxMenu.prototype.UpdateHandle = function(d){
     var refresh = false;
     if(arguments.length <= 0 || !d){
         d = {Y:0};
@@ -449,7 +449,7 @@ BoxMenu.prototype.UpdateHandle = function(d){
  * @param {object} d - hold the dragging information
  * @returns {undefined}
  */
-BoxMenu.prototype.UpdateBox = function(d){
+Anibody.nav.BoxMenu.prototype.UpdateBox = function(d){
     
     if(this._dragging && !isNaN(d.Y)){
         
@@ -485,7 +485,7 @@ BoxMenu.prototype.UpdateBox = function(d){
  * checks if the handle is within the borders of the underlining bar - if not, it will be adjusted
  * @returns {undefined}
  */
-BoxMenu.prototype.AdjustHandle = function(){
+Anibody.nav.BoxMenu.prototype.AdjustHandle = function(){
     if(this.Handle.y < this.Y + this.TitleHeight){
         this.Handle.y = this.Y + this.TitleHeight;
 
@@ -507,7 +507,7 @@ BoxMenu.prototype.AdjustHandle = function(){
  * @param {number} offsety - free area top of the item
  * @returns {undefined}
  */
-BoxMenu.prototype.AddItem = function(item, offsetx, offsety){
+Anibody.nav.BoxMenu.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 1)
         offsetx = 0;
     
@@ -526,7 +526,7 @@ BoxMenu.prototype.AddItem = function(item, offsetx, offsety){
  * @param {function} itemDeleteFunc - function(item, engine)
  * @returns {undefined}
  */
-BoxMenu.prototype.DeleteItems = function(itemDeleteFunc){
+Anibody.nav.BoxMenu.prototype.DeleteItems = function(itemDeleteFunc){
     var item;
     
     if(typeof itemDeleteFunc === "undefined")
@@ -544,7 +544,7 @@ BoxMenu.prototype.DeleteItems = function(itemDeleteFunc){
  * - sets the items offscreen when the box is minimized so that there is no accidental clicking
  * @returns {undefined}
  */
-BoxMenu.prototype.AdjustItemsPosition = function(){
+Anibody.nav.BoxMenu.prototype.AdjustItemsPosition = function(){
     
     var item, off;
     var cury = 0;
@@ -566,7 +566,7 @@ BoxMenu.prototype.AdjustItemsPosition = function(){
  * function is triggered if user clicks on the minimization button
  * @returns {undefined}
  */
-BoxMenu.prototype.ClickOnMinimize = function(){
+Anibody.nav.BoxMenu.prototype.ClickOnMinimize = function(){
     this._minimized = !this._minimized;
     if(this._minimized){
         this.Height = this.TitleHeight;
@@ -578,7 +578,7 @@ BoxMenu.prototype.ClickOnMinimize = function(){
  * function is triggered if user clicks on the closing button
  * @returns {undefined}
  */
-BoxMenu.prototype.ClickOnClose = function(){
+Anibody.nav.BoxMenu.prototype.ClickOnClose = function(){
     console.log("Close Box");
     if(this.TrueClosing){
         if(confirm("M{oe}chtest du dieses Men{ue} schlie{ss}en?".decodeURI())){
@@ -606,7 +606,7 @@ BoxMenu.prototype.ClickOnClose = function(){
  * @param {number} y
  * @returns {undefined}
  */
-BoxMenu.prototype.MoveTo = function(x,y){
+Anibody.nav.BoxMenu.prototype.MoveTo = function(x,y){
 
     var reldistance = {x: this.Handle.x - this.X, y: this.Handle.y - this.Y};
     
@@ -640,7 +640,7 @@ BoxMenu.prototype.MoveTo = function(x,y){
  * Truly closes the box
  * @returns {undefined}
  */
-BoxMenu.prototype.Close = function(){
+Anibody.nav.BoxMenu.prototype.Close = function(){
     this.RemoveMouseHandler();
     this.RemoveProcessInputFunctionObject();
     // TODO ...

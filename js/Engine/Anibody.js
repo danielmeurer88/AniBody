@@ -5,7 +5,7 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "0.9.9",
+        Version: "1.0.1",
         Author: "Daniel Meurer",
         LastUpdated: "2017_11_22_h11" // year_month_day_hhour
     };
@@ -73,6 +73,7 @@ function Anibody(html_id) {
     // terrain holds the data of a game world. if not further declared a default terrain with the same size as the canvas object will be set
     this.Terrain = null;
     this.DebugWindow = null;
+    this.Consolero = null;
 
     this.OverlayImages = [];
 
@@ -132,6 +133,8 @@ Anibody.prototype.Initialize = function () {
     this.Canvas.ScreenRatio = parseInt(this.Canvas.width / this.Canvas.height * 1000) / 1000;
 
     this.Context = this.Canvas.getContext("2d");
+    
+    // attaches a FontHandler to the Context
     new Anibody.classes.FontHandler(this.Context);
 
     this.Input = new Anibody.classes.Input();
@@ -157,6 +160,8 @@ Anibody.prototype.Initialize = function () {
     
     if(this.Flags.DebugWindow)
         this.DebugWindow = new DebugWindow();
+    
+    this.Consolero = new Anibody.debug.Consolero();
 };
 
 /**
@@ -774,7 +779,7 @@ Anibody.SetPackage = function(/*strings*/){
 
 Anibody.CallObject = function(obj, useApply){
     
-    if(typeof obj !== "object")
+    if(typeof obj !== "object" || obj === null) // javascript sees null as an object
         return;
     
     useApply = obj.useApply;
@@ -826,6 +831,6 @@ Anibody.import = function(package, alias){
 Anibody.importAll = function(package){
     if(arguments.length <= 0) return;
     for(var name in package){
-        Anibody.import(name);
+        Anibody.import(package[name]);
     }
 };

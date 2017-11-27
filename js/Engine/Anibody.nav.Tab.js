@@ -4,7 +4,7 @@
  * @param {String} label the label of the Tab
  * @returns {Tab}
  */
-function Tab(label, owner){
+Anibody.nav.Tab = function Tab(label, owner){
     Anibody.classes.ABO.call(this);
     
     this.TIN = this.UniqueID; // tab indentification number
@@ -49,19 +49,20 @@ function Tab(label, owner){
     this._ref = null;
     
 this.Initialize();
-}
-Tab.prototype = Object.create(Anibody.classes.ABO.prototype);
-Tab.prototype.constructor = Tab;
+};
 
-Tab.prototype.FontColor = "#000";
-Tab.prototype.BackgroundColor = "#aaa";
-Tab.prototype.BackgroundColorSelected = "#ccc";
-Tab.prototype.BreaklineColor = "#666";
+Anibody.nav.Tab.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.Tab.prototype.constructor = Anibody.nav.Tab;
+
+Anibody.nav.Tab.prototype.FontColor = "#000";
+Anibody.nav.Tab.prototype.BackgroundColor = "#aaa";
+Anibody.nav.Tab.prototype.BackgroundColorSelected = "#ccc";
+Anibody.nav.Tab.prototype.BreaklineColor = "#666";
 
 /**
  * @see README_DOKU.txt
  */
-Tab.prototype.Initialize = function(){
+Anibody.nav.Tab.prototype.Initialize = function(){
     
     // the registration of the mouse click
     this.AddMouseHandler();
@@ -82,7 +83,7 @@ Tab.prototype.Initialize = function(){
     }
 };
 
-Tab.prototype.AddMouseHandler = function(){
+Anibody.nav.Tab.prototype.AddMouseHandler = function(){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter : this.Engine,
@@ -90,7 +91,7 @@ Tab.prototype.AddMouseHandler = function(){
         function : function(e, engine){
             
                 if(this.IsMouseOver){
-                    e.GoThrough = false;
+                    e.Handled = true;
                     if(!this.IsOpen)
                         this.Open();
                     else
@@ -98,14 +99,14 @@ Tab.prototype.AddMouseHandler = function(){
                 }
 
                 if(this.IsMouseOverMenu){
-                    e.GoThrough = false;
+                    e.Handled = true;
                 }
         }
     }, 1000);
 
 };
 
-Tab.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
+Anibody.nav.Tab.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
 
 /**
  * Tab is drawn.
@@ -113,7 +114,7 @@ Tab.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.Rem
  * @param {type} c Engine's canvas
  * @returns {undefined}
  */
-Tab.prototype.Draw = function(c){
+Anibody.nav.Tab.prototype.Draw = function(c){
     var x = this.X;
     var y = this.Y;
     
@@ -152,7 +153,7 @@ Tab.prototype.Draw = function(c){
                         c.beginPath();
                         c.moveTo(this.Menu.X + 10,y);
                         c.lineWidth = 3;
-                        c.strokeStyle = Tab.prototype.BreaklineColor;
+                        c.strokeStyle = Anibody.nav.Tab.prototype.BreaklineColor;
                         c.lineTo(this.Menu.X + this.Menu.Depth - 10, y);
                         c.stroke();
 
@@ -182,7 +183,7 @@ Tab.prototype.Draw = function(c){
  * @param {type} c Engine's canvas
  * @returns {undefined}
  */
-Tab.prototype.Update = function(){
+Anibody.nav.Tab.prototype.Update = function(){
     
     if(this.IsMouseOver){
         this.Engine.Input.Mouse.Cursor.Set("pointer");
@@ -214,7 +215,7 @@ Tab.prototype.Update = function(){
 /**
  * @see README_DOKU.txt
  */
-Tab.prototype.ProcessInput = function(){
+Anibody.nav.Tab.prototype.ProcessInput = function(){
     
     // adding request for the tab
     var area = {
@@ -248,7 +249,7 @@ Tab.prototype.ProcessInput = function(){
 };
 
 //TO EDIT
-Tab.prototype.Open = function(){
+Anibody.nav.Tab.prototype.Open = function(){
     this.IsOpen = true;
     this.Selected = true;
     this.SlideMenu.OpenTab = this;
@@ -259,7 +260,7 @@ Tab.prototype.Open = function(){
     }}).Start();
 };
 
-Tab.prototype.Close = function(){
+Anibody.nav.Tab.prototype.Close = function(){
     
     var aim = 0;
     
@@ -273,7 +274,7 @@ Tab.prototype.Close = function(){
     
 };
 
-Tab.prototype.QuickClose = function(){
+Anibody.nav.Tab.prototype.QuickClose = function(){
     
     this.SlideMenu.NeededDepth = 0;
     
@@ -284,12 +285,12 @@ Tab.prototype.QuickClose = function(){
     
 };
 
-Tab.prototype.SetDepth = function(val){
+Anibody.nav.Tab.prototype.SetDepth = function(val){
     this.Menu.Depth = val;
     this.Menu.X = (-1)*this.Menu.Depth;
 };
 
-Tab.prototype.SetNeededDepth = function(){
+Anibody.nav.Tab.prototype.SetNeededDepth = function(){
     var max =this.Menu.Depth;
     var item;
     
@@ -303,7 +304,7 @@ Tab.prototype.SetNeededDepth = function(){
     this.SetDepth(max);
 };
 
-Tab.prototype.AddItem = function(item, offsetx, offsety, depthcorrection){
+Anibody.nav.Tab.prototype.AddItem = function(item, offsetx, offsety, depthcorrection){
     if(arguments.length <= 1)
         offsetx = 0;
     
@@ -325,7 +326,7 @@ Tab.prototype.AddItem = function(item, offsetx, offsety, depthcorrection){
     }
 };
 
-Tab.prototype.AdjustItemsPosition = function(){
+Anibody.nav.Tab.prototype.AdjustItemsPosition = function(){
     
     var item;
     var cury = 0;
@@ -344,13 +345,13 @@ Tab.prototype.AdjustItemsPosition = function(){
     
 };
 
-Tab.prototype.Delete = function(){
+Anibody.nav.Tab.prototype.Delete = function(){
     
     this.RemoveMouseHandler();
     
 };
 
-Tab.prototype.DeleteItems = function(itemDeleteFunc, from, to){
+Anibody.nav.Tab.prototype.DeleteItems = function(itemDeleteFunc, from, to){
     var item;
     
     if(typeof itemDeleteFunc === "undefined" || !itemDeleteFunc)

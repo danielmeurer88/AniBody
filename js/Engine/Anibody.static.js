@@ -2,7 +2,7 @@
  * a class that provides random numbers
  * @type static class
  */
-var Random = {};
+Anibody.static.Random = function Random(){};
 /**
  * Returns a number between a minimum and a maximum - both inclusivly
  * @param {number} min
@@ -10,7 +10,7 @@ var Random = {};
  * @param {number} decimals
  * @returns {Number}
  */
-Random.GetNumberOld = function(min, max, decimals){
+Anibody.static.Random.GetNumberOld = function(min, max, decimals){
     
     // Testing needed
     
@@ -32,7 +32,7 @@ Random.GetNumberOld = function(min, max, decimals){
     return (Math.round(ran)/Math.pow(10, decimals));
 };
 
-Random.GetNumber = function(min, max, decimals){
+Anibody.static.Random.GetNumber = function(min, max, decimals){
     if(window.crypto || window.crypto.getRandomValues){
         return Random.GetNumberOld(min, max, decimals);
     }
@@ -65,7 +65,7 @@ Random.GetNumber = function(min, max, decimals){
  * @param {string} time unit (ms|s|min|h|d|w|y) leapyear not included in calculation
  * @returns {Number}
  */
-Random.GetTimestamp = function(min, max, unit){
+Anibody.static.Random.GetTimestamp = function(min, max, unit){
     if(typeof unit === "undefined")
         unit = "s";
     var num = Random.GetNumber(min, max);
@@ -103,7 +103,7 @@ Random.GetTimestamp = function(min, max, unit){
  * @param {number-array} lotschance
  * @returns {object}
  */
-Random.DrawLot = function(lots, lotsChances){
+Anibody.static.Random.DrawLot = function(lots, lotsChances){
     
     if(arguments.length < 1) throw "ArgumentException: Too less arguments";
     
@@ -153,7 +153,7 @@ Random.DrawLot = function(lots, lotsChances){
  * @param {Number} h - height of the context
  * @returns {Image}
  */
-function createImageWithNN(ctx, by, w, h){
+Anibody.static.createImageWithNN = function createImageWithNN(ctx, by, w, h){
     
     // if the zoom factor is negative, zero or undefined - it will be 2 by default
     by = by > 0 ? by : 2;
@@ -203,7 +203,7 @@ function createImageWithNN(ctx, by, w, h){
     newimg.src = url;
 
     return newimg;
-}
+};
 
 /**
  * @description Takes the current composed grafics of a Canvas element and transformed them to an image
@@ -212,7 +212,7 @@ function createImageWithNN(ctx, by, w, h){
  * @param {Number} by - zoom factor (needs to be a positive integer)
  * @returns {Image}
  */
-function createImageNN(can, by){
+Anibody.static.createImageNN = function createImageNN(can, by){
     
     // if the zoom factor is negative, zero or undefined - it will be 2 by default
     by = by > 0 ? parseInt(by) : 2;
@@ -266,7 +266,7 @@ function createImageNN(can, by){
     newimg.src = url;
 
     return newimg;
-}
+};
 
 /**
  * Returns an image, in which the specified text or text-lines are fitted
@@ -280,7 +280,7 @@ function createImageNN(can, by){
  * @param {string} cfont - the HTML5-Canvas text format
  * @returns {Image-Element}
  */
-function createImageWithFittedText(width, height, texts, startfontheight, padding, rowspace, color, cfont){
+Anibody.static.createImageWithFittedText = function createImageWithFittedText(width, height, texts, startfontheight, padding, rowspace, color, cfont){
     
     // making sure that the 1 parameter is an array of strings
     if(typeof texts === "string")
@@ -413,7 +413,7 @@ function createImageWithFittedText(width, height, texts, startfontheight, paddin
  * @param {anything} obj
  * @returns {String}
  */
-function getClass(obj){
+Anibody.static.getClass = function getClass(obj){
     var con = obj.constructor.toString();
     var ifunc = con.indexOf("function ");
     var ibracket = con.indexOf("(");
@@ -430,7 +430,7 @@ function getClass(obj){
  * @param {Number} inc_quot [-1,-1] quotient of how much the color value shall increase, default=0 -> no change
  * @returns {String}
  */
-function getRGBA(color, alpha, inc_quot){
+Anibody.static.getRGBA = function getRGBA(color, alpha, inc_quot){
     
     var rgbaCode;
     
@@ -478,7 +478,7 @@ function getRGBA(color, alpha, inc_quot){
  * @param {Array} stops Array of gradient stops = Object {stop:Number[0-1], color:string}
  * @returns {Image}
  */
-function buttonLayout(box, depth, stops){
+Anibody.static.buttonLayout = function buttonLayout(box, depth, stops){
     
     // create 9 (imaginary) boxes according to the values in the arguments (box, depth)
     // tl = top-left, top, tr = top-right
@@ -670,7 +670,7 @@ function buttonLayout(box, depth, stops){
  * @param {number} max value of the range: default is 100
  * @returns undefined
  */
-function forceRange(obj, attr, min, max){
+Anibody.static.forceRange = function forceRange(obj, attr, min, max){
     if(arguments.length < 2) throw "No attribute defined as argument";
     
     if(isNaN(min)) min = 0;

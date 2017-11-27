@@ -8,7 +8,7 @@
  * @param {object} opt - objects, which contents ob key-value pairs, key=class attribute and their value
  * @returns {CoordinateSystem}
  */
-function CoordinateSystem(x, y, w, h, opt) {
+Anibody.visual.CoordinateSystem = function CoordinateSystem(x, y, w, h, opt) {
     Anibody.classes.ABO.call(this);
 
     /* Standard Attributes */
@@ -66,12 +66,12 @@ function CoordinateSystem(x, y, w, h, opt) {
 
     this.Initialize();
 }
-CoordinateSystem.prototype = Object.create(Anibody.classes.ABO.prototype);
-CoordinateSystem.prototype.constructor = CoordinateSystem;
+Anibody.visual.CoordinateSystem.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.CoordinateSystem.prototype.constructor = Anibody.visual.CoordinateSystem;
 /**
  * @see README_DOKU.txt
  */
-CoordinateSystem.prototype.Initialize = function () {
+Anibody.visual.CoordinateSystem.prototype.Initialize = function () {
 
     this.AddMouseHandler();
 
@@ -86,14 +86,14 @@ CoordinateSystem.prototype.Initialize = function () {
 /**
  * @see README_DOKU.txt
  */
-CoordinateSystem.prototype.AddMouseHandler = function(){
+Anibody.visual.CoordinateSystem.prototype.AddMouseHandler = function(){
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter: this.Engine,
         that: this,
         function: function (e, engine) {
 
             if (this.IsMouseOver) {
-                e.GoThrough = false;
+                e.Handled = true;
                 var c = this.OnClickCBO;
                 c.function.call(c.that, c.parameter);
             }
@@ -103,11 +103,11 @@ CoordinateSystem.prototype.AddMouseHandler = function(){
 /**
  * @see README_DOKU.txt
  */
-CoordinateSystem.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
+Anibody.visual.CoordinateSystem.prototype.RemoveMouseHandler = function(){this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);};
 /**
  * @see README_DOKU.txt
  */
-CoordinateSystem.prototype.Draw = function (c) {
+Anibody.visual.CoordinateSystem.prototype.Draw = function (c) {
 
     c.save();
     // clear the canvas only where the CoordinateSystem will be drawn opon
@@ -324,7 +324,7 @@ CoordinateSystem.prototype.Draw = function (c) {
 /**
  * @see README_DOKU.txt
  */
-CoordinateSystem.prototype.Update = function () {
+Anibody.visual.CoordinateSystem.prototype.Update = function () {
 
     var mpos = this.Engine.Input.Mouse.Position.Relative; // the Nullpoint for this position is the canvas not the absolute nullpoint of the document
     var np = this.Nullpoint;
@@ -340,7 +340,7 @@ CoordinateSystem.prototype.Update = function () {
 /**
  * @see README_DOKU.txt
  */
-CoordinateSystem.prototype.ProcessInput = function () {
+Anibody.visual.CoordinateSystem.prototype.ProcessInput = function () {
 
     var area = this.GetArea();
     this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
@@ -352,7 +352,7 @@ CoordinateSystem.prototype.ProcessInput = function () {
  * @param {number} dy
  * @returns {undefined}
  */
-CoordinateSystem.prototype.Move = function (dx, dy) {
+Anibody.visual.CoordinateSystem.prototype.Move = function (dx, dy) {
     this.Nullpoint.x += dx;
     this.Nullpoint.y += dy;
     this.UpdateLimit();
@@ -361,7 +361,7 @@ CoordinateSystem.prototype.Move = function (dx, dy) {
  * Moves the null point to the center of the coordination system
  * @returns {undefined}
  */
-CoordinateSystem.prototype.Center = function () {
+Anibody.visual.CoordinateSystem.prototype.Center = function () {
     this.Nullpoint = {
         x: this.Width / 2,
         y: this.Height / 2
@@ -372,21 +372,21 @@ CoordinateSystem.prototype.Center = function () {
  * Return current SI values as an object {x:x, y:y}
  * @returns {object}
  */
-CoordinateSystem.prototype.GetSI = function () {
+Anibody.visual.CoordinateSystem.prototype.GetSI = function () {
     return {x: this.SI.x, y: this.SI.y};
 };
 /**
  * Return current Mouse position in pixel
  * @returns {object}
  */
-CoordinateSystem.prototype.GetCoords = function () {
+Anibody.visual.CoordinateSystem.prototype.GetCoords = function () {
     return {x: this.Mouse.x, y: this.Mouse.y};
 };
 /**
  * updates the limits according to the current null point position and the scale size
  * @returns {undefined}
  */
-CoordinateSystem.prototype.UpdateLimit = function () {
+Anibody.visual.CoordinateSystem.prototype.UpdateLimit = function () {
 
     // 1-Dimensional distance, (one coordinate is the same in both points and does not need to be considered in the formular)
     var dis1D = function (v1, v2) {
@@ -429,7 +429,7 @@ CoordinateSystem.prototype.UpdateLimit = function () {
  * @param {type} c
  * @returns {undefined}
  */
-CoordinateSystem.prototype.Clip = function (c) {
+Anibody.visual.CoordinateSystem.prototype.Clip = function (c) {
     c.beginPath();
     // nothing beyond this two commands will cause the canvas to draw over the coord-sys
     c.rect(this.X, this.Y, this.Width, this.Height);
@@ -444,7 +444,7 @@ CoordinateSystem.prototype.Clip = function (c) {
  * @param {object} para - the first argument the function will have
  * @returns {undefined}
  */
-CoordinateSystem.prototype.SetOnClick = function (that, f, para) {
+Anibody.visual.CoordinateSystem.prototype.SetOnClick = function (that, f, para) {
     if (arguments.length > 1) {
         this.OnClickCBO = {
             that: that,
@@ -461,7 +461,7 @@ CoordinateSystem.prototype.SetOnClick = function (that, f, para) {
  * @param {type} y
  * @returns {undefined}
  */
-CoordinateSystem.prototype.SetNullpoint = function (x, y) {
+Anibody.visual.CoordinateSystem.prototype.SetNullpoint = function (x, y) {
     this.Nullpoint.x = x;
     this.Nullpoint.y = y;
     this.UpdateLimit();

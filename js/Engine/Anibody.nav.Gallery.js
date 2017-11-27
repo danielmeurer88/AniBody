@@ -9,7 +9,7 @@
  * @param {type} th height of the title stripe
  * @returns {Gallery}
  */
-function Gallery(x,y,w,h, t, th){
+Anibody.nav.Gallery = function Gallery(x,y,w,h, t, th){
     Anibody.classes.ABO.call(this);
     
     this.X = x;
@@ -69,17 +69,17 @@ function Gallery(x,y,w,h, t, th){
     
 this.Initialize();
 }
-Gallery.prototype = Object.create(Anibody.classes.ABO.prototype);
-Gallery.prototype.constructor = Gallery;
+Anibody.nav.Gallery.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.Gallery.prototype.constructor = Anibody.nav.Gallery;
 
-Gallery.prototype.TitleColor = "#ddd";
-Gallery.prototype.Color = "#eee";
-Gallery.prototype.HandleColor = "#999";
+Anibody.nav.Gallery.prototype.TitleColor = "#ddd";
+Anibody.nav.Gallery.prototype.Color = "#eee";
+Anibody.nav.Gallery.prototype.HandleColor = "#999";
 
 /**
  * @see README_DOKU.txt
  */
-Gallery.prototype.Initialize = function(){
+Anibody.nav.Gallery.prototype.Initialize = function(){
     
     // the registration of the mouse click
 
@@ -88,7 +88,7 @@ Gallery.prototype.Initialize = function(){
     this.AddMouseHandler();
 };
 
-Gallery.prototype.SetDraggable = function(val){
+Anibody.nav.Gallery.prototype.SetDraggable = function(val){
     
     // if the state of draggable changes ...
     if(this.Draggable !== val){
@@ -105,7 +105,7 @@ Gallery.prototype.SetDraggable = function(val){
 /**
  * @see README_DOKU.txt
  */
-Gallery.prototype.AddMouseHandler = function(){
+Anibody.nav.Gallery.prototype.AddMouseHandler = function(){
 
     this._ref = this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", {
         parameter : this.Engine,
@@ -115,13 +115,13 @@ Gallery.prototype.AddMouseHandler = function(){
             if(this.IsMouseOverMinimize){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnMinimize();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
             if(this.IsMouseOverClose){
                 if(this._framesAfterDragging > 1)
                     this.ClickOnClose();
-                e.GoThrough = false;
+                e.Handled = true;
             }
             
         }
@@ -136,7 +136,7 @@ Gallery.prototype.AddMouseHandler = function(){
                 var d = { X : e.Delta.Y, Y: e.Delta.X};
                 this._scrolling = true;
                 this.UpdateHandle(d);
-                e.GoThrough = false;
+                e.Handled = true;
             }
                         
         }
@@ -147,7 +147,7 @@ Gallery.prototype.AddMouseHandler = function(){
  * which allows scrolling the handle or dragging/moving the whole box
  * @returns {undefined}
  */
-Gallery.prototype.AddProcessInputFunctionObject = function(){
+Anibody.nav.Gallery.prototype.AddProcessInputFunctionObject = function(){
 
     this._ref_PIF = this.Engine.AddProcessInputFunctionObject({
         parameter: this.Engine,
@@ -174,7 +174,7 @@ Gallery.prototype.AddProcessInputFunctionObject = function(){
 /**
  * @see README_DOKU.txt
  */
-Gallery.prototype.RemoveMouseHandler = function(){
+Anibody.nav.Gallery.prototype.RemoveMouseHandler = function(){
     if(this._ref!=null){
         this.Engine.Input.MouseHandler.RemoveMouseHandler("leftclick",this._ref);
         this._ref=null;
@@ -184,7 +184,7 @@ Gallery.prototype.RemoveMouseHandler = function(){
  * Removes the Process Input Function - called when the BoxMenu is supposed to be deleted
  * @returns {undefined}
  */
-Gallery.prototype.RemoveProcessInputFunctionObject = function(){
+Anibody.nav.Gallery.prototype.RemoveProcessInputFunctionObject = function(){
     if(this._ref_PIF!= null){
         this.Engine.RemoveProcessInputFunctionObject(this._ref_PIF);
         this._ref_PIF = null;
@@ -193,7 +193,7 @@ Gallery.prototype.RemoveProcessInputFunctionObject = function(){
 /**
  * @see README_DOKU.txt
  */
-Gallery.prototype.Draw = function(c){
+Anibody.nav.Gallery.prototype.Draw = function(c){
     c.save();
     
     // title
@@ -295,7 +295,7 @@ Gallery.prototype.Draw = function(c){
  * gets the combined width of all items
  * @returns {Number}
  */
-Gallery.prototype.GetItemsWidth = function(){
+Anibody.nav.Gallery.prototype.GetItemsWidth = function(){
     var max = 0;
     for(var i=0; i<this.Items.length; i++){
         max += this.Items[i].item.Width + this.Items[i].offset.x;
@@ -310,7 +310,7 @@ Gallery.prototype.GetItemsWidth = function(){
 /**
  * @see README_DOKU.txt
  */
-Gallery.prototype.ProcessInput = function(){
+Anibody.nav.Gallery.prototype.ProcessInput = function(){
         
     //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     // adding a hover Request for: the whole box
@@ -398,7 +398,7 @@ Gallery.prototype.ProcessInput = function(){
 /**
  * @see README_DOKU.txt
  */
-Gallery.prototype.Update = function(){
+Anibody.nav.Gallery.prototype.Update = function(){
     
     var item;
 
@@ -438,7 +438,7 @@ Gallery.prototype.Update = function(){
  * @param {object} d - holds the scroll information
  * @returns {undefined}
  */
-Gallery.prototype.UpdateHandle = function(d){
+Anibody.nav.Gallery.prototype.UpdateHandle = function(d){
     var refresh = false;
     if(arguments.length <= 0 || !d){
         d = {Y:0};
@@ -467,7 +467,7 @@ Gallery.prototype.UpdateHandle = function(d){
  * @param {object} d - hold the dragging information
  * @returns {undefined}
  */
-Gallery.prototype.UpdateBox = function(d){
+Anibody.nav.Gallery.prototype.UpdateBox = function(d){
     
     if(this._dragging && !isNaN(d.Y)){
         
@@ -502,7 +502,7 @@ Gallery.prototype.UpdateBox = function(d){
  * checks if the handle is within the borders of the underlining bar - if not, it will be adjusted
  * @returns {undefined}
  */
-Gallery.prototype.AdjustHandle = function(){
+Anibody.nav.Gallery.prototype.AdjustHandle = function(){
     
     if(this.Handle.x < this.X){
         this.Handle.x = this.X;
@@ -524,7 +524,7 @@ Gallery.prototype.AdjustHandle = function(){
  * @param {number} offsety - free area top of the item
  * @returns {undefined}
  */
-Gallery.prototype.AddItem = function(item, offsetx, offsety){
+Anibody.nav.Gallery.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 1)
         offsetx = 0;
     
@@ -542,7 +542,7 @@ Gallery.prototype.AddItem = function(item, offsetx, offsety){
  * @param {function} itemDeleteFunc - function(item, engine)
  * @returns {undefined}
  */
-Gallery.prototype.DeleteItems = function(itemDeleteFunc){
+Anibody.nav.Gallery.prototype.DeleteItems = function(itemDeleteFunc){
     var item;
     
     if(typeof itemDeleteFunc === "undefined")
@@ -560,7 +560,7 @@ Gallery.prototype.DeleteItems = function(itemDeleteFunc){
  * - sets the items offscreen when the box is minimized so that there is no accidental clicking
  * @returns {undefined}
  */
-Gallery.prototype.AdjustItemsPosition = function(){
+Anibody.nav.Gallery.prototype.AdjustItemsPosition = function(){
     
     var item, off;
     var curx = 0;
@@ -582,7 +582,7 @@ Gallery.prototype.AdjustItemsPosition = function(){
  * function is triggered if user clicks on the minimization button
  * @returns {undefined}
  */
-Gallery.prototype.ClickOnMinimize = function(){
+Anibody.nav.Gallery.prototype.ClickOnMinimize = function(){
     this._minimized = !this._minimized;
     if(this._minimized){
         this.Height = this.TitleHeight;
@@ -594,7 +594,7 @@ Gallery.prototype.ClickOnMinimize = function(){
  * function is triggered if user clicks on the closing button
  * @returns {undefined}
  */
-Gallery.prototype.ClickOnClose = function(){
+Anibody.nav.Gallery.prototype.ClickOnClose = function(){
     console.log("Close Box");
     if(this.TrueClosing){
         if(confirm("M{oe}chtest du dieses Men{ue} schlie{ss}en?".decodeURI())){
@@ -622,7 +622,7 @@ Gallery.prototype.ClickOnClose = function(){
  * @param {number} y
  * @returns {undefined}
  */
-Gallery.prototype.MoveTo = function(x,y){
+Anibody.nav.Gallery.prototype.MoveTo = function(x,y){
 
     var reldistance = {x: this.Handle.x - this.X, y: this.Handle.y - this.Y};
     
@@ -652,7 +652,7 @@ Gallery.prototype.MoveTo = function(x,y){
  * Truly closes the box
  * @returns {undefined}
  */
-Gallery.prototype.Close = function(x,y){
+Anibody.nav.Gallery.prototype.Close = function(x,y){
     this.RemoveMouseHandler();
     this.RemoveProcessInputFunctionObject();
     // TODO ...

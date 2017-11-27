@@ -164,11 +164,11 @@ Anibody.ui.Toaster.prototype.AddMouseHandler = function (prior) {
         function: function (e, engine) {
             
             if(this.IsMouseOver)
-                e.GoThrough = false;
+                e.Handled = true;
             
             if (this.IsMouseOverClose) {
                 this.Close();
-                e.GoThrough = false;
+                e.Handled = true;
             }
         }
     }, prior);

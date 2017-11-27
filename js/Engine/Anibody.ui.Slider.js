@@ -99,7 +99,7 @@ Anibody.ui.Slider.prototype.AddMouseHandler = function(){
         function: function (e, engine) {
 
             if (this.IsMouseOver && !this.IsMouseOverSliderHandle) {
-                e.GoThrough = false;
+                e.Handled = true;
                 // x value of the click
                 var x = e.Mouse.Position.Camera.X - this.X;
                 // x value of the slider bar in percent

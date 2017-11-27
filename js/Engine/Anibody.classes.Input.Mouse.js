@@ -1,8 +1,4 @@
 
-Anibody.SetPackage("Anibody", "classes", "Input");
-
-
-
 Anibody.classes.Input.Mouse = function Mouse(){
     Anibody.classes.EngineObject.call(this);
     
@@ -143,15 +139,16 @@ Anibody.classes.Input.Mouse.prototype.RegisterMouseEvents = function (lockContex
         e.stopPropagation();
         e.cancelBubble = true;
     });
-    this.MouseWheelEvent = $(window).bind("wheel", this, function (e) {
+    this.MouseWheelEvent = $(window).bind("wheel", this.Engine, function (e) {
 
         var that = e.data;
         if (that.Canvas.MouseOn) {
 
             var dy = e.originalEvent.deltaY;
             var dx = e.originalEvent.deltaX;
-
-            that.MouseHandler.WheelHandler(dx, dy);
+            
+            if(that && that.Input && that.Input.MouseHandler)
+                that.Input.MouseHandler.WheelHandler(dx, dy);
 
             e.preventDefault();
             e.stopPropagation();
@@ -214,12 +211,14 @@ Anibody.classes.Input.Mouse.prototype.IsMouseOnCanvas = function () {
     // check if the mouse is on the canvas
     var mx = this.Position.X;
     var my = this.Position.Y;
-    var can = this.Engine.Canvas;
+    var can = this.Engine.Input.Canvas;
     
     if (can.X <= mx && mx < (can.X + can.Width) && can.Y <= my && my < (can.Y + can.Height)){
         can.MouseOn = true;
+        this.Engine.Canvas.MouseOn = true;
     }else{
         can.MouseOn = false;
+        this.Engine.Canvas.MouseOn = true;
     }
 
     return can.MouseOn;

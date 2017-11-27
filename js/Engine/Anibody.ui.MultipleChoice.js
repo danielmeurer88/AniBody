@@ -377,7 +377,7 @@ Anibody.ui.MultipleChoice.prototype._createMouseHandlerObject = function(){
             }else{
                 this.Stop();
             }
-            e.GoThrough = false;
+            e.Handled = true;
         }
         
     };

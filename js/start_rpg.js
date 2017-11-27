@@ -3,6 +3,10 @@ function level_rpg(engine){
         
     engine.FlushScene();
     
+    Anibody.importAll(Anibody.static);
+    Anibody.import(Anibody.visual.Sprite);
+    Anibody.import(Anibody.visual.Clipping);
+    
     engine.MediaManager.Require("room1", rpg_callback.getCallbackObject(engine, engine));
 }
 

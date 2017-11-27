@@ -2,7 +2,7 @@
  * An application programming interface that stands between the engine and the developer and handles mouse related functions
  * @returns {MouseHandler}
  */
-function MouseHandler(){
+Anibody.classes.Input.MouseHandler = function MouseHandler(){
     Anibody.classes.EngineObject.call(this);
     
     this.LeftMouseClickHandlerCBOs = new Anibody.util.PriorityQueue();
@@ -17,13 +17,13 @@ function MouseHandler(){
     this._oldRightFramesDown = 0;
     
 this.Initialize();
-}
-MouseHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-MouseHandler.prototype.constructor = MouseHandler;
+};
+Anibody.classes.Input.MouseHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
+Anibody.classes.Input.MouseHandler.prototype.constructor = Anibody.classes.Input.MouseHandler;
 /**
  * @see README_DOKU.txt
  */
-MouseHandler.prototype.Initialize = function(){
+Anibody.classes.Input.MouseHandler.prototype.Initialize = function(){
     
     // if it's a firefox browsers
     if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
@@ -39,19 +39,19 @@ MouseHandler.prototype.Initialize = function(){
  * @param {type} dy
  * @returns {undefined}
  */
-MouseHandler.prototype.WheelHandler = function(dx, dy){
+Anibody.classes.Input.MouseHandler.prototype.WheelHandler = function(dx, dy){
         
     var arr = this.WheelHandlerCBOs.heap;
     var d;
     var event = {
-        GoThrough : true,
+        Handled : false,
         Timestamp : Date.now(),
-        Frame : this.Engine.Counter.Frames,
+        Frame : this.Engine.CurrentFrames,
         Delta : { X : dx*this.WheelLimiter, Y : dy*this.WheelLimiter },
         Type : "wheel"
     };
 
-    for(var i=0; event.GoThrough && i<arr.length; i++){
+    for(var i=0; !event.Handled && i<arr.length; i++){
         d = arr[i].data;
         d.function.call(d.that, event, d.parameter);
     }
@@ -65,7 +65,7 @@ MouseHandler.prototype.WheelHandler = function(dx, dy){
  * @param {number} prio - priority number (optional)
  * @returns {ref-number|undefined}
  */
-MouseHandler.prototype.AddMouseHandler = function(type, cbo, prio){
+Anibody.classes.Input.MouseHandler.prototype.AddMouseHandler = function(type, cbo, prio){
     var ref;
     if(type === "leftclick"){
         ref = this.LeftMouseClickHandlerCBOs.Enqueue(cbo, prio);
@@ -86,7 +86,7 @@ MouseHandler.prototype.AddMouseHandler = function(type, cbo, prio){
  * @param {number} ref
  * @returns {Number of deleted elements}
  */
-MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
+Anibody.classes.Input.MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
     var tmp;
 
     if(type === "leftclick")
@@ -101,7 +101,7 @@ MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
  * empties all handlers
  * @returns {undefined}
  */
-MouseHandler.prototype.Flush = function(){
+Anibody.classes.Input.MouseHandler.prototype.Flush = function(){
     this.LeftMouseClickHandlerCBOs.Flush();
     this.RightMouseClickHandlerCBOs.Flush();
     this.WheelHandlerCBOs.Flush();
@@ -116,7 +116,7 @@ MouseHandler.prototype.Flush = function(){
  * @param {type} failvalue - the value the attribute becomes if request is negative (default:false)
  * @returns {undefined}
  */
-MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successvalue, failvalue){
+Anibody.classes.Input.MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successvalue, failvalue){
     if(arguments.length<=2) return;
     
     if(!area){
@@ -137,7 +137,7 @@ MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successval
  * handlers
  * @returns {undefined}
  */
-MouseHandler.prototype.MouseClickHandler = function(){
+Anibody.classes.Input.MouseHandler.prototype.MouseClickHandler = function(){
     var mouse = this.Engine.Input.Mouse;
     
     // checking leftclicks
@@ -147,20 +147,20 @@ MouseHandler.prototype.MouseClickHandler = function(){
         var arr = this.LeftMouseClickHandlerCBOs.heap;
         var d;
         var event = {
-            GoThrough: true,
+            Handled: false,
             Timestamp: Date.now(),
             Frame: this.Engine.CurrentFrame,
             Type: "leftclick",
             Mouse : this.Engine.Input.Mouse
         };
 
-        for (var i = 0; event.GoThrough && i < arr.length; i++) {
+        for (var i = 0; !event.Handled && i < arr.length; i++) {
             d = arr[i].data;
             d.function.call(d.that, event, d.parameter);
         }
         mouse.Left.BusyFrames = 5;
         
-        //if(!event.GoThrough)console.log("LC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
+        //if(!event.Handled)console.log("LC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
     }
 
     this._oldLeftFramesDown = this.Engine.Input.Mouse.Left.FramesDown;
@@ -172,19 +172,19 @@ MouseHandler.prototype.MouseClickHandler = function(){
         var arr = this.RightMouseClickHandlerCBOs.heap;
         var d;
         var event = {
-            GoThrough: true,
+            Handled: false,
             Timestamp: Date.now(),
-            Frame: this.Engine.Counter.Frames,
+            Frame: this.Engine.CurrentFrame,
             Type: "rightclick"
         };
 
-        for (var i = 0; event.GoThrough && i < arr.length; i++) {
+        for (var i = 0; !event.Handled && i < arr.length; i++) {
             d = arr[i].data;
             d.function.call(d.that, event, d.parameter);
         }
         mouse.Right.BusyFrames = 5;
         
-        //if(!event.GoThrough)console.log("RC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
+        //if(!event.Handled)console.log("RC: item {0}/{1} mit {2}".format(i, arr.length, getClass(d.that) ));
     }
 
     this._oldRightFramesDown = this.Engine.Input.Mouse.Right.FramesDown;
@@ -195,7 +195,7 @@ MouseHandler.prototype.MouseClickHandler = function(){
  * the representative attribute gets the requested value
  * @returns {undefined}
  */
-MouseHandler.prototype.ResolveHoverRequest = function(){
+Anibody.classes.Input.MouseHandler.prototype.ResolveHoverRequest = function(){
     
     var c = this.Engine.Context;
     var yes = [];
