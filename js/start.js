@@ -115,8 +115,9 @@ function start_test(engine){
     var height = 85.375;
     
     var bow = new Anibody.visual.Sprite("sprite_test", 300, 400);
-    var def = new Anibody.visual.Clipping(width*3,0, width, height, 9, 400, ["default"]);
+    var def = new Anibody.visual.Clipping(width*3,0, width, height, 9, 10, ["default"]);
     bow.AddClipping(def);
+    bow.FlagList["default"] = true;
     
     engine.AddObject(bow);
     

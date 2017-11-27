@@ -462,11 +462,19 @@ Anibody.util.Counter.prototype.Stop = function(){
     window.clearInterval(this._intRef);
     this._intRef = null;
 };
-
 /**
  * sets the the state of counting in a loop
  * @returns {undefined}
  */
-Anibody.util.Counter.prototype.Stop = function(state){
-    this.Loop = state
+Anibody.util.Counter.prototype.SetLoop = function(state){
+    this.Loop = state;
+};
+/**
+ * resets
+ * @returns {undefined}
+ */
+Anibody.util.Counter.prototype.Reset = function(state){
+    this.Stop();
+    this.CurrentV = this.StartV;
+    this.Start();
 };
