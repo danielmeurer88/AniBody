@@ -22,6 +22,10 @@ Anibody.visual.Sprite = function Sprite(codename, x, y) {
 Anibody.visual.Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
+/**
+ * 
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.Initialize = function () {
     if(this.Image && !this.Image.complete){
         this.LoadImage();
@@ -29,7 +33,7 @@ Anibody.visual.Sprite.prototype.Initialize = function () {
 };
 
 /**
- * Adds one or several Clippings to the Sprite
+ * loads the image
  * @returns {undefined}
  */
 Anibody.visual.Sprite.prototype.LoadImage = function (codename) {
@@ -45,39 +49,94 @@ Anibody.visual.Sprite.prototype.LoadImage = function (codename) {
  * Adds one or several Clippings to the Sprite
  * @returns {undefined}
  */
-Anibody.visual.Sprite.prototype.AddClipping = function (/* clippings seperated by commas */) {
+Anibody.visual.Sprite.prototype.AddClippings = function (/* clippings seperated by commas */) {
     var temp;
     for (var i = 0; i < arguments.length; i++) {
         temp = arguments[i];
+        this.AddClipping(temp);        
         
-        if(temp instanceof Anibody.visual.Clipping){
-            temp.Image = this.Image;
-            temp.EI = this.EI;
-            this.Clippings.push(temp);
-            
-            if(typeof temp.FlagNames === "string" && temp.FlagNames === "default"){
-                this.DefaultClipping = temp;
+    }
+};
+
+/**
+ * Adds one or several Clippings to the Sprite
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.AddClipping = function (temp) {
+    if (temp instanceof Anibody.visual.Clipping) {
+        temp.Image = this.Image;
+        temp.EI = this.EI;
+        this.Clippings.push(temp);
+
+        if (typeof temp.FlagNames === "string" && temp.FlagNames === "default") {
+            this.DefaultClipping = temp;
+        } else {
+            for (var j = 0; j < temp.FlagNames.length; j++) {
+                this.FlagList[temp.FlagNames[j]] = false;
             }
-            
-            for(var attr in temp.FlagNames){
-                this.FlagList[temp.FlagNames[attr]] = false;
-            }
+        }
+
+        if (temp.Amount <= 1) {
+            this.X = this.StartX + this.Width * i;
+            this.offContext.clearRect(0, 0, this.Width, this.Height);
+            this.offContext.drawImage(this.Image, /* sprite img */
+                    this.X, this.StartY, /* where on the sprite to start clipping (x, y) */
+                    this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
+                    0, 0, this.Width, this.Height /* where on the canvas (x, y, width, height) */
+                    );
         }
     }
 };
 
+
+
+/**
+ * 
+ * @param {Clipping} dclip
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.SetDefaultClipping = function (dclip) {
+    if(dclip instanceof Anibody.visual.Clipping){
+        this.DefaultClipping = dclip;
+        return true;
+    }else
+        return false;
+};
+
+/**
+ * change the state of all the flag of the state
+ * @param {boolean} state - new state
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.SetAllFlags = function (state) {
     for(var name in this.FlagList){
         this.FlagList[name] = state;
     }
 };
 
+/**
+ * change the state of the given flag
+ * @param {string} name - flagname
+ * @param {boolean} state - new state 
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
         this.FlagList[flagname] = state;
 };
 
 /**
- * 
+ * Set the flags to true
+ * @params {strings} 
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.SetFlags = function () {
+    for(var i=0; i<arguments.length; i++)
+        if(typeof arguments[i] === "string")
+            this.FlagList[arguments[i]] = true;   
+};
+
+/**
+ * Get the active flags of the sprite
  * @returns {Array}
  */
 Anibody.visual.Sprite.prototype._getActiveFlags = function () {
@@ -107,7 +166,7 @@ Anibody.visual.Sprite.prototype._getActiveClipping = function () {
 Anibody.visual.Sprite.prototype.Update = function () {
     this.ActiveClipping = this._getActiveClipping();
     
-    if(!this.ActiveClipping && this.DefaultClipping){
+    if(!this.ActiveClipping){
         this.ActiveClipping = this.DefaultClipping;
     }
     
@@ -173,11 +232,12 @@ Anibody.visual.Clipping = function Clipping(firstClip, numClips, fps, flagNames,
     this.offCanvas = null;
     this.offContext = null;
     this.Image = {complete : false};
+    this.Codename = null;
     
     this.SpriteIndex = 0;
 
     playtype = (typeof playtype === "string") ? playtype : "loop";
-    this.PlayType = playtype; // "once", "loop"
+    this.PlayType = playtype; // "once", "loop", "stopEnd", "stopStart"
     this.Counter = null;
     
 this.Initialize();
@@ -205,13 +265,19 @@ Anibody.visual.Clipping.prototype.Initialize = function () {
         
     }.getCallbackObject(this);
     
-    this.Counter = new Anibody.util.Counter([0,this.Amount-1], this.Speed, cbo, false);
-    
-    if(this.PlayType === "once"){
-        this.Counter.SetLoop(false);
-    }else{
-        this.Counter.SetLoop(true);
+    if(this.Amount > 1){
+        this.Counter = new Anibody.util.Counter([0,this.Amount-1], this.Speed, cbo, false);
+        
+        if(this.PlayType === "once") {
+            this.Counter.SetLoop(false);
+        }
+        if(this.PlayType === "loop"){
+            this.Counter.SetLoop(true);
+        }
+        
     }
+    
+    
     
 };
 
@@ -221,6 +287,20 @@ Anibody.visual.Clipping.prototype.Start = function () {
 
 Anibody.visual.Clipping.prototype.Stop = function () {
     this.Counter.Stop();
+    if(this.PlayType === "stopEnd")
+        this.SetPicture(this.Amount-1);
+    if(this.PlayType === "stopStart")
+        this.SetPicture(0);
+};
+
+Anibody.visual.Clipping.prototype.SetPicture = function (i) {
+    this.X = this.StartX + this.Width * i;
+    this.offContext.clearRect(0, 0, this.Width, this.Height);
+    this.offContext.drawImage(this.Image, /* sprite img */
+            this.X, this.StartY, /* where on the sprite to start clipping (x, y) */
+            this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
+            0, 0, this.Width, this.Height /* where on the canvas (x, y, width, height) */
+            );
 };
 
 Anibody.visual.Clipping.prototype.Reset = function () {
@@ -228,7 +308,10 @@ Anibody.visual.Clipping.prototype.Reset = function () {
 };
 
 Anibody.visual.Clipping.prototype.Draw = function (c) {
-    c.drawImage(this.offCanvas, 0, 0);
+    
+    if(this.Image.complete){
+        c.drawImage(this.offCanvas, 0, 0);
+    }
 };
 
 /**

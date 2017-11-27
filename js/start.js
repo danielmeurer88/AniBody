@@ -116,16 +116,21 @@ function start_test(engine){
     
     var bowser = new Anibody.visual.Sprite("sprite_test", 300, 400);
     var def = new Anibody.visual.Clipping({
-        x:width*3,y:0,
-        width:width, height:height
-    }, 9, 10, "default", "once");
+        x:width*3,y:0,width:width, height:height
+    }, 9, 10, "[laughing]", "stopStart", "once");
     
     var walkdown = def.Template(0,0,["walking", "down"], {NumberOfClips : 3, PlayType : "loop"});
     var walkleft = walkdown.Template(0,height*1,["walking", "left"]);
     var walkright = walkdown.Template(0,height*2,["walking", "right"]);
     var walkup = walkdown.Template(width*9,height*7,["walking", "up"]);
     
-    bowser.AddClipping(def, walkdown, walkleft, walkright, walkup);
+    var standdown = def.Template(width*1,0,["down"], {NumberOfClips : 1, PlayType : "loop"});
+    var standleft = standdown.Template(width*1,height*1,["left"]);
+    var standright = standdown.Template(width*91,height*2,["right"]);
+    var standup = standdown.Template(width*9,height*7,["up"]);
+    
+    bowser.AddClipping(walkdown, walkleft, walkright, walkup, standdown, standleft, standright, standup);
+    bowser.SetDefaultClipping(def);
     
     engine.AddObject(bowser);
         
@@ -142,33 +147,31 @@ function start_test(engine){
         
         if(keys.A.FramesPressed > 4){
             bowser.SetAllFlags(false);
-            bowser.SetFlag("walking", true);
-            bowser.SetFlag("left", true);
+            bowser.SetFlags("walking", "left");
             found = true;
         }
         
         if(keys.D.FramesPressed > 4){
             bowser.SetAllFlags(false);
-            bowser.SetFlag("walking", true);
-            bowser.SetFlag("right", true);
+            bowser.SetFlags("walking", "right");
             found = true;
         }
         
         if(keys.W.FramesPressed > 4){
             bowser.SetAllFlags(false);
-            bowser.SetFlag("walking", true);
-            bowser.SetFlag("up", true);
+            bowser.SetFlags("walking", "up");
             found = true;
         }
         
         if(keys.S.FramesPressed > 4){
             bowser.SetAllFlags(false);
-            bowser.SetFlag("walking", true);
-            bowser.SetFlag("down", true);
+            bowser.SetFlags("walking", "down");
             found = true;
         }
         
-        if(!found) bowser.SetAllFlags(false);
+        if(!found){
+            bowser.SetAllFlags(false);
+        }
         
     }.getCallbackObject(engine);
     
