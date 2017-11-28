@@ -395,20 +395,38 @@ Anibody.util.IntervalHandler.prototype.RemoveIntervalFunction = function (ref) {
  * @param {type} cbo - callbackobject
  * @returns {Anibody.util.Counter}
  */
-Anibody.util.Counter = function Counter(range, ms, cbo, loop){
+Anibody.util.Counter = function Counter(range, ms, cbo, endcbo){
+    
+    // ++++++++++++++++++
+    if(cbo && cbo.that === "self") cbo.that = this;
+    if(endcbo && endcbo.that === "self") endcbo.that = this;
+    // ++++++++++++++++++
     
     this.StartV = range[0];
     this.EndV = range[1];
     this.CurrentV = range[0];
     this.Milliseconds = ms;
     this.Callbackobject = cbo;
+    
+    if(typeof endcbo === "object"){
+        this.EndCallbackobject = endcbo;
+    }else{
+        this.EndCallbackobject = {
+            function : function(){
+                this.Stop();
+            },
+            that : this
+        }
+    }
+    
     this._intRef = null;
     if(this.StartV < this.EndV)
         this._increasing = true;
     else
         this._increasing = false;
     
-    this.Loop = loop?loop:false;
+    this.Loop = false;
+    
 };
 /**
  * Starts counting
@@ -432,6 +450,7 @@ Anibody.util.Counter.prototype.Start = function(){
         if(that._increasing){
             that.CurrentV++;
             if(that.CurrentV > that.EndV){
+                Anibody.CallObject(that.EndCallbackObject);
                 if(that.Loop)
                     that.CurrentV = that.StartV;
                 else
@@ -440,10 +459,11 @@ Anibody.util.Counter.prototype.Start = function(){
         }else{
             that.CurrentV--;
             if(that.CurrentV < that.EndV){
+                Anibody.CallObject(that.EndCallbackObject);
                 if(that.Loop)
                     that.CurrentV = that.StartV;
                 else
-                    that.Stop();
+                    that.Stop;
             }
         }
         

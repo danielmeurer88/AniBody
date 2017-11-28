@@ -1,20 +1,28 @@
 
-
-Anibody.visual.Sprite = function Sprite(codename, x, y) {
+Anibody.visual.Sprite = function Sprite(codename, clipX, clipY,clipWidth, clipHeight) {
     Anibody.classes.ABO.call(this);
-
-    this.Image = {complete : false}; // the whole image
     this.Codename = codename;
+    this.SpriteImage = {complete : false}; // the whole image
+    this.ClipCanvas = null;
+    this.ClipContext = null;
+    this.X = clipX;
+    this.Y = clipY;
+    this.Width = clipWidth;
+    this.Height = clipHeight;
     
     this.Clippings = [];
+    this._clippingsCounter = [];
+    this.ActiveClippingIndex = -1;
+    
+    this.Flags = {};
+    
+    this._useDefault = false;
     this.DefaultClipping = null;
-    this.FlagList = {}; // an object full of booleans, which specifically tells which clipping should be used for drawing
-
-    this.X = x;
-    this.Y = y;
-
-    this.OldClipping = null;
-    this.ActiveClipping = null;
+    this._defaultCounter = null;
+    
+    this.ClippingTemplate = null;
+    
+    this.FlagConstraints = [];
 
     this.Initialize();
 };
@@ -22,73 +30,46 @@ Anibody.visual.Sprite = function Sprite(codename, x, y) {
 Anibody.visual.Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
-/**
- * 
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.Initialize = function () {
-    if(this.Image && !this.Image.complete){
-        this.LoadImage();
+Anibody.visual.Sprite.prototype.DefaultClippingTemplate = {
+        NumberOfClips : 1,
+        FPS : 10,
+        Orign : {x:0, y:0},
+        PlayMode : "loop",
+        FlagNames : ["default"]
+    };
+
+Anibody.visual.Sprite.prototype.Initialize = function(){
+    
+    // in case it is the image already
+    if(this.Codename instanceof HTMLImageElement)
+        this.SpriteImage = this.Codename;
+    
+    if(this.Engine.MediaManager && this.Engine.MediaManager.GetPicture && typeof this.Codename === "string")
+        this.SpriteImage = this.Engine.MediaManager.GetPicture(this.Codename);
+    
+    if(!this.SpriteImage){
+        throw "Could not access the Image for the Sprite";
     }
+    
+    this.ClippingTemplate = {
+        NumberOfClips : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.NumberOfClips,
+        FPS : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FPS,
+        Orign : {x:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.x, y:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.y},
+        PlayMode : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.PlayMode,
+        FlagNames : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FlagNames
+    };
+    
+    this.ClipCanvas = document.createElement("CANVAS");
+    this.ClipCanvas.width = this.Width;
+    this.ClipCanvas.height = this.Height;
+    this.ClipContext = this.ClipCanvas.getContext("2d");
+    
+    
 };
 
-/**
- * loads the image
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.LoadImage = function (codename) {
-    if(typeof codename === "undefined")
-        codename = this.Codename;
-    if(this.Engine.MediaManager){
-        this.Codename = codename;
-        this.Image = this.Engine.MediaManager.GetPicture(codename);
-    }
-};
+Anibody.visual.Sprite.prototype.GetTemplate = function(){return this.ClippingTemplate;};
 
-/**
- * Adds one or several Clippings to the Sprite
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.AddClippings = function (/* clippings seperated by commas */) {
-    var temp;
-    for (var i = 0; i < arguments.length; i++) {
-        temp = arguments[i];
-        this.AddClipping(temp);        
-        
-    }
-};
-
-/**
- * Adds one or several Clippings to the Sprite
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.AddClipping = function (temp) {
-    if (temp instanceof Anibody.visual.Clipping) {
-        temp.Image = this.Image;
-        temp.EI = this.EI;
-        this.Clippings.push(temp);
-
-        if (typeof temp.FlagNames === "string" && temp.FlagNames === "default") {
-            this.DefaultClipping = temp;
-        } else {
-            for (var j = 0; j < temp.FlagNames.length; j++) {
-                this.FlagList[temp.FlagNames[j]] = false;
-            }
-        }
-
-        if (temp.Amount <= 1) {
-            this.X = this.StartX + this.Width * i;
-            this.offContext.clearRect(0, 0, this.Width, this.Height);
-            this.offContext.drawImage(this.Image, /* sprite img */
-                    this.X, this.StartY, /* where on the sprite to start clipping (x, y) */
-                    this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
-                    0, 0, this.Width, this.Height /* where on the canvas (x, y, width, height) */
-                    );
-        }
-    }
-};
-
-
+Anibody.visual.Sprite.prototype.SetTemplateAttribute = function(attr, val){this.ClippingTemplate[attr] = val;};
 
 /**
  * 
@@ -96,22 +77,145 @@ Anibody.visual.Sprite.prototype.AddClipping = function (temp) {
  * @returns {undefined}
  */
 Anibody.visual.Sprite.prototype.SetDefaultClipping = function (dclip) {
-    if(dclip instanceof Anibody.visual.Clipping){
-        this.DefaultClipping = dclip;
-        return true;
-    }else
-        return false;
+    this.AddClipping(dclip, true);
 };
 
-/**
- * change the state of all the flag of the state
- * @param {boolean} state - new state
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.SetAllFlags = function (state) {
-    for(var name in this.FlagList){
-        this.FlagList[name] = state;
+Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
+    
+    if(typeof def === "undefined")
+        def = false;
+    
+    var temp = {
+        NumberOfClips : this.ClippingTemplate.NumberOfClips,
+        FPS : this.ClippingTemplate.FPS,
+        Orign : {x:this.ClippingTemplate.Orign.x, y:this.ClippingTemplate.Orign.y},
+        PlayMode : this.ClippingTemplate.PlayMode,
+        FlagNames : this.ClippingTemplate.FlagNames
+    };
+    
+    if(typeof obj === "object"){
+        
+        if(obj.NumberOfClips) temp.NumberOfClips = obj.NumberOfClips;
+        if(obj.FPS) temp.FPS = obj.FPS;
+        if(obj.Orign && !isNaN(obj.Orign.x)) temp.Orign.x = obj.Orign.x;
+        if(obj.Orign && !isNaN(obj.Orign.y)) temp.Orign.y = obj.Orign.y;
+        if(obj.PlayMode) temp.PlayMode = obj.PlayMode;
+        if(obj.FlagNames) temp.FlagNames = obj.FlagNames;
+        
     }
+    temp._internal = 0;
+    
+    if(!def){
+        this.Clippings.push(temp);
+        
+        // adding flags to the sprite
+        for(var i=0; i<temp.FlagNames.length; i++){
+            this.Flags[temp.FlagNames[i]] = false;
+        }
+    }else
+        this.DefaultClipping = temp;
+    
+    var cbo = function(i){
+        this._internal = i;
+    }.getCallbackObject(temp);
+    
+    var endcbo, tempc;
+    
+    if(temp.NumberOfClips>1){
+        tempc = new Anibody.util.Counter([0,temp.NumberOfClips-1], 1000/temp.FPS, cbo, endcbo); //range, ms, cbo, endcbo
+        
+        if(temp.PlayMode === "loop"){
+            tempc.SetLoop(true);
+            
+        tempc.Start();
+    }
+    }else
+        tempc = {};
+    
+    if(!def){
+        this._clippingsCounter.push(tempc);
+        
+    }
+    else
+        this._defaultCounter = tempc;
+    
+    
+    
+};
+
+Anibody.visual.Sprite.prototype.AddClippings = function(){
+    for(var i=0; i<arguments.length; i++)
+        this.AddClipping(arguments[i]);
+};
+
+Anibody.visual.Sprite.prototype._findActiveClipping = function(){
+    
+    // 1. get the names of the active flags
+    var names = [];
+    var n;
+    for(n in this.Flags){
+        if(typeof this.Flags[n] === "boolean" && this.Flags[n] === true)
+            names.push(n);
+    }
+        
+    // 2. get the clipping's index, which holds all flags
+    var i = -1;
+    this._useDefault = true;
+    
+    for (i = 0; this._useDefault && names.length && i < this.Clippings.length; i++) {
+        
+        // the number of active (flag)names needs to be equal to the flag names, which belongs to the clipping
+        // &&
+        // check if all active names are found in this clipping (this._checkClipping(names, i))
+        if(names.length === this.Clippings[i].FlagNames.length && this._checkClipping(names, i)){
+            this.ActiveClippingIndex = i;
+            this._useDefault = false;
+        }
+    }       
+};
+
+Anibody.visual.Sprite.prototype._checkClipping = function(names, i){
+    var correct = true;
+ 
+    for(var n=0; n<names.length; n++){
+        if(correct && !this.Clippings[i].FlagNames.isElement(names[n]))
+            correct = false;
+    }
+    
+    return correct;
+};
+
+Anibody.visual.Sprite.prototype.Draw = function(c){
+    
+    if(!this.SpriteImage || !this.SpriteImage.complete)
+        return;
+    
+    var cp = false;
+    
+    if(this._useDefault && this.DefaultClipping!== null){
+        cp = this.DefaultClipping;
+    }else
+        if(this.ActiveClippingIndex >= 0 && this.ActiveClippingIndex < this.Clippings.length){
+            cp = this.Clippings[this.ActiveClippingIndex];
+        }
+    
+    if(!cp) return;
+    
+    var x = cp.Orign.x + this.Width * cp._internal;
+    this.ClipContext.clearRect(0, 0, this.Width, this.Height);
+    
+    // ToDo : later draw on ClipContext
+    
+    c.drawImage(this.SpriteImage, /* sprite img */
+        x, cp.Orign.y, /* where on the sprite to start clipping (x, y) */
+        this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
+        this.X, this.Y, this.Width, this.Height /* where on the canvas (x, y, width, height) */
+    );
+    
+};
+
+Anibody.visual.Sprite.prototype.Update = function(){
+    this._findActiveClipping();
 };
 
 /**
@@ -121,7 +225,8 @@ Anibody.visual.Sprite.prototype.SetAllFlags = function (state) {
  * @returns {undefined}
  */
 Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
-        this.FlagList[flagname] = state;
+        this.Flags[flagname] = state;
+        this._checkConstraints(flagname);
 };
 
 /**
@@ -129,235 +234,43 @@ Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
  * @params {strings} 
  * @returns {undefined}
  */
-Anibody.visual.Sprite.prototype.SetFlags = function () {
-    for(var i=0; i<arguments.length; i++)
-        if(typeof arguments[i] === "string")
-            this.FlagList[arguments[i]] = true;   
-};
-
-/**
- * Get the active flags of the sprite
- * @returns {Array}
- */
-Anibody.visual.Sprite.prototype._getActiveFlags = function () {
-    var name;
-    var actives = [];
-    for (name in this.FlagList) {
-        if (this.FlagList[name])
-            actives.push(name);
-    }
-    return actives;
-};
-
-Anibody.visual.Sprite.prototype._getActiveClipping = function () {
-    var actives = this._getActiveFlags(); // actives is a string array of all flags, whose value is true
-    var cur; // current regarded clipping
-
-    for (var c = 0; c < this.Clippings.length; c++) {
-        // loops all Clippings 
-        cur = this.Clippings[c].IsCorrectClipping(actives);
-        if (cur)
-            return this.Clippings[c];
-    }
-    return false;
-
-};
-
-Anibody.visual.Sprite.prototype.Update = function () {
-    this.ActiveClipping = this._getActiveClipping();
-    
-    if(!this.ActiveClipping){
-        this.ActiveClipping = this.DefaultClipping;
-    }
-    
-    if(this.ActiveClipping !== this.OldClipping){
-        if(this.OldClipping!==null)
-            this.OldClipping.Stop();
-        this.ActiveClipping.Start();
-    }
-    
-    this.OldClipping = this.ActiveClipping;
-    
-};
-
-/**
- * Resets ActiveClipping
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.ResetActiveClipping = function () {
-    if(this.ActiveClipping)
-        this.ActiveClipping.Reset();
-    
-};
-
-/**
- * Resets DefaultClipping
- * @returns {undefined}
- */
-Anibody.visual.Sprite.prototype.ResetDefaultClipping = function () {
-    if(this.DefaultClipping)
-        this.DefaultClipping.Reset();
-};
-
-Anibody.visual.Sprite.prototype.Draw = function (c) { 
-    c.save();
-    c.translate(this.X, this.Y);
-    this.ActiveClipping.Draw(c);
-    c.restore();
-};
-
-/**
- * A clipping is a row of pictures which represents an animation
- * @param {object} firstClip - object of x,y,width,height of the first clipped picture
- * @param {number} numClips - the names of the booleans that describe this Clipping (should be unique among the Clippings in a Sprite)
- * @param {number} fps - frames per second
- * @param {array} flagName - names of the booleans in Sprite.FlagList that need to be true to choose this Clipping
- * @param {string} playtype - string "once" or "loop" mode 
- * @returns {Anibody.visual.Clipping}
- */
-Anibody.visual.Clipping = function Clipping(firstClip, numClips, fps, flagNames, playtype) {
-    Anibody.classes.ABO.call(this);
-    this.StartX = firstClip.x;
-    this.StartY = firstClip.y;
-
-    this.X = firstClip.x;
-    this.Y = firstClip.y;
-    this.Width = firstClip.width;
-    this.Height = firstClip.height;
-    this.Current = 0;
-    this.Amount = numClips;
-    this.FlagNames = flagNames; // string or [strings,..]
-    
-    this.Speed = 1000/fps;
-    this.offCanvas = null;
-    this.offContext = null;
-    this.Image = {complete : false};
-    this.Codename = null;
-    
-    this.SpriteIndex = 0;
-
-    playtype = (typeof playtype === "string") ? playtype : "loop";
-    this.PlayType = playtype; // "once", "loop", "stopEnd", "stopStart"
-    this.Counter = null;
-    
-this.Initialize();
-};
-Anibody.visual.Clipping.prototype = Object.create(Anibody.classes.ABO.prototype);
-Anibody.visual.Clipping.prototype.constructor = Anibody.visual.Clipping;
-
-Anibody.visual.Clipping.prototype.Initialize = function () {
-    
-    this.offCanvas = document.createElement("CANVAS");
-    this.offCanvas.width = this.Width;
-    this.offCanvas.height = this.Height;
-    this.offContext = this.offCanvas.getContext("2d");
-    
-    var cbo = function(i){
-        if(!this.Image.complete) return;
-        
-        this.X = this.StartX + this.Width*i;  
-        this.offContext.clearRect(0,0,this.Width, this.Height);
-        this.offContext.drawImage(this.Image, /* sprite img */
-            this.X, this.StartY, /* where on the sprite to start clipping (x, y) */
-            this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
-            0, 0, this.Width, this.Height /* where on the canvas (x, y, width, height) */
-        );
-        
-    }.getCallbackObject(this);
-    
-    if(this.Amount > 1){
-        this.Counter = new Anibody.util.Counter([0,this.Amount-1], this.Speed, cbo, false);
-        
-        if(this.PlayType === "once") {
-            this.Counter.SetLoop(false);
+Anibody.visual.Sprite.prototype.SetFlags = function (names, states) {
+    for(var i=0; i<names.length; i++)
+        if(typeof names[i] === "string"){
+            this.SetFlag(names[i], states[i])
         }
-        if(this.PlayType === "loop"){
-            this.Counter.SetLoop(true);
-        }
+};
+
+Anibody.visual.Sprite.prototype._checkConstraints = function (target) {
+    var c;
+    for(var i=0; i<this.FlagConstraints.length; i++){
+        if(this.FlagConstraints[i].subject === target){
+            this._applyConstraint(this.FlagConstraints[i]);
+        } 
+    }
+};
+
+Anibody.visual.Sprite.prototype._applyConstraint = function (c) {
+    if(c.type === "radio"){
+        var tarval;
         
-    }
-    
-    
-    
-};
-
-Anibody.visual.Clipping.prototype.Start = function () {
-    this.Counter.Start();
-};
-
-Anibody.visual.Clipping.prototype.Stop = function () {
-    this.Counter.Stop();
-    if(this.PlayType === "stopEnd")
-        this.SetPicture(this.Amount-1);
-    if(this.PlayType === "stopStart")
-        this.SetPicture(0);
-};
-
-Anibody.visual.Clipping.prototype.SetPicture = function (i) {
-    this.X = this.StartX + this.Width * i;
-    this.offContext.clearRect(0, 0, this.Width, this.Height);
-    this.offContext.drawImage(this.Image, /* sprite img */
-            this.X, this.StartY, /* where on the sprite to start clipping (x, y) */
-            this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
-            0, 0, this.Width, this.Height /* where on the canvas (x, y, width, height) */
-            );
-};
-
-Anibody.visual.Clipping.prototype.Reset = function () {
-    this.Counter.Reset();
-};
-
-Anibody.visual.Clipping.prototype.Draw = function (c) {
-    
-    if(this.Image.complete){
-        c.drawImage(this.offCanvas, 0, 0);
+        tarval = this.Flags[c.subject];
+        for(var i=0; i<c.objects.length; i++)
+            this.Flags[c.objects[i]] = !tarval;
     }
 };
 
-/**
- * checks if all in an argument given flag names are equal to the flags of this instance
- * @param {array of strings} actives - the name of the flags
- * @returns {boolean}
- */
-Anibody.visual.Clipping.prototype.IsCorrectClipping = function (actives) {
-    var curActive;
-    var correct = true;
-
-    for (var f = 0; correct && f < this.FlagNames.length; f++) {
-        // loops all flagnames, which are a constraint for the current clipping
-        curActive = this.FlagNames[f];
-        // check if curActive is the same as an element of actives
-        correct = actives.indexOf(curActive);
-        if (correct >= 0)
-            correct = true; // still correct
-        else
-            correct = false;
-    }
-
-    return correct;
-};
-
-/**
- * A clipping is a row of pictures which represents an animation
- * @param {number} startx - x of the first clipped picture
- * @param {number} starty - y of the first clipped picture
- * @param {number} numClips - the names of the booleans that describe this Clipping (should be unique among the Clippings in a Sprite)
- * @param {number} fps - frames per second
- * @param {array} flagName - names of the booleans in Sprite.FlagList that need to be true to choose this Clipping
- * @param {string} playtype - string "once" or "loop" mode 
- * @returns {Anibody.visual.Clipping}
- */
-Anibody.visual.Clipping.prototype.Template = function (startx, starty, flagNames, obj) {
-    var numClips = this.Amount;
-    var fps = 1000/this.Speed;
-    var playtype = this.PlayType;
+Anibody.visual.Sprite.prototype.AddRadioConstraint = function () {
     
-    if(typeof obj !== "undefined"){
-        if(typeof obj.NumberOfClips !== "undefined") numClips = obj.NumberOfClips;
-        if(typeof obj.FPS !== "undefined") fps = obj.FPS;
-        if(typeof obj.PlayType !== "undefined") playtype = obj.PlayType;
+    var c;
+    for(var i=0; i<arguments.length; i++){
+        
+        var group = [];
+        for(var j=0; j<arguments.length; j++)
+            if(arguments[i] !== arguments[j])
+                group.push(arguments[j]);
+        
+        c = {type:"radio", subject:arguments[i], objects : group}
+        this.FlagConstraints.push(c);
     }
-    
-    var cl = new Anibody.visual.Clipping({x:startx,y:starty,width:this.Width, height:this.Height}, numClips, fps, flagNames, playtype);
-    return cl;
 };

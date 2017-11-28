@@ -337,7 +337,7 @@ String.prototype.getKeyByEvent = String.getKeyByEvent = function(e){
  * @param {Number} rounds
  * @returns {undefined}
  */
-Array.prototype.shuffle = function(rounds){
+Array.prototype.shuffle = function shuffle(rounds){
     var tmp, in1, in2;
     var self = this;
     rounds = rounds || this.length * 5;
@@ -365,7 +365,7 @@ Array.prototype.shuffle = function(rounds){
  * @param {Number} index
  * @returns {Array-Element}
  */
-Array.prototype.delete = function(index){
+Array.prototype.delete = function deleteElement(index){
     var ret;
     
     if(index >= this.length || index < 0 || isNaN(index))
@@ -389,7 +389,7 @@ Array.prototype.delete = function(index){
  * @param {object} el - element
  * @returns {Boolean}
  */
-Array.prototype.isElement = function(el){
+Array.prototype.isElement = function isElement(el){
     for(var i=0; i<this.length; i++){
         if(this[i] === el)
             return true;
@@ -402,7 +402,7 @@ Array.prototype.isElement = function(el){
  * @param {object} el - element
  * @returns {Number}
  */
-Array.prototype.getIndex = function(el){
+Array.prototype.getIndex = function getIndex(el){
     for(var i=0; i<this.length; i++){
         if(this[i] === el)
             return i;
