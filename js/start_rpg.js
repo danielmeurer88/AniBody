@@ -5,7 +5,6 @@ function level_rpg(engine){
     
     Anibody.importAll(Anibody.static);
     Anibody.import(Anibody.visual.Sprite);
-    Anibody.import(Anibody.visual.Clipping);
     
     engine.MediaManager.Require("room1", rpg_callback.getCallbackObject(engine, engine));
 }
@@ -122,23 +121,40 @@ function rpg_callback(engine){
         player.SetCurrentField(start);
         engine.Objects.SelectedObject = player;
 
-        player.SetSprite("rpg_testsprite", {
-            stopped : true,
-            walking : false,
-            left : false,
-            right : true,
-            up : false,
-            down : false
-        });
-        var cl_down1 = new Clipping(0,0,60,70,1,["down","stopped"]);
-        var cl_down2 = new Clipping(60,0,60,70,2,["down","walking"]);
-        var cl_up1 = new Clipping(0,70,60,70,1,["up","stopped"]);
-        var cl_up2 = new Clipping(60,70,60,70,2,["up","walking"]);
-        var cl_right1 = new Clipping(0,140,60,70,1,["right","stopped"]);
-        var cl_right2 = new Clipping(60,140,60,70,2,["right","walking"]);
-        var cl_left1 = new Clipping(0,210,60,70,1,["left","stopped"]);
-        var cl_left2 = new Clipping(60,210,60,70,2,["left","walking"]);
-        player.Sprite.AddClipping(cl_down1, cl_down2, cl_up1, cl_up2, cl_right1, cl_right2, cl_left1, cl_left2);
+//        player.SetSprite("rpg_testsprite", {
+//            stopped : true,
+//            walking : false,
+//            left : false,
+//            right : true,
+//            up : false,
+//            down : false
+//        });
+//        var cl_down1 = new Clipping(0,0,60,70,1,["down","stopped"]);
+//        var cl_down2 = new Clipping(60,0,60,70,2,["down","walking"]);
+//        var cl_up1 = new Clipping(0,70,60,70,1,["up","stopped"]);
+//        var cl_up2 = new Clipping(60,70,60,70,2,["up","walking"]);
+//        var cl_right1 = new Clipping(0,140,60,70,1,["right","stopped"]);
+//        var cl_right2 = new Clipping(60,140,60,70,2,["right","walking"]);
+//        var cl_left1 = new Clipping(0,210,60,70,1,["left","stopped"]);
+//        var cl_left2 = new Clipping(60,210,60,70,2,["left","walking"]);
+//        player.Sprite.AddClipping(cl_down1, cl_down2, cl_up1, cl_up2, cl_right1, cl_right2, cl_left1, cl_left2);
+        
+        var psprite = new Sprite(0,0,60,70);
+        psprite.SetTemplateAttribute("NumberOfClips", 1);
+        psprite.AddClippings(
+            {Origin:{x:0,y:0},FlagNames:["down","stopped"]},
+            {Origin:{x:0,y:70},FlagNames:["up","stopped"]},
+            {Origin:{x:0,y:140},FlagNames:["right","stopped"]},
+            {Origin:{x:0,y:210},FlagNames:["left","stopped"]}
+        );
+        psprite.SetTemplateAttribute("NumberOfClips", 2);
+        psprite.AddClippings(
+            {Origin:{x:60,y:0},FlagNames:["down","walking"]},
+            {Origin:{x:60,y:70},FlagNames:["up","walking"]}, 
+            {Origin:{x:60,y:140},FlagNames:["right","walking"]}, 
+            {Origin:{x:60,y:210},FlagNames:["left","walking"]} 
+        );
+        player.SetSprite(psprite);
         // adding the player to the overall object loop because it is used on all terrains at all times
         engine.AddObject(player, prarr.player);
     }
@@ -201,17 +217,19 @@ function rpg_callback(engine){
         var bonfire = new RPGObject(RPGObject.prototype.ObjectIDs.bonfire, 60, 70, 1);
         bonfire.Pushable = false;
         bonfire.PushFailFunction = {function:function(){}, that: engine, parameter: bonfire};
-        bonfire.SetStillImages("bonfire_out", "bonfire_out");
         bonfire.ActivateSprite();
-        bonfire.Sprite = new Sprite();
-        bonfire.Sprite.SetSprite("bonfire", {
-            on : true,
-            off : false,
-            damping : false,
-        });
+        
+        var sp = new Sprite("bonfire",0,0,60,70);
+
+        sp.AddClippings(
+            {Origin:{x:0,y:0}, NumberOfPics:3, FlagNames:["on"]},
+            {Origin:{x:180,y:0}, NumberOfPics:1, FlagNames:["off"]}
+        );
+
+        bonfire.Sprite = sp;
+        
         bonfire.SetCurrentField(topterr.GetField(3,3));
-        var on = new Clipping(0,0,60,70,3,["on"]);
-        bonfire.Sprite.AddClipping(on);
+        
         topterr.AddObjectToSideQ(bonfire, prarr.bonfire);
     }
     

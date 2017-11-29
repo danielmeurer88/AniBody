@@ -1,0 +1,46 @@
+basic structure of the Anibody documentation
+
+Table of Content
+
+* Still In Progress
+* Teaching Method -> Learning by short examples, playing around with the code then discover changes
+* Requirements
+    - Understanding of JavaScript, a little bit of HTML,
+    - jQuery (at the moment)
+* Idea of the framework
+    - allowing interactive animations with less writing effort in a short period of time, HTML5-conform and hence cross-browser friendly
+* Anibody in a nutshell
+    - The beating heart of the engine is the (Game)-Loop, which beats by default with a frequence of 25 frames per second
+    - in one Frame, the engine processes the user input, updates itself and draws every object that needs to be drawn
+    - create project-specific components with the functions ProcessInput(), Update() and Draw() or use predefined components and add them to the engine's Loop
+    - User events like pressed keys, mouse movements or touch input will be recorded and can be used at any time or own functions can be attached to listen for them.
+
+* Frequently used objects
+    - You will often read about a Callback-object. That is a POJO (Plain old JavaScript Object :D ), which holds an anonymous function and optionally two objects and a boolean
+     It's an object, which capsulates a function, that will be called by the engine, refering to one object and the arguments of said function will be determined by the second object and the boolean
+     
+     for example:
+     <code>
+     var player = {killGoblin : function(){
+     } };
+     
+     var func = function(arg1, arg2){
+        console.log(arg1);
+        this.killGoblin(arg2);
+     }
+     
+     var callbackobject = { function: f, that: player, parameter: ["Something Epic!", 100], useApply:true }
+     
+     // Callback is called by this function
+     Anibody.CallObject( callbackobject );
+     
+    </code>
+    
+* Anibody classes
+    - There are 4 major classes
+        - Anibody: it's the engine
+        - EngineObject: The root class for every object, which finds its way to the loop. Components, which are made to run in the background, inherit from this class.
+        - ABO: The class inherits from EngineObject. Components, which are made to be rendered on the canvas. (Graphical, visual components)
+        - Widget: This class inherits from ABO: Components, which are made to be rendered on the canvas in the foreground. These are spontanious objects, mostly created as a result of a user action and are not added to the Loop. A widget can be (mis-) used to implement a custom ProcessInput(), Update() or Draw()-function
+        
+        

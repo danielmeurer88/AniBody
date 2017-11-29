@@ -102,8 +102,10 @@ RPGObject.prototype.Draw = function(c){
     if(this.DrawSprite){
             // if interacted or not will be visually handled in the Sprite Attributes
             var s = this.Sprite;
-            if( s && s.Image){
-                c.drawImage(s.DrawImage, this.X - cam.X , this.Y - cam.Y);
+            if( s && s.SpriteImage){
+                s.X = this.X - cam.X;
+                s.Y = this.Y - cam.Y;
+                s.Draw(c);
             }
     }else{
         

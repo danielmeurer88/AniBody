@@ -26,7 +26,6 @@ $(document).ready(function () {
         new Picture({path: "./img_rpg/crate.png", codename: "crate", group:"room2"}),
         new Picture({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
         new Picture({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
-        new Picture({path: "./img_rpg/fire_out.png", codename: "bonfire_out", group:"room1"}),
         waterglass,
         new Picture({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"}),
         new Anibody.util.Sound({path: "./music/portal_activate.mp3", codename: "portal_activate", group:"room1"}),
@@ -45,17 +44,22 @@ function menu_callback(engine){
     
     Anibody.import(Anibody.ui.Button);
 
-    var b1 = new Button({
-        X:"center", Y: 120, Width:250, Height:60,
-        DisplayType : "image",
+    // there will be two buttons in this screen so
+    // the button template will be modified to set the common values
+    Anibody.ui.Button.SetTemplateByObject({
+        Width:250, Height:60,
         Codename : ["button_state_0", "button_state_1", "button_state_2"],
+        TextColor: "white", FontHeight: 18, DisplayType : "image"
+    });
+
+    var b1 = new Button("center", 120, {
         Label : "Start",
-        TextColor: "white", FontHeight: 18,
         TriggerCallbackObject : function (engine) {
-                level_rpg(engine);
-            }.getCallbackObject(engine, engine),
+            level_rpg(engine);
+        }.getCallbackObject(engine, engine),
         HoverText : "Startet das Spiel"
     });
+    
     b1.AddButtonEffect();
     engine.AddObject(b1, 2);
 
@@ -65,16 +69,13 @@ function menu_callback(engine){
     engine.AddObject(ia);
 
     /* BUTTON HELP */
-    var b2 = new Button({
-        X:"center", Y: 220, Width:250, Height:60,
-        DisplayType : "image",
-        Codename : ["button_state_0", "button_state_1", "button_state_2"],
+    var b2 = new Button("center", 220, 
+    {
         Label : "Test Button",
-        TextColor: "white", FontHeight: 18,
         TriggerCallbackObject : function (engine) {
                 start_test(engine);
             }.getCallbackObject(engine, engine),
-        HoverText : "Startet das Spiel"
+        HoverText : "Wird zum Testen unterschiedlicher Dinge benutzt."
     });
     b2.AddButtonEffect();
     
@@ -160,9 +161,12 @@ function start_test(engine){
 //    
 //    engine.testobj = Anibody.static.Random.SetRandomInterval(f, 3000, 9500);
     
-    var pifo = function(){
+    Anibody.import(Anibody.classes.Widget);
+    var w = new Widget();
+    
+    w.ProcessInput = function(){
         
-        var keys = this.Input.Keys;
+        var keys = this.Engine.Input.Keys;
                 
         if(keys.A.FramesPressed > 4 || keys.D.FramesPressed > 4 || keys.W.FramesPressed > 4 || keys.S.FramesPressed > 4){
             bowser.SetFlag("walking", true);
@@ -186,11 +190,8 @@ function start_test(engine){
             bowser.SetFlag("down", true);
         }
         
-    }.getCallbackObject(engine);
-    
-    engine.AddProcessInputFunctionObject(pifo);
-    
-    
+    };
+    w.Register();
 }
 
 function testSpline(engine){

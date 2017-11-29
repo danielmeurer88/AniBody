@@ -6,28 +6,34 @@
  * @param {Number} height
  * @returns {Button}
  */
-Anibody.ui.Button = function Button(x, y, width, height) {
+Anibody.ui.Button = function Button(x, y, options) {
     Anibody.classes.ABO.call(this);
-        
+    
+    this.Options = options;
+    
     this.Type = "Button";
     this.X = x || 0;
     this.Y = y || 0;
-    this.Width = width || 0;
-    this.Height = height || 0;
+    this.Width = Anibody.ui.Button.DefaultButtonTemplate.Width;
+    this.Height = Anibody.ui.Button.DefaultButtonTemplate.Height;
     this._inflated; // saves the original width and height, used if you want to inflat an deflated button
     
-    this.HoverText = ""; // this string will be transformed to an image 
+    this.HoverText = Anibody.ui.Button.DefaultButtonTemplate.HoverText; // this string will be transformed to an image 
     this.HoverImage = false; // which will be saved here
-    this.HoverFramesLimit = 25; // number of frames, the mouse has to hover over the button until the hoverimage is displayed
+    this.HoverPadding = Anibody.ui.Button.DefaultButtonTemplate.HoverPadding;
+    this.FramesUntilHover = Anibody.ui.Button.DefaultButtonTemplate.FramesUntilHover; // number of frames, the mouse has to hover over the button until the hoverimage is displayed
     this.HoverPosition = {x:0, y:0}; // position, where the imagewill be drawn - best position will be calculated in an extra function later
-    this.HoverFontHeight = Anibody.ui.Button.prototype.DefaultHoverFontHeight;
-    this.HoverFontColor = Anibody.ui.Button.prototype.DefaultHoverFontColor;
+    this.HoverFontHeight = Anibody.ui.Button.DefaultButtonTemplate.HoverFontHeight;
+    this.HoverFontColor = Anibody.ui.Button.DefaultButtonTemplate.HoverFontColor;
+    this.HoverBackgroundColor = Anibody.ui.Button.DefaultButtonTemplate.HoverBackgroundColor;
+    this.HoverShadeColor = Anibody.ui.Button.DefaultButtonTemplate.HoverShadeColor;
+    this.HoverRowSpace = Anibody.ui.Button.DefaultButtonTemplate.HoverRowSpace;
     
     this.OldState = -1;
     this.State = 0; // 0 - not clicked, 1 - is about to click|mouse down over button , 2 - clicked
     
-    this.CoolDown = 50; // number of milliseconds until the button is ready to be clicked again
-    this.GonnaRefresh = true; // flag, if button is going to be clicked again or 
+    this.CoolDown = Anibody.ui.Button.DefaultButtonTemplate.CoolDown; // number of milliseconds until the button is ready to be clicked again
+    this.OnTimeButton = Anibody.ui.Button.DefaultButtonTemplate.OnTimeButton; // flag, if button is going to be clicked again or 
     
     // a callback-object ( {function:f, that: objWillBeThis, parameter: obj};
     this.TriggerCallbackObject = {that:this, function:function(){}, parameter:false};
@@ -41,40 +47,64 @@ Anibody.ui.Button = function Button(x, y, width, height) {
     //**********************************
     //    Appearance
     //**********************************
-    this.Label = ["", "", ""];
+    this.Label = [
+        Anibody.ui.Button.DefaultButtonTemplate.Label[0],
+        Anibody.ui.Button.DefaultButtonTemplate.Label[1],
+        Anibody.ui.Button.DefaultButtonTemplate.Label[2]
+    ];
     
-    this.FontHeight = [14, 14, 14];
-    this.FontType = ["sans-serif", "sans-serif", "sans-serif"];
+    this.FontHeight = [
+        Anibody.ui.Button.DefaultButtonTemplate.FontHeight[0],
+        Anibody.ui.Button.DefaultButtonTemplate.FontHeight[1],
+        Anibody.ui.Button.DefaultButtonTemplate.FontHeight[2]
+    ];
+    this.FontType = [
+        Anibody.ui.Button.DefaultButtonTemplate.FontType[0],
+        Anibody.ui.Button.DefaultButtonTemplate.FontType[1],
+        Anibody.ui.Button.DefaultButtonTemplate.FontType[2]
+    ];
     // how the box depending on the state is displayed
-    this.DisplayType = ["color", "color", "color"]; // string-array: "image", "color", "both"
-    this.Rounding = Anibody.ui.Button.prototype.DefaultRounding;
+    this.DisplayType = [
+        Anibody.ui.Button.DefaultButtonTemplate.DisplayType[0],
+        Anibody.ui.Button.DefaultButtonTemplate.DisplayType[1],
+        Anibody.ui.Button.DefaultButtonTemplate.DisplayType[2]
+    ]; // string-array: "image", "color", "both"
     
-    this.ColorCode = [];
+    this.Rounding = Anibody.ui.Button.DefaultButtonTemplate.Rounding;
+    
     // single array element must be copied because javascript copies array by reference
-    this.ColorCode[0] = Anibody.ui.Button.prototype.DefaultColorCode[0];
-    this.ColorCode[1] = Anibody.ui.Button.prototype.DefaultColorCode[1];
-    this.ColorCode[2] = Anibody.ui.Button.prototype.DefaultColorCode[2];
+    this.ColorCode = [
+        Anibody.ui.Button.DefaultButtonTemplate.ColorCode[0],
+        Anibody.ui.Button.DefaultButtonTemplate.ColorCode[1],
+        Anibody.ui.Button.DefaultButtonTemplate.ColorCode[2]
+    ];
     
-    this.Codename = [false, false, false]; // the codename of the images
+    this.Codename = [
+        Anibody.ui.Button.DefaultButtonTemplate.Codename[0],
+        Anibody.ui.Button.DefaultButtonTemplate.Codename[1],
+        Anibody.ui.Button.DefaultButtonTemplate.Codename[2]
+    ];// the codename of the images
     
-    this.HoverShadeColor = Anibody.ui.Button.prototype.DefaultHoverShadeColor
-    
-    this.Padding = 0;
-    this.TextAlign = "center";
+    this.Padding = Anibody.ui.Button.DefaultButtonTemplate.Padding;
+    this.TextAlign = Anibody.ui.Button.DefaultButtonTemplate.TextAlign;
     
     this.SpriteLoaded = false;
     this.Images = [];
-    this.ButtonLayout = false;
+    this.ButtonLayout = null; // can be an image
     
     // the cursor, when the mouse is on the box and depending on state
-    this.CSSMouseCursor = ["pointer", "default", "wait"];
+    this.CSSMouseCursor = [
+        Anibody.ui.Button.DefaultButtonTemplate.CSSMouseCursor[0],
+        Anibody.ui.Button.DefaultButtonTemplate.CSSMouseCursor[1],
+        Anibody.ui.Button.DefaultButtonTemplate.CSSMouseCursor[2]
+    ];
 
     // single array element must be copied because if you copy the default array and later
     // you change the elements of the instance array -> you also change the default array (copy by reference)
     this.FontColor = [];
-    this.FontColor[0] = Anibody.ui.Button.prototype.DefaultFontColor[0];
-    this.FontColor[1] = Anibody.ui.Button.prototype.DefaultFontColor[1];
-    this.FontColor[2] = Anibody.ui.Button.prototype.DefaultFontColor[2];
+    this.FontColor[0] = Anibody.ui.Button.DefaultButtonTemplate.FontColor[0];
+    this.FontColor[1] = Anibody.ui.Button.DefaultButtonTemplate.FontColor[1];
+    this.FontColor[2] = Anibody.ui.Button.DefaultButtonTemplate.FontColor[2];
     
     this.Active = true;
     this.ActivationFunctionObject = {function : function(p){ return this.Active;}, that : this, parameter : {}};
@@ -83,104 +113,79 @@ Anibody.ui.Button = function Button(x, y, width, height) {
     this._ref_reghov = null;
     
     this._counter = 0;
-    this._counterBorderColor = Anibody.ui.Button.prototype.DefaultCounterBorderColor;
-    this._counterBackgroundColor = Anibody.ui.Button.prototype.DefaultCounterBackgroundColor;
-    this._counterFontColor = Anibody.ui.Button.prototype.DefaultCounterFontColor;
+    this._counterBorderColor = Anibody.ui.Button.DefaultButtonTemplate.CounterBorderColor;
+    this._counterBackgroundColor = Anibody.ui.Button.DefaultButtonTemplate.CounterBackgroundColor;
+    this._counterFontColor = Anibody.ui.Button.DefaultButtonTemplate.CounterFontColor;
     
     this._urgency = false;
-    this._urgencyBorderColor = Anibody.ui.Button.prototype.DefaultUrgencyBorderColor;
-    this._urgencyBackgroundColor = Anibody.ui.Button.prototype.DefaultUrgencyBackgroundColor;
-    this._urgencyFontColor = Anibody.ui.Button.prototype.DefaultUrgencyFontColor;
-    
-    // if an argument is an object, it will be checked if it contains attributes that defines the button
-    for(var i=0; i<arguments.length; i++)
-        if(this._getClass(arguments[i]) === "Object")
-            this._handleObject(arguments[i]);
-    
+    this._urgencyBorderColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyBorderColor;
+    this._urgencyBackgroundColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyBackgroundColor;
+    this._urgencyFontColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyFontColor;
+        
     this.Initialize();
 };
 
 Anibody.ui.Button.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.ui.Button.prototype.constructor = Anibody.ui.Button;
 
-Anibody.ui.Button.prototype.DefaultMask = null;
-
-Anibody.ui.Button.prototype.DefaultRounding = 4;
-Anibody.ui.Button.prototype.DefaultHoverRowSpace = 3;
-Anibody.ui.Button.prototype.DefaultHoverPadding = 4;
-Anibody.ui.Button.prototype.DefaultHoverFontHeight = 14;
-Anibody.ui.Button.prototype.DefaultFontColor = ["black", "black", "black"];
-Anibody.ui.Button.prototype.DefaultHoverBackgroundColor = "#eee";
-Anibody.ui.Button.prototype.DefaultHoverFontColor = "black";
-Anibody.ui.Button.prototype.DefaultColorCode = ["#cfcfcf", "#bdbdbd", "#666"];
-Anibody.ui.Button.prototype.DefaultHoverShadeColor = "rgba(0,0,0,0.2)";
-
-Anibody.ui.Button.prototype.DefaultCounterBorderColor = ["red", "red", "red"];
-Anibody.ui.Button.prototype.DefaultCounterBackgroundColor = ["white", "white", "white"];
-Anibody.ui.Button.prototype.DefaultCounterFontColor = ["red", "red", "red"];
-
-Anibody.ui.Button.prototype.DefaultUrgencyBorderColor = ["white", "white", "white"];
-Anibody.ui.Button.prototype.DefaultUrgencyBackgroundColor = ["red", "red", "red"];
-Anibody.ui.Button.prototype.DefaultUrgencyFontColor = ["white", "white", "white"];
-
 /**
- * Checkf it the given object contains any attr that may define the instance
- * if the default value of an attribute is originally an array but the value of the object is not,
- * the method Set() makes sure the single value will be saved within the instance as an array
- * @param {object} obj
- * @returns {undefined}
+ * @private
+ * backup template, necessary to reset the DefaultTemplate, which molds the instances
+ * @type object
  */
-Anibody.ui.Button.prototype._handleObject = function (obj) {
-    var _thisclass;
-    var _objclass;
+Anibody.ui.Button._defaultButtonTemplate = {
     
-    if (typeof obj !== "undefined")
-        for (var key in obj) {
-            if (typeof this[key] != "undefined"){
-                
-                // find out if the default value is an array
-                _thisclass = this._getClass(this[key]);
-                if( _thisclass === "Array"){
-                    // find out if obj. value is an array
-                    _objclass = this._getClass(obj[key]);
-                    if( _objclass === "Array"){
-                        this[key][0] = obj[key][0];
-                        this[key][1] = obj[key][1] || obj[key][0];
-                        this[key][2] = obj[key][2] || obj[key][0];
-                    }else{
-                        this.Set(key, obj[key]);
-                    }
-                }else{
-                    // default is not an array an probably need no array
-                    this[key] = obj[key];
-                    
-                }
-                
-            }
-                        
-        }
+    Width : 200,
+    Height : 60,
+    CoolDown : 50,
+    OnTimeButton : false,
     
+    Label : ["", "", ""],
+    CSSMouseCursor : ["pointer", "default", "wait"],
+    
+    FontHeight : [14, 14, 14],
+    FontType : ["sans-serif", "sans-serif", "sans-serif"],
+    // how the box depending on the state is displayed
+    DisplayType : ["color", "color", "color"], // string-array: "image", "color", "both"
+    Codename : [false, false, false],
+    
+    Padding : 3,
+    TextAlign : "center",
+    
+    Rounding : 4,
+    
+    HoverText : "",
+    FramesUntilHover : 25,
+    HoverRowSpace : 3,
+    HoverPadding : 4,
+    HoverFontHeight : 14,
+    FontColor : ["black", "black", "black"],
+    HoverBackgroundColor : "#eee",
+    HoverFontColor : "black",
+    ColorCode : ["#cfcfcf", "#bdbdbd", "#666"],
+    HoverShadeColor : "rgba(0,0,0,0.2)",
+
+    CounterBorderColor : ["red", "red", "red"],
+    CounterBackgroundColor : ["white", "white", "white"],
+    CounterFontColor : ["red", "red", "red"],
+
+    UrgencyBorderColor : ["white", "white", "white"],
+    UrgencyBackgroundColor : ["red", "red", "red"],
+    UrgencyFontColor : ["white", "white", "white"]
 };
 
 /**
- * Returns the constructor function name of the variable
- * @param {anything} obj
- * @returns {String}
+ * @type object - will be a copy of _defaultButtonTemplate when the
+ * first Button instance is created
  */
-Anibody.ui.Button.prototype._getClass = function (obj) {
-    if(typeof obj === "undefined") return "undefined";
-    var con = obj.constructor.toString();
-    var ifunc = con.indexOf("function ");
-    var ibracket = con.indexOf("(");
-    if(ifunc == 0){
-        con = con.substr(9, ibracket - 9);
-    }
-    return con;    
-};
+Anibody.ui.Button.DefaultButtonTemplate = null;
+
 /**
  * @see README_DOKU.txt
  */
 Anibody.ui.Button.prototype.Initialize = function () {
+    
+    Anibody.ui.Button._processOptions(this, this.Options);
     
     if(this.X === "center"){
         var c = this.Engine.Canvas;
@@ -195,11 +200,7 @@ Anibody.ui.Button.prototype.Initialize = function () {
 
     this.Center = {X: this.X + this.Width / 2, Y: this.Y + this.Height / 2};
     this.GetLabelWidth(0);
-    
-    //applies the default mask if one is set
-    if(Anibody.ui.Button.prototype.DefaultMask != null)
-        this.ApplyDefaultMask();
-    
+        
     // gets the images from the MediaManager if needed
     if(this.DisplayType[0] === "image" || this.DisplayType[0] === "both")
         this.Images[0] = this.Engine.MediaManager.GetImage(this.Codename[0]);
@@ -258,7 +259,7 @@ Anibody.ui.Button.prototype._registerHoverImageDrawing = function(){
     
     var f = function(c){
         
-        if (this.IsMouseOver && this._mouseOverFrames >= this.HoverFramesLimit) {
+        if (this.IsMouseOver && this._mouseOverFrames >= this.FramesUntilHover) {
             // isMouseOver should be asked as well so that the hover text won't be always displayed if the limit is 0 or negative
             if (this.HoverImage) {
                 this._findHoverPosition();
@@ -510,7 +511,7 @@ Anibody.ui.Button.prototype.Trigger = function (extern) {
         this.IsMouseOver = false;
         this.State = 2;
         
-        if (this.GonnaRefresh && this.CoolDown >= 0)
+        if (!this.OnTimeButton && this.CoolDown >= 0)
             setTimeout(function () {
                 arguments[0].State = 0;
             }, this.CoolDown, this);
@@ -565,149 +566,6 @@ Anibody.ui.Button.prototype.SetActiveFunctionObject = function (afo) {
         afo.that = this;
     }
     this.ActivationFunctionObject = afo;
-};
-
-/**
- * @description Returns the current appearance (Mask) of the button.
- * @returns {Object}
- */
-Anibody.ui.Button.prototype.GetMask = function () {
-    // { DisplayType: "string", Code: "string", Label: "string", Cursor: "string", TextColor: "string", FontHeight: Number, FontType: "string" }
-    return {
-        State0: {DisplayType: this.DisplayType[0], ColorCode: this.ColorCode[0], Codename:this.Codename[0], Label: this.Label[0], Cursor: this.CSSMouseCursor[0], TextColor: this.FontColor[0], FontHeight: this.FontHeight[0], FontType: this.FontType[0]},
-        State1: {DisplayType: this.DisplayType[1], ColorCode: this.ColorCode[1], Codename:this.Codename[1], Label: this.Label[1], Cursor: this.CSSMouseCursor[1], TextColor: this.FontColor[1], FontHeight: this.FontHeight[1], FontType: this.FontType[1]},
-        State2: {DisplayType: this.DisplayType[2], ColorCode: this.ColorCode[2], Codename:this.Codename[2], Label: this.Label[2], Cursor: this.CSSMouseCursor[2], TextColor: this.FontColor[2], FontHeight: this.FontHeight[2], FontType: this.FontType[2]},
-        SingleValues : { Rounding : this.Rounding, CoolDown : this.CoolDown, HoverFramesLimit : this.HoverFramesLimit, HoverFontHeight : this.HoverFontHeight, Padding : this.Padding}
-    };
-
-};
-
-/**
- * @description The button takes on the appearance, descriped in the mask object
- * @param {Object} m Mask Object
- * @returns {undefined}
- */
-Anibody.ui.Button.prototype.SetMask = function (m) {
-    this.SetAppearance(m.State0, m.State1, m.State2, m.SingleValues);
-};
-
-/**
- * @description Saves the current mask as the DefaultMask
- * @returns {undefined}
- */
-Anibody.ui.Button.prototype.SaveMask = function () {
-    Anibody.ui.Button.prototype.DefaultMask = this.GetMask();
-};
-
-/**
- * @description The button takes on the appearance, saved as the default mask
- * @returns {undefined}
- */
-Anibody.ui.Button.prototype.ApplyDefaultMask = function () {
-    if(Anibody.ui.Button.prototype.DefaultMask!=null)
-        this.SetAppearance(Anibody.ui.Button.prototype.DefaultMask.State0, Anibody.ui.Button.prototype.DefaultMask.State1, Anibody.ui.Button.prototype.DefaultMask.State2, Anibody.ui.Button.prototype.DefaultMask.SingleValues);
-    else
-        return false;
-};
-
-/**
- * @description Changes the appearance - should only be called from SetMask()
- * @param {Object} s0 - object, which contents of the state 0 values
- * @param {Object} s1 - object, which contents of the state 1 values
- * @param {Object} s2 - object, which contents of the state 3 values
- * @param {Object} sv - object, which contents of the rest of the necessary values
- * @returns {undefined}
- */
-Anibody.ui.Button.prototype.SetAppearance = function (s0, s1, s2, sv) {
-
-    // optimales Objekt
-    /*
-    { DisplayType: "string", ColorCode: "string", Codename : "string",
-      Label: "string", Cursor: "string", TextColor: "string",
-      FontHeight: Number, FontType: "string" };
-    */
-
-    if(arguments.length < 3)
-        s2 = s0;
-    
-    if(arguments.length < 2)
-        s1 = s0;
-
-    /* state 0 */
-    if (s0.DisplayType)
-        this.DisplayType[0] = s0.DisplayType;
-    if (s0.ColorCode)
-        this.ColorCode[0] = s0.ColorCode;
-    if (s0.Codename){
-        this.Codename[0] = s0.Codename;
-        this.LoadImage(s0.Codename, 0);
-    }
-    if (s0.Label)
-        this.Label[0] = s0.Label;
-    if (s0.Cursor)
-        this.CSSMouseCursor[0] = s0.Cursor;
-    if (s0.TextColor)
-        this.FontColor[0] = s0.FontColor;
-    if (s0.FontHeight)
-        this.FontHeight[0] = s0.FontHeight;
-    if (s0.FontType)
-        this.FontType[0] = s0.FontType;
-
-    /* state 1 */
-    if (s1.DisplayType)
-        this.DisplayType[1] = s1.DisplayType;
-    if (s1.ColorCode)
-        this.ColorCode[1] = s1.ColorCode;
-    if (s1.Codename){
-        this.Codename[1] = s1.Codename;
-        this.LoadImage(s1.Codename, 1);
-    }
-    if (s1.Label)
-        this.Label[1] = s1.Label;
-    if (s1.Cursor)
-        this.CSSMouseCursor[1] = s1.Cursor;
-    if (s1.TextColor)
-        this.FontColor[1] = s1.FontColor;
-    if (s1.FontHeight)
-        this.FontHeight[1] = s1.FontHeight;
-    if (s1.FontType)
-        this.FontType[1] = s1.FontType;
-
-    /* state 2 */
-    if (s2.DisplayType)
-        this.DisplayType[2] = s2.DisplayType;
-    if (s2.ColorCode)
-        this.ColorCode[2] = s2.ColorCode;
-    if (s2.Codename){
-        this.Codename[2] = s2.Codename;
-        this.LoadImage(s2.Codename, 2);
-    }
-    if (s2.Label)
-        this.Label[2] = s2.Label;
-    if (s2.Cursor)
-        this.CSSMouseCursor[2] = s2.Cursor;
-    if (s2.TextColor)
-        this.FontColor[2] = s2.FontColor;
-    if (s2.FontHeight)
-        this.FontHeight[2] = s2.FontHeight;
-    if (s2.FontType)
-        this.FontType[2] = s2.FontType;
-    
-    //Rounding,CoolDown,HoverFramesLimit,HoverFontHeight
-    if(typeof sv !== "undefined"){
-        if(typeof sv.Rounding !== "undefined")
-            this.Rounding = sv.Rounding;
-        if(typeof sv.CoolDown !== "undefined")
-            this.CoolDown = sv.CoolDown;
-        if(typeof sv.HoverFramesLimit !== "undefined")
-            this.HoverFramesLimit = sv.HoverFramesLimit;
-        if(typeof sv.HoverFontHeight !== "undefined")
-            this.HoverFontHeight = sv.HoverFontHeight;
-        if(typeof sv.Padding !== "undefined")
-            this.Padding = sv.Padding;
-    }
-
-    this.SetPadding(this.Padding);
 };
 
 /**
@@ -1016,8 +874,9 @@ Anibody.ui.Button.prototype._createHoverImage = function (fh) {
     // set a maximum value for the later used width
     var width = this.Engine.Canvas.width / 3;
     
-    var padding = Anibody.ui.Button.prototype.DefaultHoverPadding; // the distance between the the border of the image and the text
-    var rowspace = Anibody.ui.Button.prototype.DefaultHoverRowSpace; // the distance between the text rows
+     // the distance between the the border of the image and the text
+    var padding = this.HoverPadding || 4;
+    var rowspace = this.HoverRowSpace || 3; // the distance between the text rows
     // gets the length of all words
     var c = this.Engine.Context;
     c.save();
@@ -1089,7 +948,7 @@ Anibody.ui.Button.prototype._createHoverImage = function (fh) {
     c.setFontHeight(fontheight);
     
     c.strokeStyle = "black";
-    c.fillStyle = this.DefaultHoverBackgroundColor;
+    c.fillStyle = this.HoverBackgroundColor;
     
     c.fillRect(0,0, width,height);
     c.strokeRect(0,0,width, height);
@@ -1670,3 +1529,184 @@ Anibody.ui.Button.prototype.Circlize = function () {
     var min = Math.min(this.Width, this.Height);
     this.Rounding = min/2;
 };
+
+/**
+ * Resets ButtonTemplate
+ * @returns {undefined}
+ */
+Anibody.ui.Button.prototype.ResetTemplate = function () {
+    Anibody.ui.Button.ResetTemplate();
+};
+
+Anibody.ui.Button._processOptions = function(target, actor, aggressive){
+    
+    if(typeof aggressive === "undefined")
+        aggressive = false;
+    
+    for(var attr in actor){
+        
+        // if the attribute exists in target object or does the function even care
+        if(aggressive || typeof target[attr] !== "undefined"){
+            
+            // does the target expects an array as the value for the attribut
+            // or does the function even care
+            if(aggressive || target[attr].push){
+                // it's an array or doesn't matter
+                
+                //check if the attr in actor is an array or only one value
+                if(actor[attr].push){
+                    // it's an array
+                    target[attr] = actor[attr];
+                }else{
+                    // it's only one value but it should be (in Button) three
+                    target[attr] = [actor[attr], actor[attr], actor[attr]];
+                }
+                
+            }else{
+                // it has only one value
+                target[attr] = actor[attr];
+            }
+            
+        }
+        
+    }
+};
+
+Anibody.ui.Button.prototype.SetTemplateByObject = function (obj) {
+    Anibody.ui.Button._processOptions(Anibody.ui.Button.DefaultButtonTemplate, obj);
+};
+
+Anibody.ui.Button.SetTemplateByObject = function (obj) {
+    Anibody.ui.Button._processOptions(Anibody.ui.Button.DefaultButtonTemplate, obj);
+};
+
+/**
+ * Resets ButtonTemplate
+ * @returns {undefined}
+ */
+Anibody.ui.Button.ResetTemplate = function () {
+    
+    Anibody.ui.Button.DefaultButtonTemplate = {};
+    var d = Anibody.ui.Button.DefaultButtonTemplate;
+
+
+    d.Height =  Anibody.ui.Button._defaultButtonTemplate.Height;
+    d.Width =  Anibody.ui.Button._defaultButtonTemplate.Width;
+    
+    d.CoolDown = Anibody.ui.Button._defaultButtonTemplate.CoolDown;
+    
+    d.Label = [ 
+        Anibody.ui.Button._defaultButtonTemplate.Label[0],
+        Anibody.ui.Button._defaultButtonTemplate.Label[1], 
+        Anibody.ui.Button._defaultButtonTemplate.Label[2]
+    ];
+    
+    d.CSSMouseCursor = [
+        Anibody.ui.Button._defaultButtonTemplate.CSSMouseCursor[0],
+        Anibody.ui.Button._defaultButtonTemplate.CSSMouseCursor[1],
+        Anibody.ui.Button._defaultButtonTemplate.CSSMouseCursor[2]
+    ];
+    
+    d.FontHeight = [
+        Anibody.ui.Button._defaultButtonTemplate.FontHeight[0],
+        Anibody.ui.Button._defaultButtonTemplate.FontHeight[1], 
+        Anibody.ui.Button._defaultButtonTemplate.FontHeight[2]
+    ];
+    d.FontType = [
+        Anibody.ui.Button._defaultButtonTemplate.FontType[0],
+        Anibody.ui.Button._defaultButtonTemplate.FontType[1], 
+        Anibody.ui.Button._defaultButtonTemplate.FontType[2]
+    ];
+    // how the box depending on the state is displayed
+    d.DisplayType = [
+        Anibody.ui.Button._defaultButtonTemplate.DisplayType[0],
+        Anibody.ui.Button._defaultButtonTemplate.DisplayType[1], 
+        Anibody.ui.Button._defaultButtonTemplate.DisplayType[2]
+    ]; // string-array= "image", "color", "both"
+    
+    d.Codename = [
+        Anibody.ui.Button._defaultButtonTemplate.Codename[0],
+        Anibody.ui.Button._defaultButtonTemplate.Codename[1],
+        Anibody.ui.Button._defaultButtonTemplate.Codename[2]
+    ];
+    
+    d.Rounding = Anibody.ui.Button._defaultButtonTemplate.Rounding;
+    d.Padding = Anibody.ui.Button._defaultButtonTemplate.Padding;
+    d.TextAlign = Anibody.ui.Button._defaultButtonTemplate.TextAlign;
+    
+    d.FramesUntilHover = Anibody.ui.Button._defaultButtonTemplate.FramesUntilHover;
+    d.HoverRowSpace = Anibody.ui.Button._defaultButtonTemplate.HoverRowSpace;
+    d.HoverPadding = Anibody.ui.Button._defaultButtonTemplate.HoverPadding;
+    d.HoverFontHeight = Anibody.ui.Button._defaultButtonTemplate.HoverFontHeight;
+    d.FontColor = [
+        Anibody.ui.Button._defaultButtonTemplate.FontColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.FontColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.FontColor[2]
+    ];
+    d.HoverBackgroundColor = Anibody.ui.Button._defaultButtonTemplate.HoverBackgroundColor;
+    d.HoverFontColor = Anibody.ui.Button._defaultButtonTemplate.HoverFontColor;
+    
+    d.HoverText = Anibody.ui.Button._defaultButtonTemplate.HoverText;
+    
+    d.ColorCode = [
+        Anibody.ui.Button._defaultButtonTemplate.ColorCode[0],
+        Anibody.ui.Button._defaultButtonTemplate.ColorCode[1], 
+        Anibody.ui.Button._defaultButtonTemplate.ColorCode[2]
+    ];
+    d.HoverShadeColor = Anibody.ui.Button._defaultButtonTemplate.HoverShadeColor;
+
+    d.CounterBorderColor = [
+        Anibody.ui.Button._defaultButtonTemplate.CounterBorderColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.CounterBorderColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.CounterBorderColor[2]
+    ];
+    d.CounterBackgroundColor = [
+        Anibody.ui.Button._defaultButtonTemplate.CounterBackgroundColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.CounterBackgroundColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.CounterBackgroundColor[2]
+    ];
+    d.CounterFontColor = [
+        Anibody.ui.Button._defaultButtonTemplate.CounterFontColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.CounterFontColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.CounterFontColor[2]
+    ];
+
+    d.UrgencyBorderColor = [
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyBorderColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyBorderColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyBorderColor[2]
+    ];
+    d.UrgencyBackgroundColor = [
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyBackgroundColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyBackgroundColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyBackgroundColor[2]
+    ];
+    d.UrgencyFontColor = [
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyFontColor[0],
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyFontColor[1], 
+        Anibody.ui.Button._defaultButtonTemplate.UrgencyFontColor[2]
+    ];
+};
+    
+/**
+ * Resets ButtonTemplate
+ * @returns {object}
+ */
+Anibody.ui.Button.GetTemplate = function () {
+    return Anibody.ui.Button.DefaultButtonTemplate;
+};
+
+/**
+ * Resets ButtonTemplate
+ * @returns {undefined}
+ */
+Anibody.ui.Button.SetTemplateAttribute = function (attr, val) {
+    if(typeof Anibody.ui.Button.DefaultButtonTemplate[attr] !== "undefined"){
+        Anibody.ui.Button.DefaultButtonTemplate[attr] = val;
+        return true;
+    }else{
+        return false;
+    }
+};
+
+Anibody.ui.Button.ResetTemplate();

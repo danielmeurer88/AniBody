@@ -66,13 +66,7 @@ Anibody.visual.Sprite.prototype.Initialize = function(){
         throw "Could not access the Image for the Sprite";
     }
     
-    this.ClippingTemplate = {
-        NumberOfClips : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.NumberOfClips,
-        FPS : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FPS,
-        Orign : {x:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.x, y:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.y},
-        PlayMode : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.PlayMode,
-        FlagNames : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FlagNames
-    };
+    this.ResetTemplate();
     
     // not really used yet - TODO
     this.ClipCanvas = document.createElement("CANVAS");
@@ -353,4 +347,20 @@ Anibody.visual.Sprite.prototype.AddRadioConstraint = function () {
         c = {type:"radio", subject:arguments[i], objects : group};
         this.FlagConstraints.push(c);
     }
+};
+
+/**
+ * Adds a "RadioConstraint" to the Sprite (only one of the flags is allowed to be true)
+ * @param {strings} flagnames - a number of flagnames
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.ResetTemplate = function () {
+    
+    this.ClippingTemplate  = {
+        NumberOfClips : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.NumberOfClips,
+        FPS : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FPS,
+        Orign : {x:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.x, y:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.y},
+        PlayMode : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.PlayMode,
+        FlagNames : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FlagNames
+    };
 };

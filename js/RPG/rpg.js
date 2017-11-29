@@ -190,8 +190,7 @@ RPGPlayer.prototype.Update = function () {
             this.Engine.Terrain.MoveCounter++;
         }
     }
-    this.Sprite.UpdateActiveClipping();
-
+    
     return;
 };
 RPGPlayer.prototype.SetCurrentField = function (cf) {
@@ -232,9 +231,8 @@ RPGPlayer.prototype.Interact = function () {
     if (target.User.Interact)
         target.User.Interact(this);
 };
-RPGPlayer.prototype.SetSprite = function (codename, flagList, speed) {
-    this.Sprite = new Sprite();
-    this.Sprite.SetSprite(codename, flagList, speed);
+RPGPlayer.prototype.SetSprite = function (sprite) {
+    this.Sprite = sprite;
 };
 RPGPlayer.prototype.FindPath = function (target) {
     this.PathObject.FindPath(target);
@@ -247,50 +245,50 @@ RPGPlayer.prototype.FindPath = function (target) {
  */
 RPGPlayer.prototype.GiveMoveCommand = function (cmd) {
 
-    if (!this.Sprite.FlagList)
+    if (!this.Sprite.Flags)
         return;
 
     if (cmd == this.Commands.Stop) {
-        this.Sprite.FlagList.stopped = true;
-        this.Sprite.FlagList.walking = false;
+        this.Sprite.Flags.stopped = true;
+        this.Sprite.Flags.walking = false;
         return true;
     }
 
     if (cmd == this.Commands.Walk) {
-        this.Sprite.FlagList.stopped = false;
-        this.Sprite.FlagList.walking = true;
+        this.Sprite.Flags.stopped = false;
+        this.Sprite.Flags.walking = true;
         return true;
     }
 
     if (cmd == this.Commands.TurnUp) {
-        this.Sprite.FlagList.up = true;
-        this.Sprite.FlagList.down = false;
-        this.Sprite.FlagList.left = false;
-        this.Sprite.FlagList.right = false;
+        this.Sprite.Flags.up = true;
+        this.Sprite.Flags.down = false;
+        this.Sprite.Flags.left = false;
+        this.Sprite.Flags.right = false;
         return true;
     }
 
     if (cmd == this.Commands.TurnRight) {
-        this.Sprite.FlagList.right = true;
-        this.Sprite.FlagList.up = false;
-        this.Sprite.FlagList.down = false;
-        this.Sprite.FlagList.left = false;
+        this.Sprite.Flags.right = true;
+        this.Sprite.Flags.up = false;
+        this.Sprite.Flags.down = false;
+        this.Sprite.Flags.left = false;
         return true;
     }
 
     if (cmd == this.Commands.TurnDown) {
-        this.Sprite.FlagList.down = true;
-        this.Sprite.FlagList.up = false;
-        this.Sprite.FlagList.left = false;
-        this.Sprite.FlagList.right = false;
+        this.Sprite.Flags.down = true;
+        this.Sprite.Flags.up = false;
+        this.Sprite.Flags.left = false;
+        this.Sprite.Flags.right = false;
         return true;
     }
 
     if (cmd == this.Commands.TurnLeft) {
-        this.Sprite.FlagList.left = true;
-        this.Sprite.FlagList.up = false;
-        this.Sprite.FlagList.down = false;
-        this.Sprite.FlagList.right = false;
+        this.Sprite.Flags.left = true;
+        this.Sprite.Flags.up = false;
+        this.Sprite.Flags.down = false;
+        this.Sprite.Flags.right = false;
         return true;
     }
 
