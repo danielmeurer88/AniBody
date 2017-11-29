@@ -1,12 +1,21 @@
-
-Anibody.visual.Sprite = function Sprite(codename, clipX, clipY,clipWidth, clipHeight) {
+/**
+ * Represents a sprite - a collection of clips in one single image.
+ * A number of flags decide which clip the sprite will render
+ * @param {string|htmlImage} codename - codename of the sprite image or HTMLImageElement
+ * @param {number} canvasX - x value of the rendered animation on the canvas
+ * @param {number} canvasY - x value of the rendered clip on the canvas
+ * @param {number} clipWidth - 
+ * @param {number} clipHeight - 
+ * @returns {Anibody.visual.Sprite}
+ */
+Anibody.visual.Sprite = function Sprite(codename, canvasX, canvasY,clipWidth, clipHeight) {
     Anibody.classes.ABO.call(this);
     this.Codename = codename;
     this.SpriteImage = {complete : false}; // the whole image
     this.ClipCanvas = null;
     this.ClipContext = null;
-    this.X = clipX;
-    this.Y = clipY;
+    this.X = canvasX;
+    this.Y = canvasY;
     this.Width = clipWidth;
     this.Height = clipHeight;
     
@@ -20,6 +29,7 @@ Anibody.visual.Sprite = function Sprite(codename, clipX, clipY,clipWidth, clipHe
     this.DefaultClipping = null;
     this._defaultCounter = null;
     
+    // default values of every clipping added to this sprite instance
     this.ClippingTemplate = null;
     
     this.FlagConstraints = [];
@@ -30,6 +40,10 @@ Anibody.visual.Sprite = function Sprite(codename, clipX, clipY,clipWidth, clipHe
 Anibody.visual.Sprite.prototype = Object.create(Anibody.classes.ABO.prototype);
 Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
+/**
+ * default values of every clipping template added to this sprite instance
+ * @type object
+ */
 Anibody.visual.Sprite.prototype.DefaultClippingTemplate = {
         NumberOfClips : 1,
         FPS : 10,
@@ -44,6 +58,7 @@ Anibody.visual.Sprite.prototype.Initialize = function(){
     if(this.Codename instanceof HTMLImageElement)
         this.SpriteImage = this.Codename;
     
+    // if the codename is a string -> try to load the picture from the mediamanager
     if(this.Engine.MediaManager && this.Engine.MediaManager.GetPicture && typeof this.Codename === "string")
         this.SpriteImage = this.Engine.MediaManager.GetPicture(this.Codename);
     
@@ -59,6 +74,7 @@ Anibody.visual.Sprite.prototype.Initialize = function(){
         FlagNames : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FlagNames
     };
     
+    // not really used yet - TODO
     this.ClipCanvas = document.createElement("CANVAS");
     this.ClipCanvas.width = this.Width;
     this.ClipCanvas.height = this.Height;
@@ -67,19 +83,39 @@ Anibody.visual.Sprite.prototype.Initialize = function(){
     
 };
 
+/**
+ * returns the template of this instance - attributes of the template can be changed 
+ * (pass by reference)
+ * @returns {Anibody.visual.Sprite.ClippingTemplate}
+ */
 Anibody.visual.Sprite.prototype.GetTemplate = function(){return this.ClippingTemplate;};
 
+/**
+ * attributes of the template can be changed
+ * @param {type} attr - attribute
+ * @param {type} val - new value
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.SetTemplateAttribute = function(attr, val){this.ClippingTemplate[attr] = val;};
 
 /**
- * 
- * @param {Clipping} dclip
+ * Sets a new default clipping
+ * Sprite will use the default clipping if the current states of the flags do not fit
+ * to any clippings
+ * @param {object} dclip - 
  * @returns {undefined}
  */
 Anibody.visual.Sprite.prototype.SetDefaultClipping = function (dclip) {
     this.AddClipping(dclip, true);
 };
 
+/**
+ * Molds a new clipping by the template and overwrites the new clipping's by the
+ * information found in the given argument
+ * @param {object} obj - adds this information to the clipping, molded by the template
+ * @param {boolean} def - if true clipping will be defaultclipping and flags won't be added to the sprite
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
     
     if(typeof def === "undefined")
@@ -143,11 +179,22 @@ Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
     
 };
 
+/**
+ * Allows to add several clippings at once by calling Sprite.AddClipping for
+ * every argument
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.AddClippings = function(){
     for(var i=0; i<arguments.length; i++)
         this.AddClipping(arguments[i]);
 };
-
+/**
+ * @private
+ * Finds the clipping that fits the currrent state of the flags
+ * if the current state of the flags doesn't fit any clipping, the
+ * defaultclipping flag will be set true
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype._findActiveClipping = function(){
     
     // 1. get the names of the active flags
@@ -174,6 +221,13 @@ Anibody.visual.Sprite.prototype._findActiveClipping = function(){
     }       
 };
 
+/**
+ * @private
+ * checks if the specified clipping fits the current state of the flags, which are saved in an array
+ * @param {string-array} names - names of the active flags
+ * @param {number} i - index of the clipping in the clippings-array
+ * @returns {.Object@call;create._checkClipping.correct|Boolean|Object.prototype._checkClipping.correct}
+ */
 Anibody.visual.Sprite.prototype._checkClipping = function(names, i){
     var correct = true;
  
@@ -185,6 +239,11 @@ Anibody.visual.Sprite.prototype._checkClipping = function(names, i){
     return correct;
 };
 
+/**
+ * 
+ * @param {type} c
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.Draw = function(c){
     
     if(!this.SpriteImage || !this.SpriteImage.complete)
@@ -214,6 +273,10 @@ Anibody.visual.Sprite.prototype.Draw = function(c){
     
 };
 
+/**
+ * 
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.Update = function(){
     this._findActiveClipping();
 };
@@ -231,7 +294,8 @@ Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
 
 /**
  * Set the flags to true
- * @params {strings} 
+ * @params {string-array} names - the names of the flags
+ * @param {boolean-array} states - the state of the representive flag
  * @returns {undefined}
  */
 Anibody.visual.Sprite.prototype.SetFlags = function (names, states) {
@@ -241,6 +305,12 @@ Anibody.visual.Sprite.prototype.SetFlags = function (names, states) {
         }
 };
 
+/**
+ * @private
+ * checks if the target flag has a constraint to be considered
+ * @param {string} target - flagname
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype._checkConstraints = function (target) {
     var c;
     for(var i=0; i<this.FlagConstraints.length; i++){
@@ -250,16 +320,26 @@ Anibody.visual.Sprite.prototype._checkConstraints = function (target) {
     }
 };
 
+/**
+ * @private
+ * applies constraint according to its type
+ * @param {object} c - constraint {type, subject, objects,...}
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype._applyConstraint = function (c) {
     if(c.type === "radio"){
         var tarval;
         
-        tarval = this.Flags[c.subject];
-        for(var i=0; i<c.objects.length; i++)
-            this.Flags[c.objects[i]] = !tarval;
+        if(this.Flags[c.subject])
+            for(var i=0; i<c.objects.length; i++)
+                this.Flags[c.objects[i]] = false;
     }
 };
-
+/**
+ * Adds a "RadioConstraint" to the Sprite (only one of the flags is allowed to be true)
+ * @param {strings} flagnames - a number of flagnames
+ * @returns {undefined}
+ */
 Anibody.visual.Sprite.prototype.AddRadioConstraint = function () {
     
     var c;
@@ -270,7 +350,7 @@ Anibody.visual.Sprite.prototype.AddRadioConstraint = function () {
             if(arguments[i] !== arguments[j])
                 group.push(arguments[j]);
         
-        c = {type:"radio", subject:arguments[i], objects : group}
+        c = {type:"radio", subject:arguments[i], objects : group};
         this.FlagConstraints.push(c);
     }
 };
