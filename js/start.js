@@ -114,7 +114,7 @@ function start_test(engine){
     
     var width = 85.33;
     var height = 85.375;
-    var getOrign = function(w,h){
+    var getOrigin = function(w,h){
         return {x:width*w, y:height*h};
     };
     
@@ -132,25 +132,25 @@ function start_test(engine){
     templ.PlayMode = "loop";
     
     bowser.AddClippings(
-        {Orign:{x:0,y:0}, FlagNames:["walking", "down"]},
-        {Orign:{x:0,y:height*1}, FlagNames:["walking", "left"]},
-        {Orign:{x:0,y:height*2}, FlagNames:["walking", "right"]},
-        {Orign:{x:width*9,y:height*7}, FlagNames:["walking", "up"]}
+        {Origin:{x:0,y:0}, FlagNames:["walking", "down"]},
+        {Origin:{x:0,y:height*1}, FlagNames:["walking", "left"]},
+        {Origin:{x:0,y:height*2}, FlagNames:["walking", "right"]},
+        {Origin:{x:width*9,y:height*7}, FlagNames:["walking", "up"]}
     );
     
     templ.NumberOfClips = 1;
     
     bowser.AddClippings(
-        {Orign:getOrign(1,0), FlagNames:["down"]},
-        {Orign:getOrign(1,1), FlagNames:["left"]},
-        {Orign:getOrign(9,2), FlagNames:["right"]},
-        {Orign:getOrign(9,7), FlagNames:["up"]}
+        {Origin:getOrigin(1,0), FlagNames:["down"]},
+        {Origin:getOrigin(1,1), FlagNames:["left"]},
+        {Origin:getOrigin(9,2), FlagNames:["right"]},
+        {Origin:getOrigin(9,7), FlagNames:["up"]}
     );
     
     bowser.AddRadioConstraint("left", "right", "down", "up");
     
     bowser.SetDefaultClipping(
-            {Orign:getOrign(1,0)}
+            {Origin:getOrigin(1,0)}
             );
     
     engine.AddObject(bowser);

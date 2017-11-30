@@ -5,9 +5,9 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.1.0",
+        Version: "1.1.2",
         Author: "Daniel Meurer",
-        LastUpdated: "2017_11_29_h01" // year_month_day_hhour
+        LastUpdated: "2017_11_30_h21" // year_month_day_hhour
     };
     
     this.CurrentFrame = 0;

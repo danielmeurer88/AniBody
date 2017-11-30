@@ -19,6 +19,8 @@ Anibody.visual.Sprite = function Sprite(codename, canvasX, canvasY,clipWidth, cl
     this.Width = clipWidth;
     this.Height = clipHeight;
     
+    this.Locked = false;
+    
     this.Clippings = [];
     this._clippingsCounter = [];
     this.ActiveClippingIndex = -1;
@@ -47,7 +49,7 @@ Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 Anibody.visual.Sprite.prototype.DefaultClippingTemplate = {
         NumberOfClips : 1,
         FPS : 10,
-        Orign : {x:0, y:0},
+        Origin : {x:0, y:0},
         PlayMode : "loop",
         FlagNames : ["default"]
     };
@@ -118,7 +120,7 @@ Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
     var temp = {
         NumberOfClips : this.ClippingTemplate.NumberOfClips,
         FPS : this.ClippingTemplate.FPS,
-        Orign : {x:this.ClippingTemplate.Orign.x, y:this.ClippingTemplate.Orign.y},
+        Origin : {x:this.ClippingTemplate.Origin.x, y:this.ClippingTemplate.Origin.y},
         PlayMode : this.ClippingTemplate.PlayMode,
         FlagNames : this.ClippingTemplate.FlagNames
     };
@@ -127,8 +129,8 @@ Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
         
         if(obj.NumberOfClips) temp.NumberOfClips = obj.NumberOfClips;
         if(obj.FPS) temp.FPS = obj.FPS;
-        if(obj.Orign && !isNaN(obj.Orign.x)) temp.Orign.x = obj.Orign.x;
-        if(obj.Orign && !isNaN(obj.Orign.y)) temp.Orign.y = obj.Orign.y;
+        if(obj.Origin && !isNaN(obj.Origin.x)) temp.Origin.x = obj.Origin.x;
+        if(obj.Origin && !isNaN(obj.Origin.y)) temp.Origin.y = obj.Origin.y;
         if(obj.PlayMode) temp.PlayMode = obj.PlayMode;
         if(obj.FlagNames) temp.FlagNames = obj.FlagNames;
         
@@ -254,13 +256,13 @@ Anibody.visual.Sprite.prototype.Draw = function(c){
     
     if(!cp) return;
     
-    var x = cp.Orign.x + this.Width * cp._internal;
+    var x = cp.Origin.x + this.Width * cp._internal;
     this.ClipContext.clearRect(0, 0, this.Width, this.Height);
     
     // ToDo : later draw on ClipContext
     
     c.drawImage(this.SpriteImage, /* sprite img */
-        x, cp.Orign.y, /* where on the sprite to start clipping (x, y) */
+        x, cp.Origin.y, /* where on the sprite to start clipping (x, y) */
         this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
         this.X, this.Y, this.Width, this.Height /* where on the canvas (x, y, width, height) */
     );
@@ -272,7 +274,8 @@ Anibody.visual.Sprite.prototype.Draw = function(c){
  * @returns {undefined}
  */
 Anibody.visual.Sprite.prototype.Update = function(){
-    this._findActiveClipping();
+    if(!this.Locked)
+        this._findActiveClipping();
 };
 
 /**
@@ -328,6 +331,12 @@ Anibody.visual.Sprite.prototype._applyConstraint = function (c) {
             for(var i=0; i<c.objects.length; i++)
                 this.Flags[c.objects[i]] = false;
     }
+    
+    if(c.type === "opposite"){
+        var tarval = this.Flags[c.subject];
+        for(var i=0; i<c.objects.length; i++)
+            this.Flags[c.objects[i]] = !tarval;
+    }
 };
 /**
  * Adds a "RadioConstraint" to the Sprite (only one of the flags is allowed to be true)
@@ -350,6 +359,27 @@ Anibody.visual.Sprite.prototype.AddRadioConstraint = function () {
 };
 
 /**
+ * Adds a "OppositeConstraint" to the Sprite. If one flag changes state, the
+ * others will be switched to the opposite value
+ * @param {strings} flagnames - a number of flagnames
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.AddOppositeConstraint = function () {
+    
+    var c;
+    for(var i=0; i<arguments.length; i++){
+        
+        var group = [];
+        for(var j=0; j<arguments.length; j++)
+            if(arguments[i] !== arguments[j])
+                group.push(arguments[j]);
+        
+        c = {type:"opposite", subject:arguments[i], objects : group};
+        this.FlagConstraints.push(c);
+    }
+};
+
+/**
  * Adds a "RadioConstraint" to the Sprite (only one of the flags is allowed to be true)
  * @param {strings} flagnames - a number of flagnames
  * @returns {undefined}
@@ -359,8 +389,33 @@ Anibody.visual.Sprite.prototype.ResetTemplate = function () {
     this.ClippingTemplate  = {
         NumberOfClips : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.NumberOfClips,
         FPS : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FPS,
-        Orign : {x:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.x, y:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Orign.y},
+        Origin : {x:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Origin.x, y:Anibody.visual.Sprite.prototype.DefaultClippingTemplate.Origin.y},
         PlayMode : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.PlayMode,
         FlagNames : Anibody.visual.Sprite.prototype.DefaultClippingTemplate.FlagNames
     };
+};
+
+/**
+ * Sets the constant updating for the right clipping under lock down or not
+ * @param {type} state
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.SetLocked = function (state) {
+    this.Locked = state;
+};
+
+/**
+ * Sets the constant updating for the right clipping under lock down
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.Lock = function () {
+    this.Locked = true;
+};
+
+/**
+ * Continue the constant updating for the right clipping
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.Unlock = function () {
+    this.Locked = false;
 };

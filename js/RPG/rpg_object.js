@@ -64,7 +64,8 @@ function RPGObject(objectid, width,height, am_needed){
     
     // attribute for the sprite
     this.Sprite = false;
-    this.DrawSprite = false; // Flag if Sprites will be drawn or not
+    this.DrawSprite = true; // Flag if Sprites will be drawn or not
+    this.SpriteProcessInputWidget = null;
     
     this.Stopped = true;
     this.AnimationSteps = 12;
@@ -75,8 +76,6 @@ this.Initialize();
 RPGObject.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGObject.prototype.constructor = RPGObject;
 
-/* ++++++++++ The Object IDs +++++++++++ */
-/* +++++++++++++++++++++++++++++++++++++ */
 /* ++++ unique to every game +++++++++++ */
 RPGObject.prototype.ObjectIDs = {
     
@@ -99,7 +98,7 @@ RPGObject.prototype.Draw = function(c){
     var cam = this.Engine.Camera.SelectedCamera;
     
     // true if Sprites should be drawn and exists
-    if(this.DrawSprite){
+    if(this.Sprite){
             // if interacted or not will be visually handled in the Sprite Attributes
             var s = this.Sprite;
             if( s && s.SpriteImage){
@@ -129,11 +128,16 @@ RPGObject.prototype.Draw = function(c){
 RPGObject.prototype.Update = function(){
     var move = {Step : {X:0,Y:0}};
     
+    if(this.Sprite)
+        this.Sprite.Update();
+    
     // if MoveQ is not empty it will be emptied frame by frame
     if(!this.MoveQ.isEmpty()){
         move = this.MoveQ.Dequeue();
         this.X += move.Step.X;
         this.Y += move.Step.Y;
+        if(this.Sprite)
+            this.Sprite.Lock();
                 
         // if the player reached its goal - 
         if(move.KeyFrame >= this.AnimationSteps -1){
@@ -141,15 +145,14 @@ RPGObject.prototype.Update = function(){
             // if Stopped true - Move() is possible again
             this.Stopped = true;
             this.SetCurrentField(this.NextField);
+            if(this.Sprite)
+                this.Sprite.Unlock();
         }
     }
     
     if(this.UpdateFunction)
-        this.UpdateFunction.Call();
+        Anibody.CallObject(this.UpdateFunction);
     
-    // will continue the Sprite to create the illusion of movements
-    if(this.Sprite)
-        this.Sprite.Update();
 };
 /**
  * @description Adds a new function that will called every frame in the Update phase as long as the Terrain is active
@@ -158,9 +161,8 @@ RPGObject.prototype.Update = function(){
  * @returns {undefined}
  */
 RPGObject.prototype.SetUpdateFunction = function(f, para){
-    this.UpdateFunction = new Callback({that:this, function: f, parameter: para});
+    this.UpdateFunction = {that:this, function: f, parameter: para};
 };
-
 /**
  * @description Will be called when a player walks against an object.
  * If it is pushable - the object will be reposition in the walking direction of the player and the PushSuccessFunction will be called
@@ -172,13 +174,13 @@ RPGObject.prototype.ReceivePush = function(Pushor){
     var f;
     if(!this.Pushable){
         f = this.PushFailFunction;
-        f.function.call(f.that, f.parameter);
+        Anibody.CallObject(f);
         return;
     } 
     if(!this.Stopped) return;
     
     f = this.PushSuccessFunction;
-    f.function.call(f.that, f.parameter);
+    Anibody.CallObject(f);
     
     var delta = Pushor.Direction;
     var target = this.Engine.Terrain.GetFieldNeighbour(this.CurrentField, delta);
@@ -195,7 +197,6 @@ RPGObject.prototype.ReceivePush = function(Pushor){
     }
     
 };
-
 /**
  * @description Sets a new CurrentField for the object and "cleans" the terrain
  * @param {Field} the new CurrentField of the object
@@ -259,7 +260,6 @@ RPGObject.prototype.Interact = function(Interactor){
     }
     
 };
-
 /**
  * @description changes the Interactabillity of this object with the use of key words
  * @param {keywords as strings} 
@@ -317,7 +317,6 @@ RPGObject.prototype.SetInteractabillity = function(){
     }
     
 };
-
 /**
  * @description Sets new still images for the object and activates it so that the still images will be drawn in Draw()
  * @param {type} codename_before a String, with which the before-interaction image is registered in the MediaManager
@@ -340,7 +339,6 @@ RPGObject.prototype.SetStillImages = function(codename_before, codename_after){
     }, codename_before, codename_after);
     
 };
-
 /**
  * @description Sets new still images for the object and activates it so that the still images will be drawn in Draw()
  * @param {type} codename_before a String, with which the before-interaction image is registered in the MediaManager
@@ -352,7 +350,6 @@ RPGObject.prototype.RefreshStillImages = function(){
         return false;
     this.RefreshCallback.Call();
 };
-
 /**
  * @description Activates that the Sprite will be drawn
  * @returns {undefined}

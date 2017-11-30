@@ -116,30 +116,8 @@ function rpg_callback(engine){
     
     // PLAYER
     {
-        var player = new RPGPlayer(60, 70);
-        var start = engine.Terrain.GetField(4,3);
-        player.SetCurrentField(start);
-        engine.Objects.SelectedObject = player;
-
-//        player.SetSprite("rpg_testsprite", {
-//            stopped : true,
-//            walking : false,
-//            left : false,
-//            right : true,
-//            up : false,
-//            down : false
-//        });
-//        var cl_down1 = new Clipping(0,0,60,70,1,["down","stopped"]);
-//        var cl_down2 = new Clipping(60,0,60,70,2,["down","walking"]);
-//        var cl_up1 = new Clipping(0,70,60,70,1,["up","stopped"]);
-//        var cl_up2 = new Clipping(60,70,60,70,2,["up","walking"]);
-//        var cl_right1 = new Clipping(0,140,60,70,1,["right","stopped"]);
-//        var cl_right2 = new Clipping(60,140,60,70,2,["right","walking"]);
-//        var cl_left1 = new Clipping(0,210,60,70,1,["left","stopped"]);
-//        var cl_left2 = new Clipping(60,210,60,70,2,["left","walking"]);
-//        player.Sprite.AddClipping(cl_down1, cl_down2, cl_up1, cl_up2, cl_right1, cl_right2, cl_left1, cl_left2);
-        
-        var psprite = new Sprite(0,0,60,70);
+        // setting up the sprite
+        var psprite = new Sprite("rpg_testsprite",0,0,60,70);
         psprite.SetTemplateAttribute("NumberOfClips", 1);
         psprite.AddClippings(
             {Origin:{x:0,y:0},FlagNames:["down","stopped"]},
@@ -154,7 +132,15 @@ function rpg_callback(engine){
             {Origin:{x:60,y:140},FlagNames:["right","walking"]}, 
             {Origin:{x:60,y:210},FlagNames:["left","walking"]} 
         );
-        player.SetSprite(psprite);
+
+        psprite.AddOppositeConstraint("walking", "stopped");
+        psprite.AddRadioConstraint("left", "right", "down", "up");
+        
+        var player = new RPGPlayer(60, 70, psprite);
+        var start = engine.Terrain.GetField(4,3);
+        player.SetCurrentField(start);
+        engine.Objects.SelectedObject = player;
+        
         // adding the player to the overall object loop because it is used on all terrains at all times
         engine.AddObject(player, prarr.player);
     }
@@ -222,9 +208,11 @@ function rpg_callback(engine){
         var sp = new Sprite("bonfire",0,0,60,70);
 
         sp.AddClippings(
-            {Origin:{x:0,y:0}, NumberOfPics:3, FlagNames:["on"]},
-            {Origin:{x:180,y:0}, NumberOfPics:1, FlagNames:["off"]}
+            {Origin:{x:0,y:0}, NumberOfClips:3,FPS:3, FlagNames:["on"]},
+            {Origin:{x:180,y:0}, NumberOfClips:1, FlagNames:["off"]}
         );
+        sp.AddOppositeConstraint("on", "off");
+        sp.SetFlag("on", true);
 
         bonfire.Sprite = sp;
         
@@ -266,7 +254,7 @@ function rpg_callback(engine){
             // b = RPGObject (the actual bonfire,infront of which the player stands
             // c = the label
             //var siz = this.Engine.MediaManager.GetSound("fire_sizzle");
-            b.ActivateImages();
+            b.Sprite.SetFlag("off", true);
 //            if(siz)
 //                siz.play();
         });
@@ -280,86 +268,5 @@ function rpg_callback(engine){
             }
         );
     }
-    
-    level_rpg_Input(engine);
-    //engine.IncreaseCanvas();
-    //engine.Start();
-    
-}
-
-function level_rpg_Input(engine){
-    
-    var f = function(){
-        var e = arguments[0];
         
-         if(!e.Paused){
-            if(e.Input.Keys.A.Pressed && e.Objects.SelectedObject)
-                e.Objects.SelectedObject.Move({X:-1,Y:0});
-
-            if(e.Input.Keys.D.Pressed && e.Objects.SelectedObject)
-                e.Objects.SelectedObject.Move({X:1,Y:0});
-            
-            if(e.Input.Keys.W.Pressed && e.Objects.SelectedObject)
-                e.Objects.SelectedObject.Move({X:0,Y:-1});
-
-            if(e.Input.Keys.S.Pressed && e.Objects.SelectedObject)
-                e.Objects.SelectedObject.Move({X:0,Y:1});
-            
-             if(e.Input.Keys.Space.FramesPressed == 1){
-                 e.Objects.SelectedObject.Interact();
-            }
-            
-            if(e.Input.Keys.I.FramesPressed == 1 && e.Objects.SelectedObject){
-                if(e.Objects.SelectedObject.ItemBag.isOpen())
-                    e.Objects.SelectedObject.ItemBag.Close();
-                else
-                    e.Objects.SelectedObject.ItemBag.Open();
-            }
-            
-            if(e.Input.Keys.U.FramesPressed == 1 && e.Objects.SelectedObject){
-                e.Objects.SelectedObject.ItemBag.UseItem();
-            }
-            
-        }
-    };
-    engine.AddProcessInputFunctionObject( { function : f, parameter : engine } );
-
-    
-    /* +++++++ TOUCH HANDLER +++++ */
-    f = function(player, dir){
-        player.Move(dir);
-    }.getCallbackObject(engine, engine.Objects.SelectedObject);
-    
-    engine.Input.TouchHandler.AddEventListener("swipefinger1", f);
-    
-    f = function(player){
-        player.Interact();
-    }.getCallbackObject(engine, engine.Objects.SelectedObject);
-    //engine.Input.Touch.RegisterLongTapFunction(f, 5, engine, engine.Objects.SelectedObject);
-    engine.Input.TouchHandler.AddEventListener("longtapfinger1", f);
-    
-    f = function(player){
-        player.ItemBag.SelectItem();
-    }.getCallbackObject(engine, engine.Objects.SelectedObject);
-    //engine.Input.Touch.RegisterTap2Function(f, 5, engine, engine.Objects.SelectedObject);
-    engine.Input.TouchHandler.AddEventListener("tapfinger2", f);
-    
-    f = function(player){
-        player.ItemBag.UseItem();
-    }.getCallbackObject(engine, engine.Objects.SelectedObject);
-    //engine.Input.Touch.RegisterLongTap2Function(f, 5, engine, engine.Objects.SelectedObject);
-    engine.Input.TouchHandler.AddEventListener("longtapfinger2", f);
-    
-    f = function(dir, player){
-        // left swipe2
-        if(dir.X == -1 && dir.Y == 0)
-            player.ItemBag.Open();
-        
-        // right swipe2
-        if(dir.X == 1 && dir.Y == 0)
-            player.ItemBag.Close();
-
-    }.getCallbackObject(engine, engine.Objects.SelectedObject);
-    //engine.Input.Touch.RegisterSwipe2Function(f, 5, engine, engine.Objects.SelectedObject);
-    engine.Input.TouchHandler.AddEventListener("swipefinger2", f);
 }

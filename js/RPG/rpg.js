@@ -1,10 +1,10 @@
 /**
  * @description Represents a moveable player object on an rpg terrain
  * @param {number} width width of the image/s
- * @param {number} height width of the image/s
+ * @param {number} height height of the image/s
  * @returns {RPGPlaer}
  */
-function RPGPlayer(width, height) {
+function RPGPlayer(width, height, sprite) {
 
     Anibody.classes.ABO.call(this);
 
@@ -15,9 +15,6 @@ function RPGPlayer(width, height) {
     this.CurrentField;
     this.NextField;
     this.Direction = {};
-
-    // allows the control of the player with the mouse by finding a path or interact with objects
-    this.PathObject;
 
     this.Dialog;
 
@@ -33,8 +30,9 @@ function RPGPlayer(width, height) {
 
     this.Type = "RPGPlayer";
 
-    this.Sprite = {};
-
+    this.Sprite = sprite;
+    this.SpriteProcessInputWidget = null;
+    
     this.Codename;
 
     this.Stopped = true;
@@ -43,12 +41,10 @@ function RPGPlayer(width, height) {
 }
 RPGPlayer.prototype = Object.create(Anibody.classes.ABO.prototype);
 RPGPlayer.prototype.constructor = RPGPlayer;
+
 RPGPlayer.prototype.Initialize = function () {
 
     this.MoveQ = new Queue();
-
-    if (!this.Sprite.Image)
-        this.Sprite.Image = this.Engine.MediaManager.GetImage(this.Codename);
 
     this.Dialog = new RPGDialog();
     this.Dialog.Owner = this;
@@ -62,9 +58,67 @@ RPGPlayer.prototype.Initialize = function () {
 
     // the itembag will be drawn seperately to make sure it will be drawn last, so nothing overlaps the inventory window
     this.Engine.AddObject(this.ItemBag, -1);
-
-    this.PathObject = new RPGPath();
-    this.PathObject.SetPlayer(this);
+    
+    this.SpriteProcessInputWidget = new Anibody.classes.Widget();
+    
+    this.SpriteProcessInputWidget.PlayerRef = this;
+    
+    this.Sprite.SetFlag("right", true);
+    
+    this.SpriteProcessInputWidget.ProcessInput = function(){
+        
+        var keys = this.Engine.Input.Keys;
+        var sr = this.PlayerRef.Sprite;
+        var p = this.PlayerRef;
+        var min = 2;
+        
+        if(keys.A.FramesPressed > min || keys.D.FramesPressed > min || keys.W.FramesPressed > min || keys.S.FramesPressed > min){
+            sr.SetFlag("walking", true);
+            
+        }else{
+            sr.SetFlag("walking", false);
+        }
+        
+        if(keys.A.FramesPressed > min){
+            sr.SetFlag("left", true);
+            p.Move({X:-1,Y:0});
+        }
+        
+        if(keys.D.FramesPressed > min){
+            sr.SetFlag("right", true);
+            p.Move({X:1,Y:0});
+        }
+        
+        if(keys.W.FramesPressed > min){
+            sr.SetFlag("up", true);
+            p.Move({X:0,Y:-1});
+        }
+        
+        if(keys.S.FramesPressed > min){
+            sr.SetFlag("down", true);
+            p.Move({X:0,Y:1});
+        }
+        
+        if(keys.I.FramesPressed == 1 && this.Engine.Objects.SelectedObject){
+                if(p.ItemBag.isOpen()){
+                    sr.Unlock();
+                    p.ItemBag.Close();
+                }else{
+                    sr.Lock();
+                    p.ItemBag.Open();
+                }
+            }
+            
+            if(keys.U.FramesPressed == 1 && this.Engine.Objects.SelectedObject){
+                p.ItemBag.UseItem();
+            }
+            
+            if(keys.Space.FramesPressed == 1){
+                 p.Interact();
+            }
+        
+    };
+    this.SpriteProcessInputWidget.Register();
     
 };
 /**
@@ -147,7 +201,7 @@ RPGPlayer.prototype.Draw = function (c) {
     c.save();
 
     var cam = this.Engine.Camera.SelectedCamera;
-    if (!this.Sprite.Image) {
+    if (this.Sprite === null) {
         c.fillStyle = this.Color;
         c.fillRect(this.X - cam.X, this.Y - cam.Y, this.Width, this.Height);
         c.fillStyle = "black";
@@ -158,8 +212,10 @@ RPGPlayer.prototype.Draw = function (c) {
     }
     else {
         var s = this.Sprite;
-        if (s && s.Image) {
-            c.drawImage(s.DrawImage, this.X - cam.X, this.Y - cam.Y);
+        if (s && s.SpriteImage) {
+            s.X = this.X - cam.X;
+            s.Y = this.Y - cam.Y;
+            s.Draw(c);
         }
         if (this.DebugCurrentField) {
             c.fillStyle = "red";
@@ -173,17 +229,21 @@ RPGPlayer.prototype.Update = function () {
 
     var move = {Step: {X: 0, Y: 0}};
     this.Center = {X: this.X + (this.Width / 2), Y: this.Y + (this.Height / 2)};
-
+    
+    this.Sprite.Update();
+    
     if (!this.MoveQ.isEmpty()) {
         move = this.MoveQ.Dequeue();
         this.X += move.Step.X;
         this.Y += move.Step.Y;
+        this.Sprite.Lock();
 
         this.GiveMoveCommand(this.Commands.Walk);
 
         // if the player reached its goal - 
         if (move.KeyFrame >= this.AnimationSteps - 1) {
             this.Stopped = true;
+            this.Sprite.Unlock();
             this.GiveMoveCommand(this.Commands.Stop);
             this.SuccessfulMoveFunction();
             this.SetCurrentField(this.NextField);
@@ -193,6 +253,12 @@ RPGPlayer.prototype.Update = function () {
     
     return;
 };
+
+RPGPlayer.prototype.ProcessInput = function () {
+
+    this.Sprite.ProcessInput();
+};
+
 RPGPlayer.prototype.SetCurrentField = function (cf) {
     if (this.CurrentField) {
         this.CurrentField.User = false;
@@ -244,55 +310,6 @@ RPGPlayer.prototype.FindPath = function (target) {
  * @returns {Boolean}
  */
 RPGPlayer.prototype.GiveMoveCommand = function (cmd) {
-
-    if (!this.Sprite.Flags)
-        return;
-
-    if (cmd == this.Commands.Stop) {
-        this.Sprite.Flags.stopped = true;
-        this.Sprite.Flags.walking = false;
-        return true;
-    }
-
-    if (cmd == this.Commands.Walk) {
-        this.Sprite.Flags.stopped = false;
-        this.Sprite.Flags.walking = true;
-        return true;
-    }
-
-    if (cmd == this.Commands.TurnUp) {
-        this.Sprite.Flags.up = true;
-        this.Sprite.Flags.down = false;
-        this.Sprite.Flags.left = false;
-        this.Sprite.Flags.right = false;
-        return true;
-    }
-
-    if (cmd == this.Commands.TurnRight) {
-        this.Sprite.Flags.right = true;
-        this.Sprite.Flags.up = false;
-        this.Sprite.Flags.down = false;
-        this.Sprite.Flags.left = false;
-        return true;
-    }
-
-    if (cmd == this.Commands.TurnDown) {
-        this.Sprite.Flags.down = true;
-        this.Sprite.Flags.up = false;
-        this.Sprite.Flags.left = false;
-        this.Sprite.Flags.right = false;
-        return true;
-    }
-
-    if (cmd == this.Commands.TurnLeft) {
-        this.Sprite.Flags.left = true;
-        this.Sprite.Flags.up = false;
-        this.Sprite.Flags.down = false;
-        this.Sprite.Flags.right = false;
-        return true;
-    }
-
-    this.Engine.HandleError({Error: "Player MoveCommand not found: Number: " + cmd});
     return false;
 };
 // enumeration of player commands
