@@ -1,160 +1,197 @@
-Anibody.debug.ObjectDumb = function ObjectDumb(obj, name){
-    
+/**
+ * creates a downloadable object dumb
+ * @param {object} obj - the object, which to dumb
+ * @param {string} name - the name of the object
+ * @returns {Anibody.debug.ObjectDumb}
+ */
+Anibody.debug.ObjectDumb = function ObjectDumb(obj, name) {
+
     this.Object = obj;
     this._already = [];
     this._maxDepth = 5;
-    
-    if(typeof name === "undefined")
+
+    if (typeof name === "undefined")
         name = "root";
-    
+
     this._name = name;
-    
+
     this.Image = null;
-    
+
     this._root = {};
-    
+
     this.Width = 0;
     this.Height = 0;
-    
-    this._tabulator = 10;
-    this._fh = 14;
+
+    this._tabulator = 40;
+    this._fh = 30;
     this._margin = 2;
 
-this.Initialize();
+    this._dataURL = 0;
+
+    this.Initialize();
 };
 
-Anibody.debug.ObjectDumb.prototype.Initialize = function(){
-    
+Anibody.debug.ObjectDumb.prototype.Initialize = function () {
+
     this._root = {
-        type : this._whatIsIt(this.Object),
-        name : this._name,
-        element : this.Object,
-        children : [],
-        depth : 0
+        type: this._getType(this.Object),
+        name: this._name,
+        element: this.Object,
+        children: [],
+        depth: 0
     };
-    
+
     this._analyze(this._root, this._root.depth);
-    
+
     this._createImage();
 };
 
-Anibody.debug.ObjectDumb.prototype._analyze = function(obj, depth){
-    
-    var el = obj.element;
-    var type;
-    
-    if(depth > this._maxDepth){
-        
-        obj.children.push({name:"max depth reached", element:null});
-        
-    };
-    
-    for(var attr in el){
-        
-        // check if cur[attr] was already analyzed
-        if(this._already.indexOf(el[attr]) < 0){
-            // haven't been analyzed
-            this._already.push(el[attr]);
-            
-            // what is it?
-            type = this._whatIsIt(el[attr]);
-            var child = {type:type, element:el[attr], name:attr, children:[], depth:depth+1};
-            obj.children.push(child);
-            
-            if(["number", "boolean", "string", "null"].indexOf(type)<0){
-                this._analyze(child,depth+1);
+Anibody.debug.ObjectDumb.prototype._analyze = function () {
+
+    var rec = function (obj, depth) {
+        var el = obj.element;
+        var type;
+
+        if (depth > this._maxDepth) {
+
+            obj.children.push({name: "max depth reached", element: null});
+
+        }
+        ;
+
+        for (var attr in el) {
+
+            // check if cur[attr] was already analyzed
+            if (this._already.indexOf(el[attr]) < 0) {
+                // haven't been analyzed
+                this._already.push(el[attr]);
+
+                // what type is it?
+                type = this._getType(el[attr]);
+                var child = {type: type, element: el[attr], name: attr, children: [], depth: depth + 1};
+                obj.children.push(child);
+
+                if (["number", "boolean", "string", "null"].indexOf(type) < 0) {
+                    rec.call(this, child, depth + 1);
+                }
+
+            } else {
+                type = "already";
             }
-            
-        }else{
-            type = "already";
-        } 
-    }
+        }
+    };
+
+    rec.call(this, this._root, 0);
 };
 
-Anibody.debug.ObjectDumb.prototype._whatIsIt = function(el){
-    
-    if(el === null) return "null";
-    
+Anibody.debug.ObjectDumb.prototype._getType = function (el) {
+
+    if (el === null)
+        return "null";
+
     var type = typeof el;
-    
-    if(type !== "object") return type;
-    
-    if(el.push) return "Array";
-    
+
+    if (type !== "object")
+        return type;
+
+    if (el.push)
+        return "array";
+
     var con = el.constructor.toString();
     var ifunc = con.indexOf("function ");
     var ibracket = con.indexOf("(");
-    if(ifunc === 0){
+    if (ifunc === 0) {
         con = con.substr(9, ibracket - 9);
     }
     return con;
 };
 
-Anibody.debug.ObjectDumb.prototype._createImage = function(el){
-    
+Anibody.debug.ObjectDumb.prototype._createImage = function (el) {
+
     var off = document.createElement("CANVAS");
     off.width = 10;
     off.height = 10;
     var c = off.getContext("2d");
-    
+    c.setFontHeight(this._fh);
+
     c.textAlign = "left";
     c.textBaseline = "top";
-    
-    var size = this._getSize(c);
-    off.width = size.width;
-    off.height = size.height;
-    c = off.getContext("2d");
-    
-    // draw image
-    console.log(size);
-};
 
-Anibody.debug.ObjectDumb.prototype._getSize = function(c){
-    this.Width = 0;
-    this.Height = 0;
-    
+    // get real size needed for the canvas
+
     var rowheight = this._fh + this._margin; // fontheight + 2x 1/2 margin between rows
-    
-    var allheight = this._margin*2; // margins top and down
-    var allwidth = this._margin*2;
-    
-    var rows = 0; // 1 = the root
-    var cur; // current element
-    
-    var queue = [];
+
+    var allheight = this._margin * 2; // margins top and down
+    var allwidth = this._margin * 2;
     var i;
-    
-    queue.push(this._root);
-    while(queue.length){
-        cur = queue.shift();
-        
-        //counting rows for the allheight
-        rows += cur.children.length;
-        
-        allwidth += this._getLongestWidth(c, cur.children) + (cur.depth)* this._tabulator;
-        
-        for(i=0; i<cur.children.length; i++){
-            queue.push(cur.children[i]);
+
+    var drawOrder = []; // the right order every item has to be drawn (top->bottom)
+    var colWidth = []; // 2-dim Array - [depth][widthOfAllNamesInThatCol]
+
+    var tab = this._tabulator;
+
+    var rec = function (el) {
+        drawOrder.push(el);
+        if (typeof colWidth[el.depth] === "undefined") {
+            colWidth[el.depth] = [];
         }
-        
+        colWidth[el.depth].push(c.measureText(el.name + " (" + el.type + ")").width + tab);
+        for (var i = 0; i < el.children.length; i++) {
+            rec(el.children[i]);
+        }
     }
-    
-    allheight += rows * rowheight;
-    
-    return {width:allwidth, height:allheight};
-    
+
+    rec(this._root);
+
+    // getting allwidth by summing up the max of every coloumn
+
+    // loop as often as there are columns
+    for (var i = 0; i < colWidth.length; i++) {
+        // colWidth[i] is still an array with width values of the names of the items of the depth i
+        colWidth[i] = Math.max.apply({}, colWidth[i]);
+        // now, colWidth[i] is the width value, which it needs to be big enough for all items of the depth i
+        allwidth += colWidth[i];
+    }
+
+    allheight += drawOrder.length * rowheight;
+
+    // draw image
+    console.log("width: " + allwidth + "\nheight: " + allheight);
+
+    var off = document.createElement("CANVAS");
+    off.width = allwidth;
+    off.height = allheight;
+    var c = off.getContext("2d");
+    c.setFontHeight(this._fh);
+
+    c.textAlign = "left";
+    c.textBaseline = "top";
+
+    var getWidthForDepth = function (j) {
+        var w = 0;
+        for (var i = 0; i < j && i < colWidth.length; i++)
+            w += colWidth[i];
+        return w;
+    };
+
+    var x = this._margin;
+    var y = this._margin;
+    var w;
+    var txt;
+    var el;
+    for (var i = 0; i < drawOrder.length; i++) {
+        el = drawOrder[i];
+        w = getWidthForDepth(el.depth);
+        txt = el.name + " (" + el.type + ")";
+        c.fillText(txt, x + w, y);
+        y += rowheight;
+    }
+
+    this._dataURL = off.toDataURL();
 };
 
-Anibody.debug.ObjectDumb.prototype._getLongestWidth = function(c, strarr){
-    var warr = [0];
-    for(var i=0; i<strarr.length; i++)
-        warr.push(c.measureText(strarr[i].name).width);
-    var val = Math.max.apply(this, warr);
-    return val;
-};
-
-Anibody.debug.ObjectDumb.prototype.Download = function(){
-        
+Anibody.debug.ObjectDumb.prototype.Download = function () {
+    Anibody.prototype.Download("dump_" + this._name + ".png", this._dataURL);
 };
 
 /**
@@ -171,17 +208,23 @@ Anibody.debug.Consolero = function Consolero() {
     this._savelogf = console.log; // holds the original log-function
     this._intref = null; // ref integer of the interval
     this.MonitorArr = []; // Array for all the attributes that are monitored
-    
+
     /**
      * cancels the console.log-function
      * @returns {undefined}
      */
-    this._cancel = function () {console.log = function () {return false;};};
+    this._cancel = function () {
+        console.log = function () {
+            return false;
+        };
+    };
     /**
      * restores the console.log-function to its original function
      * @returns {undefined}
      */
-    this._activate = function () {console.log = this._savelogf;};
+    this._activate = function () {
+        console.log = this._savelogf;
+    };
 
     /**
      * starts the monitoring process in the developer console
@@ -190,7 +233,7 @@ Anibody.debug.Consolero = function Consolero() {
      */
     this.Start = function () {
 
-        if(this.MonitorArr.length<=0){
+        if (this.MonitorArr.length <= 0) {
             console.log("Consolero is empty");
             return;
         }
@@ -236,45 +279,46 @@ Anibody.debug.Consolero.Instance = null; // saves the instance
  * It opens and extra popup window
  * @returns {DebugWindow}
  */
-Anibody.debug.DebugWindow = function DebugWindow(){
+Anibody.debug.DebugWindow = function DebugWindow() {
     this.FontHeight = 14;
     this.Timestamp = Date.now();
     this.Window = null;
     this.Document;
-    
+
     this.Variables = [];
     this.FormatStrings = [];
-    
+
     this.Hide = false;
     this.MaxDepth = 2;
-    
-this.Initialize();
+
+    this.Initialize();
 };
 /**
  * @see README_DOKU.txt
  */
-Anibody.debug.DebugWindow.prototype.Initialize = function(){};
+Anibody.debug.DebugWindow.prototype.Initialize = function () {};
 /**
  * "Draws" the current values of the monitored objects into the new window
  * while using a table for each object
  * @returns {undefined}
  */
-Anibody.debug.DebugWindow.prototype.Draw = function(){
-    
-    if(!this.Window) return;
-    
+Anibody.debug.DebugWindow.prototype.Draw = function () {
+
+    if (!this.Window)
+        return;
+
     $(this.Body).html("");
-    
-    var str = "<p>last refresh: " + Date.now() +"</p>";
-    
+
+    var str = "<p>last refresh: " + Date.now() + "</p>";
+
     var v;
-    for(var i=0; i<this.Variables.length; i++){
+    for (var i = 0; i < this.Variables.length; i++) {
         v = this.Variables[i];
         str += this._getHTML(v.object, v.keys, i, v.name);
     }
-    
+
     $(this.Body).html(str);
-    
+
 };
 /**
  * Adds a new object to the monitored list, an array of attributes to focus on
@@ -284,14 +328,14 @@ Anibody.debug.DebugWindow.prototype.Draw = function(){
  * @param {String} name
  * @returns {undefined}
  */
-Anibody.debug.DebugWindow.prototype.Add = function(obj, attr, name){
-    if(!attr){
+Anibody.debug.DebugWindow.prototype.Add = function (obj, attr, name) {
+    if (!attr) {
         attr = [];
-        for(var key in obj){
+        for (var key in obj) {
             attr.push(key);
         }
     }
-    this.Variables.push({object : obj, keys : attr, name : name});    
+    this.Variables.push({object: obj, keys: attr, name: name});
 };
 /**
  * Adds an object to the monitoring list and all sub-objects within a given depth
@@ -300,16 +344,16 @@ Anibody.debug.DebugWindow.prototype.Add = function(obj, attr, name){
  * @param {Number} depth
  * @returns {Boolean}
  */
-Anibody.debug.DebugWindow.prototype.RecursiveAdd = function(obj, name, depth){
-    
+Anibody.debug.DebugWindow.prototype.RecursiveAdd = function (obj, name, depth) {
+
     this.Add(obj, false, name);
-    
-    if(depth <= 0)
+
+    if (depth <= 0)
         return true;
-    
-    for(var key in obj){
-        if(typeof obj[key] == "object"){
-            this.RecursiveAdd(obj[key], name+"."+key, --depth)
+
+    for (var key in obj) {
+        if (typeof obj[key] == "object") {
+            this.RecursiveAdd(obj[key], name + "." + key, --depth)
         }
     }
 };
@@ -317,27 +361,29 @@ Anibody.debug.DebugWindow.prototype.RecursiveAdd = function(obj, name, depth){
  * Opens the new window
  * @returns {Boolean}
  */
-Anibody.debug.DebugWindow.prototype.Open = function(){
-    
-    if(this.IsOpen) return false;
-    
+Anibody.debug.DebugWindow.prototype.Open = function () {
+
+    if (this.IsOpen)
+        return false;
+
     this.Window = window.open("", "Debug Winow", "width=460,height=650");
     this.Document = this.Window.document;
-    
+
     this.Body = this.Document.body;
     this.IsOpen = true;
     this._setCSS();
-    
+
 };
 /**
  * @see README_DOKU.txt
  */
-Anibody.debug.DebugWindow.prototype.Update = function(){
-    
-    if(!this.Window) return false;
-    
+Anibody.debug.DebugWindow.prototype.Update = function () {
+
+    if (!this.Window)
+        return false;
+
     this.IsOpen = !this.Window.closed;
-    
+
 };
 /**
  * embeddeds the needed data of the monitored objects in a table and returns the html-code as a string
@@ -347,39 +393,39 @@ Anibody.debug.DebugWindow.prototype.Update = function(){
  * @param {type} name
  * @returns {String}
  */
-Anibody.debug.DebugWindow.prototype._getHTML = function(obj, keys, nr, name){
-    
-    var str = "<div class='objects' id='Object_"+nr+"'><p>"+name+"</p>\n\
+Anibody.debug.DebugWindow.prototype._getHTML = function (obj, keys, nr, name) {
+
+    var str = "<div class='objects' id='Object_" + nr + "'><p>" + name + "</p>\n\
                 <table width=440>\n\
                     <tr>\n\
                         <th>Attr</th><th>Wert</th><th>Class</th>\n\
                     </tr>";
-    
-    for(var i=0; i<keys.length; i++){
+
+    for (var i = 0; i < keys.length; i++) {
         str += "<tr>\n\
-                    <td>"+keys[i]+"</td><td>"+ this._what(obj, keys[i]) +"</td><td>"+ this._getClass(obj, keys[i]) +"</td>\n\
+                    <td>" + keys[i] + "</td><td>" + this._what(obj, keys[i]) + "</td><td>" + this._getClass(obj, keys[i]) + "</td>\n\
                 </tr>";
     }
-    
+
     return str + "</table></div>"
 };
 /**
  * Applies the wanted css rules to the new window
  * @returns {undefined}
  */
-Anibody.debug.DebugWindow.prototype._setCSS = function(){
-    
+Anibody.debug.DebugWindow.prototype._setCSS = function () {
+
     var head = this.Document.head;
-    
+
     var rule_body = "body { font-size : 16px }";
     var rule_objects = " .objects {margin: 5px; width:440px;} ";
     var rule_p = " p {width:100%; text-align: center; font-size : 20px}";
     var rule_table = " table { border-collapse: collapse;  } table, th, td {border: 1px solid black;} ";
-    
-    var css = "<style> "+rule_body+" "+rule_objects+" "+rule_p+" "+rule_table+ " </style>"
-    
+
+    var css = "<style> " + rule_body + " " + rule_objects + " " + rule_p + " " + rule_table + " </style>"
+
     $(head).append(css);
-    
+
 };
 /**
  * finds out the type of the monitored attribute
@@ -387,29 +433,29 @@ Anibody.debug.DebugWindow.prototype._setCSS = function(){
  * @param {type} key the name of the attribute
  * @returns {Object.prototype._what.str|String}
  */
-Anibody.debug.DebugWindow.prototype._what = function(obj, key){
+Anibody.debug.DebugWindow.prototype._what = function (obj, key) {
     //var val = obj[key];
-    
+
     var handeled = false;
     var str = "";
-    
-    if(key == "Engine" && !handeled){
+
+    if (key == "Engine" && !handeled) {
         str += "reference to Engine";
         handeled = true;
     }
-    if(typeof obj[key] == "function" && !handeled){
+    if (typeof obj[key] == "function" && !handeled) {
         str += "function( )";
         handeled = true;
     }
-    if(typeof obj[key] == "object" && !handeled){
+    if (typeof obj[key] == "object" && !handeled) {
         str += "object"
         handeled = true;
     }
-    if(typeof obj[key] != "object" && !handeled){
-        str += ""+obj[key];
+    if (typeof obj[key] != "object" && !handeled) {
+        str += "" + obj[key];
         handeled = true;
     }
-    
+
     return str;
 };
 /**
@@ -418,25 +464,25 @@ Anibody.debug.DebugWindow.prototype._what = function(obj, key){
  * @param {type} key
  * @returns {String}
  */
-Anibody.debug.DebugWindow.prototype._getClass = function(obj, key){
+Anibody.debug.DebugWindow.prototype._getClass = function (obj, key) {
     var object = obj[key];
-    
-    if(typeof object === "undefined"){
+
+    if (typeof object === "undefined") {
         return "undefined";
     }
-    if(object === null){
+    if (object === null) {
         return "null";
     }
-    
+
     var con = object.constructor.toString();
-     
+
     var ifunc = con.indexOf("function ");
     var ibracket = con.indexOf("(");
-    
-    if(ifunc == 0){
+
+    if (ifunc == 0) {
         con = con.substr(9, ibracket - 9);
-        return "CLASS::"+con;
-    } 
+        return "CLASS::" + con;
+    }
 };
 
 
@@ -448,30 +494,30 @@ Anibody.debug.DebugWindow.prototype._getClass = function(obj, key){
  * @param {string} name (optional)
  * @returns {Monitor}
  */
-Anibody.debug.Monitor = function Monitor(obj, attr, cbo, name){
+Anibody.debug.Monitor = function Monitor(obj, attr, cbo, name) {
     Anibody.classes.EngineObject.call(this);
-    
-    if(typeof name !== "undefined" && name!==false && name !== null)
+
+    if (typeof name !== "undefined" && name !== false && name !== null)
         this.Name = name;
     else
         this.Name = "Monitor " + (++Monitor.Counter);
-    
+
     this.Object = obj;
     this.Attribute = attr;
     this.Class = "";
-    
-    if(typeof cbo !== "undefined" && cbo!==false && cbo !== null)
+
+    if (typeof cbo !== "undefined" && cbo !== false && cbo !== null)
         this.CallbackObject = cbo;
     else
-        this.CallbackObject = {that: this, function(newv, oldv, startv, para){
+        this.CallbackObject = {that: this, function(newv, oldv, startv, para) {
                 console.log("'{0}' changed from '{1}' to '{2}' and began with '{3}'".format(this.Name, oldv, newv, startv));
-        }, parameter:"default"};
-    
+            }, parameter: "default"};
+
     this.StartValue;
     this.OldValue;
     this.CurrentValue;
 
-this.Initialize();
+    this.Initialize();
 };
 
 Anibody.debug.Monitor.prototype = Object.create(Anibody.classes.EngineObject.prototype);
@@ -482,12 +528,12 @@ Anibody.debug.Monitor.Counter = 0;
  * can be seen as an extension of the constructor function
  * @returns {undefined}
  */
-Anibody.debug.Monitor.prototype.Initialize = function(){
-    
+Anibody.debug.Monitor.prototype.Initialize = function () {
+
     this.StartValue = this.Object[this.Attribute];
     this.OldValue = this.StartValue;
     this.CurrentValue = this.StartValue;
-    
+
     this._getClass();
 }
 
@@ -495,14 +541,14 @@ Anibody.debug.Monitor.prototype.Initialize = function(){
  * Update
  * @returns {undefined}
  */
-Anibody.debug.Monitor.prototype.Update = function(){
+Anibody.debug.Monitor.prototype.Update = function () {
     this.CurrentValue = this.Object[this.Attribute];
-    
-    if(this._didAttrChange()){
+
+    if (this._didAttrChange()) {
         var cbo = this.CallbackObject;
-        cbo.function.call(cbo.that,this.CurrentValue, this.OldValue, this.StartValue, cbo.para);
+        cbo.function.call(cbo.that, this.CurrentValue, this.OldValue, this.StartValue, cbo.para);
     }
-    
+
     this.OldValue = this.CurrentValue;
 };
 
@@ -511,16 +557,16 @@ Anibody.debug.Monitor.prototype.Update = function(){
  * @param {anything} obj
  * @returns {String}
  */
-Anibody.debug.Monitor.prototype._getClass = function(){
+Anibody.debug.Monitor.prototype._getClass = function () {
     var con = this.Object.constructor.toString();
-    
+
     var ifunc = con.indexOf("function ");
     var ibracket = con.indexOf("(");
-    
-    if(ifunc == 0){
+
+    if (ifunc == 0) {
         con = con.substr(9, ibracket - 9);
     }
-    
+
     this.Class = con;
 };
 
@@ -528,10 +574,10 @@ Anibody.debug.Monitor.prototype._getClass = function(){
  * returns true if value has changed
  * @returns {Boolean}
  */
-Anibody.debug.Monitor.prototype._didAttrChange = function(){
-    if(this.CurrentValue !== this.OldValue){
+Anibody.debug.Monitor.prototype._didAttrChange = function () {
+    if (this.CurrentValue !== this.OldValue) {
         return true;
-    }else{
+    } else {
         return false;
     }
 };

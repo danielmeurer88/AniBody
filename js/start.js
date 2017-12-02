@@ -233,6 +233,7 @@ function start_test(engine){
             func2_1: function Test1() {
                 return false;
             },
+            arr : [2, false, null, -12.55555],
             func2_2: function Test2() {
                 return true;
             }
@@ -245,9 +246,9 @@ function start_test(engine){
         }
         
     };
-    
+        
     var od = new Anibody.debug.ObjectDumb(obj, "testObject");
-    debugger;
+    od.Download();
 }
 
 function testSpline(engine){
