@@ -118,10 +118,8 @@ function start_test(engine){
         return {x:width*w, y:height*h};
     };
     
-//    var bowser = new Anibody.visual.Sprite("sprite_test", 300, 400);
-//    var def = new Anibody.visual.Clipping({
-//        x:width*3,y:0,width:width, height:height
-//    }, 9, 10, "[laughing]", "stopStart", "once");
+
+    
     
     var bowser = new Anibody.visual.Sprite("sprite_test", 300, 400, width, height);
     bowser.SetTemplateAttribute("FPS", 6);
@@ -155,11 +153,11 @@ function start_test(engine){
     
     engine.AddObject(bowser);
         
-//    var f = function(sprite){
-//        
-//    }.getCallbackObject(engine, bowser);
-//    
-//    engine.testobj = Anibody.static.Random.SetRandomInterval(f, 3000, 9500);
+    var f = function(sprite){
+        
+    }.getCallbackObject(engine, bowser);
+    
+    engine.testobj = Anibody.static.Random.SetRandomInterval(f, 3000, 9500);
     
     Anibody.import(Anibody.classes.Widget);
     var w = new Widget();
@@ -192,6 +190,64 @@ function start_test(engine){
         
     };
     w.Register();
+    
+    
+    // ------------------ new Test of Anibody.debug.ObjectDumb
+    
+    var obj = {
+        
+        num1_1 : 12.5,
+        bool1_1 : false,
+        obj1_1: {
+            num2_1 : 200.5,
+            bool2_1 : false,
+            obj2_1: {
+
+            },
+            arr2_1 : ["aa", "b"+4, false, {test:"string"}],
+            str2_1 : "String that is",
+            obj2_2: {
+
+            },
+            func2_1: function Test1() {
+                return false;
+            },
+            func2_2: function Test2() {
+                return true;
+            }
+        },
+        str1_1 : "String that is ... 1_1",
+        obj1_2: {
+            num2_1 : 12.5,
+            bool2_1 : false,
+            obj2_1: {
+                key : "value",
+                obj3_1 : {
+                    // empty
+                }
+            },
+            str1_1 : "String that is",
+            obj1_2: {
+                "num" : 24.52
+            },
+            func2_1: function Test1() {
+                return false;
+            },
+            func2_2: function Test2() {
+                return true;
+            }
+        },
+        func1_1: function Test1() {
+            return false;
+        },
+        func1_2: function Test2() {
+            return true;
+        }
+        
+    };
+    
+    var od = new Anibody.debug.ObjectDumb(obj, "testObject");
+    debugger;
 }
 
 function testSpline(engine){

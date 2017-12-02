@@ -1,3 +1,162 @@
+Anibody.debug.ObjectDumb = function ObjectDumb(obj, name){
+    
+    this.Object = obj;
+    this._already = [];
+    this._maxDepth = 5;
+    
+    if(typeof name === "undefined")
+        name = "root";
+    
+    this._name = name;
+    
+    this.Image = null;
+    
+    this._root = {};
+    
+    this.Width = 0;
+    this.Height = 0;
+    
+    this._tabulator = 10;
+    this._fh = 14;
+    this._margin = 2;
+
+this.Initialize();
+};
+
+Anibody.debug.ObjectDumb.prototype.Initialize = function(){
+    
+    this._root = {
+        type : this._whatIsIt(this.Object),
+        name : this._name,
+        element : this.Object,
+        children : [],
+        depth : 0
+    };
+    
+    this._analyze(this._root, this._root.depth);
+    
+    this._createImage();
+};
+
+Anibody.debug.ObjectDumb.prototype._analyze = function(obj, depth){
+    
+    var el = obj.element;
+    var type;
+    
+    if(depth > this._maxDepth){
+        
+        obj.children.push({name:"max depth reached", element:null});
+        
+    };
+    
+    for(var attr in el){
+        
+        // check if cur[attr] was already analyzed
+        if(this._already.indexOf(el[attr]) < 0){
+            // haven't been analyzed
+            this._already.push(el[attr]);
+            
+            // what is it?
+            type = this._whatIsIt(el[attr]);
+            var child = {type:type, element:el[attr], name:attr, children:[], depth:depth+1};
+            obj.children.push(child);
+            
+            if(["number", "boolean", "string", "null"].indexOf(type)<0){
+                this._analyze(child,depth+1);
+            }
+            
+        }else{
+            type = "already";
+        } 
+    }
+};
+
+Anibody.debug.ObjectDumb.prototype._whatIsIt = function(el){
+    
+    if(el === null) return "null";
+    
+    var type = typeof el;
+    
+    if(type !== "object") return type;
+    
+    if(el.push) return "Array";
+    
+    var con = el.constructor.toString();
+    var ifunc = con.indexOf("function ");
+    var ibracket = con.indexOf("(");
+    if(ifunc === 0){
+        con = con.substr(9, ibracket - 9);
+    }
+    return con;
+};
+
+Anibody.debug.ObjectDumb.prototype._createImage = function(el){
+    
+    var off = document.createElement("CANVAS");
+    off.width = 10;
+    off.height = 10;
+    var c = off.getContext("2d");
+    
+    c.textAlign = "left";
+    c.textBaseline = "top";
+    
+    var size = this._getSize(c);
+    off.width = size.width;
+    off.height = size.height;
+    c = off.getContext("2d");
+    
+    // draw image
+    console.log(size);
+};
+
+Anibody.debug.ObjectDumb.prototype._getSize = function(c){
+    this.Width = 0;
+    this.Height = 0;
+    
+    var rowheight = this._fh + this._margin; // fontheight + 2x 1/2 margin between rows
+    
+    var allheight = this._margin*2; // margins top and down
+    var allwidth = this._margin*2;
+    
+    var rows = 0; // 1 = the root
+    var cur; // current element
+    
+    var queue = [];
+    var i;
+    
+    queue.push(this._root);
+    while(queue.length){
+        cur = queue.shift();
+        
+        //counting rows for the allheight
+        rows += cur.children.length;
+        
+        allwidth += this._getLongestWidth(c, cur.children) + (cur.depth)* this._tabulator;
+        
+        for(i=0; i<cur.children.length; i++){
+            queue.push(cur.children[i]);
+        }
+        
+    }
+    
+    allheight += rows * rowheight;
+    
+    return {width:allwidth, height:allheight};
+    
+};
+
+Anibody.debug.ObjectDumb.prototype._getLongestWidth = function(c, strarr){
+    var warr = [0];
+    for(var i=0; i<strarr.length; i++)
+        warr.push(c.measureText(strarr[i].name).width);
+    var val = Math.max.apply(this, warr);
+    return val;
+};
+
+Anibody.debug.ObjectDumb.prototype.Download = function(){
+        
+};
+
 /**
  * uses the developer console to print the value of added attributes and constantly
  * refreshes the values
