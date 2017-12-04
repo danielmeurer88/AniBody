@@ -1,7 +1,7 @@
-Anibody.SetPackage("Anibody", "classes");
+Anibody.SetPackage("Anibody", "input");
 
-Anibody.classes.Input = function Input() {
-    Anibody.classes.EngineObject.call(this);
+Anibody.input.Input = function Input() {
+    Anibody.EngineObject.call(this);
     
     this.ResizeEvent = null;
     // end of event handler attributes
@@ -30,27 +30,26 @@ Anibody.classes.Input = function Input() {
 
 this.Initialize();
 };
-Anibody.classes.Input.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-Anibody.classes.Input.prototype.constructor = Anibody.classes.Input;
-
+Anibody.input.Input.prototype = Object.create(Anibody.EngineObject.prototype);
+Anibody.input.Input.prototype.constructor = Anibody.input.Input
 // registers mouse events (those events are not bound to the frame() - the callback function is triggered when the user activates them )
-Anibody.classes.Input.prototype.Initialize = function () {
+Anibody.input.Input.prototype.Initialize = function () {
 
     this.CalculateCanvasPosition();
 
     // register some needed event handler
     if(this.Engine.Flags.KeyboardInput)
-        this.Keys = new Anibody.classes.Input.Keys();
+        this.Keys = new Anibody.input.Input.Keys();
 
     if(this.Engine.Flags.MouseInput){
-        this.Mouse = new Anibody.classes.Input.Mouse();
-        this.MouseHandler = new Anibody.classes.Input.MouseHandler();
+        this.Mouse = new Anibody.input.Input.Mouse();
+        this.MouseHandler = new Anibody.input.Input.MouseHandler();
     }
     
     this.RegisterResizeEvent();
 
     if(this.Engine.Flags.TouchHandler)
-        this.TouchHandler = new Anibody.classes.Input.TouchHandler();
+        this.TouchHandler = new Anibody.input.Input.TouchHandler();
 
 };
 
@@ -58,7 +57,7 @@ Anibody.classes.Input.prototype.Initialize = function () {
  * Calculates and saves the mouse position and all its concequential information needed by the user
  * @returns {undefined}
  */
-Anibody.classes.Input.prototype.Update = function () {
+Anibody.input.Input.prototype.Update = function () {
 
     this.Canvas.MouseOn = false;
 
@@ -85,7 +84,7 @@ Anibody.classes.Input.prototype.Update = function () {
  * getting the real position of the canvas
  * @returns {undefined}
  */
-Anibody.classes.Input.prototype.CalculateCanvasPosition = function () {
+Anibody.input.Input.prototype.CalculateCanvasPosition = function () {
 
     var ele = this.Engine.Canvas; // ele = canvas, the html-element
     var x = 0, y = 0;
@@ -107,13 +106,13 @@ Anibody.classes.Input.prototype.CalculateCanvasPosition = function () {
 
 };
 
-Anibody.classes.Input.prototype.RegisterResizeEvent = function () {
+Anibody.input.Input.prototype.RegisterResizeEvent = function () {
     this.ResizeEvent = $(window).resize(this.Engine, function (d) {
         d.data.Input.CalculateCanvasPosition();
         d.data.Engine.IsCanvasFitToScreen = false;
     });
 };
-Anibody.classes.Input.prototype.UnregisterResizeEvent = function () {
+Anibody.input.Input.prototype.UnregisterResizeEvent = function () {
     if (this.ResizeEvent) {
         $(window).unbind(this.ResizeEvent);
         this.ResizeEvent = "undefined";

@@ -8,7 +8,7 @@ Anibody.SetPackage("Anibody", "ui");
  * @returns {Prompt}
  */
 Anibody.ui.Prompt = function Prompt(m, cbo, numpad){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     
     if(typeof numpad === "undefined")
         numpad = false;
@@ -106,7 +106,7 @@ Anibody.ui.Prompt = function Prompt(m, cbo, numpad){
 this.Initialize();
 };
 
-Anibody.ui.Prompt.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.Prompt.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.Prompt.prototype.constructor = Anibody.ui.Prompt;
 
 Anibody.ui.Prompt.prototype.DefaultBackgroundColor = "#ccc";

@@ -5,7 +5,7 @@
  * @returns {RPGDialog}
  */
 function RPGDialog(){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     // a flag that says if the images will be displayed or not
     this.Active = false;
@@ -65,7 +65,7 @@ function RPGDialog(){
     
 this.Initialize();
 }
-RPGDialog.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGDialog.prototype = Object.create(Anibody.ABO.prototype);
 RPGDialog.prototype.constructor = RPGDialog;
 
 

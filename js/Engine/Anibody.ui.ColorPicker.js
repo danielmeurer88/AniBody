@@ -9,7 +9,7 @@ Anibody.SetPackage("Anibody", "ui");
  * @returns {ColorPicker}
  */
 Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     
     this.ColorPickedCallbackObject = cpcbo;
     
@@ -65,7 +65,7 @@ Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
     
 this.Initialize();
 }
-Anibody.ui.ColorPicker.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.ColorPicker.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.ColorPicker.prototype.constructor = Anibody.ui.ColorPicker;
 
 /**

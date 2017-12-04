@@ -9,7 +9,7 @@ Anibody.SetPackage("Anibody", "ui");
  * @returns {Anibody.ui.Toaster}
  */
 Anibody.ui.Toaster = function Toaster(type, title, txt, ms) {
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     this.X = 0;
     this.Y = 0;
     this.Width = 0;
@@ -66,7 +66,7 @@ Anibody.ui.Toaster = function Toaster(type, title, txt, ms) {
 
     this.Initialize();
 }
-Anibody.ui.Toaster.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.Toaster.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.Toaster.prototype.constructor = Anibody.ui.Toaster;
 
 Anibody.ui.Toaster.BlockMode = false;

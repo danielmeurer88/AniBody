@@ -4,8 +4,8 @@ Anibody.SetPackage("Anibody", "shapes");
  * 
  * @returns {Anibody.shapes.Shape}
  */
-Anibody.classes.Shape = function Shape(x,y){ // Base class
-    Anibody.classes.ABO.call(this);
+Anibody.shapes.Shape = function Shape(x,y){ // Base class
+    Anibody.ABO.call(this);
     this.X=x;
     this.Y=y;
     this.Centroid = {x:x,y:y};
@@ -23,17 +23,17 @@ Anibody.classes.Shape = function Shape(x,y){ // Base class
 this.Initialize();
 };
 
-Anibody.classes.Shape.prototype = Object.create(Anibody.classes.ABO.prototype);
-Anibody.classes.Shape.prototype.constructor = Anibody.classes.Shape;
+Anibody.shapes.Shape.prototype = Object.create(Anibody.ABO.prototype);
+Anibody.shapes.Shape.prototype.constructor = Anibody.shapes.Shape;
 
-Anibody.classes.Shape.prototype.Initialize = function(){
+Anibody.shapes.Shape.prototype.Initialize = function(){
     this._calculateCentroid();
     this._calculateSurroundingRectangle();
     this._updateFillStyle();
     
 };
 
-Anibody.classes.Shape.prototype._updateFillStyle = function(){
+Anibody.shapes.Shape.prototype._updateFillStyle = function(){
 
     if (this.FillType === "image") {
         if (typeof this.FillCode === "string"){
@@ -77,7 +77,7 @@ Anibody.classes.Shape.prototype._updateFillStyle = function(){
     
 };
 
-Anibody.classes.Shape.prototype.Draw = function(c){
+Anibody.shapes.Shape.prototype.Draw = function(c){
   if(this.Points.length < 2) return;
   
   c.save();
@@ -101,7 +101,7 @@ Anibody.classes.Shape.prototype.Draw = function(c){
   
 };
 
-Anibody.classes.Shape.prototype._calculateCentroid= function(){
+Anibody.shapes.Shape.prototype._calculateCentroid= function(){
     
     // vertices = this.Points 
     
@@ -146,7 +146,7 @@ Anibody.classes.Shape.prototype._calculateCentroid= function(){
     
 };
 
-Anibody.classes.Shape.prototype._calculateSurroundingRectangle = function(){
+Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function(){
     var x = this.Points[0].x;
     var max = this.Points[0].x;
     var y = this.Points[0].y;
@@ -164,19 +164,19 @@ Anibody.classes.Shape.prototype._calculateSurroundingRectangle = function(){
     this.Height = maxy - y;
 };
 
-Anibody.classes.Shape.prototype.AddPoint = function(x,y){
+Anibody.shapes.Shape.prototype.AddPoint = function(x,y){
     this.Points.push({x:x,y:y});
     this._calculateCentroid();
     this._sortPoints();
     this._calculateSurroundingRectangle();
 };
 
-Anibody.classes.Shape.prototype.Rotate = function(x,y){
+Anibody.shapes.Shape.prototype.Rotate = function(x,y){
     if(isNaN(x)) x = this.Centroid.x;
     if(isNaN(y)) y = this.Centroid.y;
 };
 
-Anibody.classes.Shape.prototype._getAngle = function(p){
+Anibody.shapes.Shape.prototype._getAngle = function(p){
     var dx, dy, val;
     
     // radian gap is on the left
@@ -194,7 +194,7 @@ Anibody.classes.Shape.prototype._getAngle = function(p){
     return atan2_correction(val);
 };
 
-Anibody.classes.Shape.prototype._sortPoints = function(){
+Anibody.shapes.Shape.prototype._sortPoints = function(){
     
     for(var i=0; i<this.Points.length; i++){
         this.Points[i]._angleRadian = this._getAngle(this.Points[i]);
@@ -217,10 +217,10 @@ Anibody.classes.Shape.prototype._sortPoints = function(){
  * @param {type} y
  * @param {type} width
  * @param {type} height
- * @returns {Anibody.classes.Rectangle}
+ * @returns {Anibody.Rectangle}
  */
-Anibody.classes.Rectangle = function Rectangle(x,y,width,height){ // Rectangle class
-    Anibody.classes.Shape.call(this);
+Anibody.shapes.Rectangle = function Rectangle(x,y,width,height){ // Rectangle class
+    Anibody.Shape.call(this);
     this.X=x;
     this.Y=y;
     this.Width = width;
@@ -231,13 +231,13 @@ Anibody.classes.Rectangle = function Rectangle(x,y,width,height){ // Rectangle c
 this.Initialize();
 };
 
-Anibody.classes.Rectangle.prototype = Object.create(Anibody.classes.Shape.prototype);
-Anibody.classes.Rectangle.prototype.constructor = Anibody.classes.Rectangle;
+Anibody.shapes.Rectangle.prototype = Object.create(Anibody.shapes.Shape.prototype);
+Anibody.shapes.Rectangle.prototype.constructor = Anibody.shapes.Rectangle;
 
-Anibody.classes.Rectangle.prototype.Initialize = function(){
+Anibody.shapes.Rectangle.prototype.Initialize = function(){
   this._calculateCentroid(); // TODO
 };
 
-Anibody.classes.Rectangle.prototype._calculateCentroid= function(){
+Anibody.shapes.Rectangle.prototype._calculateCentroid= function(){
      this.Centroid = {x:this.X+this.Width/2,y:this.Y+this.Height/2};
 };

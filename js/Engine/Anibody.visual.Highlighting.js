@@ -8,7 +8,7 @@ Anibody.SetPackage("Anibody", "visual");
  * @returns {Highlighting}
  */
 Anibody.visual.Highlighting = function Highlighting(area, flow_ms, ms, cbo){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     this.X=area.x;
     this.Y=area.y;
     this.Width=area.width || area.radius*2;
@@ -50,7 +50,7 @@ Anibody.visual.Highlighting = function Highlighting(area, flow_ms, ms, cbo){
         
 };
 
-Anibody.visual.Highlighting.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.visual.Highlighting.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.visual.Highlighting.prototype.constructor = Anibody.visual.Highlighting;
 
 Anibody.visual.Highlighting.prototype.OutsideColor = "rgba(0,0,0,0.8)";

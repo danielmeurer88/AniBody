@@ -1,11 +1,11 @@
-Anibody.SetPackage("Anibody", "classes", "Input");
+Anibody.SetPackage("Anibody", "input", "Input");
 
 /**
  * An application programming interface that stands between the engine and the developer and handles mouse related functions
  * @returns {MouseHandler}
  */
-Anibody.classes.Input.MouseHandler = function MouseHandler(){
-    Anibody.classes.EngineObject.call(this);
+Anibody.input.Input.MouseHandler = function MouseHandler(){
+    Anibody.EngineObject.call(this);
     
     this.LeftMouseClickHandlerCBOs = new Anibody.util.PriorityQueue();
     this.RightMouseClickHandlerCBOs = new Anibody.util.PriorityQueue();
@@ -20,12 +20,12 @@ Anibody.classes.Input.MouseHandler = function MouseHandler(){
     
 this.Initialize();
 };
-Anibody.classes.Input.MouseHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-Anibody.classes.Input.MouseHandler.prototype.constructor = Anibody.classes.Input.MouseHandler;
+Anibody.input.Input.MouseHandler.prototype = Object.create(Anibody.EngineObject.prototype);
+Anibody.input.Input.MouseHandler.prototype.constructor = Anibody.input.Input.MouseHandler;
 /**
  * @see README_DOKU.txt
  */
-Anibody.classes.Input.MouseHandler.prototype.Initialize = function(){
+Anibody.input.Input.MouseHandler.prototype.Initialize = function(){
     
     // if it's a firefox browsers
     if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1){
@@ -41,7 +41,7 @@ Anibody.classes.Input.MouseHandler.prototype.Initialize = function(){
  * @param {type} dy
  * @returns {undefined}
  */
-Anibody.classes.Input.MouseHandler.prototype.WheelHandler = function(dx, dy){
+Anibody.input.Input.MouseHandler.prototype.WheelHandler = function(dx, dy){
         
     var arr = this.WheelHandlerCBOs.heap;
     var d;
@@ -67,7 +67,7 @@ Anibody.classes.Input.MouseHandler.prototype.WheelHandler = function(dx, dy){
  * @param {number} prio - priority number (optional)
  * @returns {ref-number|undefined}
  */
-Anibody.classes.Input.MouseHandler.prototype.AddMouseHandler = function(type, cbo, prio){
+Anibody.input.Input.MouseHandler.prototype.AddMouseHandler = function(type, cbo, prio){
     var ref;
     if(type === "leftclick"){
         ref = this.LeftMouseClickHandlerCBOs.Enqueue(cbo, prio);
@@ -88,7 +88,7 @@ Anibody.classes.Input.MouseHandler.prototype.AddMouseHandler = function(type, cb
  * @param {number} ref
  * @returns {Number of deleted elements}
  */
-Anibody.classes.Input.MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
+Anibody.input.Input.MouseHandler.prototype.RemoveMouseHandler = function(type, ref){
     var tmp;
 
     if(type === "leftclick")
@@ -103,7 +103,7 @@ Anibody.classes.Input.MouseHandler.prototype.RemoveMouseHandler = function(type,
  * empties all handlers
  * @returns {undefined}
  */
-Anibody.classes.Input.MouseHandler.prototype.Flush = function(){
+Anibody.input.Input.MouseHandler.prototype.Flush = function(){
     this.LeftMouseClickHandlerCBOs.Flush();
     this.RightMouseClickHandlerCBOs.Flush();
     this.WheelHandlerCBOs.Flush();
@@ -118,7 +118,7 @@ Anibody.classes.Input.MouseHandler.prototype.Flush = function(){
  * @param {type} failvalue - the value the attribute becomes if request is negative (default:false)
  * @returns {undefined}
  */
-Anibody.classes.Input.MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successvalue, failvalue){
+Anibody.input.Input.MouseHandler.prototype.AddHoverRequest = function(area, object, attr, successvalue, failvalue){
     if(arguments.length<=2) return;
     
     if(!area){
@@ -139,7 +139,7 @@ Anibody.classes.Input.MouseHandler.prototype.AddHoverRequest = function(area, ob
  * handlers
  * @returns {undefined}
  */
-Anibody.classes.Input.MouseHandler.prototype.MouseClickHandler = function(){
+Anibody.input.Input.MouseHandler.prototype.MouseClickHandler = function(){
     var mouse = this.Engine.Input.Mouse;
     
     // checking leftclicks
@@ -197,7 +197,7 @@ Anibody.classes.Input.MouseHandler.prototype.MouseClickHandler = function(){
  * the representative attribute gets the requested value
  * @returns {undefined}
  */
-Anibody.classes.Input.MouseHandler.prototype.ResolveHoverRequest = function(){
+Anibody.input.Input.MouseHandler.prototype.ResolveHoverRequest = function(){
     
     var c = this.Engine.Context;
     var yes = [];

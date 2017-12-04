@@ -10,7 +10,7 @@ Anibody.SetPackage("Anibody", "ui");
  * @returns {Slider}
  */
 Anibody.ui.Slider = function Slider(x,y,width,height){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.X = x;
     this.Y = y
@@ -49,7 +49,7 @@ Anibody.ui.Slider = function Slider(x,y,width,height){
 this.Initialize();
 };
 
-Anibody.ui.Slider.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.Slider.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.Slider.prototype.constructor = Anibody.ui.Slider;
 
 Anibody.ui.Slider.prototype.DefaultColor = "rgba(100,100,120,1)";

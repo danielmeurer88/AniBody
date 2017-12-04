@@ -334,13 +334,13 @@ Anibody.util.Timer.prototype.SetTotal = function(t){
  * @returns {IntervalHandler}
  */
 Anibody.util.IntervalHandler = function IntervalHandler(){
-    Anibody.classes.EngineObject.call(this);
+    Anibody.EngineObject.call(this);
     // Javascript Integer limit = 2^53 = 9007199254740992
     // (Number of Frames with 25 fps after 5 days) = 25*60*60*24*5 = 10.800.000
     this.Frames = 0;
     this.IntervalFunctions = [];
 }
-Anibody.util.IntervalHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
+Anibody.util.IntervalHandler.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.util.IntervalHandler.prototype.constructor = Anibody.util.IntervalHandler;
 /**
  * @see README_DOKU.txt

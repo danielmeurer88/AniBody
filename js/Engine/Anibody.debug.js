@@ -497,7 +497,7 @@ Anibody.debug.DebugWindow.prototype._getClass = function (obj, key) {
  * @returns {Monitor}
  */
 Anibody.debug.Monitor = function Monitor(obj, attr, cbo, name) {
-    Anibody.classes.EngineObject.call(this);
+    Anibody.EngineObject.call(this);
 
     if (typeof name !== "undefined" && name !== false && name !== null)
         this.Name = name;
@@ -522,7 +522,7 @@ Anibody.debug.Monitor = function Monitor(obj, attr, cbo, name) {
     this.Initialize();
 };
 
-Anibody.debug.Monitor.prototype = Object.create(Anibody.classes.EngineObject.prototype);
+Anibody.debug.Monitor.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.debug.Monitor.prototype.constructor = Anibody.debug.Monitor;
 Anibody.debug.Monitor.Counter = 0;
 

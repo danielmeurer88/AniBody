@@ -9,7 +9,7 @@ Anibody.util.Storage = function Storage() {
     if(Anibody.util.Storage.Instance !== null)
         return Anibody.util.Storage.Instance;
     
-    Anibody.classes.EngineObject.call(this);
+    Anibody.EngineObject.call(this);
 
     this.Pre = "AniBody_" + this.Engine.Info.Project;
     // flag wether browser allows html5-local storage or engine needs to use cookies as pieces
@@ -22,7 +22,7 @@ Anibody.util.Storage = function Storage() {
 
 this.Initialize();
 };
-Anibody.util.Storage.prototype = Object.create(Anibody.classes.EngineObject.prototype);
+Anibody.util.Storage.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.util.Storage.prototype.constructor = Anibody.util.Storage;
 
 Anibody.util.Storage.Instance = null;

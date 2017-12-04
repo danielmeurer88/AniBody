@@ -5,7 +5,7 @@ Anibody.SetPackage("Anibody", "visual");
  * @returns {Spline}
  */
 Anibody.visual.Spline = function Spline() {
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
 
     this.Canvas = {
         width : this.Engine.Canvas.width,
@@ -33,7 +33,7 @@ Anibody.visual.Spline = function Spline() {
     this.Initialize();
 };
 
-Anibody.visual.Spline.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.Spline.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.Spline.prototype.constructor = Anibody.visual.Spline;
 /**
  * @see README_DOKU.txt

@@ -6,7 +6,7 @@
  */
 function RPGPlayer(width, height, sprite) {
 
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
 
     this.DebugCurrentField = true;
     this.Height = height;
@@ -39,7 +39,7 @@ function RPGPlayer(width, height, sprite) {
 
     this.Initialize();
 }
-RPGPlayer.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGPlayer.prototype = Object.create(Anibody.ABO.prototype);
 RPGPlayer.prototype.constructor = RPGPlayer;
 
 RPGPlayer.prototype.Initialize = function () {
@@ -59,7 +59,7 @@ RPGPlayer.prototype.Initialize = function () {
     // the itembag will be drawn seperately to make sure it will be drawn last, so nothing overlaps the inventory window
     this.Engine.AddObject(this.ItemBag, -1);
     
-    this.SpriteProcessInputWidget = new Anibody.classes.Widget();
+    this.SpriteProcessInputWidget = new Anibody.Widget();
     
     this.SpriteProcessInputWidget.PlayerRef = this;
     

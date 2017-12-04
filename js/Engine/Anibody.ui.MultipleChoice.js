@@ -8,7 +8,7 @@ Anibody.SetPackage("Anibody", "ui");
  * @returns {MultipleChoice}
  */
 Anibody.ui.MultipleChoice = function MultipleChoice(text,labels, cbos){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     
     this.X=0;
     this.Y=0;
@@ -63,7 +63,7 @@ Anibody.ui.MultipleChoice = function MultipleChoice(text,labels, cbos){
 this.Initialize();
 };
 
-Anibody.ui.MultipleChoice.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.MultipleChoice.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.MultipleChoice.prototype.constructor = Anibody.ui.MultipleChoice;
 
 Anibody.ui.MultipleChoice.prototype.ContentBoxColor = "#999";

@@ -1,4 +1,4 @@
-Anibody.SetPackage("Anibody", "classes", "Input");
+Anibody.SetPackage("Anibody", "input", "Input");
 
 /**
  * An application programming interface that stands between the engine and the developer and handles touch related functions.
@@ -7,8 +7,8 @@ Anibody.SetPackage("Anibody", "classes", "Input");
  * (for the 2nd finger events, the 1st finger has to be touching the screen/resting on the screen)
  * @returns {TouchHandler}
  */
-Anibody.classes.Input.TouchHandler = function TouchHandler(){
-    Anibody.classes.EngineObject.call(this);
+Anibody.input.Input.TouchHandler = function TouchHandler(){
+    Anibody.EngineObject.call(this);
     
     // FLAGS
     this.PreventDefault = true;
@@ -63,12 +63,12 @@ Anibody.classes.Input.TouchHandler = function TouchHandler(){
     
 this.Initialize();
 };
-Anibody.classes.Input.TouchHandler.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-Anibody.classes.Input.TouchHandler.prototype.constructor = Anibody.classes.Input.TouchHandler;
+Anibody.input.Input.TouchHandler.prototype = Object.create(Anibody.EngineObject.prototype);
+Anibody.input.Input.TouchHandler.prototype.constructor = Anibody.input.Input.TouchHandler;
 /**
  * @see README_DOKU.txt
  */
-Anibody.classes.Input.TouchHandler.prototype.Initialize = function(){
+Anibody.input.Input.TouchHandler.prototype.Initialize = function(){
     
     this.EventListener.TouchStartEvent = this.Engine.Canvas.addEventListener("touchstart",
                 this.TouchStartHandler.bind(this), false);
@@ -79,7 +79,7 @@ Anibody.classes.Input.TouchHandler.prototype.Initialize = function(){
                 
 };
 
-Anibody.classes.Input.TouchHandler.prototype.TouchStartHandler = function(e){
+Anibody.input.Input.TouchHandler.prototype.TouchStartHandler = function(e){
     this.EventObjects.TouchStartEvent = e;
     
     this.ExpectTouch = true;
@@ -99,7 +99,7 @@ Anibody.classes.Input.TouchHandler.prototype.TouchStartHandler = function(e){
         e.preventDefault();
 };
 
-Anibody.classes.Input.TouchHandler.prototype.TouchMoveHandler = function(e){
+Anibody.input.Input.TouchHandler.prototype.TouchMoveHandler = function(e){
     this.EventObjects.TouchMoveEvent = e;
     
     // handler could not have been called if there was at least finger 1 but will there be finger 2 or more as well?
@@ -122,7 +122,7 @@ Anibody.classes.Input.TouchHandler.prototype.TouchMoveHandler = function(e){
     
 };
 
-Anibody.classes.Input.TouchHandler.prototype.TouchEndHandler = function(e){
+Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
     
     this.EventObjects.TouchEndEvent = e;
     var starte = this.EventObjects.TouchStartEvent;
@@ -203,13 +203,13 @@ Anibody.classes.Input.TouchHandler.prototype.TouchEndHandler = function(e){
         e.preventDefault();
 };
 
-Anibody.classes.Input.TouchHandler.prototype.Update = function(){
+Anibody.input.Input.TouchHandler.prototype.Update = function(){
     
     if(!this.ExpectTouch)
         return false;
 };
 
-Anibody.classes.Input.TouchHandler.prototype._movementWithin = function(x,y,limit){
+Anibody.input.Input.TouchHandler.prototype._movementWithin = function(x,y,limit){
     if(Math.abs(x) <= limit && Math.abs(y) <= limit)
         return true;
     else
@@ -225,7 +225,7 @@ Anibody.classes.Input.TouchHandler.prototype._movementWithin = function(x,y,limi
  * @param {number} y - difference in y direction
  * @returns {Object|Boolean}
  */
-Anibody.classes.Input.TouchHandler.prototype._getDirectionObject = function(x,y){
+Anibody.input.Input.TouchHandler.prototype._getDirectionObject = function(x,y){
     var dir;
     if(arguments.length >= 2){
         // testing if horizontal swipe (x) or vertical swipe (y) is bigger
@@ -253,7 +253,7 @@ Anibody.classes.Input.TouchHandler.prototype._getDirectionObject = function(x,y)
  * @param {type} dir
  * @returns {String|Boolean}
  */
-Anibody.classes.Input.TouchHandler.prototype._getSwipeDirection = function(dir){
+Anibody.input.Input.TouchHandler.prototype._getSwipeDirection = function(dir){
     if(arguments.length === 1){
         if(dir.Y === 0)
             return (dir.X ===1) ? "right" : "left";
@@ -268,7 +268,7 @@ Anibody.classes.Input.TouchHandler.prototype._getSwipeDirection = function(dir){
  * Triggers all Listeners registered to a tap with finger 1
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.OnTapFinger1 = function(){
+Anibody.input.Input.TouchHandler.prototype.OnTapFinger1 = function(){
     console.log("Finger1 Tap");
     if(this.FakeMouseClick){
         this.Engine.Input.Mouse.FakeMouseClick(this.Finger1.X, this.Finger1.Y);
@@ -284,7 +284,7 @@ Anibody.classes.Input.TouchHandler.prototype.OnTapFinger1 = function(){
  * Triggers all Listeners registered to a tap with finger 2 (1st finger resting on the screen, 2nd finger does the tapping)
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.OnTapFinger2 = function(){
+Anibody.input.Input.TouchHandler.prototype.OnTapFinger2 = function(){
     console.log("Finger2 Tap");
     var cbo;
     for(var i=0; this.Finger2.TapListener.length; i++){
@@ -296,7 +296,7 @@ Anibody.classes.Input.TouchHandler.prototype.OnTapFinger2 = function(){
  * Triggers all Listeners registered to a long tap with finger 1
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
+Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
     console.log("Finger1 LongTap");
     var cbo;
     for(var i=0; this.Finger1.LongTapListener.length; i++){
@@ -308,7 +308,7 @@ Anibody.classes.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
  * Triggers all Listeners registered to a long tap with finger 2 (1st finger resting on the screen, 2nd finger does the long tapping)
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
+Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
     console.log("Finger2 LongTap");
     var cbo;
     for(var i=0; this.Finger2.LongTapListener.length; i++){
@@ -321,7 +321,7 @@ Anibody.classes.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
  * @param {object} dir - holds the information of the swipe direction and will be given to the registered callbacks as their 2nd argument
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
+Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
     console.log("Finger1 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
     var cbo;
     for(var i=0; this.Finger1.SwipeListener.length; i++){
@@ -334,7 +334,7 @@ Anibody.classes.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
  * @param {object} dir - holds the information of the swipe direction and will be given to the registered callbacks as their 2nd argument
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.OnSwipeFinger2 = function(dir){
+Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger2 = function(dir){
     console.log("Finger2 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
     var cbo;
     for(var i=0; this.Finger2.SwipeListener.length; i++){
@@ -350,7 +350,7 @@ Anibody.classes.Input.TouchHandler.prototype.OnSwipeFinger2 = function(dir){
  * (for swipe listener only: 2nd argument will be object of {X:-1|0|1,Y:-1|0|1})
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchHandler.prototype.AddEventListener = function(eventtype, cbo){
+Anibody.input.Input.TouchHandler.prototype.AddEventListener = function(eventtype, cbo){
     switch(eventtype){
         case "tapfinger1" : this.Finger1.TapListener.push(cbo);break;
         case "tapfinger2" : this.Finger2.TapListener.push(cbo);break;
@@ -366,7 +366,7 @@ Anibody.classes.Input.TouchHandler.prototype.AddEventListener = function(eventty
  * collection of the touch event types
  * @type object
  */
-Anibody.classes.Input.TouchHandler.prototype.Types = {
+Anibody.input.Input.TouchHandler.prototype.Types = {
     TapFinger1 : "tapfinger1",
     TapFinger2 : "tapfinger2",
     LongTapFinger1 : "longtapfinger1",

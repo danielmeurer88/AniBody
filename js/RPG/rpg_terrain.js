@@ -1,5 +1,5 @@
 function Field(idx, idy, size, type){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.ID = {X: idx, Y: idy};
     this.Size = size;
@@ -9,7 +9,7 @@ function Field(idx, idy, size, type){
     this.Type = type;
     this.User = false;
 }
-Field.prototype = Object.create(Anibody.classes.ABO.prototype);
+Field.prototype = Object.create(Anibody.ABO.prototype);
 Field.prototype.constructor = Field;
 
 Field.prototype.Types = {
@@ -30,7 +30,7 @@ Field.prototype.PaintField = function(c){
 };
 
 function RPGTerrain(req, img_code, str_code, fieldsize, tname){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.Required = req;
     this.DebugFields = false;
@@ -72,7 +72,7 @@ function RPGTerrain(req, img_code, str_code, fieldsize, tname){
     
 this.Initialize();
 }
-RPGTerrain.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGTerrain.prototype = Object.create(Anibody.ABO.prototype);
 RPGTerrain.prototype.constructor = RPGTerrain;
 
 RPGTerrain.prototype.Initialize = function(){

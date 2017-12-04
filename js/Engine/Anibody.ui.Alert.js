@@ -6,7 +6,7 @@ Anibody.SetPackage("Anibody", "ui");
  * @returns {Alert}
  */
 Anibody.ui.Alert = function Alert(text){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     
     this.X=0;
     this.Y=0;
@@ -49,7 +49,7 @@ Anibody.ui.Alert = function Alert(text){
     
 this.Initialize();
 }
-Anibody.ui.Alert.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.ui.Alert.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.Alert.prototype.constructor = Anibody.ui.Alert;
 
 Anibody.ui.Alert.prototype.ContentBoxColor = "#999";

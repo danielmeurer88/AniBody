@@ -12,7 +12,7 @@ Anibody.SetPackage("Anibody", "nav");
  * @returns {Gallery}
  */
 Anibody.nav.Gallery = function Gallery(x,y,w,h, t, th){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.X = x;
     this.Y = y;
@@ -71,7 +71,7 @@ Anibody.nav.Gallery = function Gallery(x,y,w,h, t, th){
     
 this.Initialize();
 }
-Anibody.nav.Gallery.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.Gallery.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.Gallery.prototype.constructor = Anibody.nav.Gallery;
 
 Anibody.nav.Gallery.prototype.TitleColor = "#ddd";
@@ -533,7 +533,7 @@ Anibody.nav.Gallery.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 2)
         offsety = offsetx;
     
-    if(item instanceof Anibody.classes.ABO){
+    if(item instanceof Anibody.ABO){
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });
         this.AdjustItemsPosition();
     }

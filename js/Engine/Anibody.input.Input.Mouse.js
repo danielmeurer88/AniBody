@@ -1,7 +1,7 @@
-Anibody.SetPackage("Anibody", "classes", "Input");
+Anibody.SetPackage("Anibody", "input", "Input");
 
-Anibody.classes.Input.Mouse = function Mouse(){
-    Anibody.classes.EngineObject.call(this);
+Anibody.input.Input.Mouse = function Mouse(){
+    Anibody.EngineObject.call(this);
     
     this.MouseDownEvent = null;
     this.MouseUpEvent = null;
@@ -49,15 +49,15 @@ Anibody.classes.Input.Mouse = function Mouse(){
     
 this.Initialize();
 };
-Anibody.classes.Input.Mouse.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-Anibody.classes.Input.Mouse.prototype.constructor = Anibody.classes.Input.Mouse;
+Anibody.input.Input.Mouse.prototype = Object.create(Anibody.EngineObject.prototype);
+Anibody.input.Input.Mouse.prototype.constructor = Anibody.input.Input.Mouse;
 
-Anibody.classes.Input.Mouse.prototype.Initialize = function(){
-    this.Cursor = new Anibody.classes.Input.Mouse.Cursor();
+Anibody.input.Input.Mouse.prototype.Initialize = function(){
+    this.Cursor = new Anibody.input.Input.Mouse.Cursor();
     this.RegisterMouseEvents(this.Engine.Flags.PreventContextClickBubbleToUp);
 };
 
-Anibody.classes.Input.Mouse.prototype.Update = function(){
+Anibody.input.Input.Mouse.prototype.Update = function(){
     
     var e = this.EventObject;
 
@@ -96,7 +96,7 @@ Anibody.classes.Input.Mouse.prototype.Update = function(){
     this.Cursor.Update();
 };
 
-Anibody.classes.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextMenu) {
+Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextMenu) {
 
     this.MouseMoveEvent = $(document).mousemove(this.Engine, function (e) {
         e.data.Input.Mouse.EventObject = e;
@@ -167,7 +167,7 @@ Anibody.classes.Input.Mouse.prototype.RegisterMouseEvents = function (lockContex
             return false;
         };
 };
-Anibody.classes.Input.Mouse.prototype.UnregisterMouseEvents = function () {
+Anibody.input.Input.Mouse.prototype.UnregisterMouseEvents = function () {
     if (this.MouseUpEvent !== null) {
         $(document).unbind(this.MouseUpEvent);
         this.MouseUpEvent = null;
@@ -178,7 +178,7 @@ Anibody.classes.Input.Mouse.prototype.UnregisterMouseEvents = function () {
     }
 };
 
-Anibody.classes.Input.Mouse.prototype.FakeMouseClick = function (x, y) {
+Anibody.input.Input.Mouse.prototype.FakeMouseClick = function (x, y) {
     console.log("fake mouse down at {0},{1}".format( x, y) );
     var releaseLength = 300;
 
@@ -207,7 +207,7 @@ Anibody.classes.Input.Mouse.prototype.FakeMouseClick = function (x, y) {
 
 };
 
-Anibody.classes.Input.Mouse.prototype.IsMouseOnCanvas = function () {
+Anibody.input.Input.Mouse.prototype.IsMouseOnCanvas = function () {
     
     // check if the mouse is on the canvas
     var mx = this.Position.X;
@@ -227,80 +227,80 @@ Anibody.classes.Input.Mouse.prototype.IsMouseOnCanvas = function () {
 
 Anibody.SetPackage("Anibody", "classes", "Input" ,"Mouse");
 
-Anibody.classes.Input.Mouse.Cursor = function Cursor(){
-    Anibody.classes.EngineObject.call(this);
+Anibody.input.Input.Mouse.Cursor = function Cursor(){
+    Anibody.EngineObject.call(this);
     this.Current = "auto";
     this.OnlyCanvas = true;
 };
-Anibody.classes.Input.Mouse.Cursor.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-Anibody.classes.Input.Mouse.Cursor.prototype.constructor = Anibody.classes.Input.Mouse.Cursor;
-Anibody.classes.Input.Mouse.Cursor.prototype.Set = function (css) {$(this.Engine.Canvas).css("cursor", css);};
-Anibody.classes.Input.Mouse.Cursor.prototype.alias = function () {this.Current = "alias";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.cell = function () {this.Current = "cell";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.col_resize = function () {this.Current = "col-resize";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.copy = function () {this.Current = "copy";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.crosshair = function () {this.Current = "crosshair";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.default = function () {this.Current = "default";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.ew_resize = function () {this.Current = "ew-resize";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.grab = function () {this.Current = "grab";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.grabbing = function () {this.Current = "grabbing";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.help = function () {this.Current = "help";this.Set(this.Current);};
-Anibody.classes.Input.Mouse.Cursor.prototype.move = function () {
+Anibody.input.Input.Mouse.Cursor.prototype = Object.create(Anibody.EngineObject.prototype);
+Anibody.input.Input.Mouse.Cursor.prototype.constructor = Anibody.input.Input.Mouse.Cursor;
+Anibody.input.Input.Mouse.Cursor.prototype.Set = function (css) {$(this.Engine.Canvas).css("cursor", css);};
+Anibody.input.Input.Mouse.Cursor.prototype.alias = function () {this.Current = "alias";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.cell = function () {this.Current = "cell";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.col_resize = function () {this.Current = "col-resize";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.copy = function () {this.Current = "copy";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.crosshair = function () {this.Current = "crosshair";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.default = function () {this.Current = "default";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.ew_resize = function () {this.Current = "ew-resize";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.grab = function () {this.Current = "grab";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.grabbing = function () {this.Current = "grabbing";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.help = function () {this.Current = "help";this.Set(this.Current);};
+Anibody.input.Input.Mouse.Cursor.prototype.move = function () {
     this.Current = "move";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.nesw_resize = function () { // northeast - southwest
+Anibody.input.Input.Mouse.Cursor.prototype.nesw_resize = function () { // northeast - southwest
     this.Current = "move";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.ns_resize = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.ns_resize = function () {
     this.Current = "ns-resize";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.nwse_resize = function () { // northwest - southeast
+Anibody.input.Input.Mouse.Cursor.prototype.nwse_resize = function () { // northwest - southeast
     this.Current = "ns-resize";
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.no_drop = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.no_drop = function () {
     this.Current = "no-drop";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.none = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.none = function () {
     this.Current = "none";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.not_allowed = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.not_allowed = function () {
     this.Current = "not-allowed";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.pointer = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.pointer = function () {
     this.Current = "pointer";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.progress = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.progress = function () {
     this.Current = "progress";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.row_resize = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.row_resize = function () {
     this.Current = "row-resize";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.text = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.text = function () {
     this.Current = "text";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.vertical_text = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.vertical_text = function () {
     this.Current = "vertical-text";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.wait = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.wait = function () {
     this.Current = "wait";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.zoom_in = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.zoom_in = function () {
     this.Current = "zoom-in";
     this.Set(this.Current);
 };
-Anibody.classes.Input.Mouse.Cursor.prototype.zoom_out = function () {
+Anibody.input.Input.Mouse.Cursor.prototype.zoom_out = function () {
     this.Current = "zoom-out";
     this.Set(this.Current);
 };

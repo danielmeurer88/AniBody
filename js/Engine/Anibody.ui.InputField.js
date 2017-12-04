@@ -11,7 +11,7 @@ Anibody.SetPackage("Anibody", "ui");
  */
 Anibody.ui.InputField = function InputField(x, y, width, height, padding) {
 
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
 
     this.Active = true;
 
@@ -73,7 +73,7 @@ Anibody.ui.InputField = function InputField(x, y, width, height, padding) {
 this.Initialize();
 }
 
-Anibody.ui.InputField.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.ui.InputField.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.InputField.prototype.constructor = Anibody.ui.InputField;
 
 Anibody.ui.InputField.prototype.DefaultUnselectedColor = "#eee";

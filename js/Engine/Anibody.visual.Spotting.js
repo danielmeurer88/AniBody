@@ -7,7 +7,7 @@ Anibody.SetPackage("Anibody", "visual");
  * @returns {Spotting}
  */
 Anibody.visual.Spotting = function Spotting(area, ms){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     
     this.Area = area;
     
@@ -34,7 +34,7 @@ Anibody.visual.Spotting = function Spotting(area, ms){
 this.Initialize();
 };
 
-Anibody.visual.Spotting.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.visual.Spotting.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.visual.Spotting.prototype.constructor = Anibody.visual.Spotting;
 
 Anibody.visual.Spotting.prototype.DefaultColor = "red";

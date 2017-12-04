@@ -6,7 +6,7 @@ Anibody.SetPackage("Anibody", "nav");
  * @returns {Tab}
  */
 Anibody.nav.Tab = function Tab(label, owner){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.TIN = this.UniqueID; // tab indentification number
     this.Label = label;
@@ -52,7 +52,7 @@ Anibody.nav.Tab = function Tab(label, owner){
 this.Initialize();
 };
 
-Anibody.nav.Tab.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.Tab.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.Tab.prototype.constructor = Anibody.nav.Tab;
 
 Anibody.nav.Tab.prototype.FontColor = "#000";
@@ -316,7 +316,7 @@ Anibody.nav.Tab.prototype.AddItem = function(item, offsetx, offsety, depthcorrec
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });
     }
     
-    if(item instanceof Anibody.classes.ABO){
+    if(item instanceof Anibody.ABO){
         if(item === "break" && this.Items.length <= 0)return;
         
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });

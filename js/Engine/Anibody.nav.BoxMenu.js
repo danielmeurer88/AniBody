@@ -12,7 +12,7 @@ Anibody.SetPackage("Anibody", "nav");
  * @returns {BoxMenu}
  */
 Anibody.nav.BoxMenu = function BoxMenu(x,y,w,h, t, th){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.X = x;
     this.Y = y;
@@ -69,7 +69,7 @@ Anibody.nav.BoxMenu = function BoxMenu(x,y,w,h, t, th){
     
 this.Initialize();
 };
-Anibody.nav.BoxMenu.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.nav.BoxMenu.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.BoxMenu.prototype.constructor = Anibody.nav.BoxMenu;
 
 Anibody.nav.BoxMenu.prototype.TitleColor = "#ddd";
@@ -516,7 +516,7 @@ Anibody.nav.BoxMenu.prototype.AddItem = function(item, offsetx, offsety){
     if(arguments.length <= 2)
         offsety = 0;
     
-    if(item instanceof Anibody.classes.ABO){
+    if(item instanceof Anibody.ABO){
         this.Items.push({item:item, offset: {x:offsetx, y:offsety} });
         this.AdjustItemsPosition();
     }

@@ -6,14 +6,14 @@ Anibody.SetPackage("Anibody", "visual");
  * @returns {ABOPresenter}
  */
 Anibody.visual.ABOPresenter = function ABOPresenter(abo){
-    Anibody.classes.Widget.call(this);
+    Anibody.Widget.call(this);
     
     this.X=0;
     this.Y=0;
     this.Width;
     this.Height;
     
-    if(abo instanceof Anibody.classes.ABO){
+    if(abo instanceof Anibody.ABO){
         this.ABO = abo;
         this._ready = true;
     }else
@@ -50,7 +50,7 @@ Anibody.visual.ABOPresenter = function ABOPresenter(abo){
 this.Initialize();
 };
 
-Anibody.visual.ABOPresenter.prototype = Object.create(Anibody.classes.Widget.prototype);
+Anibody.visual.ABOPresenter.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.visual.ABOPresenter.prototype.constructor = Anibody.visual.ABOPresenter;
 
 Anibody.visual.ABOPresenter.prototype.ContentBoxColor = "#999";
@@ -281,7 +281,7 @@ Anibody.visual.ABOPresenter.prototype.SetStopFunction = function (stopcbo) {
  * @returns {Animation}
  */
 Anibody.visual.Animation = function Animation(x, y, codename, numpics, jumpms, reverseAfter) {
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     this.Type = "Animation";
 
     if(typeof reverseAfter === "undefined")
@@ -321,7 +321,7 @@ Anibody.visual.Animation = function Animation(x, y, codename, numpics, jumpms, r
 this.Initialize();
 };
 
-Anibody.visual.Animation.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.Animation.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.Animation.prototype.constructor = Anibody.visual.Animation;
 
 /**
@@ -457,7 +457,7 @@ Anibody.visual.Animation.prototype.SetMaxIterations = function (i) {
  * @returns {ImageObject}
  */
 Anibody.visual.ImageObject = function ImageObject(codename, x, y/* (optional), scale*/) {
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     this.X = x;
     this.Y = y;
     this.Codename = codename;
@@ -473,7 +473,7 @@ Anibody.visual.ImageObject = function ImageObject(codename, x, y/* (optional), s
 this.Initialize();    
 };
 
-Anibody.visual.ImageObject.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.ImageObject.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.ImageObject.prototype.constructor = Anibody.visual.ImageObject;
 /**
  * @see README_DOKU.txt
@@ -527,7 +527,7 @@ Anibody.visual.ImageObject.prototype.FlowMove = function (tox, toy) {
  * @returns {ABText}
  */
 Anibody.visual.ABText = function ABText(txt, x, y, fh) {
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     this.X = x;
     this.Y = y;
     this.Width = false;
@@ -544,7 +544,7 @@ Anibody.visual.ABText = function ABText(txt, x, y, fh) {
 
     this.Initialize();
 };
-Anibody.visual.ABText.prototype = Object.create(Anibody.classes.ABO.prototype);
+Anibody.visual.ABText.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.ABText.prototype.constructor = Anibody.visual.ABText;
 
 Anibody.visual.ABText.prototype.DefaultFontColor = "black";

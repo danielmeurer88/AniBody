@@ -1,4 +1,4 @@
-Anibody.SetPackage("Anibody", "classes", "Input");
+Anibody.SetPackage("Anibody", "input", "Input");
 
 // -------------------- 
 // Do not use this at the moment!!
@@ -8,8 +8,8 @@ Anibody.SetPackage("Anibody", "classes", "Input");
  * functions, in the form of callback objecs, can be registered to each slice
  * @returns {TouchPie}
  */
-Anibody.classes.Input.TouchPie = function TouchPie(){
-    Anibody.classes.ABO.call(this);
+Anibody.input.Input.TouchPie = function TouchPie(){
+    Anibody.ABO.call(this);
     
     this.Color = "#bbb";
     this.ColorSelected = "#999";
@@ -39,12 +39,12 @@ Anibody.classes.Input.TouchPie = function TouchPie(){
     
 this.Initialize();    
 };
-Anibody.classes.Input.TouchPie.prototype = Object.create(Anibody.classes.ABO.prototype);
-Anibody.classes.Input.TouchPie.prototype.constructor = Anibody.classes.Input.TouchPie;
+Anibody.input.Input.TouchPie.prototype = Object.create(Anibody.ABO.prototype);
+Anibody.input.Input.TouchPie.prototype.constructor = Anibody.input.Input.TouchPie;
 /**
  * @see README_DOKU.txt
  */
-Anibody.classes.Input.TouchPie.prototype.Initialize = function(){
+Anibody.input.Input.TouchPie.prototype.Initialize = function(){
     
     var offset = this.Offset;
     var _toRadians = function(deg) {return deg * Math.PI / 180;};
@@ -73,7 +73,7 @@ Anibody.classes.Input.TouchPie.prototype.Initialize = function(){
 /**
  * @see README_DOKU.txt
  */
-Anibody.classes.Input.TouchPie.prototype.Draw = function(c){
+Anibody.input.Input.TouchPie.prototype.Draw = function(c){
     if(!this.Enabled) return;
     
     var piewidth = this.Value*2 + this.Radius*2;
@@ -130,7 +130,7 @@ Anibody.classes.Input.TouchPie.prototype.Draw = function(c){
 /**
  * @see README_DOKU.txt
  */
-Anibody.classes.Input.TouchPie.prototype.Update = function(){
+Anibody.input.Input.TouchPie.prototype.Update = function(){
     // checks if the canvas size has changed
     var curcan = this.Engine.Canvas;
     if(curcan.width != this.CanvasWidth || curcan.height != this.CanvasHeight){
@@ -148,10 +148,10 @@ Anibody.classes.Input.TouchPie.prototype.Update = function(){
 /**
  * Sets the given pie piece as the selected pie piece
  * @param {object} pp - given pie piece
- * @returns {Anibody.classes.Input.TouchPie.prototype.Pieces.None|Number|.Object@call;create.Pieces.None|Object.prototype.Pieces.None}
+ * @returns {Anibody.input.Input.TouchPie.prototype.Pieces.None|Number|.Object@call;create.Pieces.None|Object.prototype.Pieces.None}
  */
-Anibody.classes.Input.TouchPie.prototype.SelectPiece = function(pp){
-    if(pp != Anibody.classes.Input.TouchPie.prototype.Pieces.None){
+Anibody.input.Input.TouchPie.prototype.SelectPiece = function(pp){
+    if(pp != Anibody.input.Input.TouchPie.prototype.Pieces.None){
         this.SelectedPiePiece = pp;
         return this.SelectedPiePiece;
     }
@@ -160,14 +160,14 @@ Anibody.classes.Input.TouchPie.prototype.SelectPiece = function(pp){
 
 /**
  * Deselects the currently selected piece
- * @returns {Anibody.classes.Input.TouchPie.prototype.Pieces.None}
+ * @returns {Anibody.input.Input.TouchPie.prototype.Pieces.None}
  */
-Anibody.classes.Input.TouchPie.prototype.DeselectPieces = function(){
-    return this.SelectedPiePiece = Anibody.classes.Input.TouchPie.prototype.Pieces.None;
+Anibody.input.Input.TouchPie.prototype.DeselectPieces = function(){
+    return this.SelectedPiePiece = Anibody.input.Input.TouchPie.prototype.Pieces.None;
 };
 
-Anibody.classes.Input.TouchPie.prototype.SetPiece = function(dir, label, co){
-    if(dir == Anibody.classes.Input.TouchPie.prototype.Pieces.None) return -1;
+Anibody.input.Input.TouchPie.prototype.SetPiece = function(dir, label, co){
+    if(dir == Anibody.input.Input.TouchPie.prototype.Pieces.None) return -1;
     this.COArray[dir] = co;
     this.Labels[dir] = label;
     return dir;
@@ -176,18 +176,18 @@ Anibody.classes.Input.TouchPie.prototype.SetPiece = function(dir, label, co){
  * Returns the respective pie piece or its index according to given string in 'dir'
  * @param {string} dir - returns respective pie piece if you use 'right','bottom', 'left', or 'top'
  * returns the label description of the respective piece
- * @returns {Anibody.classes.Input.TouchPie.prototype.Piece|| number}
+ * @returns {Anibody.input.Input.TouchPie.prototype.Piece|| number}
  */
-Anibody.classes.Input.TouchPie.prototype.GetPiece = function(dir){
+Anibody.input.Input.TouchPie.prototype.GetPiece = function(dir){
     dir = dir.toLowerCase();
     if(dir === "right")
-        return Anibody.classes.Input.TouchPie.prototype.Pieces.Right;
+        return Anibody.input.Input.TouchPie.prototype.Pieces.Right;
     if(dir === "bottom")
-        return Anibody.classes.Input.TouchPie.prototype.Pieces.Bottom;
+        return Anibody.input.Input.TouchPie.prototype.Pieces.Bottom;
     if(dir === "left")
-        return Anibody.classes.Input.TouchPie.prototype.Pieces.Left;
+        return Anibody.input.Input.TouchPie.prototype.Pieces.Left;
     if(dir === "top")
-        return Anibody.classes.Input.TouchPie.prototype.Pieces.Top;
+        return Anibody.input.Input.TouchPie.prototype.Pieces.Top;
     
     return -1;
 };
@@ -195,8 +195,8 @@ Anibody.classes.Input.TouchPie.prototype.GetPiece = function(dir){
  * triggers the registered callback object of the currently selected pie piece
  * @returns {undefined}
  */
-Anibody.classes.Input.TouchPie.prototype.Trigger = function(){
-    if(this.SelectedPiePiece === Anibody.classes.Input.TouchPie.prototype.Pieces.None)
+Anibody.input.Input.TouchPie.prototype.Trigger = function(){
+    if(this.SelectedPiePiece === Anibody.input.Input.TouchPie.prototype.Pieces.None)
         return;
     
     var cbo = this.COArray[this.SelectedPiePiece];
@@ -207,7 +207,7 @@ Anibody.classes.Input.TouchPie.prototype.Trigger = function(){
 /**
  * enum of the pieces
  */
-Anibody.classes.Input.TouchPie.prototype.Pieces = {
+Anibody.input.Input.TouchPie.prototype.Pieces = {
     Right : 0,
     Bottom : 1,
     Left : 2,

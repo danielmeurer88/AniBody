@@ -1,7 +1,7 @@
 
 function RPGPath(player){
     
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.Player = player;
     this.Start;
@@ -18,7 +18,7 @@ function RPGPath(player){
     
 this.Initialize();
 }
-RPGPath.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGPath.prototype = Object.create(Anibody.ABO.prototype);
 RPGPath.prototype.constructor = RPGPath;
 
 RPGPath.prototype.Initialize = function(){

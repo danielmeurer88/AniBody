@@ -5,7 +5,7 @@
  * @returns {RPGCauser}
  */
 function RPGCauser(itemid){
-    Anibody.classes.EngineObject.call(this);
+    Anibody.EngineObject.call(this);
     this.ItemID = itemid; // 
     // all three have the same length
     this.SubjectIDs = [];
@@ -13,7 +13,7 @@ function RPGCauser(itemid){
     this.Labels = [];
     
 }
-RPGCauser.prototype = Object.create(Anibody.classes.EngineObject.prototype);
+RPGCauser.prototype = Object.create(Anibody.EngineObject.prototype);
 RPGCauser.prototype.constructor = RPGCauser;
 
 /**
@@ -21,12 +21,12 @@ RPGCauser.prototype.constructor = RPGCauser;
  * @returns {RPGCausalityManager}
  */
 function RPGCausalityManager(){
-    Anibody.classes.EngineObject.call(this);
+    Anibody.EngineObject.call(this);
     
     this.Causers = new Anibody.util.PriorityQueue();
     
 }
-RPGCausalityManager.prototype = Object.create(Anibody.classes.EngineObject.prototype);
+RPGCausalityManager.prototype = Object.create(Anibody.EngineObject.prototype);
 RPGCausalityManager.prototype.constructor = RPGCausalityManager;
 
 RPGCausalityManager.prototype.CausalityIDState = 0;

@@ -6,7 +6,7 @@
  * @returns {RPGObject}
  */
 function RPGObject(objectid, width,height, am_needed){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.ObjectID = objectid;
     
@@ -73,7 +73,7 @@ function RPGObject(objectid, width,height, am_needed){
     
 this.Initialize();
 }
-RPGObject.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGObject.prototype = Object.create(Anibody.ABO.prototype);
 RPGObject.prototype.constructor = RPGObject;
 
 /* ++++ unique to every game +++++++++++ */

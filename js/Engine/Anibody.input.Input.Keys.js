@@ -1,8 +1,8 @@
 
-Anibody.SetPackage("Anibody", "classes", "Input");
+Anibody.SetPackage("Anibody", "input", "Input");
 
-Anibody.classes.Input.Keys = function Keys() {
-    Anibody.classes.EngineObject.call(this);
+Anibody.input.Input.Keys = function Keys() {
+    Anibody.EngineObject.call(this);
 
    
     this.KeyDownEvent = null;
@@ -75,10 +75,10 @@ Anibody.classes.Input.Keys = function Keys() {
 
 this.Initialize();
 };
-Anibody.classes.Input.Keys.prototype = Object.create(Anibody.classes.EngineObject.prototype);
-Anibody.classes.Input.Keys.prototype.constructor = Anibody.classes.Input.Keys;
+Anibody.input.Input.Keys.prototype = Object.create(Anibody.EngineObject.prototype);
+Anibody.input.Input.Keys.prototype.constructor = Anibody.input.Input.Keys;
 
-Anibody.classes.Input.Keys.prototype.Initialize = function () {
+Anibody.input.Input.Keys.prototype.Initialize = function () {
 
     // register some needed event handler
     if(this.Engine.Flags.KeyboardInput)
@@ -90,7 +90,7 @@ Anibody.classes.Input.Keys.prototype.Initialize = function () {
  * Calculates and saves the mouse position and all its concequential information needed by the user
  * @returns {undefined}
  */
-Anibody.classes.Input.Keys.prototype.Update = function () {
+Anibody.input.Input.Keys.prototype.Update = function () {
 
     if (this.AnyKey.Pressed)
         this.AnyKey.FramesPressed++;
@@ -197,7 +197,7 @@ Anibody.classes.Input.Keys.prototype.Update = function () {
         this.Esc.FramesPressed++;
 };
 
-Anibody.classes.Input.Keys.prototype.RegisterKeyEvents = function (lockKeys) {
+Anibody.input.Input.Keys.prototype.RegisterKeyEvents = function (lockKeys) {
 
     var onkeydown = function (e) {
 
@@ -904,7 +904,7 @@ Anibody.classes.Input.Keys.prototype.RegisterKeyEvents = function (lockKeys) {
     }
 };
 
-Anibody.classes.Input.Keys.prototype.UnregisterKeyEvents = function () {
+Anibody.input.Input.Keys.prototype.UnregisterKeyEvents = function () {
     if (this.KeyUpEvent) {
         $(document).unbind(this.KeyUpEvent);
         this.KeyUpEvent = "undefined";

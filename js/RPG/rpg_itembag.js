@@ -5,7 +5,7 @@
  * @returns {RPGItemBag}
  */
 function RPGItemBag(name){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     
     this.Type = "ItemBag";
     
@@ -56,7 +56,7 @@ function RPGItemBag(name){
     
 this.Initialize();
 };
-RPGItemBag.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGItemBag.prototype = Object.create(Anibody.ABO.prototype);
 RPGItemBag.prototype.constructor = RPGItemBag;
 /**
  * @description Works as the "class" constructor

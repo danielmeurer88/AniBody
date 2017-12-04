@@ -8,7 +8,7 @@
  * @returns {RPGItem}
  */
 function RPGItem(itemid, name, quantity, uf){
-    Anibody.classes.ABO.call(this);
+    Anibody.ABO.call(this);
     this.Type = "Item";
     
     this.ItemID = itemid;
@@ -25,7 +25,7 @@ function RPGItem(itemid, name, quantity, uf){
     //UseFunction = callback-object = {that:owner, function:f, parameter:para};
     this.UseFunction = uf; // function(player, targetfield, targetobject);
 };
-RPGItem.prototype = Object.create(Anibody.classes.ABO.prototype);
+RPGItem.prototype = Object.create(Anibody.ABO.prototype);
 RPGItem.prototype.constructor = RPGItem;
 
 /* ++++++++++++ The Item IDs +++++++++++ */

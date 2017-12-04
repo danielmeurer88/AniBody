@@ -96,7 +96,7 @@ function menu_callback(engine){
     
     //testSpline(engine);
     
-    var w = new Anibody.classes.Widget();
+    var w = new Anibody.Widget();
     w.TestImg = engine.MediaManager.GetImage("logo");
     w.TestImgV = w.TestImg.getVerticallyFlippedImage();
     w.TestImgH = w.TestImg.getHorizontallyFlippedImage();
@@ -159,7 +159,7 @@ function start_test(engine){
     
     engine.testobj = Anibody.static.Random.SetRandomInterval(f, 3000, 9500);
     
-    Anibody.import(Anibody.classes.Widget);
+    Anibody.import(Anibody.Widget);
     var w = new Widget();
     
     w.ProcessInput = function(){
