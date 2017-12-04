@@ -232,12 +232,12 @@ Anibody.ui.MultipleChoice.prototype._initSizes = function () {
     for(var i=0; i<this.Labels.length; i++){
         txtw = c.measureText(this.Labels[i]).width;
         bpad = (this.ContentBox.width - txtw)/2;
-        this.Buttons[i] = new Button(
+        this.Buttons[i] = new Anibody.ui.Button(
                 margin, //x
                 margin + this.ImageText.height + (i*boxh) + (i*this.RowSpace), //y
-                this.ContentBox.width - 2*margin, // width
-                boxh, // height
                 {
+                    Width: this.ContentBox.width - 2*margin, // width
+                    Height : boxh, // height
                     DisplayType: "color", TextColor: "white", FontHeight: fh,
                     Label : this.Labels[i], Padding:bpad,
                     TriggerCallbackObject: this.CallbackObjects[i],
