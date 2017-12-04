@@ -812,11 +812,11 @@ Anibody.import = function(packagePath, alias){
     }
 
     if(alias.length <= 0){
-        this.log("Cannot import " + packagePath.toString(), "EmptyStringException");
+        console.log("Cannot import " + packagePath.toString(), "EmptyStringException");
         return;
     }
     if(alias === "Function"){
-        this.log("Cannot import " + alias, "AnonymousFunctionException");
+        console.log("Cannot import " + alias, "AnonymousFunctionException");
         return;
     }
     

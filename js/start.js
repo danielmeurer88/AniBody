@@ -3,31 +3,31 @@ $(document).ready(function () {
 
     var engine = new Anibody("PlayDiv");
     
-    Anibody.import(Anibody.util.Picture);
+    Anibody.import(Anibody.util.Picture, "Pic");
 
-    var waterglass = new Picture({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
+    var waterglass = new Pic({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
     waterglass.AddGroup("room1");
 
     var mediapack = [
-        new Picture("./img_rpg/logo.png", "logo"),
-        new Picture("./img_rpg/button_0.png", "button_state_0"),
-        new Picture("./img_rpg/button_1.png", "button_state_1"),
-        new Picture("./img_rpg/button_2.png", "button_state_2"),
-        new Picture("./img_rpg/sprite_test.png", "sprite_test"),
-        new Picture({path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"]}),
-        new Picture({path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure"}),
-        new Picture({path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group:"room2"}),
-        new Picture({path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure"}),
-        new Picture({path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
-        new Picture({path: "./img_rpg/tresure_closed.png", codename: "tresure_closed"}),
-        new Picture({path: "./img_rpg/tresure_opened.png", codename: "tresure_opened"}),
-        new Picture({path: "./img_rpg/girl.png", codename: "girl", group:"room2"}),
-        new Picture({path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", group:"room2"}),
-        new Picture({path: "./img_rpg/crate.png", codename: "crate", group:"room2"}),
-        new Picture({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
-        new Picture({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
+        new Pic("./img_rpg/logo.png", "logo"),
+        new Pic("./img_rpg/button_0.png", "button_state_0"),
+        new Pic("./img_rpg/button_1.png", "button_state_1"),
+        new Pic("./img_rpg/button_2.png", "button_state_2"),
+        new Pic("./img_rpg/sprite_test.png", "sprite_test"),
+        new Pic({path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"]}),
+        new Pic({path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure"}),
+        new Pic({path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group:"room2"}),
+        new Pic({path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure"}),
+        new Pic({path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
+        new Pic({path: "./img_rpg/tresure_closed.png", codename: "tresure_closed"}),
+        new Pic({path: "./img_rpg/tresure_opened.png", codename: "tresure_opened"}),
+        new Pic({path: "./img_rpg/girl.png", codename: "girl", group:"room2"}),
+        new Pic({path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", group:"room2"}),
+        new Pic({path: "./img_rpg/crate.png", codename: "crate", group:"room2"}),
+        new Pic({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
+        new Pic({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
         waterglass,
-        new Picture({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"}),
+        new Pic({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"}),
         new Anibody.util.Sound({path: "./music/portal_activate.mp3", codename: "portal_activate", group:"room1"}),
         new Anibody.util.Sound({path: "./music/alongway.mp3", codename: "girl_background", group:"room2"})
     ];

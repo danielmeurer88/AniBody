@@ -148,7 +148,7 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
         var curpct = pack.pop(); // curpct = current element of the processed mediapack
         mm.Progress += mm.ProgressStep; // progress progresses one step further - needed for the animation
 
-        if (curpct instanceof Picture) {
+        if (curpct instanceof Anibody.util.Picture) {
             mm.Pictures.set(curpct.Codename,curpct);
             curpct.Load(of, {
                 co: co,
@@ -158,7 +158,7 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
             return;
         }
 
-        if (curpct instanceof Sound) {
+        if (curpct instanceof Anibody.util.Sound) {
             mm.Sounds.set(curpct.Codename,curpct);
             curpct.Load(of, {
                 co: co,
