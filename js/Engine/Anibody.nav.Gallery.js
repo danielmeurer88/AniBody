@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "nav");
+
 /**
  * Represents a user definable sized horizontal box, which can display ABO-items
  * the user is always able to reach every item through horizontal scrolling

@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "visual");
+
 /**
  * Represents a sprite - a collection of clips in one single image.
  * A number of flags decide which clip the sprite will render

@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "visual");
+
 /**
  * Darkens the screen except for the area you want to highlight
  * @param {Object} area object of rectangle or circle

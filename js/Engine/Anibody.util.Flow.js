@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "util");
 
 /**
  * a class that ensures the constant and steady change of multiply attributes of objects to targeted values.

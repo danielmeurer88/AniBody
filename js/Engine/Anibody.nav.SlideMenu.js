@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "nav");
 
 /**
  * A SlideMenu arrays an amount of Tabs, attached on a certain side of the canvas

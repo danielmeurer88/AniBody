@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "classes", "Input");
+
 /**
  * An application programming interface that stands between the engine and the developer and handles mouse related functions
  * @returns {MouseHandler}

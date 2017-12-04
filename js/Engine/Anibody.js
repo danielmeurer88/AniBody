@@ -1,6 +1,8 @@
 
 function Anibody(html_id) {
 
+    Anibody.ECMAScriptExtension();
+
     // ### INFO
     this.Info = {
         Engine: "AniBody",
@@ -794,16 +796,16 @@ Anibody.CallObject = function(obj, useApply){
         
 };
 
-Anibody.import = function(package, alias){
+Anibody.import = function(packagePath, alias){
     
     if(arguments.length <= 0) return;
     
     
     if(typeof alias !== "string"){
-        if(package && package.name)
-            alias = package.name;
+        if(packagePath && packagePath.name)
+            alias = packagePath.name;
         else{
-            alias = package.constructor.toString();
+            alias = packagePath.constructor.toString();
             var ifunc = alias.indexOf("function ");
             var ibracket = alias.indexOf("(");
             if(ifunc === 0){
@@ -813,7 +815,7 @@ Anibody.import = function(package, alias){
     }
 
     if(alias.length <= 0){
-        this.log("Cannot import " + package.toString(), "EmptyStringException");
+        this.log("Cannot import " + packagePath.toString(), "EmptyStringException");
         return;
     }
     if(alias === "Function"){
@@ -825,12 +827,12 @@ Anibody.import = function(package, alias){
     if(typeof window[alias] !== "undefined"){
         return;
     }
-    window[alias] = package; 
+    window[alias] = packagePath; 
 };
 
-Anibody.importAll = function(package){
+Anibody.importAll = function(packagePath){
     if(arguments.length <= 0) return;
-    for(var name in package){
-        Anibody.import(package[name]);
+    for(var name in packagePath){
+        Anibody.import(packagePath[name]);
     }
 };

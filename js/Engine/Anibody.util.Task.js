@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "util");
+
 /**
  * A Task capsulates a wanted state of the system, that can be achieved by doing several steps
  * The Task class creates and saves these necessary or optional steps and manages their relations among themselves.

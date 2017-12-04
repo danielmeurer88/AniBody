@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "visual");
+
 /**
  * Presents an ABO-Instance as a widget
  * @param {type} abo

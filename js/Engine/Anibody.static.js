@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "static");
 /**
  * a class that provides random numbers
  * @type static class

@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "ui");
+
 /**
  * Represents a Slider, which can be dragged within the
  * length (from x to x+width) by the user. 

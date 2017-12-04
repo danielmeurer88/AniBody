@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "classes");
 
 Anibody.classes.Input = function Input() {
     Anibody.classes.EngineObject.call(this);

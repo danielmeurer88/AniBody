@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "ui");
+
 /**
  * Presents a dialog box to the user, in which the user can confirms their decision of a given text
  * @param {string/string array} text

@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "debug");
+
 /**
  * creates a downloadable object dumb
  * @param {object} obj - the object, which to dumb

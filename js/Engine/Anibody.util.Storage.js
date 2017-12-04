@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "util");
 
 /**
  * @description Adding a local storage function to the Engine, so values can be saved beyond sessions

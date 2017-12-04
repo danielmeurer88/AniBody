@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "nav");
 
 /**
  * Represents a Tab of the SlideMenu, can be opened and arrays and displays further items

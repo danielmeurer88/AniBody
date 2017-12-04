@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "classes", "Input");
+
 /**
  * An application programming interface that stands between the engine and the developer and handles touch related functions.
  * This API manages registration of known ways of input possibilities to touch devices like

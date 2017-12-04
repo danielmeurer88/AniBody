@@ -1,4 +1,5 @@
-// TODO - turn colorpicker into a widget
+Anibody.SetPackage("Anibody", "ui");
+
 /**
  * A class which opens a dialog box that allows the user to select a certain color
  * @param {type} x the amount of pixels from the canvas nullpoint to the dialog box 

@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "classes", "Input");
 
 Anibody.classes.Input.Mouse = function Mouse(){
     Anibody.classes.EngineObject.call(this);

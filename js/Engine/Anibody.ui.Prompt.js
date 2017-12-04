@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "ui");
+
 /**
  * Represents a canvas and anibody-based alternative to the javascript prompt dialog
  * @param {string} m - message, that will be displayed above the input field

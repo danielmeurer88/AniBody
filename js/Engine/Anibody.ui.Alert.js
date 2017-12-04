@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "ui");
+
 /**
  * Presents a dialog
  * @param {string} text - the text, which will be shown to the user

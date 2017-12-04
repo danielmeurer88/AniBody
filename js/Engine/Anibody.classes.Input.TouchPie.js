@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "classes", "Input");
 
 // -------------------- 
 // Do not use this at the moment!!

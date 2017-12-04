@@ -1,4 +1,5 @@
  // checks if the object Anibody.util exists and if not creates it
+Anibody.SetPackage("Anibody", "util");
 
 /**
  * @description Implementation of a Priority Queue, which can be ascendingly or descendingly sorted in relation to the entry's priority

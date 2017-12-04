@@ -1,3 +1,5 @@
+Anibody.SetPackage("Anibody", "ui");
+
 /**
  * represents a switch which state can be changed to off and on - by changing states it will trigger a function (callback-object)
  * @param {number} x

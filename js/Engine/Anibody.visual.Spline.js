@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "visual");
 
 /**
  * Represents a bezier spline

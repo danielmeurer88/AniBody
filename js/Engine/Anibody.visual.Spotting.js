@@ -1,3 +1,4 @@
+Anibody.SetPackage("Anibody", "visual");
 
 /**
  * Creates circles narrowing to the spot (area)
