@@ -59,6 +59,8 @@ Anibody.ui.Confirm = function Confirm(text, cbo) {
 Anibody.ui.Confirm.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.Confirm.prototype.constructor = Anibody.ui.Confirm;
 
+Object.defineProperty(Anibody.ui.Confirm, "name", {value:"Confirm"});
+
 Anibody.ui.Confirm.prototype.ContentBoxColor = "#999";
 Anibody.ui.Confirm.prototype.BoxBorderColor = "black";
 Anibody.ui.Confirm.prototype.BoxColor = "#ccc";

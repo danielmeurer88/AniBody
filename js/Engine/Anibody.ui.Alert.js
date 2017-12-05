@@ -52,6 +52,8 @@ this.Initialize();
 Anibody.ui.Alert.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.Alert.prototype.constructor = Anibody.ui.Alert;
 
+Object.defineProperty(Anibody.ui.Alert, "name", {value:"Alert"});
+
 Anibody.ui.Alert.prototype.ContentBoxColor = "#999";
 Anibody.ui.Alert.prototype.BoxBorderColor = "black";
 Anibody.ui.Alert.prototype.BoxColor = "#ccc";

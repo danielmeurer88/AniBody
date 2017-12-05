@@ -21,6 +21,8 @@ Object.defineProperty(Anibody.util.PriorityQueue.prototype, "length", {get: func
         return this.heap.length;
 }});
 
+Object.defineProperty(Anibody.util.PriorityQueue, "name", {value:"PriorityQueue"});
+
 /**
  * @description Adds a new element of the given data to the queue and returns refnum
  * @param {object} data 
@@ -275,6 +277,9 @@ Anibody.util.Timer = function Timer(ref, f, fps, framestotal){
         f.call(that.ref, that.ref);
     };
 }
+
+Object.defineProperty(Anibody.util.Timer, "name", {value:"Timer"});
+
 /**
  * starts the timer calling the function with the object ref as its first argument and Counter equal to zero
  * @returns {undefined}
@@ -342,6 +347,9 @@ Anibody.util.IntervalHandler = function IntervalHandler(){
 }
 Anibody.util.IntervalHandler.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.util.IntervalHandler.prototype.constructor = Anibody.util.IntervalHandler;
+
+Object.defineProperty(Anibody.util.IntervalHandler, "name", {value:"IntervalHandler"});
+
 /**
  * @see README_DOKU.txt
  */
@@ -429,6 +437,9 @@ Anibody.util.Counter = function Counter(range, ms, cbo, endcbo){
     this.Loop = false;
     
 };
+
+Object.defineProperty(Anibody.util.Counter, "name", {value:"Counter"});
+
 /**
  * Starts counting
  * @returns {undefined}

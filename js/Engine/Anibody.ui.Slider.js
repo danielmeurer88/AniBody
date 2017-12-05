@@ -52,6 +52,8 @@ this.Initialize();
 Anibody.ui.Slider.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.Slider.prototype.constructor = Anibody.ui.Slider;
 
+Object.defineProperty(Anibody.ui.Slider, "name", {value:"Slider"});
+
 Anibody.ui.Slider.prototype.DefaultColor = "rgba(100,100,120,1)";
 /**
  * @see README_DOKU.txt

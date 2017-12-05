@@ -69,6 +69,9 @@ Anibody.visual.CoordinateSystem = function CoordinateSystem(x, y, w, h, opt) {
 }
 Anibody.visual.CoordinateSystem.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.CoordinateSystem.prototype.constructor = Anibody.visual.CoordinateSystem;
+
+Object.defineProperty(Anibody.visual.CoordinateSystem, "name", {value:"CoordinateSystem"});
+
 /**
  * @see README_DOKU.txt
  */

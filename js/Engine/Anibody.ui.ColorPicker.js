@@ -68,6 +68,8 @@ this.Initialize();
 Anibody.ui.ColorPicker.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.ColorPicker.prototype.constructor = Anibody.ui.ColorPicker;
 
+Object.defineProperty(Anibody.ui.ColorPicker, "name", {value:"ColorPicker"});
+
 /**
  * @see README_DOKU.txt
  */

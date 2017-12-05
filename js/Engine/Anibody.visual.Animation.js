@@ -53,6 +53,8 @@ this.Initialize();
 Anibody.visual.ABOPresenter.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.visual.ABOPresenter.prototype.constructor = Anibody.visual.ABOPresenter;
 
+Object.defineProperty(Anibody.visual.ABOPresenter, "name", {value:"ABOPresenter"});
+
 Anibody.visual.ABOPresenter.prototype.ContentBoxColor = "#999";
 Anibody.visual.ABOPresenter.prototype.BoxBorderColor = "black";
 Anibody.visual.ABOPresenter.prototype.OKBoxColor = "#ccc";
@@ -324,6 +326,8 @@ this.Initialize();
 Anibody.visual.Animation.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.Animation.prototype.constructor = Anibody.visual.Animation;
 
+Object.defineProperty(Anibody.visual.Animation, "name", {value:"Animation"});
+
 /**
  * @description Getter
  */
@@ -475,6 +479,9 @@ this.Initialize();
 
 Anibody.visual.ImageObject.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.ImageObject.prototype.constructor = Anibody.visual.ImageObject;
+
+Object.defineProperty(Anibody.visual.ImageObject, "name", {value:"ImageObject"});
+
 /**
  * @see README_DOKU.txt
  */
@@ -546,6 +553,8 @@ Anibody.visual.ABText = function ABText(txt, x, y, fh) {
 };
 Anibody.visual.ABText.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.ABText.prototype.constructor = Anibody.visual.ABText;
+
+Object.defineProperty(Anibody.visual.ABText, "name", {value:"ABText"});
 
 Anibody.visual.ABText.prototype.DefaultFontColor = "black";
 

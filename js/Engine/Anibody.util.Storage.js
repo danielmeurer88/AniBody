@@ -25,6 +25,8 @@ this.Initialize();
 Anibody.util.Storage.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.util.Storage.prototype.constructor = Anibody.util.Storage;
 
+Object.defineProperty(Anibody.util.Storage, "name", {value:"Storage"});
+
 Anibody.util.Storage.Instance = null;
 
 /**

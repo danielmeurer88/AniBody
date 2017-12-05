@@ -65,6 +65,9 @@ this.Initialize();
 };
 Anibody.input.Input.TouchHandler.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.input.Input.TouchHandler.prototype.constructor = Anibody.input.Input.TouchHandler;
+
+//Object.defineProperty(Anibody.input.Input.TouchHandler, "name", {value:"TouchHandler"});
+
 /**
  * @see README_DOKU.txt
  */

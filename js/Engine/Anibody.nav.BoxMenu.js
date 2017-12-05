@@ -72,6 +72,8 @@ this.Initialize();
 Anibody.nav.BoxMenu.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.BoxMenu.prototype.constructor = Anibody.nav.BoxMenu;
 
+Object.defineProperty(Anibody.nav.BoxMenu, "name", {value:"BoxMenu"});
+
 Anibody.nav.BoxMenu.prototype.TitleColor = "#ddd";
 Anibody.nav.BoxMenu.prototype.Color = "#eee";
 Anibody.nav.BoxMenu.prototype.HandleColor = "#999";

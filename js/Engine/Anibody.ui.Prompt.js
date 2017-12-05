@@ -109,6 +109,8 @@ this.Initialize();
 Anibody.ui.Prompt.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.Prompt.prototype.constructor = Anibody.ui.Prompt;
 
+Object.defineProperty(Anibody.ui.Prompt, "name", {value:"Prompt"});
+
 Anibody.ui.Prompt.prototype.DefaultBackgroundColor = "#ccc";
 Anibody.ui.Prompt.prototype.DefaultBorderColor = "#000";
 Anibody.ui.Prompt.prototype.DefaultFontColor = "#222";

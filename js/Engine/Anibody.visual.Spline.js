@@ -35,6 +35,9 @@ Anibody.visual.Spline = function Spline() {
 
 Anibody.visual.Spline.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.Spline.prototype.constructor = Anibody.visual.Spline;
+
+Object.defineProperty(Anibody.visual.Spline, "name", {value:"Spline"});
+
 /**
  * @see README_DOKU.txt
  */

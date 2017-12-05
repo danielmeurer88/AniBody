@@ -130,6 +130,8 @@ Anibody.ui.Button = function Button(x, y, options) {
 Anibody.ui.Button.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.Button.prototype.constructor = Anibody.ui.Button;
 
+Object.defineProperty(Anibody.ui.Button, "name", {value:"Button"});
+
 /**
  * @private
  * backup template, necessary to reset the DefaultTemplate, which molds the instances

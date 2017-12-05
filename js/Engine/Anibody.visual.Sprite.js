@@ -44,6 +44,8 @@ Anibody.visual.Sprite = function Sprite(codename, canvasX, canvasY,clipWidth, cl
 Anibody.visual.Sprite.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.visual.Sprite.prototype.constructor = Anibody.visual.Sprite;
 
+Object.defineProperty(Anibody.visual.Sprite, "name", {value:"Sprite"});
+
 /**
  * default values of every clipping template added to this sprite instance
  * @type object
@@ -230,7 +232,7 @@ Anibody.visual.Sprite.prototype._checkClipping = function(names, i){
     var correct = true;
  
     for(var n=0; n<names.length; n++){
-        if(correct && !this.Clippings[i].FlagNames.isElement(names[n]))
+        if(correct && this.Clippings[i].FlagNames.indexOf(names[n]) < 0)
             correct = false;
     }
     

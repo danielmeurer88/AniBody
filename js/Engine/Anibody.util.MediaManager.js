@@ -26,6 +26,8 @@ Anibody.util.MediaManager = function MediaManager() {
 Anibody.util.MediaManager.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.util.MediaManager.prototype.constructor = Anibody.util.MediaManager;
 
+Object.defineProperty(Anibody.util.MediaManager, "name", {value:"MediaManager"});
+
 Anibody.util.MediaManager.prototype.DefaultBarColor = "green";
 Anibody.util.MediaManager.prototype.DefaultBarBorderColor = "black";
 Anibody.util.MediaManager.prototype.DefaultFontColor = "black";

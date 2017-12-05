@@ -20,6 +20,9 @@ Anibody.util.Task = function Task(name, desc){
     this.DoneCallback = {that:this, parameter:"default", function:function(p){console.log(this.Name + " done: "+p);}};
     this.FailedCallback = {that:this, parameter:"default", function:function(p){console.log(this.Name + " failed: "+p);}};
 };
+
+Object.defineProperty(Anibody.util.Task, "name", {value:"Task"});
+
 /**
  * Checks if task is done by checking if every non-optional step is done.
  * @returns {Boolean}
@@ -356,6 +359,9 @@ Anibody.util.Step = function Step(id, desc, req_not_met_text, canfail, failtext)
     
     this.Optional = false;
 };
+
+Object.defineProperty(Anibody.util.Step, "name", {value:"Step"});
+
 /**
  * Returns array of all required steps, which are undone
  * @returns {Array[Steps]}

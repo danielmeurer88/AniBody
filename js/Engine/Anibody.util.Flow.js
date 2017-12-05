@@ -34,6 +34,8 @@ Anibody.util.MultiFlow = function MultiFlow(object, attr, targetvalue, duration,
     
 };
 
+Object.defineProperty(Anibody.util.MultiFlow, "name", {value:"MultiFlow"});
+
 /**
  * Starts the flow process
  * @returns {undefined}
@@ -144,6 +146,8 @@ Anibody.util.Flow = function Flow(object, attr, targetvalue, duration,callbackob
     this.TargetIsSmaller = false;
     
 };
+
+Object.defineProperty(Anibody.util.Flow, "name", {value:"Flow"});
 
 /**
  * Starts the change process

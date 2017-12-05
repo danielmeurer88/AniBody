@@ -41,6 +41,9 @@ this.Initialize();
 };
 Anibody.input.Input.TouchPie.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.input.Input.TouchPie.prototype.constructor = Anibody.input.Input.TouchPie;
+
+Object.defineProperty(Anibody.input.Input.TouchPie, "name", {value:"TouchPie"});
+
 /**
  * @see README_DOKU.txt
  */

@@ -65,6 +65,8 @@ this.Initialize();
 Anibody.ui.Switch.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.Switch.prototype.constructor = Anibody.ui.Switch;
 
+Object.defineProperty(Anibody.ui.Switch, "name", {value:"Switch"});
+
 Anibody.ui.Switch.prototype.DefaultBackgroundColor = "grey";
 Anibody.ui.Switch.prototype.DefaultCoverColor = false;
 

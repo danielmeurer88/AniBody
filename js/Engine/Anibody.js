@@ -7,7 +7,7 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.1.2",
+        Version: "1.1.3",
         Author: "Daniel Meurer",
         LastUpdated: "2017_11_30_h21" // year_month_day_hhour
     };
@@ -847,7 +847,10 @@ Anibody.importAll = function(packagePath){
 Anibody.EngineObject = function EngineObject(){
     this.EI = 0; // Engine Index (the index of the engine, to which this object belongs in the $.EngineArray!
     this.UniqueID = this._getUniqueID();
-}
+};
+
+Object.defineProperty(Anibody.EngineObject, "name", {value:"EngineObject"});
+
 /**
  * @see README_DOKU.txt
  */
@@ -879,10 +882,13 @@ Anibody.ABO = function ABO(){ // AniBodyObject
     this.Y=0;
     this.Width = 0;
     this.Height = 0;
-}
+};
 
 Anibody.ABO.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.ABO.prototype.constructor = Anibody.ABO;
+
+Object.defineProperty(Anibody.ABO, "name", {value:"ABO"});
+
 /**
  * @see README_DOKU.txt
  */
@@ -965,6 +971,8 @@ Anibody.Widget = function Widget(){ // Widget
 Anibody.Widget.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.Widget.prototype.constructor = Anibody.Widget;
 
+Object.defineProperty(Anibody.Widget, "name", {value:"Widget"});
+
 Anibody.Widget.prototype.Register = function(){
     if(this._refIP === null)
         this._refIP = this.Engine.AddProcessInputFunctionObject({
@@ -1029,6 +1037,8 @@ Anibody.DefaultCamera = function DefaultCamera(){
 Anibody.DefaultCamera.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.DefaultCamera.prototype.constructor = Anibody.DefaultCamera;
 
+Object.defineProperty(Anibody.DefaultCamera, "name", {value:"DefaultCamera"});
+
 /**
  * Represents the game environment and can hold the background image of the map
  * @param {string} img_code - codename of the background image (optional)
@@ -1042,6 +1052,9 @@ Anibody.DefaultTerrain = function DefaultTerrain(img_code) {
 }
 Anibody.DefaultTerrain.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.DefaultTerrain.prototype.constructor = Anibody.DefaultTerrain;
+
+Object.defineProperty(Anibody.DefaultTerrain, "name", {value:"DefaultTerrain"});
+
 /**
  * @see README_DOKU.txt
  */

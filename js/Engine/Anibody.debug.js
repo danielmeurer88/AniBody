@@ -314,6 +314,9 @@ Anibody.debug.Consolero = function Consolero() {
         this.MonitorArr.push({object: obj, attr: attr, label: label});
     };
 };
+
+Object.defineProperty(Anibody.debug.Consolero, "name", {value:"Consolero"});
+
 Anibody.debug.Consolero.Instance = null; // saves the instance
 
 /**
@@ -335,6 +338,9 @@ Anibody.debug.DebugWindow = function DebugWindow() {
 
     this.Initialize();
 };
+
+Object.defineProperty(Anibody.debug.DebugWindow, "name", {value:"DebugWindow"});
+
 /**
  * @see README_DOKU.txt
  */
@@ -561,6 +567,8 @@ Anibody.debug.Monitor = function Monitor(obj, attr, cbo, name) {
 
     this.Initialize();
 };
+
+Object.defineProperty(Anibody.debug.Monitor, "name", {value:"Monitor"});
 
 Anibody.debug.Monitor.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.debug.Monitor.prototype.constructor = Anibody.debug.Monitor;

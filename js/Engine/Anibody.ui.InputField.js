@@ -76,6 +76,8 @@ this.Initialize();
 Anibody.ui.InputField.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.ui.InputField.prototype.constructor = Anibody.ui.InputField;
 
+Object.defineProperty(Anibody.ui.InputField, "name", {value:"InputField"});
+
 Anibody.ui.InputField.prototype.DefaultUnselectedColor = "#eee";
 Anibody.ui.InputField.prototype.DefaultSelectedColor = "#fff";
 

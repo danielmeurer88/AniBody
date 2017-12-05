@@ -31,7 +31,10 @@ Anibody.input.Input = function Input() {
 this.Initialize();
 };
 Anibody.input.Input.prototype = Object.create(Anibody.EngineObject.prototype);
-Anibody.input.Input.prototype.constructor = Anibody.input.Input
+Anibody.input.Input.prototype.constructor = Anibody.input.Input;
+
+Object.defineProperty(Anibody.input.Input, "name", {value:"Input"});
+
 // registers mouse events (those events are not bound to the frame() - the callback function is triggered when the user activates them )
 Anibody.input.Input.prototype.Initialize = function () {
 

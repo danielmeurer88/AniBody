@@ -26,6 +26,8 @@ this.Initialize();
 Anibody.shapes.Shape.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.shapes.Shape.prototype.constructor = Anibody.shapes.Shape;
 
+Object.defineProperty(Anibody.shapes.Shape, "name", {value:"Shape"});
+
 Anibody.shapes.Shape.prototype.Initialize = function(){
     this._calculateCentroid();
     this._calculateSurroundingRectangle();
@@ -233,6 +235,8 @@ this.Initialize();
 
 Anibody.shapes.Rectangle.prototype = Object.create(Anibody.shapes.Shape.prototype);
 Anibody.shapes.Rectangle.prototype.constructor = Anibody.shapes.Rectangle;
+
+Object.defineProperty(Anibody.shapes.Rectangle, "name", {value:"Rectangle"});
 
 Anibody.shapes.Rectangle.prototype.Initialize = function(){
   this._calculateCentroid(); // TODO

@@ -23,6 +23,8 @@ Anibody.nav.SlideMenu = function SlideMenu(attto, dist) {
 Anibody.nav.SlideMenu.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.SlideMenu.prototype.constructor = Anibody.nav.SlideMenu;
 
+Object.defineProperty(Anibody.nav.SlideMenu, "name", {value:"SlideMenu"});
+
 /**
  * SlideMenu is drawn
  * NOTICE : Tabs are not objects in the Object Loop. They will be drawn here

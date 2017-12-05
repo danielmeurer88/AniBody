@@ -4,6 +4,9 @@ Anibody.SetPackage("Anibody", "static");
  * @type static class
  */
 Anibody.static.Random = function Random(){};
+
+Object.defineProperty(Anibody.static.Random, "name", {value:"Random"});
+
 /**
  * Returns a number between a minimum and a maximum - both inclusivly
  * @param {number} min
@@ -33,6 +36,8 @@ Anibody.static.Random.GetNumberOld = function(min, max, decimals){
     return (Math.round(ran)/Math.pow(10, decimals));
 };
 
+Object.defineProperty(Anibody.static.Random.GetNumberOld, "name", {value:"GetNumberOld"});
+
 Anibody.static.Random.GetNumber = function(min, max, decimals){
     if(window.crypto || window.crypto.getRandomValues){
         return Anibody.static.Random.GetNumberOld(min, max, decimals);
@@ -59,6 +64,9 @@ Anibody.static.Random.GetNumber = function(min, max, decimals){
     num /= Math.pow(10, decimals);
     return num;
 };
+
+Object.defineProperty(Anibody.static.Random.GetNumber, "name", {value:"GetNumber"});
+
 /**
  * Returns a timestamp from now minus a random timespan
  * @param {number} min minimum
@@ -96,6 +104,9 @@ Anibody.static.Random.GetTimestamp = function(min, max, unit){
     return lim;
     
 };
+
+Object.defineProperty(Anibody.static.Random.GetTimestamp, "name", {value:"GetTimestamp"});
+
 /**
  * Figuratively speaking: Drawing 1 lot from a bowl. How many lots of a kind exists in the bowl can be different
  * @example Random.DrawLot(["A","B"],[8, 2]) --> the bowl has 8+2 lots in it.
@@ -145,6 +156,8 @@ Anibody.static.Random.DrawLot = function(lots, lotsChances){
     return lots[lots.length-1];
 };
 
+Object.defineProperty(Anibody.static.Random.DrawLot, "name", {value:"DrawLot"});
+
 /**
  * creates an interval, which calls an callbackobject at random within a given range of milliseconds.
  * returns an objects with the function clearInterval() to end the interval
@@ -176,6 +189,8 @@ Anibody.static.Random.SetRandomInterval = function(cbo, min, max){
     
     return obj;
 };
+
+Object.defineProperty(Anibody.static.Random.SetRandomInterval, "name", {value:"SetRandomInterval"});
 
 /**
  * @description Increases the imageData on a given CanvasContext by the factor
@@ -237,6 +252,8 @@ Anibody.static.createImageWithNN = function createImageWithNN(ctx, by, w, h){
 
     return newimg;
 };
+
+Object.defineProperty(Anibody.static.createImageWithNN, "name", {value:"createImageWithNN"});
 
 /**
  * @description Takes the current composed grafics of a Canvas element and transformed them to an image
@@ -300,6 +317,8 @@ Anibody.static.createImageNN = function createImageNN(can, by){
 
     return newimg;
 };
+
+Object.defineProperty(Anibody.static.createImageNN, "name", {value:"createImageNN"});
 
 /**
  * Returns an image, in which the specified text or text-lines are fitted
@@ -441,6 +460,8 @@ Anibody.static.createImageWithFittedText = function createImageWithFittedText(wi
     return img;
 }
 
+Object.defineProperty(Anibody.static.createImageWithFittedText, "name", {value:"createImageWithFittedText"});
+
 /**
  * Returns the class of a variable with the prefix 'CLASS::'
  * @param {anything} obj
@@ -450,11 +471,13 @@ Anibody.static.getClass = function getClass(obj){
     var con = obj.constructor.toString();
     var ifunc = con.indexOf("function ");
     var ibracket = con.indexOf("(");
-    if(ifunc == 0){
+    if(ifunc === 0){
         con = con.substr(9, ibracket - 9);
     }
     return "CLASS::"+con;
-}
+};
+
+Object.defineProperty(Anibody.static.getClass, "name", {value:"getClass"});
 
 /**
  * Returns the rgba-Code of a given color (css color name/hex code/rgb/rgba) with an added alpha value
@@ -502,7 +525,9 @@ Anibody.static.getRGBA = function getRGBA(color, alpha, inc_quot){
     rgbaCode = "rgba(" + imageData[0] + "," + imageData[1] + "," + imageData[2] + "," +alpha+")";
     
     return rgbaCode;
-}
+};
+
+Object.defineProperty(Anibody.static.getRGBA, "name", {value:"getRGBA"});
 
 /**
  * 
@@ -695,6 +720,8 @@ Anibody.static.buttonLayout = function buttonLayout(box, depth, stops){
     
 }
 
+Object.defineProperty(Anibody.static.buttonLayout, "name", {value:"buttonLayout"});
+
 /**
  * Makes sure that an attribute of an object is within a given range
  * @param {object} obj - Object of the attribute, which will be forced into a range
@@ -711,4 +738,6 @@ Anibody.static.forceRange = function forceRange(obj, attr, min, max){
     
     if(obj[attr] < min) obj[attr] = min;
     if(obj[attr] > max) obj[attr] = max;
-}
+};
+
+Object.defineProperty(Anibody.static.forceRange, "name", {value:"forceRange"});

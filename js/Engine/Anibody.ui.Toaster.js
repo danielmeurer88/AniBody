@@ -69,6 +69,8 @@ Anibody.ui.Toaster = function Toaster(type, title, txt, ms) {
 Anibody.ui.Toaster.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.Toaster.prototype.constructor = Anibody.ui.Toaster;
 
+Object.defineProperty(Anibody.ui.Toaster, "name", {value:"Toaster"});
+
 Anibody.ui.Toaster.BlockMode = false;
 Anibody.ui.Toaster.CurrentInstance = null;
 

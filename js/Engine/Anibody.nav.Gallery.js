@@ -74,6 +74,8 @@ this.Initialize();
 Anibody.nav.Gallery.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.Gallery.prototype.constructor = Anibody.nav.Gallery;
 
+Object.defineProperty(Anibody.nav.Gallery, "name", {value:"Gallery"});
+
 Anibody.nav.Gallery.prototype.TitleColor = "#ddd";
 Anibody.nav.Gallery.prototype.Color = "#eee";
 Anibody.nav.Gallery.prototype.HandleColor = "#999";

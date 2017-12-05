@@ -53,6 +53,8 @@ Anibody.visual.Highlighting = function Highlighting(area, flow_ms, ms, cbo){
 Anibody.visual.Highlighting.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.visual.Highlighting.prototype.constructor = Anibody.visual.Highlighting;
 
+Object.defineProperty(Anibody.visual.Highlighting, "name", {value:"Highlighting"});
+
 Anibody.visual.Highlighting.prototype.OutsideColor = "rgba(0,0,0,0.8)";
 Anibody.visual.Highlighting.prototype.TitleColor = "white";
 Anibody.visual.Highlighting.prototype.TextBoxBackgroundColor = "black";

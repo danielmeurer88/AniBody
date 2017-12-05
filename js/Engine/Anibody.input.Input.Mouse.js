@@ -52,6 +52,8 @@ this.Initialize();
 Anibody.input.Input.Mouse.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.input.Input.Mouse.prototype.constructor = Anibody.input.Input.Mouse;
 
+//Object.defineProperty(Anibody.input.Input.Mouse, "name", {value:"Mouse"});
+
 Anibody.input.Input.Mouse.prototype.Initialize = function(){
     this.Cursor = new Anibody.input.Input.Mouse.Cursor();
     this.RegisterMouseEvents(this.Engine.Flags.PreventContextClickBubbleToUp);

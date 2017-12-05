@@ -55,6 +55,8 @@ this.Initialize();
 Anibody.nav.Tab.prototype = Object.create(Anibody.ABO.prototype);
 Anibody.nav.Tab.prototype.constructor = Anibody.nav.Tab;
 
+Object.defineProperty(Anibody.nav.Tab, "name", {value:"Tab"});
+
 Anibody.nav.Tab.prototype.FontColor = "#000";
 Anibody.nav.Tab.prototype.BackgroundColor = "#aaa";
 Anibody.nav.Tab.prototype.BackgroundColorSelected = "#ccc";

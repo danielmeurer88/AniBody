@@ -37,6 +37,8 @@ this.Initialize();
 Anibody.visual.Spotting.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.visual.Spotting.prototype.constructor = Anibody.visual.Spotting;
 
+Object.defineProperty(Anibody.visual.Spotting, "name", {value:"Spotting"});
+
 Anibody.visual.Spotting.prototype.DefaultColor = "red";
 /**
  * @see README_DOKU.txt

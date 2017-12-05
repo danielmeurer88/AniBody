@@ -66,6 +66,8 @@ this.Initialize();
 Anibody.ui.MultipleChoice.prototype = Object.create(Anibody.Widget.prototype);
 Anibody.ui.MultipleChoice.prototype.constructor = Anibody.ui.MultipleChoice;
 
+Object.defineProperty(Anibody.ui.MultipleChoice, "name", {value:"MultipleChoice"});
+
 Anibody.ui.MultipleChoice.prototype.ContentBoxColor = "#999";
 Anibody.ui.MultipleChoice.prototype.BoxBorderColor = "black";
 Anibody.ui.MultipleChoice.prototype.BoxColor = "#ccc";

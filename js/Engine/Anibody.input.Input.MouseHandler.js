@@ -22,6 +22,9 @@ this.Initialize();
 };
 Anibody.input.Input.MouseHandler.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.input.Input.MouseHandler.prototype.constructor = Anibody.input.Input.MouseHandler;
+
+//Object.defineProperty(Anibody.input.Input.MouseHandler, "name", {value:"MouseHandler"});
+
 /**
  * @see README_DOKU.txt
  */
