@@ -25,6 +25,8 @@ Anibody.classes.FontHandler = function FontHandler(context){
     this.Family = "sans-serif"; // "Arial","Calibri","Verdana","Times New Roman","Courier New","serif","sans-serif",
 };
 
+Object.defineProperty(Anibody.classes.FontHandler, "name", {value:"FontHandler"});
+
 Anibody.classes.FontHandler.prototype._syncContext = function(){
     var str = "{0} {1} {2} {3}{4} {5}".format(
             this.Style, this.Variant, this.Weight, this.Height, this.Unit, this.Family 

@@ -78,6 +78,8 @@ this.Initialize();
 Anibody.input.Input.Keys.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.input.Input.Keys.prototype.constructor = Anibody.input.Input.Keys;
 
+Object.defineProperty(Anibody.input.Input.Keys, "name", {value:"Keys"});
+
 Anibody.input.Input.Keys.prototype.Initialize = function () {
 
     // register some needed event handler

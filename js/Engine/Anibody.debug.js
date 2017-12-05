@@ -35,6 +35,8 @@ Anibody.debug.ObjectDumb = function ObjectDumb(obj, name) {
     this.Initialize();
 };
 
+Object.defineProperty(Anibody.debug.ObjectDumb, "name", {value:"ObjectDumb"});
+
 Anibody.debug.ObjectDumb.prototype.Initialize = function () {
 
     this._root = {
