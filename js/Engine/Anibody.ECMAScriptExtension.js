@@ -347,7 +347,7 @@ Anibody.ECMAScriptExtension = function () {
      * @param {Number} rounds
      * @returns {undefined}
      */
-    Array.prototype.shuffle = function shuffle(rounds) {
+    Array.prototype.shuffle = function(rounds) {
         var tmp, in1, in2;
         var self = this;
         rounds = rounds || this.length * 5;
@@ -369,13 +369,14 @@ Anibody.ECMAScriptExtension = function () {
         }
 
     };
+    Object.defineProperty(Array.prototype, "shuffle", {enumerable:false});
     /**
      * Deletes the element of the specific index and returns it on success
      * inline-deleting: no new Array is created
      * @param {Number} index
      * @returns {Array-Element}
      */
-    Array.prototype.delete = function deleteElement(index) {
+    Array.prototype.delete = function(index) {
         var ret;
 
         if (index >= this.length || index < 0 || isNaN(index))
@@ -394,32 +395,7 @@ Anibody.ECMAScriptExtension = function () {
         this.pop();
         return ret;
     };
-    /**
-     * true if the given element is an element of the array
-     * @param {object} el - element
-     * @returns {Boolean}
-     */
-    Array.prototype.isElement = function isElement(el) {
-        for (var i = 0; i < this.length; i++) {
-            if (this[i] === el)
-                return true;
-        }
-        return false;
-    };
-    /**
-     * returns the index of a given element if it is in the array
-     * otherwise function returns -1
-     * @param {object} el - element
-     * @returns {Number}
-     */
-    Array.prototype.getIndex = function getIndex(el) {
-        for (var i = 0; i < this.length; i++) {
-            if (this[i] === el)
-                return i;
-        }
-        return -1;
-    };
-
+    Object.defineProperty(Array.prototype, "delete", {enumerable:false});
     /**
      * transforms the function into a callback-object and returns this object
      * @param {object} that

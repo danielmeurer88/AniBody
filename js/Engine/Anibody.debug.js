@@ -23,6 +23,8 @@ Anibody.debug.ObjectDumb = function ObjectDumb(obj, name) {
 
     this.Width = 0;
     this.Height = 0;
+    
+    this.ColWidth = [];
 
     this._tabulator = 40;
     this._fh = 30;
@@ -40,6 +42,7 @@ Anibody.debug.ObjectDumb.prototype.Initialize = function () {
         name: this._name,
         element: this.Object,
         children: [],
+        parent : null,
         depth: 0
     };
 
@@ -48,9 +51,9 @@ Anibody.debug.ObjectDumb.prototype.Initialize = function () {
     this._createImage();
 };
 
-Anibody.debug.ObjectDumb.prototype._analyze = function () {
+Anibody.debug.ObjectDumb.prototype._analyzeBU = function () {
 
-    var rec = function (obj, depth) {
+    var rec = function (parent, obj, depth) {
         var el = obj.element;
         var type;
 
@@ -59,7 +62,6 @@ Anibody.debug.ObjectDumb.prototype._analyze = function () {
             obj.children.push({name: "max depth reached", element: null});
 
         }
-        ;
 
         for (var attr in el) {
 
@@ -70,11 +72,11 @@ Anibody.debug.ObjectDumb.prototype._analyze = function () {
 
                 // what type is it?
                 type = this._getType(el[attr]);
-                var child = {type: type, element: el[attr], name: attr, children: [], depth: depth + 1};
+                var child = {parent : obj, type: type, element: el[attr], name: attr, children: [], depth: depth + 1};
                 obj.children.push(child);
 
                 if (["number", "boolean", "string", "null"].indexOf(type) < 0) {
-                    rec.call(this, child, depth + 1);
+                    rec.call(this, obj, child, depth + 1);
                 }
 
             } else {
@@ -83,32 +85,10 @@ Anibody.debug.ObjectDumb.prototype._analyze = function () {
         }
     };
 
-    rec.call(this, this._root, 0);
+    rec.call(this, null, this._root, 0);
 };
 
-Anibody.debug.ObjectDumb.prototype._getType = function (el) {
-
-    if (el === null)
-        return "null";
-
-    var type = typeof el;
-
-    if (type !== "object")
-        return type;
-
-    if (el.push)
-        return "array";
-
-    var con = el.constructor.toString();
-    var ifunc = con.indexOf("function ");
-    var ibracket = con.indexOf("(");
-    if (ifunc === 0) {
-        con = con.substr(9, ibracket - 9);
-    }
-    return con;
-};
-
-Anibody.debug.ObjectDumb.prototype._createImage = function (el) {
+Anibody.debug.ObjectDumb.prototype._analyze = function () {
 
     var off = document.createElement("CANVAS");
     off.width = 10;
@@ -123,51 +103,87 @@ Anibody.debug.ObjectDumb.prototype._createImage = function (el) {
 
     var rowheight = this._fh + this._margin; // fontheight + 2x 1/2 margin between rows
 
-    var allheight = this._margin * 2; // margins top and down
-    var allwidth = this._margin * 2;
+    this.Height = this._margin * 2; // margins top and down
+    this.Width = this._margin * 2;
     var i;
 
     var drawOrder = []; // the right order every item has to be drawn (top->bottom)
-    var colWidth = []; // 2-dim Array - [depth][widthOfAllNamesInThatCol]
+    //var colWidth = []; // 2-dim Array - [depth][widthOfAllNamesInThatCol]
 
     var tab = this._tabulator;
+    
+    var rec = function (parent, obj, depth) {
+        drawOrder.push(obj);
+        var el = obj.element;
+        var type;
 
-    var rec = function (el) {
-        drawOrder.push(el);
-        if (typeof colWidth[el.depth] === "undefined") {
-            colWidth[el.depth] = [];
+        if (depth > this._maxDepth) {
+
+            obj.children.push({name: "max depth reached", element: null});
+
         }
-        colWidth[el.depth].push(c.measureText(el.name + " (" + el.type + ")").width + tab);
+        
+        if (typeof this.ColWidth[el.depth] === "undefined") {
+            this.ColWidth[el.depth] = [];
+        }
+        this.ColWidth[el.depth].push(c.measureText(el.name + " (" + el.type + ")").width + tab);
         for (var i = 0; i < el.children.length; i++) {
             rec(el.children[i]);
         }
-    }
 
-    rec(this._root);
+        for (var attr in el) {
 
+            // check if cur[attr] was already analyzed
+            if (this._already.indexOf(el[attr]) < 0) {
+                // haven't been analyzed
+                this._already.push(el[attr]);
+
+                // what type is it?
+                type = this._getType(el[attr]);
+                var child = {parent : obj, type: type, element: el[attr], name: attr, children: [], depth: depth + 1};
+                obj.children.push(child);
+
+                if (["number", "boolean", "string", "null"].indexOf(type) < 0) {
+                    rec.call(this, obj, child, depth + 1);
+                }
+
+            } else {
+                type = "already";
+            }
+        }
+    };
+
+    //rec(this._root);
+    rec.call(this, null, this._root, 0);
+    
     // getting allwidth by summing up the max of every coloumn
 
     // loop as often as there are columns
-    for (var i = 0; i < colWidth.length; i++) {
+    for (var i = 0; i < this.ColWidth.length; i++) {
         // colWidth[i] is still an array with width values of the names of the items of the depth i
-        colWidth[i] = Math.max.apply({}, colWidth[i]);
+        this.ColWidth[i] = Math.max.apply({}, this.ColWidth[i]);
         // now, colWidth[i] is the width value, which it needs to be big enough for all items of the depth i
-        allwidth += colWidth[i];
+        this.Width += this.ColWidth[i];
     }
 
-    allheight += drawOrder.length * rowheight;
+    this.Height += drawOrder.length * rowheight;
+    
+     console.log("width: " + this.Width + "\nheight: " + this.Height);
+};
+
+Anibody.debug.ObjectDumb.prototype._createImage = function (el) {
 
     // draw image
-    console.log("width: " + allwidth + "\nheight: " + allheight);
+   
 
     var off = document.createElement("CANVAS");
     off.width = allwidth;
     off.height = allheight;
     var c = off.getContext("2d");
-    c.setFontHeight(this._fh);
-
+    
     c.textAlign = "left";
     c.textBaseline = "top";
+    c.setFontHeight(this._fh);
 
     var getWidthForDepth = function (j) {
         var w = 0;
@@ -194,6 +210,28 @@ Anibody.debug.ObjectDumb.prototype._createImage = function (el) {
 
 Anibody.debug.ObjectDumb.prototype.Download = function () {
     Anibody.prototype.Download("dump_" + this._name + ".png", this._dataURL);
+};
+
+Anibody.debug.ObjectDumb.prototype._getType = function (el) {
+
+    if (el === null)
+        return "null";
+
+    var type = typeof el;
+
+    if (type !== "object")
+        return type;
+
+    if (el.push)
+        return "array";
+
+    var con = el.constructor.toString();
+    var ifunc = con.indexOf("function ");
+    var ibracket = con.indexOf("(");
+    if (ifunc === 0) {
+        con = con.substr(9, ibracket - 9);
+    }
+    return con;
 };
 
 /**
