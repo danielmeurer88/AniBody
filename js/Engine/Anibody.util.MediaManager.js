@@ -301,7 +301,8 @@ Anibody.util.Media = function Media(path, codename, group) {
     
     this.Data;
     this.DataLoaded = false;
-}
+};
+
 /**
  * Returns true if media is of the given group
  * @param {string} group
@@ -332,6 +333,8 @@ Anibody.util.Picture = function Picture() {
 }
 Anibody.util.Picture.prototype = Object.create(Anibody.util.Media.prototype);
 Anibody.util.Picture.prototype.constructor = Anibody.util.Picture;
+
+Object.defineProperty(Anibody.util.Picture, "name", {value:"Picture"});
 
 /**
  * Adds the onload-function and needed parameters from the MediaManager to the image
@@ -367,6 +370,9 @@ Anibody.util.Sound = function Sound() {
 }
 Anibody.util.Sound.prototype = Object.create(Anibody.util.Media.prototype);
 Anibody.util.Sound.prototype.constructor = Anibody.util.Sound;
+
+Object.defineProperty(Anibody.util.Sound, "name", {value:"Sound"});
+
 /**
  * Adds the onload-function and needed parameters from the MediaManager to the Sound
  * @param {function} onload
