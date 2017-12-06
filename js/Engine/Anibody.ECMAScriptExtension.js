@@ -405,7 +405,7 @@ Anibody.ECMAScriptExtension = function () {
     Function.prototype.getCallbackObject = function (that, parameter, useApply) {
         return {that: that, function: this, parameter: parameter, useApply: useApply};
     };
-
+    Object.defineProperty(Function.prototype, "getCallbackObject", {enumerable:false});
     /**
      * gets the RGBA-Value of the pixel x,y
      * @param {integer} x

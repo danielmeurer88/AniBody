@@ -61,12 +61,12 @@ function menu_callback(engine){
     });
     
     b1.AddButtonEffect();
-    engine.AddObject(b1, 2);
+    engine.AddObject(b1);
 
-    // input Area
+    // input field
     Anibody.import(Anibody.ui.InputField);
-    var ia = new InputField(10, 10, 300);
-    engine.AddObject(ia);
+    var infi = new InputField(10, 10, 300);
+    engine.AddObject(infi);
 
     /* BUTTON HELP */
     var b2 = new Button("center", 220, 
@@ -79,19 +79,29 @@ function menu_callback(engine){
     });
     b2.AddButtonEffect();
     
-    engine.AddObject(b2, 1);
+    engine.AddObject(b2);
+    
+    /* BUTTON HELP2 */
+    var b3 = new Button("center", 320, 
+    {
+        Label : "Test Button 2",
+        TriggerCallbackObject : function (engine) {
+                start_test2(engine);
+            }.getCallbackObject(engine, engine),
+        HoverText : "Wird auch zum Testen unterschiedlicher Dinge benutzt."
+    });
+    b3.AddButtonEffect();
+    
+    engine.AddObject(b3);
         
     engine.Start();
 
     $("#fs_btn").click(function(){
-           engine.RequestFullscreen();
-
-           var f = function(en){
-                en.ExitFullscreen();
-           };
-
-           window.setTimeout(f, 3000, engine);
-
+       engine.RequestFullscreen();
+       var f = function(en){
+            en.ExitFullscreen();
+       };
+       window.setTimeout(f, 3000, engine);
     });
     
     //testSpline(engine);
@@ -117,9 +127,6 @@ function start_test(engine){
     var getOrigin = function(w,h){
         return {x:width*w, y:height*h};
     };
-    
-
-    
     
     var bowser = new Anibody.visual.Sprite("sprite_test", 300, 400, width, height);
     bowser.SetTemplateAttribute("FPS", 6);
@@ -153,11 +160,21 @@ function start_test(engine){
     
     engine.AddObject(bowser);
         
-    var f = function(sprite){
+    var cbo = function(){
+        var area = {
+            x: Anibody.static.Random.GetNumber(20,this.Canvas.width - 20),
+            y: Anibody.static.Random.GetNumber(20,this.Canvas.height - 20),
+            width:20, height:20
+        };
+        new Anibody.visual.Spotting(area, 2000).Start();
         
-    }.getCallbackObject(engine, bowser);
+    }.getCallbackObject(engine);
     
-    engine.testobj = Anibody.static.Random.SetRandomInterval(f, 3000, 9500);
+    engine.testobj = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
+    
+    window.setTimeout(function(engine){
+        engine.testobj.clearInterval();
+    }, 10000, engine);
     
     Anibody.import(Anibody.Widget);
     var w = new Widget();
@@ -165,6 +182,7 @@ function start_test(engine){
     w.ProcessInput = function(){
         
         var keys = this.Engine.Input.Keys;
+        var speed = 2;
                 
         if(keys.A.FramesPressed > 4 || keys.D.FramesPressed > 4 || keys.W.FramesPressed > 4 || keys.S.FramesPressed > 4){
             bowser.SetFlag("walking", true);
@@ -174,77 +192,44 @@ function start_test(engine){
         
         if(keys.A.FramesPressed > 4){
             bowser.SetFlag("left", true);
+            bowser.X -= speed;
         }
         
         if(keys.D.FramesPressed > 4){
             bowser.SetFlag("right", true);
+            bowser.X += speed;
         }
         
         if(keys.W.FramesPressed > 4){
             bowser.SetFlag("up", true);
+            bowser.Y -= speed;
         }
         
         if(keys.S.FramesPressed > 4){
             bowser.SetFlag("down", true);
+            bowser.Y += speed;
         }
         
     };
     w.Register();
     
+}
+
+function start_test2(engine){
     
-    // ------------------ new Test of Anibody.debug.ObjectDumb
+    function Klasse(){
+        this.AttrStr = "AttrString";
+        this.AttrNum = -42;
+        this.AttrFunc = function(){return "quick";};
+    }
     
     var obj = {
-        
-        num1_1 : 12.5,
-        bool1_1 : false,
-        obj1_1: {
-            num2_1 : 200.5,
-            bool2_1 : false,
-            obj2_1: {
-
-            },
-            arr2_1 : ["aa", "b"+4, false, {test:"string"}],
-            str2_1 : "String that is",
-            obj2_2: {
-
-            },
-            func2_1: function Test1() {
-                return false;
-            },
-            func2_2: function Test2() {
-                return true;
-            }
+        zahl : 42,
+        object : {
+            innerObject : {}
         },
-        str1_1 : "String that is ... 1_1",
-        obj1_2: {
-            num2_1 : 12.5,
-            bool2_1 : false,
-            obj2_1: {
-                key : "value",
-                obj3_1 : {
-                    // empty
-                }
-            },
-            str1_1 : "String that is",
-            obj1_2: {
-                "num" : 24.52
-            },
-            func2_1: function Test1() {
-                return false;
-            },
-            arr : [2, false, null, -12.55555],
-            func2_2: function Test2() {
-                return true;
-            }
-        },
-        func1_1: function Test1() {
-            return false;
-        },
-        func1_2: function Test2() {
-            return true;
-        }
-        
+        instance : new Klasse(),
+        arr1 : [1000, 2000, {string1: "EinString"}]
     };
         
     var od = new Anibody.debug.ObjectDumb(obj, "testObject");

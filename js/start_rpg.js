@@ -29,7 +29,7 @@ function rpg_callback(engine){
     //OBJECTS
     
     var prarr = {
-        player : 5,
+        player : 10000,
         chest : 6,
         girl : 6,
         actField : 500,
@@ -71,7 +71,7 @@ function rpg_callback(engine){
             }
 
             who.Dialog.Interact();
-        }, that:obj, parameter: false}
+        }, that:obj, parameter: false};
 
         // adding object to the side queue of the specific terrain (top terrain)
         topterr.AddObjectToSideQ(obj,prarr.chest);

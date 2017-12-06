@@ -49,15 +49,10 @@ RPGPlayer.prototype.Initialize = function () {
     this.Dialog = new RPGDialog();
     this.Dialog.Owner = this;
     this.Dialog.EI = this.EI;
-    this.Engine.AddObject(this.Dialog, -1);
-    this.Engine.AddUpdateFunctionObject(this.Dialog.Update.getCallbackObject(this.Dialog,this.Dialog));
-
+    
     this.ItemBag = new RPGItemBag("main");
     this.ItemBag.EI = this.EI;
     this.ItemBag.Owner = this;
-
-    // the itembag will be drawn seperately to make sure it will be drawn last, so nothing overlaps the inventory window
-    this.Engine.AddObject(this.ItemBag, -1);
     
     this.SpriteProcessInputWidget = new Anibody.Widget();
     
@@ -223,6 +218,10 @@ RPGPlayer.prototype.Draw = function (c) {
         }
     }
 
+    // ItemBag & Dialog 
+    this.ItemBag.Draw(c);
+    this.Dialog.Draw(c);
+
     c.restore();
 };
 RPGPlayer.prototype.Update = function () {
@@ -251,12 +250,19 @@ RPGPlayer.prototype.Update = function () {
         }
     }
     
+    // ItemBag & Dialog 
+    this.ItemBag.Update();
+    this.Dialog.Update();
+    
     return;
 };
 
 RPGPlayer.prototype.ProcessInput = function () {
 
     this.Sprite.ProcessInput();
+    // ItemBag & Dialog 
+    this.ItemBag.ProcessInput();
+    this.Dialog.ProcessInput();
 };
 
 RPGPlayer.prototype.SetCurrentField = function (cf) {

@@ -13,20 +13,23 @@ Anibody.debug.ObjectDumb = function ObjectDumb(obj, name) {
     this._maxDepth = 5;
 
     if (typeof name === "undefined")
-        name = "root";
+        name = "dumbedObject";
 
     this._name = name;
 
     this.Image = null;
 
-    this._root = {};
+    this._dObjContainer = {}; // dumbed object Container
 
     this.Width = 0;
     this.Height = 0;
     
-    this.ColWidth = [];
+    this.ColWidth = []; // 2-dim Array - [depth][widthOfAllNamesInThatCol]
+    // later it is transformed into 1-dim Array with [max([widthOfAllNamesInThatCol])]
+    
+    this.DrawOrder = []; // the right order every item has to be drawn (top->bottom)
 
-    this._tabulator = 40;
+    this._tabulator = 80;
     this._fh = 30;
     this._margin = 2;
 
@@ -39,127 +42,105 @@ Object.defineProperty(Anibody.debug.ObjectDumb, "name", {value:"ObjectDumb"});
 
 Anibody.debug.ObjectDumb.prototype.Initialize = function () {
 
-    this._root = {
+    this._dObjContainer = {
         type: this._getType(this.Object),
         name: this._name,
         element: this.Object,
         children: [],
         parent : null,
-        depth: 0
+        depth: 0,
+        leaf : false
     };
 
-    this._analyze(this._root, this._root.depth);
+    this._analyze();
 
     this._createImage();
 };
 
-Anibody.debug.ObjectDumb.prototype._analyzeBU = function () {
-
-    var rec = function (parent, obj, depth) {
-        var el = obj.element;
-        var type;
-
-        if (depth > this._maxDepth) {
-
-            obj.children.push({name: "max depth reached", element: null});
-
-        }
-
-        for (var attr in el) {
-
-            // check if cur[attr] was already analyzed
-            if (this._already.indexOf(el[attr]) < 0) {
-                // haven't been analyzed
-                this._already.push(el[attr]);
-
-                // what type is it?
-                type = this._getType(el[attr]);
-                var child = {parent : obj, type: type, element: el[attr], name: attr, children: [], depth: depth + 1};
-                obj.children.push(child);
-
-                if (["number", "boolean", "string", "null"].indexOf(type) < 0) {
-                    rec.call(this, obj, child, depth + 1);
-                }
-
-            } else {
-                type = "already";
-            }
-        }
-    };
-
-    rec.call(this, null, this._root, 0);
-};
-
 Anibody.debug.ObjectDumb.prototype._analyze = function () {
 
+    // getting an offscreen canvas and its context to measure text width
     var off = document.createElement("CANVAS");
     off.width = 10;
     off.height = 10;
     var c = off.getContext("2d");
     c.setFontHeight(this._fh);
 
-    c.textAlign = "left";
-    c.textBaseline = "top";
-
     // get real size needed for the canvas
-
-    var rowheight = this._fh + this._margin; // fontheight + 2x 1/2 margin between rows
-
-    this.Height = this._margin * 2; // margins top and down
-    this.Width = this._margin * 2;
     var i;
-
-    var drawOrder = []; // the right order every item has to be drawn (top->bottom)
-    //var colWidth = []; // 2-dim Array - [depth][widthOfAllNamesInThatCol]
-
-    var tab = this._tabulator;
     
-    var rec = function (parent, obj, depth) {
-        drawOrder.push(obj);
-        var el = obj.element;
+    /**
+     * inner function, which will be called recursively to obtain the wanted treeview
+     * @param {object} obj - currently regarded container
+     * @returns {undefined}
+     */
+    var rec = function (obj) {
+        
         var type;
+        var analyzeDeeper = true;
 
-        if (depth > this._maxDepth) {
-
-            obj.children.push({name: "max depth reached", element: null});
-
+        if (obj.depth > this._maxDepth) {
+            analyzeDeeper = false;
         }
         
-        if (typeof this.ColWidth[el.depth] === "undefined") {
-            this.ColWidth[el.depth] = [];
+        if (typeof this.ColWidth[obj.depth] === "undefined") {
+            this.ColWidth[obj.depth] = [];
         }
-        this.ColWidth[el.depth].push(c.measureText(el.name + " (" + el.type + ")").width + tab);
-        for (var i = 0; i < el.children.length; i++) {
-            rec(el.children[i]);
-        }
+        
+        var expectedText = obj.name + " (" + obj.type + ")";
+        var expectedWidth = c.measureText(expectedText).width + 10;
+        this.ColWidth[obj.depth].push(expectedWidth);
 
-        for (var attr in el) {
+        if(analyzeDeeper)
+            // looping through the children of the currently regarded element
+            for (var attr in obj.element) {
 
-            // check if cur[attr] was already analyzed
-            if (this._already.indexOf(el[attr]) < 0) {
-                // haven't been analyzed
-                this._already.push(el[attr]);
-
-                // what type is it?
-                type = this._getType(el[attr]);
-                var child = {parent : obj, type: type, element: el[attr], name: attr, children: [], depth: depth + 1};
-                obj.children.push(child);
-
+                // get the type of the child
+                type = this._getType(obj.element[attr]);
+                // add it into a container (that containts further information)
+                var childContainer = {parent : obj, type: type, element: obj.element[attr], name: attr, children: [], depth: obj.depth + 1, leaf : false};
+                
+                // if child is an object...
                 if (["number", "boolean", "string", "null"].indexOf(type) < 0) {
-                    rec.call(this, obj, child, depth + 1);
-                }
 
-            } else {
-                type = "already";
+                    // check if child was already analyzed
+                    if (this._already.indexOf(obj.element[attr]) < 0) {
+                        // hasn't been analyzed yet, therefore added to the already array
+                        this._already.push(obj.element[attr]);
+                        
+                        // needs to be before the recursive call!!
+                        // through the recursvise structure - objects are called the way so that they can be linear added to an array
+                        // which will be the wanted order to draw them
+                        this.DrawOrder.push(childContainer);
+                        
+                        rec.call(this, childContainer);
+                    }else{
+                        
+                        // through the recursvise structure - objects are called the way so that they can be linear added to an array
+                        // which will be the wanted order to draw them
+                        this.DrawOrder.push(childContainer);
+                        
+                        childContainer.leaf = true;
+                    }
+                              
+                }else{
+                    // through the recursvise structure - objects are called the way so that they can be linear added to an array
+                    // which will be the wanted order to draw them
+                    this.DrawOrder.push(childContainer);
+                    childContainer.leaf = true;
+                }
+                obj.children.push(childContainer);
+                
             }
-        }
     };
 
-    //rec(this._root);
-    rec.call(this, null, this._root, 0);
+    this.DrawOrder.push(this._dObjContainer);
+    rec.call(this, this._dObjContainer);
     
-    // getting allwidth by summing up the max of every coloumn
-
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    
+    this.Height = this._margin * 2; // margins top and down
+    this.Width = this._margin * 2;
     // loop as often as there are columns
     for (var i = 0; i < this.ColWidth.length; i++) {
         // colWidth[i] is still an array with width values of the names of the items of the depth i
@@ -167,41 +148,43 @@ Anibody.debug.ObjectDumb.prototype._analyze = function () {
         // now, colWidth[i] is the width value, which it needs to be big enough for all items of the depth i
         this.Width += this.ColWidth[i];
     }
-
-    this.Height += drawOrder.length * rowheight;
     
-     console.log("width: " + this.Width + "\nheight: " + this.Height);
+    var rowheight = this._fh + this._margin; // fontheight + 2x 1/2 margin between rows
+
+    this.Height += this.DrawOrder.length * rowheight;
+    
+    console.log("width: " + this.Width + "\nheight: " + this.Height);
 };
 
-Anibody.debug.ObjectDumb.prototype._createImage = function (el) {
+Anibody.debug.ObjectDumb.prototype._createImage = function () {
 
     // draw image
-   
 
     var off = document.createElement("CANVAS");
-    off.width = allwidth;
-    off.height = allheight;
+    off.width = this.Width;
+    off.height = this.Height;
     var c = off.getContext("2d");
+    
+    // white background
+    c.fillStyle = "white";
+    c.fillRect(0,0,this.Width, this.Height);
+    c.fillStyle = "black";
     
     c.textAlign = "left";
     c.textBaseline = "top";
     c.setFontHeight(this._fh);
-
-    var getWidthForDepth = function (j) {
-        var w = 0;
-        for (var i = 0; i < j && i < colWidth.length; i++)
-            w += colWidth[i];
-        return w;
-    };
+    
+    var rowheight = this._fh + this._margin; // fontheight + 2x 1/2 margin between rows
 
     var x = this._margin;
     var y = this._margin;
     var w;
     var txt;
     var el;
-    for (var i = 0; i < drawOrder.length; i++) {
-        el = drawOrder[i];
-        w = getWidthForDepth(el.depth);
+    for (var i = 0; i < this.DrawOrder.length; i++) {
+        el = this.DrawOrder[i];
+        //w = getWidthForDepth.call(this,el.depth);
+        w = this._tabulator*el.depth;
         txt = el.name + " (" + el.type + ")";
         c.fillText(txt, x + w, y);
         y += rowheight;

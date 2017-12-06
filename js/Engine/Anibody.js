@@ -7,9 +7,9 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.1.3",
+        Version: "1.1.4",
         Author: "Daniel Meurer",
-        LastUpdated: "2017_12_06_h01" // year_month_day_hhour
+        LastUpdated: "2017_12_06_h12" // year_month_day_hhour
     };
     
     this.CurrentFrame = 0;
@@ -349,9 +349,12 @@ Anibody.prototype.Draw = function () {
 
     this.Terrain.Draw(c); // draws the terrain first as a back-background
 
-    // draws all Objects in the ObjQ if they own a Draw()-function and are not hidden
+    // draws all Objects added to the engine if they own a Draw()-function and are not hidden
     // if the objects are drawn relative to the camera or statically to the canvas (HUD-like) is up to the Draw() in the certain object
-    for (var i = 0; i < this.Objects.Queue.heap.length; i++) {
+
+    // looping backwards, so that objects with the highest priority are drawn last
+    // i.e. are drawn on top
+    for (var i = this.Objects.Queue.heap.length-1; i >= 0; i--) {
         o = this.GetObject(i);
         if (o && o.Draw)
             o.Draw(c);
@@ -363,11 +366,13 @@ Anibody.prototype.Draw = function () {
     if (this.DebugWindow)
         this.DebugWindow.Draw();
 
+    // used by widgets
     for (var i = 0; i < this.ForegroundDrawFunctionObjects.heap.length; i++) {
         o = this.ForegroundDrawFunctionObjects.heap[i].data;
         o.function.call(o.that, c, o.parameter);
     }
 
+    // @deprecated through the use of widgets
     if (this.OverlayImages.length > 0) {
         var arr = [];
         var tmp;
@@ -406,8 +411,10 @@ Anibody.prototype.RemoveForegroundDrawFunctionObject = function (ref) {
 };
 
 /**
- * @description  downloads what is currently displayed on the canvas as a png
- * @param {string} name of the file 
+ * @description  downloads (Image)-Data as a png-file
+ * @param {string} name of the png-file
+ * @param {string} data - (optional) if data not specified then data will be
+ * the content currently displayed on the canvas  
  * @returns {undefined}
  */
 Anibody.prototype.Download = function (name, data) {
