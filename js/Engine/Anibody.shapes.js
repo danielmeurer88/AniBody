@@ -4,12 +4,13 @@ Anibody.SetPackage("Anibody", "shapes");
  * 
  * @returns {Anibody.shapes.Shape}
  */
-Anibody.shapes.Shape = function Shape(x,y){ // Base class
+Anibody.shapes.Shape = function Shape(){ // Base class
     Anibody.ABO.call(this);
-    this.X=x;
-    this.Y=y;
-    this.Centroid = {x:x,y:y};
-    this.Points = [{x:x,y:y}];
+    this._args = arguments;
+    this.X=0;
+    this.Y=0;
+    this.Centroid = {x:0,y:0};
+    this.Points = [];
     
     this.FillType = "color"; // none, color, image, linearGradient, radialGradient
     this.FillCode = "#666"; // none, colorCode, codename, stops-object
@@ -20,6 +21,9 @@ Anibody.shapes.Shape = function Shape(x,y){ // Base class
     
     this._rotation = 0;
     
+    this._drawPoints = true;
+    this._drawCentroid = true;
+    
 this.Initialize();
 };
 
@@ -29,6 +33,9 @@ Anibody.shapes.Shape.prototype.constructor = Anibody.shapes.Shape;
 Object.defineProperty(Anibody.shapes.Shape, "name", {value:"Shape"});
 
 Anibody.shapes.Shape.prototype.Initialize = function(){
+    
+    this.AddPoints.apply(this,this._args);
+    
     this._calculateCentroid();
     this._calculateSurroundingRectangle();
     this._updateFillStyle();
@@ -80,31 +87,51 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function(){
 };
 
 Anibody.shapes.Shape.prototype.Draw = function(c){
-  if(this.Points.length < 2) return;
+  
   
   c.save();
   
+  if(this.Points.length > 1){
   // create Path
   
-  c.beginPath();
-  c.moveTo(this.Points[0].x, this.Points[0].y);
-  for(var i=1; i<this.Points.length; i++){
-      c.lineTo(this.Points[i].x, this.Points[i].y);
+    c.beginPath();
+    c.moveTo(this.Points[0].x, this.Points[0].y);
+    for(var i=1; i<this.Points.length; i++){
+        c.lineTo(this.Points[i].x, this.Points[i].y);
+    }
+    c.closePath();
+
+    // FILL
+    if(this._fillStyle === null || !this._fillStyle)
+        this._updateFillStyle();
+
+    c.fillStyle = this._fillStyle;
+    c.fill();
+
+    // STROKE
+
+    c.lineWidth = this.BorderWidth;
+    c.strokeStyle = this.BorderCode;
+
+    c.stroke();
   }
   
-  // FILL
-  if(this._fillStyle === null || !this._fillStyle)
-      this._updateFillStyle();
+  if(this._drawPoints){
+      c.strokeStyle = "red";
+      for(var i=0; i<this.Points.length; i++)
+          c.drawCross(this.Points[i].x, this.Points[i].y, this.BorderWidth+5);
+  }
+  if(this._drawCentroid && this.Centroid){
+      c.strokeStyle = "green";
+      c.drawCross(this.Centroid.x, this.Centroid.y, this.BorderWidth+5);
+  }
   
-  c.fillStyle = this._fillStyle;
-  c.fill();
-  
-  // STROKE
+  c.restore();
   
 };
 
 Anibody.shapes.Shape.prototype._calculateCentroid= function(){
-    
+    if(this.Points.length < 1) return;
     // vertices = this.Points 
     
     var centroid = {x:0, y:0};
@@ -149,6 +176,9 @@ Anibody.shapes.Shape.prototype._calculateCentroid= function(){
 };
 
 Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function(){
+    
+    if(this.Points.length < 1) return;
+    
     var x = this.Points[0].x;
     var max = this.Points[0].x;
     var y = this.Points[0].y;
@@ -168,6 +198,18 @@ Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function(){
 
 Anibody.shapes.Shape.prototype.AddPoint = function(x,y){
     this.Points.push({x:x,y:y});
+    this._calculateCentroid();
+    this._sortPoints();
+    this._calculateSurroundingRectangle();
+};
+
+Anibody.shapes.Shape.prototype.AddPoints = function(){
+    
+    var points = Math.floor(arguments.length/2);
+    for(var i=0; i<points; i++){
+        this.Points.push({x:arguments[2*i],y:arguments[2*i+1]});
+    }
+
     this._calculateCentroid();
     this._sortPoints();
     this._calculateSurroundingRectangle();
@@ -222,7 +264,7 @@ Anibody.shapes.Shape.prototype._sortPoints = function(){
  * @returns {Anibody.Rectangle}
  */
 Anibody.shapes.Rectangle = function Rectangle(x,y,width,height){ // Rectangle class
-    Anibody.Shape.call(this);
+    Anibody.shapes.Shape.call(this);
     this.X=x;
     this.Y=y;
     this.Width = width;

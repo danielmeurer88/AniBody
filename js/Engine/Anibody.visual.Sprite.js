@@ -26,6 +26,7 @@ Anibody.visual.Sprite = function Sprite(codename, canvasX, canvasY,clipWidth, cl
     this.Clippings = [];
     this._clippingsCounter = [];
     this.ActiveClippingIndex = -1;
+    this.OldIndex = -1;
     
     this.Flags = {};
     
@@ -158,13 +159,20 @@ Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
     var endcbo, tempc;
     
     if(temp.NumberOfClips>1){
-        tempc = new Anibody.util.Counter([0,temp.NumberOfClips-1], 1000/temp.FPS, cbo, endcbo); //range, ms, cbo, endcbo
+        tempc = new Anibody.util.Counter([0,temp.NumberOfClips-1], 1000/temp.FPS, cbo); //range, ms, cbo, endcbo
         
         if(temp.PlayMode === "loop"){
             tempc.SetLoop(true);
+            tempc.Start();
+        }
+        
+        if(temp.PlayMode === "once"){
+            tempc.SetEndCallbackObject(function(){
+                this.Unlock();
+                this.SetAllFlags(false);
+            }.getCallbackObject(this));
             
-        tempc.Start();
-    }
+        }
     }else
         tempc = {};
     
@@ -174,9 +182,7 @@ Anibody.visual.Sprite.prototype.AddClipping = function(obj, def){
     }
     else
         this._defaultCounter = tempc;
-    
-    
-    
+
 };
 
 /**
@@ -218,7 +224,17 @@ Anibody.visual.Sprite.prototype._findActiveClipping = function(){
             this.ActiveClippingIndex = i;
             this._useDefault = false;
         }
-    }       
+    }
+    
+    if(this.ActiveClippingIndex !== this.OldIndex){
+        var newcl = this.Clippings[this.ActiveClippingIndex];
+        if(this._clippingsCounter[this.ActiveClippingIndex] && this._clippingsCounter[this.ActiveClippingIndex].Reset)
+            this._clippingsCounter[this.ActiveClippingIndex].Reset();
+        if(newcl.PlayMode === "once"){
+            this.Lock();
+        }
+    }
+    this.OldIndex = this.ActiveClippingIndex;
 };
 
 /**
@@ -294,7 +310,7 @@ Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
 };
 
 /**
- * Set the flags to true
+ * Set the flags to the given state
  * @params {string-array} names - the names of the flags
  * @param {boolean-array} states - the state of the representive flag
  * @returns {undefined}
@@ -302,8 +318,19 @@ Anibody.visual.Sprite.prototype.SetFlag = function (flagname, state) {
 Anibody.visual.Sprite.prototype.SetFlags = function (names, states) {
     for(var i=0; i<names.length; i++)
         if(typeof names[i] === "string"){
-            this.SetFlag(names[i], states[i])
+            this.SetFlag(names[i], states[i]);
         }
+};
+
+/**
+ * Set all flage to the given state
+ * @params {string-array} names - the names of the flags
+ * @param {boolean-array} states - the state of the representive flag
+ * @returns {undefined}
+ */
+Anibody.visual.Sprite.prototype.SetAllFlags = function (state) {
+    for(var attr in this.Flags)
+            this.SetFlag(attr, state);
 };
 
 /**
@@ -422,4 +449,10 @@ Anibody.visual.Sprite.prototype.Lock = function () {
  */
 Anibody.visual.Sprite.prototype.Unlock = function () {
     this.Locked = false;
+};
+
+Anibody.visual.Sprite.prototype.ResetClippingIndex = function () {
+    this.ActiveClippingIndex = -1;
+    this.OldIndex = -1;
+    this.SetAllFlags(false);
 };

@@ -40,6 +40,7 @@ function Anibody(html_id) {
     this.Flags.DebugWindow = false;
     this.Flags.Storage = true;
     this.Flags.IntervalHandler = true;
+    Object.defineProperty(this, "Flags", {enumerable:false});
 
     // ### PROPERTIES - STATE OF ENGINE
     this.Paused = false;

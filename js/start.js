@@ -121,7 +121,7 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
-    
+
     var width = 85.33;
     var height = 85.375;
     var getOrigin = function(w,h){
@@ -137,23 +137,30 @@ function start_test(engine){
     templ.PlayMode = "loop";
     
     bowser.AddClippings(
-        {Origin:{x:0,y:0}, FlagNames:["walking", "down"]},
-        {Origin:{x:0,y:height*1}, FlagNames:["walking", "left"]},
-        {Origin:{x:0,y:height*2}, FlagNames:["walking", "right"]},
+        {Origin:{x:width*9,y:height*4}, FlagNames:["walking", "down"]},
+        {Origin:{x:width*9,y:height*5}, FlagNames:["walking", "left"]},
+        {Origin:{x:width*9,y:height*6}, FlagNames:["walking", "right"]},
         {Origin:{x:width*9,y:height*7}, FlagNames:["walking", "up"]}
     );
     
     templ.NumberOfClips = 1;
     
     bowser.AddClippings(
-        {Origin:getOrigin(1,0), FlagNames:["down"]},
-        {Origin:getOrigin(1,1), FlagNames:["left"]},
-        {Origin:getOrigin(9,2), FlagNames:["right"]},
-        {Origin:getOrigin(9,7), FlagNames:["up"]}
+        {Origin:getOrigin(10,4), FlagNames:["down"]},
+        {Origin:getOrigin(10,5), FlagNames:["left"]},
+        {Origin:getOrigin(10,6), FlagNames:["right"]},
+        {Origin:getOrigin(10,7), FlagNames:["up"]}
     );
     
     bowser.AddRadioConstraint("left", "right", "down", "up");
     
+    templ.NumberOfClips = 9;
+    templ.PlayMode = "once";
+    
+    bowser.AddClippings(
+        {Origin:getOrigin(3,0), FlagNames:["laughing"]}
+    );
+        
     bowser.SetDefaultClipping(
             {Origin:getOrigin(1,0)}
             );
@@ -170,11 +177,11 @@ function start_test(engine){
         
     }.getCallbackObject(engine);
     
-    engine.testobj = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
+//    engine.testobj = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
     
-    window.setTimeout(function(engine){
-        engine.testobj.clearInterval();
-    }, 10000, engine);
+//    window.setTimeout(function(engine){
+//        engine.testobj.clearInterval();
+//    }, 10000, engine);
     
     Anibody.import(Anibody.Widget);
     var w = new Widget();
@@ -210,6 +217,15 @@ function start_test(engine){
             bowser.Y += speed;
         }
         
+        if(keys.Space.FramesPressed > 1){
+            bowser.SetAllFlags(false);
+            bowser.SetFlag("laughing", true);
+        }
+        
+        if(keys.Q.FramesPressed > 1){
+            bowser.ResetClippingIndex();
+        }
+        
     };
     w.Register();
     
@@ -217,23 +233,25 @@ function start_test(engine){
 
 function start_test2(engine){
     
-    function Klasse(){
-        this.AttrStr = "AttrString";
-        this.AttrNum = -42;
-        this.AttrFunc = function(){return "quick";};
-    }
+    var s = new Anibody.shapes.Shape(20, 400, 25, 300, 50, 350);
+    s.FillType = "color"; // none, color, image, linearGradient, radialGradient
+    s.FillCode = "#666"; // none, colorCode, codename, stops-object
+    s.BorderWidth = 3;
+    s.BorderType = "color"; //
+    s.BorderCode = "#000";
     
-    var obj = {
-        zahl : 42,
-        object : {
-            innerObject : {}
-        },
-        instance : new Klasse(),
-        arr1 : [1000, 2000, {string1: "EinString"}]
-    };
-        
-    var od = new Anibody.debug.ObjectDumb(obj, "testObject");
-    od.Download();
+    engine.AddObject(s);
+    
+//    var f = function(event){
+//        
+//        var mpos = event.Mouse.Position;
+//        event.Handled = true;
+//        
+//        this.AddPoint(mpos.X, mpos.Y);
+//        
+//    }.getCallbackObject(s);
+//    
+//    engine.Input.MouseHandler.AddMouseHandler("leftclick", f);
 }
 
 function testSpline(engine){

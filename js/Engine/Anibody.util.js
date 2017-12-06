@@ -401,7 +401,8 @@ Anibody.util.IntervalHandler.prototype.RemoveIntervalFunction = function (ref) {
  * counted value as the first argument of the incapsulated function
  * @param {number-array} range - beginning and end number
  * @param {number} ms - time period
- * @param {type} cbo - callbackobject
+ * @param {callbackobject} cbo - callbackobject, which is called with every counting step
+ * @param {callbackobject} endcbo - callbackobject, which is called when the end was reached
  * @returns {Anibody.util.Counter}
  */
 Anibody.util.Counter = function Counter(range, ms, cbo, endcbo){
@@ -509,4 +510,13 @@ Anibody.util.Counter.prototype.Reset = function(){
     this.Stop();
     this.CurrentV = this.StartV;
     this.Start();
+};
+/**
+ * sets the end cbo
+ * @param {callbackobject} endcbo - callbackobject, which is called when the end was reached
+ * @returns {undefined}
+ */
+Anibody.util.Counter.prototype.SetEndCallbackObject = function(endcbo){
+    if(endcbo && endcbo.that === "self") endcbo.that = this;
+    this.EndCallbackObject = endcbo;
 };

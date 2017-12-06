@@ -397,6 +397,20 @@ Anibody.ECMAScriptExtension = function () {
     };
     Object.defineProperty(Array.prototype, "delete", {enumerable:false});
     /**
+     * returns the number of how often the specified element occur in the array
+     * @param {object} el - element, whose occurrence will be checked
+     * @returns {number}
+     */
+    Array.prototype.getOccurrence = function(el) {
+        var occurrence = 0;
+        for (var i = 0; i < this.length; i++) {
+            if(el === this[i])
+                occurrence++;
+        }
+        return occurrence;
+    };
+    Object.defineProperty(Array.prototype, "getOccurrence", {enumerable:false});
+    /**
      * transforms the function into a callback-object and returns this object
      * @param {object} that
      * @param {object} parameter
