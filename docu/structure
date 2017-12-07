@@ -29,7 +29,9 @@ Table of Content
         this.killGoblin(arg2);
      }
      
-     var callbackobject = { function: f, that: player, parameter: ["Something Epic!", 100], useApply:true }
+     var callbackobject = { function: func, that: player, parameter: ["Something Epic!", 100], useApply:true }
+	 // or use Function.getCallbackObject()  ((own ECMAScript-Extension))
+	 var callbackobject = func.getCallbackObject(player, ["Something Epic!", 100], true);
      
      // Callback is called by this function
      Anibody.CallObject( callbackobject );
@@ -43,4 +45,60 @@ Table of Content
         - ABO: The class inherits from EngineObject. Components, which are made to be rendered on the canvas. (Graphical, visual components)
         - Widget: This class inherits from ABO: Components, which are made to be rendered on the canvas in the foreground. These are spontanious objects, mostly created as a result of a user action and are not added to the Loop. A widget can be (mis-) used to implement a custom ProcessInput(), Update() or Draw()-function
         
-        
+* Packages
+
+All classes, provided by the anibody framework, are packed into packages.
+The advantage:
+structure hints of their function. 
+The disadvantage: using these classes means using very long class names like:
+
+<code>
+var spline = new Anibody.visual.Spline();
+</code>
+
+therefore: import possibility like:
+
+<code>
+var spline = new Anibody.visual.Spline();
+
+Anibody.import(Anibody.visual.Spline);
+
+var spline2 = new Spline();
+
+// import using an alias
+Anibody.import(Anibody.shapes.Rectangle, "Rect");
+
+var rect = new Rect(10,10, 200, 50);
+</code>
+
+* All Classes
+
+Anibody.debug
+    - DumbObject
+    - Consolero
+    - DebugWindow
+    - Monitor
+
+
+Anibody.input (used internally)
+
+Anibody.nav
+    - BoxMenu
+    - Gallery
+    - SlideMenu > Tab
+
+Anibody.shapes (in development)
+    - Shape
+    - Rectangle
+    (is planned)
+    - Circle
+    - Triangle
+
+Anibody.ui
+    - Alert
+    - Confirm
+    - Prompt
+    - MultipleChoice
+    - ColorPicker
+    - Button
+    - 
