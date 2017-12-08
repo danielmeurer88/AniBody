@@ -31,13 +31,13 @@ Object.defineProperty(Anibody.util.PriorityQueue, "name", {value:"PriorityQueue"
  * @returns {Number} the refnum
  */
 Anibody.util.PriorityQueue.prototype.Enqueue = function(data, priority, name){
-    if(priority && priority > this.HighestPriority)
+    if(!isNaN(priority) && priority > this.HighestPriority)
         this.HighestPriority = priority;
     
     if(this.NoPriorityThenZero)    
-        priority = priority ? priority : 0;
+        priority = isNaN(priority) ? 0 : priority;
     else
-        priority = priority || typeof priority == "number" ? priority : ++this.HighestPriority;
+        priority = priority || typeof priority === "number" ? priority : ++this.HighestPriority;
     
     this.Sorted = false;
     var obj = {data:data, priority:priority, origin:"enqueued", refnum : this._refnums++, name:name};

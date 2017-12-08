@@ -743,7 +743,10 @@ Anibody.static.forceRange = function forceRange(obj, attr, min, max){
 Object.defineProperty(Anibody.static.forceRange, "name", {value:"forceRange"});
 
 /**
- * Only works when there is a trusted (real) user input event like a mouseclick or a key event
+ * Copies a text to the clipboad
+ * @param {string} str - the text that will be copied to the clipboard
+ * @see Only works when there is a trusted (real) user input event like a mouseclick or a key event
+ * @returns {boolean}
  * on the stack
  */
 Anibody.static.copyText = function copyText(str){
@@ -770,82 +773,3 @@ Anibody.static.copyText = function copyText(str){
 };
 
 Object.defineProperty(Anibody.static.forceRange, "name", {value:"copyText"});
-
-/**
- * not working
- */
-Anibody.static.copyText2 = function copyText2(str){
-    
-        if(typeof str !== "string") return false;
-        
-        var res = document.queryCommandSupported('Copy');
-    
-        if(!res) return false;
-
-        var inp = "<input id='input' value='"+str+"' type='text'/>"
-        
-        var div = document.createElement("div");
-        div.innerHTML = inp;
-        inp = div.children[0];
-        
-        document.body.appendChild(inp);
-
-        // create fake mouse event
-        var evt = mouseEvent("click", 1, 50, 1, 50);
-    
-        inp.addEventListener("click", function(e){
-            
-            inp.select();
-            var res = document.execCommand('Copy');
-            console.log("copied w/o timeout = " + res);
-            document.body.removeChild(inp);
-
-        }, true);
-
-        
-        dispatchEvent(inp, evt);
-
-    };
-
-function mouseEvent(type, sx, sy, cx, cy) {
-    var evt;
-    var e = {
-        bubbles: true,
-        cancelable: (type != "mousemove"),
-        view: window,
-        detail: 0,
-        screenX: sx,
-        screenY: sy,
-        clientX: cx,
-        clientY: cy,
-        ctrlKey: false,
-        altKey: false,
-        shiftKey: false,
-        metaKey: false,
-        button: 0,
-        relatedTarget: undefined
-    };
-    if (typeof (document.createEvent) == "function") {
-        evt = document.createEvent("MouseEvents");
-        evt.initMouseEvent(type,
-            e.bubbles, e.cancelable, e.view, e.detail,
-            e.screenX, e.screenY, e.clientX, e.clientY,
-            e.ctrlKey, e.altKey, e.shiftKey, e.metaKey,
-            e.button, document.body.parentNode);
-    } else if (document.createEventObject) {
-        evt = document.createEventObject();
-        for (prop in e) {
-            evt[prop] = e[prop];
-        }
-        evt.button = { 0: 1, 1: 4, 2: 2 }[evt.button] || evt.button;
-    }
-    return evt;
-}
-function dispatchEvent(el, evt) {
-    if (el.dispatchEvent) {
-        el.dispatchEvent(evt);
-    } else if (el.fireEvent) {
-        el.fireEvent('on' + type, evt);
-    }
-    return evt;
-}

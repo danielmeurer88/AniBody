@@ -125,9 +125,7 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
-
-    Anibody.static.copyText2("futch" + Date.now());
-
+    
     var width = 85.33;
     var height = 85.375;
     var getOrigin = function(w,h){
@@ -246,7 +244,7 @@ function start_test2(engine){
     s.BorderType = "color"; //
     s.BorderCode = "#000";
     
-    engine.AddObject(s);
+    s.Register();
     
 //    var f = function(event){
 //        

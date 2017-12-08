@@ -541,7 +541,8 @@ Anibody.prototype.GetObject = function (i) {
  */
 Anibody.prototype.AddObject = function (obj, pr) {
     obj.EI = this.EI;
-    return this.Objects.Queue.Enqueue(obj, pr);
+    obj._addrefnr = this.Objects.Queue.Enqueue(obj, pr);
+    return obj._addrefnr;
 };
 
 /**
@@ -855,6 +856,8 @@ Anibody.importAll = function(packagePath){
 Anibody.EngineObject = function EngineObject(){
     this.EI = 0; // Engine Index (the index of the engine, to which this object belongs in the $.EngineArray!
     this.UniqueID = this._getUniqueID();
+    this._addrefnr = null;
+    
 };
 
 Object.defineProperty(Anibody.EngineObject, "name", {value:"EngineObject"});
@@ -868,15 +871,47 @@ Anibody.EngineObject.prototype.ProcessInput = function(){return false;};
  */
 Anibody.EngineObject.prototype.Update = function(){return false;};
 
-Anibody.EngineObject.prototype.UniqueIDState = 0;
+Anibody.EngineObject.UniqueIDState = 0;
 Anibody.EngineObject.prototype._getUniqueID = function(){
-    return Anibody.EngineObject.prototype.UniqueIDState++;
+    return Anibody.EngineObject.UniqueIDState++;
 };
 
 // defining a default getter to the EngineObject constructor function
 Object.defineProperty(Anibody.EngineObject.prototype, "Engine", {get: function(){
         return $.AnibodyArray[this.EI];
 }});
+
+/**
+ * Removes/deregisters all registered functions.
+ * This function should be called if the instance won't be used anymore
+ * @returns {undefined}
+ */
+Anibody.EngineObject.prototype.Register = function(prior, ei){
+    if(isNaN(ei))
+        ei = 0;
+
+    this.EI = ei;
+    var en = $.AnibodyArray[ei];
+    if(en){
+        this._addrefnr = en.AddObject(this, prior);
+    }else{
+        this._addrefnr = this.Engine.AddObject(this, prior);
+    }
+    return this._addrefnr;
+};
+/**
+ * Removes/deregisters all registered functions.
+ * This function should be called if the instance won't be used anymore
+ * @returns {undefined}
+ */
+Anibody.EngineObject.prototype.Deregister = function(){
+    var ei = this.EI;
+    var en = $.AnibodyArray[ei];
+    if(en){
+        en.RemoveObject(this._addrefnr);
+        this._addrefnr = null;
+    }
+};
 
 /**
  * Every object used in the AniBody-Engine should derive from this class if it is used in the foreground
@@ -946,16 +981,6 @@ Anibody.ABO.prototype.GetArea = function(off, rounding){
     
     area.background = false;
     return area;
-};
-
-/**
- * Removes/deregisters all registered functions.
- * This function should be called if the instance won't be used anymore
- * @returns {undefined}
- */
-Anibody.ABO.prototype.Delete = function(){
-    // TODO
-    // automatic removing? - ref number need to be saved in every object
 };
 
 /**
