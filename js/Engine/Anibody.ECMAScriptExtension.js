@@ -341,7 +341,24 @@ Anibody.ECMAScriptExtension = function () {
                 "other: " + other);
         return str;
     };
+    /**
+     * Searches a string and returnes the occurrence of the given substring
+     * @param {string} sstr - searched substring
+     * @returns {number} 
+     */
+    String.prototype.getOccurrence = function (sstr) {
+        if(typeof sstr !== "string") return false;
 
+        var occurrence = 0;
+        var li = this.indexOf(sstr);
+
+        while (li >= 0) {
+          li = this.indexOf(sstr, li + sstr.length);
+          occurrence++;
+        }
+
+        return occurrence;
+      };
     /**
      * Randomly order the elements of the array by swapping two element in every round
      * @param {Number} rounds

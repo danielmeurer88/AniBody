@@ -41,7 +41,7 @@ function menu_callback(engine){
     
     // ------------------------------------------------ adding objects to the engine
     /* BUTTON RPG */
-    
+
     Anibody.import(Anibody.ui.Button);
 
     // there will be two buttons in this screen so
@@ -102,6 +102,10 @@ function menu_callback(engine){
             en.ExitFullscreen();
        };
        window.setTimeout(f, 3000, engine);
+
+       var res = Anibody.static.copyText("Hallo du Idiot - Wie geht es dir?");
+       console.log(res);
+
     });
     
     //testSpline(engine);
@@ -121,6 +125,8 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
+
+    Anibody.static.copyText2("futch" + Date.now());
 
     var width = 85.33;
     var height = 85.375;

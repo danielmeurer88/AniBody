@@ -741,3 +741,64 @@ Anibody.static.forceRange = function forceRange(obj, attr, min, max){
 };
 
 Object.defineProperty(Anibody.static.forceRange, "name", {value:"forceRange"});
+
+/**
+ * Only works when there is a trusted (real) user input event like a mouseclick or a key event
+ * on the stack
+ */
+Anibody.static.copyText = function copyText(str){
+
+    if(typeof str !== "string") return false;
+    
+    var res = document.queryCommandSupported('Copy');
+
+    if(!res) return false;
+    
+    var textarea = "<textarea>"+str+"</textarea>";
+    var textarea = "<input id='input' value='"+str+"' type='text'/>"
+    
+    var div = document.createElement("div");
+    div.innerHTML = textarea;
+    textarea = div.children[0];
+    
+    document.body.appendChild(textarea);
+
+    textarea.select();
+    var res = document.execCommand('Copy');
+    console.log("copied w/o timeout = " + res);
+    document.body.removeChild(textarea);
+};
+
+Object.defineProperty(Anibody.static.forceRange, "name", {value:"copyText"});
+
+/**
+ * not working
+ */
+Anibody.static.copyText2 = function copyText2(str){
+    
+        if(typeof str !== "string") return false;
+        
+        var res = document.queryCommandSupported('Copy');
+        var mevent = new MouseEvent("mouseclick", {isTrusted: true});
+    
+        if(!res) return false;
+
+        var textarea = "<input id='input' value='"+str+"' type='text'/>"
+        
+        var div = document.createElement("div");
+        div.innerHTML = textarea;
+        textarea = div.children[0];
+        
+        document.body.appendChild(textarea);
+    
+        textarea.addEventListener("mouseclick", function(e){
+            
+            textarea.select();
+            var res = document.execCommand('Copy');
+            console.log("copied w/o timeout = " + res);
+            document.body.removeChild(textarea);
+
+        }, true);
+
+        textarea.dispatchEvent(mevent);
+    };
