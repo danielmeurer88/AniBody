@@ -71,7 +71,21 @@ Anibody.import(Anibody.shapes.Rectangle, "Rect");
 var rect = new Rect(10,10, 200, 50);
 </code>
 
-* All Classes
+* All packages and classes
+
+Anibody
+
+Anibody.EngineObject
+
+Anibody.ABO
+
+Anibody.Widget
+
+Anibody.DefaultCamera
+
+Anibody.DefaultTerrain
+
+Anibody.ECMAScriptExtension
 
 Anibody.debug
     - DumbObject
@@ -79,8 +93,10 @@ Anibody.debug
     - DebugWindow
     - Monitor
 
-
 Anibody.input (used internally)
+    - not the classes are imortant
+    but the structure and the meaning of
+    the data here
 
 Anibody.nav
     - BoxMenu
@@ -101,4 +117,37 @@ Anibody.ui
     - MultipleChoice
     - ColorPicker
     - Button
-    - 
+    - InputField
+    - Slider
+    - Switch
+    - Toaster
+
+Anibody.util
+    - PriorityQueue
+    - Timer
+    - IntervalHandler
+    - Counter
+    - Flow
+    - MultiFlow
+    - MediaManager
+    - Storage
+    - Task > Step
+
+Anibody.visual
+    - ABOPresenter
+    - Animation
+    - ImageObject
+    - ABText
+    - CoordinateSystem
+    - Highlighting
+    - Spline
+    - Spotting
+    - Sprite
+
+Anibody.static
+
+FAQ
+ - How do I start an own Project?
+ - Are there any example projects to learn from?
+ - CallbackObject? - What is this?
+ - Do I need jQuery?
