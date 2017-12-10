@@ -3,33 +3,33 @@ $(document).ready(function () {
 
     var engine = new Anibody("PlayDiv");
     
-    Anibody.import(Anibody.util.Picture, "Pic");
+    Anibody.import(Anibody.util.ImageFile, "ImgF");
 
-    var waterglass = new Pic({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
+    var waterglass = new ImgF({path: "./img_rpg/water_glass.jpg", codename: "water_glass", group:"room3"});
     waterglass.AddGroup("room1");
 
     var mediapack = [
-        new Pic("./img_rpg/logo.png", "logo"),
-        new Pic("./img_rpg/button_0.png", "button_state_0"),
-        new Pic("./img_rpg/button_1.png", "button_state_1"),
-        new Pic("./img_rpg/button_2.png", "button_state_2"),
-        new Pic("./img_rpg/sprite_test.png", "sprite_test"),
-        new Pic({path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"]}),
-        new Pic({path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure"}),
-        new Pic({path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group:"room2"}),
-        new Pic({path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure"}),
-        new Pic({path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
-        new Pic({path: "./img_rpg/tresure_closed.png", codename: "tresure_closed"}),
-        new Pic({path: "./img_rpg/tresure_opened.png", codename: "tresure_opened"}),
-        new Pic({path: "./img_rpg/girl.png", codename: "girl", group:"room2"}),
-        new Pic({path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", group:"room2"}),
-        new Pic({path: "./img_rpg/crate.png", codename: "crate", group:"room2"}),
-        new Pic({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
-        new Pic({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
+        new ImgF("./img_rpg/logo.png", "logo"),
+        new ImgF("./img_rpg/button_0.png", "button_state_0"),
+        new ImgF("./img_rpg/button_1.png", "button_state_1"),
+        new ImgF("./img_rpg/button_2.png", "button_state_2"),
+        new ImgF("./img_rpg/sprite_test.png", "sprite_test"),
+        new ImgF({path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"]}),
+        new ImgF({path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure"}),
+        new ImgF({path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group:"room2"}),
+        new ImgF({path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure"}),
+        new ImgF({path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
+        new ImgF({path: "./img_rpg/tresure_closed.png", codename: "tresure_closed"}),
+        new ImgF({path: "./img_rpg/tresure_opened.png", codename: "tresure_opened"}),
+        new ImgF({path: "./img_rpg/girl.png", codename: "girl", group:"room2"}),
+        new ImgF({path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", group:"room2"}),
+        new ImgF({path: "./img_rpg/crate.png", codename: "crate", group:"room2"}),
+        new ImgF({path: "./img_rpg/crate_pad.png", codename: "pad", group:"room2"}),
+        new ImgF({path: "./img_rpg/fire_sprite.png", codename: "bonfire", group:"room1"}),
         waterglass,
-        new Pic({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"}),
-        new Anibody.util.Sound({path: "./music/portal_activate.mp3", codename: "portal_activate", group:"room1"}),
-        new Anibody.util.Sound({path: "./music/alongway.mp3", codename: "girl_background", group:"room2"})
+        new ImgF({path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group:"room1"}),
+        new Anibody.util.SoundFile({path: "./music/portal_activate.mp3", codename: "portal_activate", group:"room1"}),
+        new Anibody.util.SoundFile({path: "./music/alongway.mp3", codename: "girl_background", group:"room2"})
     ];
     
     engine.MediaManager.SetMediaPack(  mediapack, menu_callback.getCallbackObject(engine,engine));
@@ -44,8 +44,9 @@ function menu_callback(engine){
 
     Anibody.import(Anibody.ui.Button);
 
-    // there will be two buttons in this screen so
-    // the button template will be modified to set the common values
+    // there will be three buttons in this screen so
+    // the button template will be modified to preset the common values among those three buttons
+    // !! x and y cannot be set in the template - every instance of Button has to set them individually
     Anibody.ui.Button.SetTemplateByObject({
         Width:250, Height:60,
         Codename : ["button_state_0", "button_state_1", "button_state_2"],
@@ -66,7 +67,9 @@ function menu_callback(engine){
     // input field
     Anibody.import(Anibody.ui.InputField);
     var infi = new InputField(10, 10, 300);
-    engine.AddObject(infi);
+    //engine.AddObject(infi);
+    infi.Register();
+
 
     /* BUTTON HELP */
     var b2 = new Button("center", 220, 
@@ -74,12 +77,15 @@ function menu_callback(engine){
         Label : "Test Button",
         TriggerCallbackObject : function (engine) {
                 start_test(engine);
-            }.getCallbackObject(engine, engine),
+                var b = this;
+                engine.FlushScene();
+            }.getCallbackObject("self", engine),
         HoverText : "Wird zum Testen unterschiedlicher Dinge benutzt."
     });
     b2.AddButtonEffect();
     
-    engine.AddObject(b2);
+    //engine.AddObject(b2);
+    b2.Register();
     
     /* BUTTON HELP2 */
     var b3 = new Button("center", 320, 

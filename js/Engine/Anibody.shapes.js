@@ -46,7 +46,7 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function(){
 
     if (this.FillType === "image") {
         if (typeof this.FillCode === "string"){
-            this.FillCode = this.Engine.MediaManager.GetPicture(this.FillCode);
+            this.FillCode = this.Engine.MediaManager.GetImage(this.FillCode);
             this._fillStyle = this.FillCode;
         }
         if (this.FillCode && this.FillCode.complete) {

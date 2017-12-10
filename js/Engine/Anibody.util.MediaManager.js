@@ -9,7 +9,7 @@ Anibody.SetPackage("Anibody", "util"); // checks if the object Anibody.util exis
 Anibody.util.MediaManager = function MediaManager() {
     Anibody.ABO.call(this);
 
-    this.Pictures = new Map();
+    this.Images = new Map();
     this.Sounds = new Map();
     this.Strings = new Map();
 
@@ -37,7 +37,7 @@ Anibody.util.MediaManager.prototype.DefaultFontColor = "black";
  * @returns {undefined}
  */
 Anibody.util.MediaManager.prototype.Flush = function () {
-    //this.Pictures = [];
+    //this.Images = [];
     //this.Sounds = [];
 };
 /**
@@ -83,10 +83,10 @@ Anibody.util.MediaManager.prototype.Draw = function (c) {
  * @param {string} codename
  * @returns {image/false}
  */
-Anibody.util.MediaManager.prototype.GetPicture = function (codename) {
+Anibody.util.MediaManager.prototype.GetImage = function (codename) {
     try{
         if(typeof codename === "string")
-            return this.Pictures.get(codename).Data;
+            return this.Images.get(codename).Data;
         else
             return codename;
     }catch(e){
@@ -94,12 +94,12 @@ Anibody.util.MediaManager.prototype.GetPicture = function (codename) {
     }
 };
 /**
- * returns the first picture whose codename matches the searched string
+ * returns the first Image whose codename matches the searched string
  * @param {string} codename
- * @deprecated the Class' name is Picture, therefore the name of this method should be GetPicture
+ * @deprecated the Class' name is ImageFile, therefore the name of this method should be GetImage
  * @returns {image/false}
  */
-Anibody.util.MediaManager.prototype.GetImage = function (codename) {return this.GetPicture(codename);};
+Anibody.util.MediaManager.prototype.GetPicture = function (codename) {return this.GetImage(codename);};
 /**
  * returns the first audio whose codename matches the searched string
  * @param {string} codename
@@ -107,7 +107,7 @@ Anibody.util.MediaManager.prototype.GetImage = function (codename) {return this.
  */
 Anibody.util.MediaManager.prototype.GetSound = function (codename) {
     try{
-        return this.Pictures.get(codename).Data;
+        return this.Images.get(codename).Data;
     }catch(e){
         return false;
     }
@@ -115,7 +115,7 @@ Anibody.util.MediaManager.prototype.GetSound = function (codename) {
 
 
 /**
- * Load all media, saved in an array (pack), and saves them to the respective Property (Pictures, Sounds)
+ * Load all media, saved in an array (pack), and saves them to the respective Property (Images, Sounds)
  * When all media are loaded, the callback-object will be called
  * @param {type} pack
  * @param {type} co (callback object)
@@ -150,8 +150,8 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
         var curpct = pack.pop(); // curpct = current element of the processed mediapack
         mm.Progress += mm.ProgressStep; // progress progresses one step further - needed for the animation
 
-        if (curpct instanceof Anibody.util.Picture) {
-            mm.Pictures.set(curpct.Codename,curpct);
+        if (curpct instanceof Anibody.util.ImageFile) {
+            mm.Images.set(curpct.Codename,curpct);
             curpct.Load(of, {
                 co: co,
                 of: of,
@@ -160,7 +160,7 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
             return;
         }
 
-        if (curpct instanceof Anibody.util.Sound) {
+        if (curpct instanceof Anibody.util.SoundFiles) {
             mm.Sounds.set(curpct.Codename,curpct);
             curpct.Load(of, {
                 co: co,
@@ -171,7 +171,7 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
 
         }
 
-    }; // END of of - the anonym onload function, which is called at the end of the anonym onload function of every Picture and Sound
+    }; // END of of - the anonym onload function, which is called at the end of the anonym onload function of every Image and Sound
 
     // call the callback-object if pack is empty
     if (!pack || pack.length <= 0) {
@@ -183,8 +183,8 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
     var curpct = pack.pop();
     this.Progress += this.ProgressStep;
 
-    if (curpct instanceof Anibody.util.Picture) {
-        this.Pictures.set(curpct.Codename, curpct);
+    if (curpct instanceof Anibody.util.ImageFile) {
+        this.Images.set(curpct.Codename, curpct);
         curpct.Load(of, {
             co: co,
             of: of,
@@ -193,7 +193,7 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
         return;
     }
 
-    if (curpct instanceof Anibody.util.Sound) {
+    if (curpct instanceof Anibody.util.SoundFile) {
         this.Sounds.set(curpct.Codename, curpct);
         curpct.Load(of, {
             co: co,
@@ -326,15 +326,15 @@ Anibody.util.Media.prototype.AddGroup = function (alias) {
 
 /**
  * Media sup type: capsulates an html-image
- * @returns {Picture}
+ * @returns {ImageFile}
  */
-Anibody.util.Picture = function Picture() {
+Anibody.util.ImageFile = function ImageFile() {
     Anibody.util.Media.apply(this, arguments);
 }
-Anibody.util.Picture.prototype = Object.create(Anibody.util.Media.prototype);
-Anibody.util.Picture.prototype.constructor = Anibody.util.Picture;
+Anibody.util.ImageFile.prototype = Object.create(Anibody.util.Media.prototype);
+Anibody.util.ImageFile.prototype.constructor = Anibody.util.ImageFile;
 
-Object.defineProperty(Anibody.util.Picture, "name", {value:"Picture"});
+Object.defineProperty(Anibody.util.ImageFile, "name", {value:"ImageFile"});
 
 /**
  * Adds the onload-function and needed parameters from the MediaManager to the image
@@ -342,7 +342,7 @@ Object.defineProperty(Anibody.util.Picture, "name", {value:"Picture"});
  * @param {type} paras
  * @returns {undefined}
  */
-Anibody.util.Picture.prototype.Load = function (onload, paras) {
+Anibody.util.ImageFile.prototype.Load = function (onload, paras) {
     this.Data = document.createElement("IMG");
     this.Data.onload = onload;
     this.Data.Parameters = paras;
@@ -353,33 +353,33 @@ Anibody.util.Picture.prototype.Load = function (onload, paras) {
  * Returns the DataURL from the image
  * @returns {unresolved}
  */
-Anibody.util.Picture.prototype.GetDataURL = function () {
+Anibody.util.ImageFile.prototype.GetDataURL = function () {
     var offcan = document.createElement("CANVAS");
     offcan.width = this.Data.width;
     offcan.height = this.Data.height;
     var c = offcan.getContext("2d");
-    c.drawPicture(this.Data, 0, 0);
+    c.drawImage(this.Data, 0, 0);
     return offcan.toDataURL();
 };
 /**
  * Media sup type: capsulates an html-audio
- * @returns {Sound}
+ * @returns {SoundFile}
  */
-Anibody.util.Sound = function Sound() {
+Anibody.util.SoundFile = function SoundFile() {
     Anibody.util.Media.apply(this, arguments);
 }
-Anibody.util.Sound.prototype = Object.create(Anibody.util.Media.prototype);
-Anibody.util.Sound.prototype.constructor = Anibody.util.Sound;
+Anibody.util.SoundFile.prototype = Object.create(Anibody.util.Media.prototype);
+Anibody.util.SoundFile.prototype.constructor = Anibody.util.SoundFile;
 
-Object.defineProperty(Anibody.util.Sound, "name", {value:"Sound"});
+Object.defineProperty(Anibody.util.SoundFile, "name", {value:"SoundFile"});
 
 /**
- * Adds the onload-function and needed parameters from the MediaManager to the Sound
+ * Adds the onload-function and needed parameters from the MediaManager to the SoundFile
  * @param {function} onload
  * @param {type} paras
  * @returns {undefined}
  */
-Anibody.util.Sound.prototype.Load = function (onload, paras) {
+Anibody.util.SoundFile.prototype.Load = function (onload, paras) {
     this.Data = document.createElement("AUDIO");
     this.Data.oncanplay = onload;
     this.Data.preload = true;

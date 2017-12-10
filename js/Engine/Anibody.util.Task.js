@@ -284,7 +284,7 @@ Anibody.util.Task.prototype._createsImage = function(){
     // plus the extra height for the title with closing "x"
     
     
-    // CREATING THE PICTURE
+    // CREATING THE Image
     can = document.createElement("CANVAS");
     can.width = width;
     can.height = realHeight;

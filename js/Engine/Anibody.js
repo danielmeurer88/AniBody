@@ -50,7 +50,8 @@ function Anibody(html_id) {
     // the Object Loop, where all external objects will be saved and the currently important/selected one
     this.Objects = {
         Queue: null,
-        SelectedObject: null
+        SelectedObject: null,
+        RegisteredObjects : []
     };
 
     this.CanvasID = html_id;// the id string
@@ -542,6 +543,7 @@ Anibody.prototype.GetObject = function (i) {
 Anibody.prototype.AddObject = function (obj, pr) {
     obj.EI = this.EI;
     obj._addrefnr = this.Objects.Queue.Enqueue(obj, pr);
+    this.Objects.RegisteredObjects.push(obj);
     return obj._addrefnr;
 };
 
@@ -551,7 +553,11 @@ Anibody.prototype.AddObject = function (obj, pr) {
  * @returns {result}
  */
 Anibody.prototype.RemoveObject = function (ref) {
-    return this.Objects.Queue.DeleteByReferenceNumber(ref);
+    var obj = this.Objects.Queue.DeleteByReferenceNumber(ref);
+    var i = this.Objects.RegisteredObjects.indexOf(obj);
+    if(i >= 0)
+        this.Objects.RegisteredObjects.delete(i);
+    return obj;
 };
 
 /**
@@ -633,7 +639,16 @@ Anibody.prototype.SetTerrain = function (t) {
  */
 Anibody.prototype.FlushScene = function () {
     this.Objects.Queue.Flush();
-    this.MediaManager.Flush();
+    // deregister all objects and widgets
+    
+    var arr = []; // temp array will be used because RegisteredObjects-Array will get smaller by every loop
+    for(var i=0; i<this.Objects.RegisteredObjects.length; i++){
+        arr.push(this.Objects.RegisteredObjects[i]);
+    }
+    for(var i=0; i<arr.length; i++){
+        if( arr[i] && arr[i].Deregister)
+            arr[i].Deregister();
+    }
 };
 /**
  * @description The Engines way how to handle errors
@@ -882,8 +897,9 @@ Object.defineProperty(Anibody.EngineObject.prototype, "Engine", {get: function()
 }});
 
 /**
- * Removes/deregisters all registered functions.
- * This function should be called if the instance won't be used anymore
+ * Adds an Object to the engine
+ * @param {number} prior - the priority (you can use null if you don't care about priorities)
+ * @param {number} ei - index of the engine (default:0) 
  * @returns {undefined}
  */
 Anibody.EngineObject.prototype.Register = function(prior, ei){
@@ -900,7 +916,7 @@ Anibody.EngineObject.prototype.Register = function(prior, ei){
     return this._addrefnr;
 };
 /**
- * Removes/deregisters all registered functions.
+ * Removes a registered object.
  * This function should be called if the instance won't be used anymore
  * @returns {undefined}
  */
@@ -1030,6 +1046,8 @@ Anibody.Widget.prototype.Register = function(){
             },
             that : this
         },this._dPriority);
+    
+    this.Engine.Objects.RegisteredObjects.push(this);
 };
 Anibody.Widget.prototype.Deregister = function(){
     if(this._refIP !== null){
@@ -1046,6 +1064,10 @@ Anibody.Widget.prototype.Deregister = function(){
         this.Engine.RemoveForegroundDrawFunctionObject(this._refD);
         this._refD = null;
     }
+    
+    var i = this.Engine.Objects.RegisteredObjects.indexOf(this);
+    if(i >= 0)
+        this.Engine.Objects.RegisteredObjects.delete(i);    
 };
 /**
  * @see README_DOKU.txt

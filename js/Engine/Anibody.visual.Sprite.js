@@ -66,8 +66,8 @@ Anibody.visual.Sprite.prototype.Initialize = function(){
         this.SpriteImage = this.Codename;
     
     // if the codename is a string -> try to load the picture from the mediamanager
-    if(this.Engine.MediaManager && this.Engine.MediaManager.GetPicture && typeof this.Codename === "string")
-        this.SpriteImage = this.Engine.MediaManager.GetPicture(this.Codename);
+    if(this.Engine.MediaManager && this.Engine.MediaManager.GetImage && typeof this.Codename === "string")
+        this.SpriteImage = this.Engine.MediaManager.GetImage(this.Codename);
     
     if(!this.SpriteImage){
         throw "Could not access the Image for the Sprite";

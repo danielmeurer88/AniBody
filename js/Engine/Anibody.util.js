@@ -50,15 +50,13 @@ Anibody.util.PriorityQueue.prototype.Enqueue = function(data, priority, name){
  * @returns {Number} Number of deleted elements
  */
 Anibody.util.PriorityQueue.prototype.DeleteByReferenceNumber = function(ref){
-    var arr = [];
-    var found = 0;
-    for(var i=0; i<this.heap.length; i++)
-        if(this.heap[i].refnum !== ref)
-            arr.push(this.heap[i]);
-        else
-            found++;
-    this.heap = arr;
-    return found;
+    var found = -1;
+    for(var i=0;found < 0 && i<this.heap.length; i++)
+        if(this.heap[i].refnum === ref)
+            found = i;
+    
+    found = this.heap.delete(found);
+    return found.data;
 };
 
 /**
