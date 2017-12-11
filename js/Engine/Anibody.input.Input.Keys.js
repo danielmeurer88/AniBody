@@ -894,8 +894,11 @@ Anibody.input.Input.Keys.prototype.RegisterKeyEvents = function (lockKeys) {
 
     // TODO ... transform keydown/ keyup to on() and write an document.on() alternative in ECMAScriptExtension()
 
-    this.KeyDownEvent = $(document).keydown(this, onkeydown);
-    this.KeyUpEvent = $(document).keyup(this, onkeyup);
+    //this.KeyDownEvent = $(document).keydown(this, onkeydown);
+    this.KeyDownEvent = $(document).on("keydown", this, onkeydown);
+
+    //this.KeyUpEvent = $(document).keyup(this, onkeyup);
+    this.KeyUpEvent = $(document).on("keyup", this, onkeyup);
 
     // if the script runs on a (same-origin) document within an iframe (or popup?)
     if (window.top != window.self) {
@@ -910,11 +913,11 @@ Anibody.input.Input.Keys.prototype.RegisterKeyEvents = function (lockKeys) {
 
 Anibody.input.Input.Keys.prototype.UnregisterKeyEvents = function () {
     if (this.KeyUpEvent) {
-        $(document).unbind(this.KeyUpEvent);
+        $(document).off(this.KeyUpEvent);
         this.KeyUpEvent = "undefined";
     }
     if (this.KeyDownEvent) {
-        $(document).unbind(this.KeyDownEvent);
+        $(document).off(this.KeyDownEvent);
         this.KeyDownEvent = "undefined";
     }
 };

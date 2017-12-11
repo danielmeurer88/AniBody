@@ -110,14 +110,18 @@ Anibody.input.Input.prototype.CalculateCanvasPosition = function () {
 };
 
 Anibody.input.Input.prototype.RegisterResizeEvent = function () {
-    this.ResizeEvent = $(window).resize(this.Engine, function (d) {
+
+    var f = function (d) {
         d.data.Input.CalculateCanvasPosition();
         d.data.Engine.IsCanvasFitToScreen = false;
-    });
+    };
+
+    //this.ResizeEvent = $(window).resize(this.Engine, f);
+    this.ResizeEvent = $(window).on("resize",this.Engine, f);
 };
 Anibody.input.Input.prototype.UnregisterResizeEvent = function () {
     if (this.ResizeEvent) {
-        $(window).unbind(this.ResizeEvent);
+        $(window).off("resize",this.ResizeEvent);
         this.ResizeEvent = "undefined";
     }
 };

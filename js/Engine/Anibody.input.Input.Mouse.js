@@ -100,10 +100,14 @@ Anibody.input.Input.Mouse.prototype.Update = function(){
 
 Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextMenu) {
 
-    this.MouseMoveEvent = $(document).mousemove(this.Engine, function (e) {
+    var f = function (e) {
         e.data.Input.Mouse.EventObject = e;
-    });
-    this.MouseDownEvent = $(document).mousedown(this.Engine, function (e) {
+    };
+
+    //this.MouseMoveEvent = $(document).mousemove(this.Engine, f);
+    this.MouseMoveEvent = $(document).on("mousemove",this.Engine, f);
+
+    f = function (e) {
 
         e.data.Input.Mouse.DownEvent = e;
 
@@ -122,8 +126,12 @@ Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextM
         e.stopPropagation();
         e.cancelBubble = true;
 
-    });
-    this.MouseUpEvent = $(document).mouseup(this.Engine, function (e) {
+    };
+
+    //this.MouseDownEvent = $(document).mousedown(this.Engine, f);
+    this.MouseDownEvent = $(document).on("mousedown",this.Engine, f);
+    
+    f = function (e) {
 
         e.data.Input.Mouse.UpEvent = e;
 
@@ -141,8 +149,12 @@ Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextM
         e.preventDefault();
         e.stopPropagation();
         e.cancelBubble = true;
-    });
-    this.MouseWheelEvent = $(window).bind("wheel", this.Engine, function (e) {
+    };
+
+    //this.MouseUpEvent = $(document).mouseup(this.Engine, f);
+    this.MouseUpEvent = $(document).on("mouseup",this.Engine, f);
+    
+    this.MouseWheelEvent = $(window).on("wheel", this.Engine, function (e) {
 
         var that = e.data;
         if (that.Canvas.MouseOn) {
@@ -171,11 +183,11 @@ Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextM
 };
 Anibody.input.Input.Mouse.prototype.UnregisterMouseEvents = function () {
     if (this.MouseUpEvent !== null) {
-        $(document).unbind(this.MouseUpEvent);
+        $(document).off(this.MouseUpEvent);
         this.MouseUpEvent = null;
     }
     if (this.MouseDownEvent !== null) {
-        $(document).unbind(this.MouseDownEvent);
+        $(document).off(this.MouseDownEvent);
         this.MouseDownEvent = null;
     }
 };
@@ -236,7 +248,10 @@ Anibody.input.Input.Mouse.Cursor = function Cursor(){
 };
 Anibody.input.Input.Mouse.Cursor.prototype = Object.create(Anibody.EngineObject.prototype);
 Anibody.input.Input.Mouse.Cursor.prototype.constructor = Anibody.input.Input.Mouse.Cursor;
-Anibody.input.Input.Mouse.Cursor.prototype.Set = function (css) {$(this.Engine.Canvas).css("cursor", css);};
+Anibody.input.Input.Mouse.Cursor.prototype.Set = function (css) {
+    var res = $(this.Engine.Canvas)
+    res.css("cursor", css);
+};
 Anibody.input.Input.Mouse.Cursor.prototype.alias = function () {this.Current = "alias";this.Set(this.Current);};
 Anibody.input.Input.Mouse.Cursor.prototype.cell = function () {this.Current = "cell";this.Set(this.Current);};
 Anibody.input.Input.Mouse.Cursor.prototype.col_resize = function () {this.Current = "col-resize";this.Set(this.Current);};

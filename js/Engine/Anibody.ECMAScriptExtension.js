@@ -1152,7 +1152,7 @@ Anibody.ECMAScriptExtension = function () {
 
     if(typeof $ === "undefined"){
         $ = function(sel){
-            if(sel === document || sel === window || sel === document.body)
+            if(sel === document || sel === window || sel instanceof HTMLElement)
                 return sel;
 
             return document.querySelectorAll(sel);
@@ -1179,6 +1179,63 @@ Anibody.ECMAScriptExtension = function () {
             return res;
         };
 
+        NodeList.prototype.css = function(prop, val){
+            var el = this[0];
+
+            if(typeof val === "undefined" && typeof prop === "object"){
+                for(var attr in prop){
+                    el.style[attr] = prop[attr];
+                }
+            }
+
+            if(typeof prob === "string"){
+                el.style[prop] = val;
+            }
+
+            if(typeof val === "undefined" && typeof prop === "string"){
+                return el.style[attr];
+            }
+            
+        };
+
+        HTMLElement.prototype.css = function(prop, val){
+            var el = this[0];
+
+            if(typeof val === "undefined" && typeof prop === "object"){
+                for(var attr in prop){
+                    el.style[attr] = prop[attr];
+                }
+            }
+
+            if(typeof prob === "string"){
+                el.style[prop] = val;
+            }
+
+            if(typeof val === "undefined" && typeof prop === "string"){
+                return el.style[attr];
+            }
+            
+        };
+
+        NodeList.prototype.on = function(eventtype, data, func){
+            var el = this[0];
+
+            if(typeof data === "function" && arguments.length === 2)
+                func = data;
+
+            var tempf = function(e){
+                e.data = data;
+                func(e);
+            };
+
+            return el.addEventListener(eventtype, tempf);
+        };
+
+        NodeList.prototype.off = function(eventtype, handler, cap){
+            var el = this[0];
+            return el.removeEventListener(eventhandler, handler, cap);
+        };
+
         document.on = function(eventtype, data, func){
             if(typeof data === "function" && arguments.length === 2)
                 func = data;
@@ -1188,7 +1245,27 @@ Anibody.ECMAScriptExtension = function () {
                 func(e);
             };
 
-            document.addEventListener(eventtype, tempf);
+            return document.addEventListener(eventtype, tempf);
+        };
+
+        document.off = function(eventtype, handler, cap){
+            return document.removeEventListener(eventhandler, handler, cap);
+        };
+
+        window.on = function(eventtype, data, func){
+            if(typeof data === "function" && arguments.length === 2)
+                func = data;
+
+            var tempf = function(e){
+                e.data = data;
+                func(e);
+            };
+
+            return window.addEventListener(eventtype, tempf);
+        };
+
+        window.off = function(eventtype, handler, cap){
+            return window.removeEventListener(eventhandler, handler, cap);
         };
 
     }

@@ -79,7 +79,7 @@ function menu_callback(engine){
         TriggerCallbackObject : function (engine) {
                 start_test(engine);
                 var b = this;
-                engine.FlushScene();
+                engine.FlushObjects();
             }.getCallbackObject("self", engine),
         HoverText : "Wird zum Testen unterschiedlicher Dinge benutzt."
     });
@@ -103,14 +103,14 @@ function menu_callback(engine){
         
     engine.Start();
 
-    $("#fs_btn").click(function(){
+    $("#fs_btn").on("click",function(){
        engine.RequestFullscreen();
        var f = function(en){
             en.ExitFullscreen();
        };
        window.setTimeout(f, 3000, engine);
 
-       var res = Anibody.static.copyText("Hallo du Idiot - Wie geht es dir?");
+       var res = Anibody.static.copyText("Hallo du - Wie geht es dir?");
        console.log(res);
 
     });

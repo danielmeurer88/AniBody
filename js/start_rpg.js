@@ -1,7 +1,7 @@
 
 function level_rpg(engine){
         
-    engine.FlushScene();
+    engine.FlushObjects();
     
     Anibody.importAll(Anibody.static);
     Anibody.import(Anibody.visual.Sprite);
