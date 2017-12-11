@@ -617,9 +617,9 @@ Anibody.prototype.GetOutsideElement = function (codename) {
  * empties the object queue (the scene)
  * @returns {undefined}
  */
-Anibody.prototype.FlushQueue = function () {
+Anibody.prototype.FlushObjects = function () {
+    this.DeregisterAll();
     this.Objects.Queue.Flush();
-    this.SelectedObject = "undefined";
 };
 
 /**
@@ -633,13 +633,9 @@ Anibody.prototype.SetTerrain = function (t) {
 };
 /**
  * @description Adds extra Attributes and set default values. Register a physic function to the Update()-function so that the objects behaves according to the specified Type 
- * @param {Object} obj EngineObjects
- * @param {String} the type of the physic
  * @returns {undefined}
  */
-Anibody.prototype.FlushScene = function () {
-    this.Objects.Queue.Flush();
-    // deregister all objects and widgets
+Anibody.prototype.DeregisterAll = function () {
     
     var arr = []; // temp array will be used because RegisteredObjects-Array will get smaller by every loop
     for(var i=0; i<this.Objects.RegisteredObjects.length; i++){
