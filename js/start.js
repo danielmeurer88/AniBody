@@ -1,5 +1,6 @@
 
-$(document).ready(function () {
+
+document.addEventListener("DOMContentLoaded", function(){
 
     var engine = new Anibody("PlayDiv");
     
@@ -34,7 +35,7 @@ $(document).ready(function () {
     
     engine.MediaManager.SetMediaPack(  mediapack, menu_callback.getCallbackObject(engine,engine));
 
-    
+
 });
 
 function menu_callback(engine){

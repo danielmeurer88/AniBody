@@ -1148,6 +1148,52 @@ Anibody.ECMAScriptExtension = function () {
         return rgbaCode;
     };
 
+    // jQuery replacement
+
+    if(typeof $ === "undefined"){
+        $ = function(sel){
+            if(sel === document || sel === window || sel === document.body)
+                return sel;
+
+            return document.querySelectorAll(sel);
+        };
+
+        // so far: only tested in Chrome
+
+
+        NodeList.prototype.width = function(){
+            var el = this[0];
+            return el.clientWidth;
+        };
+
+        NodeList.prototype.height = function(){
+            var el = this[0];
+            return el.clientHeight;
+        };
+
+        NodeList.prototype.html = function(txt){
+            var el = this[0];
+            //var div = document.createElement("div");
+            el.innerHTML = txt;
+            var res = el.childNodes[0];
+            return res;
+        };
+
+        document.on = function(eventtype, data, func){
+            if(typeof data === "function" && arguments.length === 2)
+                func = data;
+
+            var tempf = function(e){
+                e.data = data;
+                func(e);
+            };
+
+            document.addEventListener(eventtype, tempf);
+        };
+
+    }
+        
+
 
     Anibody.ECMAScriptExtended = true;
 };

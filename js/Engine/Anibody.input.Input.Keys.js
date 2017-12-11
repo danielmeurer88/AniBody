@@ -892,6 +892,8 @@ Anibody.input.Input.Keys.prototype.RegisterKeyEvents = function (lockKeys) {
         }
     };
 
+    // TODO ... transform keydown/ keyup to on() and write an document.on() alternative in ECMAScriptExtension()
+
     this.KeyDownEvent = $(document).keydown(this, onkeydown);
     this.KeyUpEvent = $(document).keyup(this, onkeyup);
 

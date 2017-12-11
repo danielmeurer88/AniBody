@@ -15,7 +15,7 @@ function Anibody(html_id) {
     this.CurrentFrame = 0;
     
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
-    if ($ && $.fn) {
+    if ($) {
         if (!$.AnibodyArray) {
             $.AnibodyArray = [];
         }
@@ -23,7 +23,7 @@ function Anibody(html_id) {
         $.AnibodyArray.push(this);
         $.Anibody = this;
     } else {
-        this.Info.Error = "jQuery is probably not set up";
+        this.Info.Error = "$ cannot bet set up";
         return false;
     }
 
@@ -122,7 +122,8 @@ Anibody.prototype.Initialize = function () {
     // it checks if it's a div container
     // if so it creates a new canvas element inside of it and goes on
     var pseudo = $("#" + this.CanvasID)[0];
-    var width = $("#" + this.CanvasID).width();
+    var width = $("#" + this.CanvasID);
+    width = width.width();
     var height = $("#" + this.CanvasID).height();
     if (pseudo.nodeName == "DIV") {
         $("#" + this.CanvasID).html("<canvas width='" + width + "' height='" + height + "' id='" + this.CanvasID + "_Canvas'></canvas>");
