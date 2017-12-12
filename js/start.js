@@ -138,7 +138,8 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
-    
+    var s = engine.GetSelectedObject();
+    alert(s);
 }
 
 function start_test2(engine){
@@ -158,6 +159,8 @@ function start_test2(engine){
     s._drawCentroid = true;
     
     s.Register();
+
+    engine.SetSelectedObject(s);
     
     var f = function(event){
        

@@ -11,6 +11,8 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this.Y = 0;
     this.Centroid = { x: 0, y: 0 };
     this.Points = [];
+    this._pointsStack = [];
+    Object.defineProperty(this, "_pointsStack", { enumerable: false });
 
     this.FillType = "color"; // none, color, image, linearGradient, radialGradient
     this.FillCode = "#666"; // none, colorCode, codename, stops-object
@@ -409,7 +411,12 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
 Anibody.shapes.Shape.GetGradientCode = function () {
 
     var len = arguments.length;
-    var step = 1 / len;
+    
+    if(len <= 0) return [];
+    if(len===1) return [{ stop: 1, color: arguments[0] }];
+
+    
+    var step = 1 / (len-1);
     var stops = [0];
     var i;
     for(i=1; i<len-1; i++){
