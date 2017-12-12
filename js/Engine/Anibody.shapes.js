@@ -18,6 +18,7 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this.BorderWidth = 0;
     this.BorderType = "color"; //
     this.BorderCode = "#000";
+    this._borderStyle = null;
 
     var self = this;
     Object.defineProperty(this, "FillType", {
@@ -39,7 +40,7 @@ Anibody.shapes.Shape = function Shape() { // Base class
     Object.defineProperty(this, "BorderType", {
         set: function (newValue) {
             self._private["BorderType"] = newValue;
-            self._updateFillStyle();
+            self._updateBorderStyle();
         },
         get: function () { return self._private["BorderType"]; }
     });
@@ -47,7 +48,7 @@ Anibody.shapes.Shape = function Shape() { // Base class
     Object.defineProperty(this, "BorderCode", {
         set: function (newValue) {
             self._private["BorderCode"] = newValue;
-            self._updateFillStyle();
+            self._updateBorderStyle();
         },
         get: function () { return self._private["BorderCode"]; }
     });
@@ -59,13 +60,14 @@ Anibody.shapes.Shape = function Shape() { // Base class
         BorderType: null, //
         BorderCode: null
     };
+    Object.defineProperty(this, "_private", { enumerable: false });
 
     this.IsMouseOver = false;
 
     this._rotation = 0;
 
-    this._drawPoints = true;
-    this._drawCentroid = true;
+    this._drawPoints = false;
+    this._drawCentroid = false;
 
     this.Initialize();
 };
@@ -94,7 +96,7 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         }
         if (this.FillCode && this.FillCode.complete) {
             var repeat = "repeat"; // repeat, repeat-x, repeat-y, no-repeat
-            this._fillStyle = c.createPattern(this.FillCode, repeat);
+            this._fillStyle = this.Engine.Context.createPattern(this.FillCode, repeat);
         }
     }
     if (this.FillType === "color")
@@ -104,12 +106,12 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         this._fillStyle = "rgba(0,0,0,0)";
 
     if (this.FillType === "linearGradient") {
-        var c = this.Engine.Context;
-        var lg = c.createLinearGradient(this.X, this.Y, this.X + this.Width, this.Y + this.Width);
-        var stops = [{ stop: 0, color: "rgba(90,90,90,1)" }, { stop: 1, color: "rgba(30,30,30,1)" }];
-        for (var i = 0; i < stops.length; i++) {
-            lg.addColorStop(stops[i].stop, stops[i].color);
-        }
+        var lg = this.Engine.Context.createLinearGradient(this.X, this.Y, this.X + this.Width, this.Y + this.Width);
+        var stops = this.FillCode;
+        if(stops && stops.length)
+            for (var i = 0; i < stops.length; i++) {
+                lg.addColorStop(stops[i].stop, stops[i].color);
+            }
         this._fillStyle = lg;
     }
 
@@ -120,14 +122,64 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
             this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.2,
             this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.4
         );
-        var stops = [{ stop: 0, color: "rgba(90,90,90,1)" }, { stop: 1, color: "rgba(30,30,30,1)" }];
-        for (var i = 0; i < stops.length; i++) {
-            lg.addColorStop(stops[i].stop, stops[i].color);
-        }
+        var stops = this.FillCode;
+        if(stops && stops.length)
+            for (var i = 0; i < stops.length; i++) {
+                lg.addColorStop(stops[i].stop, stops[i].color);
+            }
         this._fillStyle = rg;
     }
 
 };
+
+Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
+
+    if (this.BorderType === "image") {
+        if (typeof this.BorderCode === "string") {
+            this.BorderCode = this.Engine.MediaManager.GetImage(this.BorderCode);
+            this._borderStyle = this.BorderCode;
+        }
+        if (this.BorderCode && this.BorderCode.complete) {
+            var repeat = "repeat"; // repeat, repeat-x, repeat-y, no-repeat
+            this._borderStyle = this.Engine.Context.createPattern(this.BorderCode, repeat);
+        }
+    }
+    if (this.BorderType === "color")
+        this._borderStyle = this.BorderCode;
+
+    if (this.BorderType === "none")
+        this._borderStyle = "rgba(0,0,0,0)";
+
+    if (this.BorderType === "linearGradient") {
+        var lg = this.Engine.Context.createLinearGradient(this.X, this.Y, this.X + this.Width, this.Y + this.Width);
+        var stops = this.BorderCode;
+        if(stops && stops.length)
+            for (var i = 0; i < stops.length; i++) {
+                lg.addColorStop(stops[i].stop, stops[i].color);
+            }
+        this._borderStyle = lg;
+    }
+
+    if (this.BorderType === "radialGradient") {
+        //top-left
+        var rg = this.Engine.Context.createRadialGradient(
+            this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.2,
+            this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.4
+        );
+        var stops = [{ stop: 0, color: "rgba(90,90,90,1)" }, { stop: 1, color: "rgba(30,30,30,1)" }];
+        if(stops && stops.length)
+            for (var i = 0; i < stops.length; i++) {
+                lg.addColorStop(stops[i].stop, stops[i].color);
+            }
+        this._borderStyle = rg;
+    }
+
+};
+
+Anibody.shapes.Shape.prototype.SetFillStyle = function(fs){this._fillStyle=fs;};
+
+Anibody.shapes.Shape.prototype.SetBorderStyle = function(bs){this._borderStyle=bs;};
+
 
 Anibody.shapes.Shape.prototype.Draw = function (c) {
 
@@ -154,7 +206,7 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
         // STROKE
 
         c.lineWidth = this.BorderWidth;
-        c.strokeStyle = this.BorderCode;
+        c.strokeStyle = this._borderStyle;
 
         c.stroke();
     }
@@ -174,7 +226,7 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
 };
 
 Anibody.shapes.Shape.prototype.Update = function () {
-    if(this.IsMouseOver)
+    if (this.IsMouseOver)
         this.Engine.Input.Mouse.Cursor.pointer();
 };
 
@@ -262,6 +314,7 @@ Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
 
 Anibody.shapes.Shape.prototype.AddPoint = function (x, y) {
     this.Points.push({ x: x, y: y });
+    this._pointsStack.push({ x: x, y: y });
     this._calculateCentroid();
     this._sortPoints();
     this._calculateSurroundingRectangle();
@@ -272,11 +325,48 @@ Anibody.shapes.Shape.prototype.AddPoints = function () {
     var points = Math.floor(arguments.length / 2);
     for (var i = 0; i < points; i++) {
         this.Points.push({ x: arguments[2 * i], y: arguments[2 * i + 1] });
+        this._pointsStack.push({ x: arguments[2 * i], y: arguments[2 * i + 1] });
     }
 
     this._calculateCentroid();
     this._sortPoints();
     this._calculateSurroundingRectangle();
+};
+
+Anibody.shapes.Shape.prototype.RemoveLastPoint = function (x, y) {
+    var rem = this._pointsStack.pop();
+
+    var i = this.Points.indexOf(rem);
+
+    if(i<0) return false;
+
+    this.Points.delete(i)
+    this._calculateCentroid();
+    //this._sortPoints();
+    this._calculateSurroundingRectangle();
+    return rem;
+};
+
+Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
+    var kiil = [];
+    var p;
+    var in1, in2;
+    for(var i=0; i<this._pointsStack.length; i++){
+        p = this._pointsStack[i];
+        if(p.x >= x && p.x <= x+width && p.y >= y && p.y <= y+height){
+            kill.push(p);
+        }
+    }
+
+    for(var i=0; i<kill.length; i++){
+        in1 = this._pointsStack.indexOf(kill[i]);
+        in2 = this.Points.indexOf(kill[i]);
+        if(in1 >= 0 && in2 >= 0){
+            this._pointsStack.delete(in1);
+            this.Points.indexOf(in2);
+        }
+    }
+
 };
 
 Anibody.shapes.Shape.prototype.Rotate = function (x, y) {
@@ -316,6 +406,24 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
 
 };
 
+Anibody.shapes.Shape.GetGradientCode = function () {
+
+    var len = arguments.length;
+    var step = 1 / len;
+    var stops = [0];
+    var i;
+    for(i=1; i<len-1; i++){
+        stops.push(step*i);
+    }
+    stops.push(1);
+
+    for(i=0; i<len;i++){
+        stops[i] = { stop: stops[i], color: arguments[i] };
+    }
+
+    return stops;
+};
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -328,26 +436,10 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
  * @returns {Anibody.Rectangle}
  */
 Anibody.shapes.Rectangle = function Rectangle(x, y, width, height) { // Rectangle class
-    Anibody.shapes.Shape.call(this);
-    this.X = x;
-    this.Y = y;
-    this.Width = width;
-    this.Height = height;
-    this.Centroid = { x: x + width / 2, y: y + height / 2 };
-    this.Points = [{ x: x, y: y }, { x: x + width, y: y }, { x: x + width, y: y + height }, { x: x, y: y + height }];
-
-    this.Initialize();
+    Anibody.shapes.Shape.call(this, x, y, x + width, y + height);
 };
 
 Anibody.shapes.Rectangle.prototype = Object.create(Anibody.shapes.Shape.prototype);
 Anibody.shapes.Rectangle.prototype.constructor = Anibody.shapes.Rectangle;
 
 Object.defineProperty(Anibody.shapes.Rectangle, "name", { value: "Rectangle" });
-
-Anibody.shapes.Rectangle.prototype.Initialize = function () {
-    this._calculateCentroid(); // TODO
-};
-
-Anibody.shapes.Rectangle.prototype._calculateCentroid = function () {
-    this.Centroid = { x: this.X + this.Width / 2, y: this.Y + this.Height / 2 };
-};

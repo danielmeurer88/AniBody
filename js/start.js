@@ -143,12 +143,19 @@ function start_test(engine){
 
 function start_test2(engine){
     
-    var s = new Anibody.shapes.Shape(20, 400, 400, 590, 150, 350);
+    var background = Anibody.shapes.Shape.GetGradientCode("white", "rgba(200,200,10, 0.7)" ,"#222");
+
+    var s = new Anibody.shapes.Shape(   20, 400,
+                                        400, 590,
+                                        150, 350    );
     s.FillType = "linearGradient"; // none, color, image, linearGradient, radialGradient
-    s.FillCode = "#bdd"; // none, colorCode, codename, stops-object
-    s.BorderWidth = 3;
+    s.FillCode = background; // none, colorCode, codename, stops-object
+    s.BorderWidth = 6;
     s.BorderType = "color"; //
     s.BorderCode = "#966";
+
+    s._drawPoints = true;
+    s._drawCentroid = true;
     
     s.Register();
     
