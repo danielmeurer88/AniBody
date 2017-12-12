@@ -1199,7 +1199,7 @@ Anibody.ECMAScriptExtension = function () {
         };
 
         HTMLElement.prototype.css = function(prop, val){
-            var el = this[0];
+            var el = this;
 
             if(typeof val === "undefined" && typeof prop === "object"){
                 for(var attr in prop){
@@ -1207,12 +1207,12 @@ Anibody.ECMAScriptExtension = function () {
                 }
             }
 
-            if(typeof prob === "string"){
+            if(typeof prop === "string"){
                 el.style[prop] = val;
             }
 
             if(typeof val === "undefined" && typeof prop === "string"){
-                return el.style[attr];
+                return el.style[prop];
             }
             
         };

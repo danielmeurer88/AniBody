@@ -60,6 +60,8 @@ Anibody.shapes.Shape = function Shape() { // Base class
         BorderCode: null
     };
 
+    this.IsMouseOver = false;
+
     this._rotation = 0;
 
     this._drawPoints = true;
@@ -172,7 +174,25 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
 };
 
 Anibody.shapes.Shape.prototype.Update = function () {
+    if(this.IsMouseOver)
+        this.Engine.Input.Mouse.Cursor.pointer();
+};
 
+Anibody.shapes.Shape.prototype.ProcessInput = function () {
+    var self = this;
+    var area = {
+        function: function (c) {
+            c.beginPath();
+            c.moveTo(self.Points[0].x, self.Points[0].y);
+            for (var i = 1; i < self.Points.length; i++) {
+                c.lineTo(self.Points[i].x, self.Points[i].y);
+            }
+            c.closePath();
+        },
+        type: "function"
+    };
+
+    this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
 };
 
 Anibody.shapes.Shape.prototype._calculateCentroid = function () {
