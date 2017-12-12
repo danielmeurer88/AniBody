@@ -65,13 +65,6 @@ function menu_callback(engine){
     b1.AddButtonEffect();
     engine.AddObject(b1);
 
-    // input field
-    Anibody.import(Anibody.ui.InputField);
-    var infi = new InputField(10, 10, 300);
-    //engine.AddObject(infi);
-    infi.Register();
-
-
     /* BUTTON HELP */
     var b2 = new Button("center", 220, 
     {
@@ -79,7 +72,6 @@ function menu_callback(engine){
         TriggerCallbackObject : function (engine) {
                 start_test(engine);
                 var b = this;
-                engine.FlushObjects();
             }.getCallbackObject("self", engine),
         HoverText : "Wird zum Testen unterschiedlicher Dinge benutzt."
     });
@@ -99,7 +91,7 @@ function menu_callback(engine){
     });
     b3.AddButtonEffect();
     
-    engine.AddObject(b3);
+    b3.Register();
         
     engine.Start();
 
@@ -115,8 +107,13 @@ function menu_callback(engine){
 
     });
     
-    //testSpline(engine);
-    
+    // input field
+    Anibody.import(Anibody.ui.InputField);
+    var infi = new InputField(10, 10, 300);
+    //engine.AddObject(infi);
+    infi.Register();
+
+    //testing the horizontal and vertically flipped image feature
     var w = new Anibody.Widget();
     w.TestImg = engine.MediaManager.GetImage("logo");
     w.TestImgV = w.TestImg.getVerticallyFlippedImage();
@@ -128,10 +125,46 @@ function menu_callback(engine){
     };
     
     w.Register();
-    window.setTimeout(function(w){w.Deregister();}, 2500, w);
+    window.setTimeout(function(w){w.Deregister();}, 2000, w);
+    
+
+    /* engine.testobj = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
+    
+    window.setTimeout(function(engine){
+        engine.testobj.clearInterval();
+    }, 10000, engine);
+ */
+
 }
 
 function start_test(engine){
+    
+}
+
+function start_test2(engine){
+    
+    var s = new Anibody.shapes.Shape(20, 400, 400, 590, 150, 350);
+    s.FillType = "linearGradient"; // none, color, image, linearGradient, radialGradient
+    s.FillCode = "#bdd"; // none, colorCode, codename, stops-object
+    s.BorderWidth = 3;
+    s.BorderType = "color"; //
+    s.BorderCode = "#966";
+    
+    s.Register();
+    
+    var f = function(event){
+       
+        var mpos = event.Mouse.Position;
+        event.Handled = true;
+        
+        this.AddPoint(mpos.X, mpos.Y);
+        
+    }.getCallbackObject(s);
+    
+    engine.Input.MouseHandler.AddMouseHandler("leftclick", f);
+}
+
+function startSprite(engine){
     
     var width = 85.33;
     var height = 85.375;
@@ -187,16 +220,12 @@ function start_test(engine){
         new Anibody.visual.Spotting(area, 2000).Start();
         
     }.getCallbackObject(engine);
-    
-//    engine.testobj = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
-    
-//    window.setTimeout(function(engine){
-//        engine.testobj.clearInterval();
-//    }, 10000, engine);
-    
+        
     Anibody.import(Anibody.Widget);
     var w = new Widget();
     
+    // the function that processes the user input for the Sprite
+    // a plain widget is used for this
     w.ProcessInput = function(){
         
         var keys = this.Engine.Input.Keys;
@@ -240,29 +269,6 @@ function start_test(engine){
     };
     w.Register();
     
-}
-
-function start_test2(engine){
-    
-    var s = new Anibody.shapes.Shape(20, 400, 25, 300, 50, 350);
-    s.FillType = "color"; // none, color, image, linearGradient, radialGradient
-    s.FillCode = "#666"; // none, colorCode, codename, stops-object
-    s.BorderWidth = 3;
-    s.BorderType = "color"; //
-    s.BorderCode = "#000";
-    
-    s.Register();
-    
-//    var f = function(event){
-//        
-//        var mpos = event.Mouse.Position;
-//        event.Handled = true;
-//        
-//        this.AddPoint(mpos.X, mpos.Y);
-//        
-//    }.getCallbackObject(s);
-//    
-//    engine.Input.MouseHandler.AddMouseHandler("leftclick", f);
 }
 
 function testSpline(engine){
