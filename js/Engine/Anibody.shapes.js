@@ -10,6 +10,8 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this.X = 0;
     this.Y = 0;
     this.Centroid = { x: 0, y: 0 };
+    this.Area = null; // px^2
+
     this.Points = [];
     this._pointsStack = [];
     Object.defineProperty(this, "_pointsStack", { enumerable: false });
@@ -70,6 +72,7 @@ Anibody.shapes.Shape = function Shape() { // Base class
 
     this._drawPoints = false;
     this._drawCentroid = false;
+    this._drawArea = false;
 
     this.Initialize();
 };
@@ -85,6 +88,7 @@ Anibody.shapes.Shape.prototype.Initialize = function () {
 
     this._calculateCentroid();
     this._calculateSurroundingRectangle();
+    this._calculateArea();
     this._updateFillStyle();
 
 };
@@ -223,6 +227,11 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
         c.drawCross(this.Centroid.x, this.Centroid.y, this.BorderWidth + 5);
     }
 
+    if (this._drawCentroid && this.Centroid) {
+        c.fillStyle = "green";
+        c.fillText(this.Area.toString(), this.Centroid.x + 8, this.Centroid.y - 8);
+    }
+
     c.restore();
 
 };
@@ -293,6 +302,20 @@ Anibody.shapes.Shape.prototype._calculateCentroid = function () {
 
 };
 
+Anibody.shapes.Shape.prototype._calculateArea = function () {
+
+    var area = 0;
+    var n = this.Points.length;
+
+    for(var i=0; i<n; i++){
+        area += this.Points[i%n].x * this.Points[(i+1)%n].y - this.Points[i%n].y * this.Points[(i+1)%n].x;
+    }
+
+    this.Area = Math.abs( area / 2 );
+
+
+};
+
 Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
 
     if (this.Points.length < 1) return;
@@ -315,24 +338,24 @@ Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
 };
 
 Anibody.shapes.Shape.prototype.AddPoint = function (x, y) {
-    this.Points.push({ x: x, y: y });
-    this._pointsStack.push({ x: x, y: y });
-    this._calculateCentroid();
-    this._sortPoints();
-    this._calculateSurroundingRectangle();
+    var p = { x: x, y: y };
+    this.Points.push(p);
+    this._pointsStack.push(p);
+    
+    this._pointsDataUpdate();
 };
 
 Anibody.shapes.Shape.prototype.AddPoints = function () {
 
     var points = Math.floor(arguments.length / 2);
+    var p;
     for (var i = 0; i < points; i++) {
-        this.Points.push({ x: arguments[2 * i], y: arguments[2 * i + 1] });
-        this._pointsStack.push({ x: arguments[2 * i], y: arguments[2 * i + 1] });
+        p = { x: arguments[2 * i], y: arguments[2 * i + 1] };
+        this.Points.push(p);
+        this._pointsStack.push(p);
     }
 
-    this._calculateCentroid();
-    this._sortPoints();
-    this._calculateSurroundingRectangle();
+    this._pointsDataUpdate();
 };
 
 Anibody.shapes.Shape.prototype.RemoveLastPoint = function (x, y) {
@@ -343,14 +366,27 @@ Anibody.shapes.Shape.prototype.RemoveLastPoint = function (x, y) {
     if(i<0) return false;
 
     this.Points.delete(i)
-    this._calculateCentroid();
-    //this._sortPoints();
-    this._calculateSurroundingRectangle();
+    
+    this._pointsDataUpdate();
     return rem;
 };
 
 Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
-    var kiil = [];
+
+    if(arguments.length <= 0) return;
+
+    if(arguments.length <= 2){
+        width=0; height=0;
+    }
+
+    if(typeof x === "object" && !isNaN(x.x)){
+        y = x.y;
+        width = x.width ? x.width : 0;
+        height = x.height ? x.height : 0;
+        x = x.x;
+    }
+
+    var kill = [];
     var p;
     var in1, in2;
     for(var i=0; i<this._pointsStack.length; i++){
@@ -365,9 +401,11 @@ Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
         in2 = this.Points.indexOf(kill[i]);
         if(in1 >= 0 && in2 >= 0){
             this._pointsStack.delete(in1);
-            this.Points.indexOf(in2);
+            this.Points.delete(in2);
         }
     }
+
+    this._pointsDataUpdate();
 
 };
 
@@ -398,7 +436,7 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
 
     for (var i = 0; i < this.Points.length; i++) {
         this.Points[i]._angleRadian = this._getAngle(this.Points[i]);
-        this.Points[i]._angleDegree = (this.Points[i]._angle * 180 / Math.PI);
+        this.Points[i]._angleDegree = (this.Points[i]._angleRadian * 180 / Math.PI);
     };
 
     // sort according to angles
@@ -406,6 +444,13 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
         return (a._angleRadian > b._angleRadian) ? 1 : -1;
     });
 
+};
+
+Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
+    this._calculateCentroid();
+    this._sortPoints();
+    this._calculateSurroundingRectangle();
+    this._calculateArea();
 };
 
 Anibody.shapes.Shape.GetGradientCode = function () {
