@@ -138,6 +138,7 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
+<<<<<<< HEAD
 
     var a = {
         x:5, y:5, width:400, height:400
@@ -151,6 +152,10 @@ function start_test(engine){
     };
 
     new Highlighting(a, 1000, 3000, f).Start();
+=======
+    var s = engine.GetSelectedObject();
+    alert(s);
+>>>>>>> 32a9c9d3b6c3e386b82dddea8d9a1e6ae76959e6
 }
 
 function start_test2(engine){
@@ -171,7 +176,11 @@ function start_test2(engine){
     
     s.Register();
 
+<<<<<<< HEAD
     engine.s = s;
+=======
+    engine.SetSelectedObject(s);
+>>>>>>> 32a9c9d3b6c3e386b82dddea8d9a1e6ae76959e6
     
     var f = function(event){
        

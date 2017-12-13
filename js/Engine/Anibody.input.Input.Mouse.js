@@ -159,9 +159,15 @@ Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextM
         var that = e.data;
         if (that.Canvas.MouseOn) {
 
-            var dy = e.originalEvent.deltaY;
-            var dx = e.originalEvent.deltaX;
-            
+            var dy, dx;
+            if(typeof e.originalEvent !== "undefined"){
+                dy = e.originalEvent.deltaY;
+                dx = e.originalEvent.deltaX;
+            }else{
+                dy = e.deltaY;
+                dx = e.deltaX;
+            }
+
             if(that && that.Input && that.Input.MouseHandler)
                 that.Input.MouseHandler.WheelHandler(dx, dy);
 
