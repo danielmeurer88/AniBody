@@ -138,7 +138,19 @@ function menu_callback(engine){
 }
 
 function start_test(engine){
+
+    var a = {
+        x:5, y:5, width:400, height:400
+    };
     
+
+    var f = function(){
+        if(engine.s){
+            s.ClearArea(a.x,a.y,a.width,a.height);
+        }
+    };
+
+    new Highlighting(a, 1000, 3000, f).Start();
 }
 
 function start_test2(engine){
@@ -158,6 +170,8 @@ function start_test2(engine){
     s._drawCentroid = true;
     
     s.Register();
+
+    engine.s = s;
     
     var f = function(event){
        
