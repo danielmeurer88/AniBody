@@ -1152,7 +1152,8 @@ Anibody.ECMAScriptExtension = function () {
 
     if(typeof $ === "undefined"){
         $ = function(sel){
-            if(sel === document || sel === window || sel instanceof HTMLElement)
+            var inst = (sel && typeof sel.tagName === "string");
+            if(sel === document || sel === window || inst)
                 return sel;
 
             return document.querySelectorAll(sel);
@@ -1174,6 +1175,12 @@ Anibody.ECMAScriptExtension = function () {
         NodeList.prototype.html = function(txt){
             var el = this[0];
             //var div = document.createElement("div");
+            el.innerHTML = txt;
+            var res = el.childNodes[0];
+            return res;
+        };
+
+        HTMLElement.prototype.html = function(txt){
             el.innerHTML = txt;
             var res = el.childNodes[0];
             return res;

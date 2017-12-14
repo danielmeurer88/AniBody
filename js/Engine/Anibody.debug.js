@@ -308,6 +308,8 @@ Anibody.debug.Consolero.Instance = null; // saves the instance
  * @returns {DebugWindow}
  */
 Anibody.debug.DebugWindow = function DebugWindow() {
+    Anibody.Widget.call(this);
+
     this.FontHeight = 14;
     this.Timestamp = Date.now();
     this.Window = null;
@@ -323,6 +325,8 @@ Anibody.debug.DebugWindow = function DebugWindow() {
 };
 
 Object.defineProperty(Anibody.debug.DebugWindow, "name", {value:"DebugWindow"});
+Anibody.debug.DebugWindow.prototype = Object.create(Anibody.Widget.prototype);
+Anibody.debug.DebugWindow.prototype.constructor = Anibody.debug.DebugWindow;
 
 /**
  * @see README_DOKU.txt
@@ -338,7 +342,8 @@ Anibody.debug.DebugWindow.prototype.Draw = function () {
     if (!this.Window)
         return;
 
-    $(this.Body).html("");
+    var b = $(this.Body)
+    b.innerHTML = "";
 
     var str = "<p>last refresh: " + Date.now() + "</p>";
 
@@ -348,7 +353,7 @@ Anibody.debug.DebugWindow.prototype.Draw = function () {
         str += this._getHTML(v.object, v.keys, i, v.name);
     }
 
-    $(this.Body).html(str);
+    b.innerHTML = str;
 
 };
 /**

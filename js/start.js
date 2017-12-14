@@ -70,8 +70,7 @@ function menu_callback(engine){
     {
         Label : "Test Button",
         TriggerCallbackObject : function (engine) {
-                start_test(engine);
-                var b = this;
+                button1(engine);
             }.getCallbackObject("self", engine),
         HoverText : "Wird zum Testen unterschiedlicher Dinge benutzt."
     });
@@ -85,7 +84,7 @@ function menu_callback(engine){
     {
         Label : "Test Button 2",
         TriggerCallbackObject : function (engine) {
-                start_test2(engine);
+                button2(engine);
             }.getCallbackObject(engine, engine),
         HoverText : "Wird auch zum Testen unterschiedlicher Dinge benutzt."
     });
@@ -137,14 +136,22 @@ function menu_callback(engine){
 
 }
 
-function start_test(engine){
-    var s = engine.GetSelectedObject();
-    alert(s);
+function button1(engine){
+    
 }
 
-function start_test2(engine){
+function button2(engine){
     
-    var background = Anibody.shapes.Shape.GetGradientCode("white", "rgba(200,200,10, 0.7)" ,"#222");
+}
+
+//###########################################
+//##############    TESTS     ###############
+//###########################################
+
+
+function testShape(engine){
+    
+    var background = Anibody.shapes.Shape.GetGradientCode("#f00", "#0f0" ,"#00f", "#00f");
 
     var s = new Anibody.shapes.Shape(   20, 400,
                                         400, 590,
@@ -157,10 +164,17 @@ function start_test2(engine){
 
     s._drawPoints = true;
     s._drawCentroid = true;
+    s._drawArea = true;
+    s._drawSurroundingRectangle = true;
+
+    s.VisualRotation = false;
     
     s.Register();
 
-    engine.SetSelectedObject(s);
+    var dw = new Anibody.debug.DebugWindow();
+    dw.Add(s,["X", "Y", "Width", "Height"], "Shape");
+    dw.Register();
+    //dw.Open();
     
     var f = function(event){
        
@@ -178,14 +192,14 @@ function start_test2(engine){
         var mpos = event.Mouse.Position;
         event.Handled = true;
         
-        this.Rotate(Math.PI * 0.1);
+        this.Rotate(Math.PI * 0.2);
 
     }.getCallbackObject(s);
 
     engine.Input.MouseHandler.AddMouseHandler("rightclick", f);
 }
 
-function startSprite(engine){
+function testSprite(engine){
     
     var width = 85.33;
     var height = 85.375;

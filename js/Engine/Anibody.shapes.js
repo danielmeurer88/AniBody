@@ -72,9 +72,12 @@ Anibody.shapes.Shape = function Shape() { // Base class
 
     this._rotation = 0;
 
+    this.VisualRotation = false; 
+
     this._drawPoints = false;
     this._drawCentroid = false;
     this._drawArea = false;
+    this._drawSurroundingRectangle = false;
 
     this.Initialize();
 };
@@ -114,7 +117,7 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         this._fillStyle = "rgba(0,0,0,0)";
 
     if (this.FillType === "linearGradient") {
-        var lg = this.Engine.Context.createLinearGradient(this.X, this.Y, this.X + this.Width, this.Y + this.Width);
+        var lg = this.Engine.Context.createLinearGradient(0, 0,this.Width, this.Height);
         var stops = this.FillCode;
         if(stops && stops.length)
             for (var i = 0; i < stops.length; i++) {
@@ -127,8 +130,8 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         //top-left
         var c = this.Engine.Context;
         var rg = c.createRadialGradient(
-            this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.2,
-            this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.4
+            this.Width * 0.2, this.Height * 0.2, Math.min(this.Width, this.Height) * 0.2,
+            this.Width * 0.2, this.Height * 0.2, Math.min(this.Width, this.Height) * 0.4
         );
         var stops = this.FillCode;
         if(stops && stops.length)
@@ -193,14 +196,27 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
 
 
     c.save();
+    var rp = this.Centroid;
+
+    c.translate(rp.x, rp.y);
+
+    if(this.VisualRotation){
+        c.rotate(this._rotation);
+    }
+
+    if(this._drawSurroundingRectangle){
+        c.strokeStyle = "#333";
+        c.strokeRect(this.X - rp.x, this.Y - rp.y, this.Width, this.Height);
+    }
+
 
     if (this.Points.length > 1) {
         // create Path
 
         c.beginPath();
-        c.moveTo(this.Points[0].x, this.Points[0].y);
+        c.moveTo(this.Points[0].x - rp.x, this.Points[0].y - rp.y);
         for (var i = 1; i < this.Points.length; i++) {
-            c.lineTo(this.Points[i].x, this.Points[i].y);
+            c.lineTo(this.Points[i].x - rp.x, this.Points[i].y - rp.y);
         }
         c.closePath();
 
@@ -222,17 +238,18 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
     if (this._drawPoints) {
         c.strokeStyle = "red";
         for (var i = 0; i < this.Points.length; i++)
-            c.drawCross(this.Points[i].x, this.Points[i].y, this.BorderWidth + 5);
+            c.drawCross(this.Points[i].x - rp.x, this.Points[i].y - rp.y, this.BorderWidth + 5);
     }
     if (this._drawCentroid && this.Centroid) {
         c.strokeStyle = "green";
-        c.drawCross(this.Centroid.x, this.Centroid.y, this.BorderWidth + 5);
+        c.drawCross(0, 0, this.BorderWidth + 5);
     }
 
-    if (this._drawCentroid && this.Centroid) {
+    if (this._drawArea && this.Centroid) {
         c.fillStyle = "green";
-        c.fillText(this.Area.toString(), this.Centroid.x + 8, this.Centroid.y - 8);
+        c.fillText(this.Area.toString(), this.Centroid.x - rp.x + 8, this.Centroid.y - rp.y - 8);
     }
+    
 
     c.restore();
 
@@ -415,11 +432,12 @@ Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
 Anibody.shapes.Shape.prototype.Rotate = function (rad) {
     
     var rp = this.Centroid;
-    var p, temp;
+    var p;
     var d;
-    var rx, ry;
     
     this._rotation += rad;
+
+    if(this.VisualRotation) return;
 
     for(var i=0; i<this.Points.length; i++){
         p = this.Points[i];
@@ -434,6 +452,7 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
 
     }
 
+    this._calculateSurroundingRectangle();
 
 };
 
@@ -491,6 +510,8 @@ Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
     this._sortPoints();
     this._calculateSurroundingRectangle();
     this._calculateArea();
+    this._updateFillStyle();
+    this._updateBorderStyle();
 };
 
 Anibody.shapes.Shape.GetGradientCode = function () {
@@ -501,13 +522,13 @@ Anibody.shapes.Shape.GetGradientCode = function () {
     if(len===1) return [{ stop: 1, color: arguments[0] }];
 
     
-    var step = 1 / (len-1);
+    var step = 1 / (len-0);
     var stops = [0];
     var i;
-    for(i=1; i<len-1; i++){
+    for(i=1; i<len-0; i++){
         stops.push(step*i);
     }
-    stops.push(1);
+    //stops.push(1);
 
     for(i=0; i<len;i++){
         stops[i] = { stop: stops[i], color: arguments[i] };
