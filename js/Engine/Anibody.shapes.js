@@ -10,6 +10,8 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this.X = 0;
     this.Y = 0;
     this.Centroid = { x: 0, y: 0 };
+    this.RotationPoint = { x: 0, y: 0 };
+
     this.Area = null; // px^2
 
     this.Points = [];
@@ -335,6 +337,7 @@ Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
     this.Y = y;
     this.Width = max - x;
     this.Height = maxy - y;
+    this.RotationPoint = { x: this.X + this.Width/2, y: this.Y + this.Height/2 };
 };
 
 Anibody.shapes.Shape.prototype.AddPoint = function (x, y) {
@@ -409,10 +412,55 @@ Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
 
 };
 
-Anibody.shapes.Shape.prototype.Rotate = function (x, y) {
-    if (isNaN(x)) x = this.Centroid.x;
-    if (isNaN(y)) y = this.Centroid.y;
+Anibody.shapes.Shape.prototype.Rotate = function (rad) {
+    
+    var rp = this.Centroid;
+    var p, temp;
+    var d;
+    var rx, ry;
+    
+    this._rotation += rad;
+
+    for(var i=0; i<this.Points.length; i++){
+        p = this.Points[i];
+        // get distance
+        d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
+        
+        temp = {x:p.x, y:p.y};
+
+        p.x = rp.x + (temp.x * Math.cos(this._rotation) - temp.y * Math.sin(this._rotation));
+        p.y = rp.x + (temp.y * Math.cos(this._rotation) - temp.x * Math.sin(this._rotation));
+
+/*         p = this._pointsStack[i];
+        // get distance
+        d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
+        
+        temp = {x:p.x, y:p.y};
+
+        p.x = temp.x * Math.cos(this._rotation) - temp.y * Math.sin(this._rotation);
+        p.y = temp.y * Math.cos(this._rotation) - temp.x * Math.sin(this._rotation); */
+
+    }
+
+
 };
+
+Anibody.shapes.Shape.prototype.Move = function (dx, dy) {
+    this.Centroid.x += dx;
+    this.Centroid.y += dy;
+
+    this.RotationPoint.x += dx;
+    this.RotationPoint.y += dy;
+
+    for(var i=0; i<this.Points.length; i++){
+        this.Points[i].x += dx;
+        this.Points[i].y += dy;
+
+        //pointsStack - no need to move them because they refer to the same object as Points
+    }
+
+};
+
 
 Anibody.shapes.Shape.prototype._getAngle = function (p) {
     var dx, dy, val;

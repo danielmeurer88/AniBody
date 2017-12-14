@@ -157,11 +157,9 @@ function start_test2(engine) {
 
     s._drawPoints = true;
     s._drawCentroid = true;
-    this._drawArea = true;
+    s._drawArea = true;
 
     s.Register();
-
-    engine.s = s;
 
     var f = function (event) {
 
@@ -177,17 +175,9 @@ function start_test2(engine) {
 
     engine.Input.MouseHandler.AddMouseHandler("rightclick", function (event) {
 
-        var a = {
-            x: 5, y: 5, width: 400, height: 400
-        };
+        s.Rotate(Math.PI * 0.1);
 
-        var func = function () {
-            if (s) {
-                s.ClearArea(a);
-            }
-        }.getCallbackObject();
-        
-        new Anibody.visual.Highlighting(a, 1000, 3000, func).Start();
+        //s.Move(10, -8)
 
     }.getCallbackObject());
 }
