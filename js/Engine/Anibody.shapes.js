@@ -426,19 +426,11 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
         // get distance
         d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
         
-        temp = {x:p.x, y:p.y};
+        p._angleRadian += rad;
+        p._angleDegree = (p._angleRadian * 180 / Math.PI);
 
-        p.x = rp.x + (temp.x * Math.cos(this._rotation) - temp.y * Math.sin(this._rotation));
-        p.y = rp.x + (temp.y * Math.cos(this._rotation) - temp.x * Math.sin(this._rotation));
-
-/*         p = this._pointsStack[i];
-        // get distance
-        d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
-        
-        temp = {x:p.x, y:p.y};
-
-        p.x = temp.x * Math.cos(this._rotation) - temp.y * Math.sin(this._rotation);
-        p.y = temp.y * Math.cos(this._rotation) - temp.x * Math.sin(this._rotation); */
+        p.x = rp.x + (d * Math.cos( p._angleRadian ));
+        p.y = rp.y + (d * Math.sin( p._angleRadian ));
 
     }
 

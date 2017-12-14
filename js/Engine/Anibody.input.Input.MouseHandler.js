@@ -180,7 +180,8 @@ Anibody.input.Input.MouseHandler.prototype.MouseClickHandler = function(){
             Handled: false,
             Timestamp: Date.now(),
             Frame: this.Engine.CurrentFrame,
-            Type: "rightclick"
+            Type: "rightclick",
+            Mouse : this.Engine.Input.Mouse
         };
 
         for (var i = 0; !event.Handled && i < arr.length; i++) {
