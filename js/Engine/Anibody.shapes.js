@@ -117,7 +117,7 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         this._fillStyle = "rgba(0,0,0,0)";
 
     if (this.FillType === "linearGradient") {
-        var lg = this.Engine.Context.createLinearGradient(0, 0,this.Width, this.Height);
+        var lg = this.Engine.Context.createLinearGradient((this.Width/-2), (this.Height/-2),(this.Width/2), (this.Height/2) );
         var stops = this.FillCode;
         if(stops && stops.length)
             for (var i = 0; i < stops.length; i++) {
@@ -130,8 +130,8 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         //top-left
         var c = this.Engine.Context;
         var rg = c.createRadialGradient(
-            this.Width * 0.2, this.Height * 0.2, Math.min(this.Width, this.Height) * 0.2,
-            this.Width * 0.2, this.Height * 0.2, Math.min(this.Width, this.Height) * 0.4
+            this.Width * 0.2 - (this.Width/2), this.Height * 0.2 - (this.Height/2), Math.min(this.Width, this.Height) * 0.2,
+            this.Width * 0.2 - (this.Width/2), this.Height * 0.2 - (this.Height/2), Math.min(this.Width, this.Height) * 0.4
         );
         var stops = this.FillCode;
         if(stops && stops.length)
@@ -469,6 +469,7 @@ Anibody.shapes.Shape.prototype.Move = function (dx, dy) {
 
         //pointsStack - no need to move them because they refer to the same object as Points
     }
+    this._calculateSurroundingRectangle();
 
 };
 
@@ -522,13 +523,13 @@ Anibody.shapes.Shape.GetGradientCode = function () {
     if(len===1) return [{ stop: 1, color: arguments[0] }];
 
     
-    var step = 1 / (len-0);
+    var step = 1 / (len-1);
     var stops = [0];
     var i;
-    for(i=1; i<len-0; i++){
+    for(i=1; i<len-1; i++){
         stops.push(step*i);
     }
-    //stops.push(1);
+    stops.push(1);
 
     for(i=0; i<len;i++){
         stops[i] = { stop: stops[i], color: arguments[i] };
@@ -549,7 +550,12 @@ Anibody.shapes.Shape.GetGradientCode = function () {
  * @returns {Anibody.Rectangle}
  */
 Anibody.shapes.Rectangle = function Rectangle(x, y, width, height) { // Rectangle class
-    Anibody.shapes.Shape.call(this, x, y, x + width, y + height);
+    Anibody.shapes.Shape.call(this, 
+        x, y,
+        x + width, y, 
+        x + width, y + height,
+        x, y + height
+    );
 };
 
 Anibody.shapes.Rectangle.prototype = Object.create(Anibody.shapes.Shape.prototype);
