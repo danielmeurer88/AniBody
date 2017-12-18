@@ -21,6 +21,20 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this.FillType = "color"; // none, color, image, linearGradient, radialGradient
     this.FillCode = "#666"; // none, colorCode, codename, stops-object
     this._fillStyle = null;
+    
+    this.LinearGradientRates = {
+        x1 : 0.2, y1 : 0.2,
+        x2 : 0.2, y2 : 0.2
+    };
+    
+    this.RadialGradientRates = {
+        x1 : 0.25, y1 : 0.25, r1 : 0.05,
+        x2 : 0.25, y2 : 0.25, r2 : 0.25
+    };
+    
+    this._generatedFillStyle = true;
+    this._generatedBorderStyle = true;
+    
     this.BorderWidth = 0;
     this.BorderType = "color"; //
     this.BorderCode = "#000";
@@ -100,6 +114,9 @@ Anibody.shapes.Shape.prototype.Initialize = function () {
 
 Anibody.shapes.Shape.prototype._updateFillStyle = function () {
 
+    if(!this._generatedFillStyle)
+        return;
+    
     if (this.FillType === "image") {
         if (typeof this.FillCode === "string") {
             this.FillCode = this.Engine.MediaManager.GetImage(this.FillCode);
@@ -117,7 +134,15 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
         this._fillStyle = "rgba(0,0,0,0)";
 
     if (this.FillType === "linearGradient") {
-        var lg = this.Engine.Context.createLinearGradient((this.Width/-2), (this.Height/-2),(this.Width/2), (this.Height/2) );
+        var rates = this.LinearGradientRates;
+        var offsetx = this.Width/2;
+        var offsety = this.Height/2;
+        var lg = this.Engine.Context.createLinearGradient(
+                this.Width*rates.x1 - offsetx,
+                this.Height*rates.y1 - offsety,
+                this.Width*rates.x2 - offsetx, 
+                this.Height*rates.y2 - offsety
+        );
         var stops = this.FillCode;
         if(stops && stops.length)
             for (var i = 0; i < stops.length; i++) {
@@ -129,14 +154,21 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
     if (this.FillType === "radialGradient") {
         //top-left
         var c = this.Engine.Context;
+        var rates = this.RadialGradientRates;
+        var offsetx = this.Width/2;
+        var offsety = this.Height/2;
         var rg = c.createRadialGradient(
-            this.Width * 0.2 - (this.Width/2), this.Height * 0.2 - (this.Height/2), Math.min(this.Width, this.Height) * 0.2,
-            this.Width * 0.2 - (this.Width/2), this.Height * 0.2 - (this.Height/2), Math.min(this.Width, this.Height) * 0.4
+            this.Width * rates.x1 - offsetx,
+            this.Height * rates.y1 - offsety, 
+            Math.min(this.Width, this.Height) * rates.r1,
+            this.Width * rates.x2 - offsetx,
+            this.Height * rates.y2 - offsety,
+            Math.min(this.Width, this.Height) * rates.r2
         );
         var stops = this.FillCode;
         if(stops && stops.length)
             for (var i = 0; i < stops.length; i++) {
-                lg.addColorStop(stops[i].stop, stops[i].color);
+                rg.addColorStop(stops[i].stop, stops[i].color);
             }
         this._fillStyle = rg;
     }
@@ -145,6 +177,9 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
 
 Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
 
+    if(!this._generatedBorderStyle)
+        return;
+    
     if (this.BorderType === "image") {
         if (typeof this.BorderCode === "string") {
             this.BorderCode = this.Engine.MediaManager.GetImage(this.BorderCode);
@@ -162,8 +197,16 @@ Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
         this._borderStyle = "rgba(0,0,0,0)";
 
     if (this.BorderType === "linearGradient") {
-        var lg = this.Engine.Context.createLinearGradient(this.X, this.Y, this.X + this.Width, this.Y + this.Width);
-        var stops = this.BorderCode;
+        var rates = this.LinearGradientRates;
+        var offsetx = this.Width/2;
+        var offsety = this.Height/2;
+        var lg = this.Engine.Context.createLinearGradient(
+                this.Width*rates.x1 - offsetx,
+                this.Height*rates.y1 - offsety,
+                this.Width*rates.x2 - offsetx, 
+                this.Height*rates.y2 - offsety
+        );
+        var stops = this.FillCode;
         if(stops && stops.length)
             for (var i = 0; i < stops.length; i++) {
                 lg.addColorStop(stops[i].stop, stops[i].color);
@@ -173,23 +216,47 @@ Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
 
     if (this.BorderType === "radialGradient") {
         //top-left
-        var rg = this.Engine.Context.createRadialGradient(
-            this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.2,
-            this.X + this.Width * 0.2, this.Y + this.Height * 0.2, Math.min(this.Width, this.Height) * 0.4
+        var c = this.Engine.Context;
+        var rates = this.RadialGradientRates;
+        var offsetx = this.Width/2;
+        var offsety = this.Height/2;
+        var rg = c.createRadialGradient(
+            this.Width * rates.x1 - offsetx,
+            this.Height * rates.y1 - offsety, 
+            Math.min(this.Width, this.Height) * rates.r1,
+            this.Width * rates.x2 - offsetx,
+            this.Height * rates.y2 - offsety,
+            Math.min(this.Width, this.Height) * rates.r2
         );
-        var stops = [{ stop: 0, color: "rgba(90,90,90,1)" }, { stop: 1, color: "rgba(30,30,30,1)" }];
+        var stops = this.FillCode;
         if(stops && stops.length)
             for (var i = 0; i < stops.length; i++) {
-                lg.addColorStop(stops[i].stop, stops[i].color);
+                rg.addColorStop(stops[i].stop, stops[i].color);
             }
         this._borderStyle = rg;
     }
 
 };
 
-Anibody.shapes.Shape.prototype.SetFillStyle = function(fs){this._fillStyle=fs;};
+Anibody.shapes.Shape.prototype.SetFillStyle = function(fs){
+    this._fillStyle=fs;
+    this._generatedFillStyle = false;
+};
 
-Anibody.shapes.Shape.prototype.SetBorderStyle = function(bs){this._borderStyle=bs;};
+Anibody.shapes.Shape.prototype.ClearFillStyle = function(){
+    this._fillStyle=null;
+    this._generatedFillStyle = true;
+};
+
+Anibody.shapes.Shape.prototype.SetBorderStyle = function(bs){
+    this._borderStyle=bs;
+    this._generatedBorderStyle = false;
+};
+
+Anibody.shapes.Shape.prototype.ClearBorderStyle = function(){
+    this._borderStyle=null;
+    this._generatedBorderStyle = true;
+};
 
 
 Anibody.shapes.Shape.prototype.Draw = function (c) {
@@ -515,10 +582,11 @@ Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
     this._updateBorderStyle();
 };
 
-Anibody.shapes.Shape.GetGradientCode = function () {
+Anibody.shapes.GetGradientCode = function (/*strings of color-codes*/) {
 
+   
     var len = arguments.length;
-    
+        
     if(len <= 0) return [];
     if(len===1) return [{ stop: 1, color: arguments[0] }];
 

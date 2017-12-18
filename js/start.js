@@ -138,16 +138,38 @@ function menu_callback(engine) {
 
 function button1(engine) {
 
-    var background = Anibody.shapes.Shape.GetGradientCode("#f00", "#0f0", "#00f");
+    testRect(engine);
+}
+
+function button2(engine) {
+
+}
+
+//###########################################
+//##############    TESTS     ###############
+//###########################################
+
+function testRect(engine){
+    
+    var background = Anibody.shapes.GetGradientCode("rgba(255,0,0,0.25)", "rgba(0, 255,0,0.25)", "rgba(0,0,255,0.25)");
+    
 /*     var grad = engine.Context.createLinearGradient(-100,-100,100, 100);
     grad.addColorStop(0.0, "#f00");
     grad.addColorStop(1, "#00f");
     grad.addColorStop(1, "#00f"); */
 
     var r = new Anibody.shapes.Rectangle(0, 0, 200, 200);
-    r.FillType = "linearGradient"; // none, color, image, linearGradient, radialGradient
+    r.FillType = "radialGradient"; // none, color, image, linearGradient, radialGradient
     r.FillCode = background; // none, colorCode, codename, stops-object
-    r.BorderWidth = 6;
+    
+    r.RadialGradientRates = {
+        x1 : 0.25, y1 : 0.25, r1 : 0.25,
+        x2 : 0.25, y2 : 0.25, r2 : 0.95
+    };
+    
+    r.FillCode = background; // none, colorCode, codename, stops-object
+    
+    r.BorderWidth = 3;
     r.BorderType = "color"; //
     r.BorderCode = "#966";
 
@@ -194,18 +216,9 @@ function button1(engine) {
 
 }
 
-function button2(engine) {
-
-}
-
-//###########################################
-//##############    TESTS     ###############
-//###########################################
-
-
 function testShape(engine) {
 
-    var background = Anibody.shapes.Shape.GetGradientCode("#f00", "#0f0", "#00f", "#00f");
+    var background = Anibody.shapes.GetGradientCode("#f00", "#0f0", "#00f");
 
     var s = new Anibody.shapes.Shape(20, 400,
         400, 590,
