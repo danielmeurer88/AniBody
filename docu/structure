@@ -41,7 +41,7 @@ Table of Content
 * Anibody classes
     - There are 4 major classes
         - Anibody: it's the engine
-        - EngineObject: The root class for every object, which finds its way to the loop. Components, which are made to run in the background, inherit from this class.
+        - EngineObject: The root class for most objects, which finds its way to the loop. Components, which are made to run in the background, inherit from this class.
         - ABO: The class inherits from EngineObject. Components, which are made to be rendered on the canvas. (Graphical, visual components)
         - Widget: This class inherits from ABO: Components, which are made to be rendered on the canvas in the foreground. These are spontanious objects, mostly created as a result of a user action and are not added to the Loop. A widget can be (mis-) used to implement a custom ProcessInput(), Update() or Draw()-function
         
