@@ -281,20 +281,20 @@ Anibody.util.MediaManager.prototype.Require = function (group, co, loadMediaWith
  */
 Anibody.util.Media = function Media(path, codename, group) {
 
-    if (typeof path == "object") {
+    if (typeof path === "object") {
         codename = path.codename;
         group = path.group;
         path = path.path;
     }
 
     this.Path = path;
-    this.Codename = codename;
-    this.HasNoGroup = (group) ? false : true;
+    this.Codename = codename; 
+    this.HasNoGroup = (typeof group === "undefined") ? true : false;
     // the value of group/path.group can be "undefined" (it will be "always" then)
     // it can be a string or an array of strings
 
     this.Group = [];
-    if (typeof group == "object")
+    if (typeof group === "object") //typeof with an array equaly to "object" in Javascript
         this.Group = this.Group.concat(group);
     else
         this.Group = [group || "always"];
