@@ -1,7 +1,7 @@
 Anibody.SetPackage("Anibody", "shapes");
 
 /**
- * 
+ * Represents a visual and stylable polygone
  * @returns {Anibody.shapes.Shape}
  */
 Anibody.shapes.Shape = function Shape() { // Base class
@@ -101,6 +101,9 @@ Anibody.shapes.Shape.prototype.constructor = Anibody.shapes.Shape;
 
 Object.defineProperty(Anibody.shapes.Shape, "name", { value: "Shape" });
 
+/**
+ * @see README_DOKU.txt
+ */
 Anibody.shapes.Shape.prototype.Initialize = function () {
 
     this.AddPoints.apply(this, this._args);
@@ -111,7 +114,10 @@ Anibody.shapes.Shape.prototype.Initialize = function () {
     this._updateFillStyle();
 
 };
-
+/**
+ * updates the fill style of the Shape - triggered internally
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._updateFillStyle = function () {
 
     if(!this._generatedFillStyle)
@@ -174,7 +180,10 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
     }
 
 };
-
+/**
+ * updates the border style of the Shape - triggered internally
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
 
     if(!this._generatedBorderStyle)
@@ -237,28 +246,50 @@ Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
     }
 
 };
-
+/**
+ * Deactivates the automatically generated fillStyle of the Shape
+ * Sets FillStyle manually
+ * @param {CanvasContextFillStyle} fs
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.SetFillStyle = function(fs){
     this._fillStyle=fs;
     this._generatedFillStyle = false;
 };
-
+/**
+ * Clears the current fillstyle (sets it to none) and uses generated fillStyles again
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.ClearFillStyle = function(){
     this._fillStyle=null;
+    this.FillType = "none";
     this._generatedFillStyle = true;
+    this._updateFillStyle();
 };
-
+/**
+ * Deactivates the automatically generated borderStyle of the Shape
+ * Sets BorderStyle manually
+ * @param {CanvasContextStrokeStyle} bs
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.SetBorderStyle = function(bs){
     this._borderStyle=bs;
     this._generatedBorderStyle = false;
 };
-
+/**
+ * Clears the current BorderStyle (sets it to none) and uses generated BorderStyles again
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.ClearBorderStyle = function(){
     this._borderStyle=null;
+    this.BorderType = "none";
     this._generatedBorderStyle = true;
+    this._updateBorderStyle();
 };
 
-
+/**
+ * @see README_DOKU.txt
+ */
 Anibody.shapes.Shape.prototype.Draw = function (c) {
 
 
@@ -321,12 +352,16 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
     c.restore();
 
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Anibody.shapes.Shape.prototype.Update = function () {
     if (this.IsMouseOver)
         this.Engine.Input.Mouse.Cursor.pointer();
 };
-
+/**
+ * @see README_DOKU.txt
+ */
 Anibody.shapes.Shape.prototype.ProcessInput = function () {
     var self = this;
     var area = {
@@ -343,7 +378,10 @@ Anibody.shapes.Shape.prototype.ProcessInput = function () {
 
     this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
 };
-
+/**
+ * Calculates the Centroid of the Shape (will be called internally)
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._calculateCentroid = function () {
     if (this.Points.length < 1) return;
     // vertices = this.Points 
@@ -387,7 +425,10 @@ Anibody.shapes.Shape.prototype._calculateCentroid = function () {
     this.Centroid = centroid;
 
 };
-
+/**
+ * Calculates the Area of the Shape (will be called internally)
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._calculateArea = function () {
 
     var area = 0;
@@ -401,7 +442,10 @@ Anibody.shapes.Shape.prototype._calculateArea = function () {
 
 
 };
-
+/**
+ * Calculates the Surrounding Rectangle of the Shape (will be called internally)
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
 
     if (this.Points.length < 1) return;
@@ -423,7 +467,12 @@ Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
     this.Height = maxy - y;
     this.RotationPoint = { x: this.X + this.Width/2, y: this.Y + this.Height/2 };
 };
-
+/**
+ * Adds a new points to the Shape
+ * @param {number} x
+ * @param {number} y
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.AddPoint = function (x, y) {
     var p = { x: x, y: y };
     this.Points.push(p);
@@ -431,7 +480,12 @@ Anibody.shapes.Shape.prototype.AddPoint = function (x, y) {
     
     this._pointsDataUpdate();
 };
-
+/**
+ * Adds several points at once to the shape
+ * @args {numbers} odds: x-values, evens: y-values
+ * @example shape.AddPoints(1,1,4,5,-2,3); // adds the three points (1,1), (4,5) and (-2,3)
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.AddPoints = function () {
 
     var points = Math.floor(arguments.length / 2);
@@ -444,8 +498,14 @@ Anibody.shapes.Shape.prototype.AddPoints = function () {
 
     this._pointsDataUpdate();
 };
-
-Anibody.shapes.Shape.prototype.RemoveLastPoint = function (x, y) {
+/**
+ * Removes the last added point to the shape
+ * @returns {Object}
+ */
+Anibody.shapes.Shape.prototype.RemoveLastPoint = function () {
+    
+    if(this.Points.length <= 0) return false;
+    
     var rem = this._pointsStack.pop();
 
     var i = this.Points.indexOf(rem);
@@ -457,7 +517,14 @@ Anibody.shapes.Shape.prototype.RemoveLastPoint = function (x, y) {
     this._pointsDataUpdate();
     return rem;
 };
-
+/**
+ * Removes all points within a given rectangle
+ * @param {number} x - x-value of the rectangle
+ * @param {number} y - y-value of the rectangle
+ * @param {number} width - width of the rectangle
+ * @param {number} height - height of the rectangle
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
 
     if(arguments.length <= 0) return;
@@ -495,7 +562,11 @@ Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
     this._pointsDataUpdate();
 
 };
-
+/**
+ * Rotates the Shape clockwise
+ * @param {number} rad - rotation step in radiants (clockwise)
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.Rotate = function (rad) {
     
     var rp = this.Centroid;
@@ -523,6 +594,12 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
 
 };
 
+/**
+ * Moves the Shape
+ * @param {number} dx - horizontal in px
+ * @param {type} dy - vertical in px
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype.Move = function (dx, dy) {
     this.Centroid.x += dx;
     this.Centroid.y += dy;
@@ -540,7 +617,12 @@ Anibody.shapes.Shape.prototype.Move = function (dx, dy) {
 
 };
 
-
+/**
+ * Calculates and returns the angle from the point to the Centroid
+ * (will be called internally)
+ * @param {point-object} p
+ * @returns {Number}
+ */
 Anibody.shapes.Shape.prototype._getAngle = function (p) {
     var dx, dy, val;
 
@@ -559,6 +641,10 @@ Anibody.shapes.Shape.prototype._getAngle = function (p) {
     return atan2_correction(val);
 };
 
+/**
+ * sort all points according to the angle to the centroid
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._sortPoints = function () {
 
     for (var i = 0; i < this.Points.length; i++) {
@@ -573,6 +659,10 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
 
 };
 
+/**
+ * a collection of necessary functions when the data of at least one point or more has changed
+ * @returns {undefined}
+ */
 Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
     this._calculateCentroid();
     this._sortPoints();
@@ -582,6 +672,13 @@ Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
     this._updateBorderStyle();
 };
 
+/**
+ * Returns an item, which can be used for FillCoder or BorderCode when the shape
+ * is set to render linear or radial Gradients
+ * @args {Strings} color codes
+ * @example  shape.FillCode = Anibody.shapes.GetGradientCode("white", "#eb5", "rgb(0,75, 150)", "rgba(60,40,20,0.2)");
+ * @returns {Array}
+ */
 Anibody.shapes.GetGradientCode = function (/*strings of color-codes*/) {
 
    

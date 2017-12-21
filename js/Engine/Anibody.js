@@ -777,6 +777,11 @@ Anibody.prototype.Print = function (url) {
 // Abstract Methods
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+/**
+ * Makes sure the the following "package" exists and if not - sets it
+ * @argument {strings} - names of the packages 
+ * @returns {undefined}
+ */
 Anibody.SetPackage = function(/*strings*/){
     var i=0;
     var pp = "";
@@ -799,14 +804,20 @@ Anibody.SetPackage = function(/*strings*/){
     
 };
 
+/**
+ * Invokes the given CallbackObject
+ * @param {CallbackObject} obj
+ * @param {boolean} useApply - sets the CBO.useApply if the CBO had not set it
+ * @returns {undefined}
+ */
 Anibody.CallObject = function(obj, useApply){
     
     if(typeof obj !== "object" || obj === null) // javascript sees null as an object
         return;
     
-    useApply = obj.useApply;
-    if(typeof useApply === "undefined")
-        useApply = false;
+    if(typeof obj.useApply !== "undefined")
+        useApply = obj.useApply;
+    
     if(typeof obj === "object" && typeof obj.function === "function"){
         if(useApply)
             obj.function.apply(obj.that, obj.parameter);
