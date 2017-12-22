@@ -107,7 +107,8 @@ Anibody.util.MediaManager.prototype.GetPicture = function (codename) {return thi
  */
 Anibody.util.MediaManager.prototype.GetSound = function (codename) {
     try{
-        return this.Images.get(codename).Data;
+        var s = this.Sounds.get(codename);
+        return s.Data;
     }catch(e){
         return false;
     }
@@ -208,7 +209,7 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
 };
 
 /**
- * Sets (overwrite existing) mediapack of the manager, loads all "always" media and triggers the CO (callback objects)
+ * Sets (overwrite existing) mediapack of the manager, loads all "preload" media and triggers the CO (callback objects)
  * @param {array} pack - an array of media files
  * @param {object} co - callback object, which will be called afterwards
  * @returns {undefined}
@@ -216,10 +217,10 @@ Anibody.util.MediaManager.prototype.LoadMedia = function (pack, co) {
 Anibody.util.MediaManager.prototype.SetMediaPack = function (pack, co) {
     this.Pack = pack;
     this.SortPack();
-    this.Require("always", co, true);
+    this.Require("preload", co, true);
 };
 /**
- * Extends the current mediapack of the manager, loads all "always" media and triggers the CO (callback objects)
+ * Extends the current mediapack of the manager, loads all "preload" media and triggers the CO (callback objects)
  * @param {array} pack - an array of media files
  * @param {object} co - callback object, which will be called afterwards
  * @returns {undefined}
@@ -228,7 +229,7 @@ Anibody.util.MediaManager.prototype.ExtendMediaPack = function (pack, co) {
     
     this.Pack = this.Pack.concat(pack);
     this.SortPack();
-    this.Require("always", co, true);
+    this.Require("preload", co, true);
 }
 
 /**
@@ -255,7 +256,7 @@ Anibody.util.MediaManager.prototype.Require = function (group, co, loadMediaWith
     var req = [], unreq = [], m;
     
     if(!co){
-        co = function(){}.getCallbackObject(this.Engine, "default");
+        co = function(){}.getCallbackObject(this.Engine);
     }
     
     for (var i = 0; i < this.Pack.length; i++) {
@@ -290,14 +291,14 @@ Anibody.util.Media = function Media(path, codename, group) {
     this.Path = path;
     this.Codename = codename; 
     this.HasNoGroup = (typeof group === "undefined") ? true : false;
-    // the value of group/path.group can be "undefined" (it will be "always" then)
+    // the value of group/path.group can be "undefined" (it will be "preload" then)
     // it can be a string or an array of strings
 
     this.Group = [];
     if (typeof group === "object") //typeof with an array equaly to "object" in Javascript
         this.Group = this.Group.concat(group);
     else
-        this.Group = [group || "always"];
+        this.Group = [group || "preload"];
     
     this.Data;
     this.DataLoaded = false;

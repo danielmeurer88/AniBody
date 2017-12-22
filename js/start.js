@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         new ImgF("./img_rpg/button_1.png", "button_state_1"),
         new ImgF("./img_rpg/button_2.png", "button_state_2"),
         new ImgF("./img_rpg/sprite_test.png", "sprite_test"),
-        new ImgF({ path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "beginning"] }),
+        new ImgF({ path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "preload"] }),
         new ImgF({ path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure" }),
         new ImgF({ path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group: "room2" }),
         new ImgF({ path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure" }),
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         new ImgF({ path: "./img_rpg/fire_sprite.png", codename: "bonfire", group: "room1" }),
         waterglass,
         new ImgF({ path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group: "room1" }),
-        new Anibody.util.SoundFile({ path: "./music/portal_activate.mp3", codename: "portal_activate", group: "room1" }),
+        new Anibody.util.SoundFile({ path: "./music/portal_activate.mp3", codename: "portal_activate", group:["room2", "soundtest"] }),
         new Anibody.util.SoundFile({ path: "./music/alongway.mp3", codename: "girl_background", group: "room2" })
     ];
 
@@ -142,7 +142,7 @@ function button1(engine) {
 }
 
 function button2(engine) {
-
+    soundTest(engine);
 }
 
 //###########################################
@@ -389,4 +389,24 @@ function testSpline(engine) {
     sp.AddPoint({ x: w * 0.63, y: h * 0.55 });
 
     engine.AddObject(sp);
+}
+
+function soundTest(engine){
+
+    // "girl_background", group: ["room2", "soundtest"] })
+    var m = engine.MediaManager.GetSound("portal_activate");
+
+    if(m == false){
+        var playcbo = function(){
+            var engine = this;
+            var m = engine.MediaManager.GetSound("portal_activate");
+            m.play();
+        }.getCallbackObject(engine);
+
+        engine.MediaManager.Require("soundtest", playcbo);
+
+    }else{
+        m.play();
+    }
+
 }
