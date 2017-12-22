@@ -9,7 +9,7 @@ function Anibody(html_id) {
         Project: "Dev",
         Version: "1.1.5",
         Author: "Daniel Meurer",
-        LastUpdated: "2017_12_06_h12" // year_month_day_hhour
+        LastUpdated: "2017_12_22_h21" // year_month_day_hhour
     };
     
     this.CurrentFrame = 0;

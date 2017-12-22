@@ -527,8 +527,8 @@ Anibody.ECMAScriptExtension = function () {
         can.height = this.height;
         var con = can.getContext("2d");
         con.drawImage(this, 0, 0);
-        this.ImageData = con.getImageData(0, 0, can.width, can.height);
-        return this.ImageData;
+        var imgdata = con.getImageData(0, 0, can.width, can.height);
+        return imgdata;
     };
     /**
      * gets the data url of an image

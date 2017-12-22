@@ -395,18 +395,27 @@ function soundTest(engine){
 
     // "girl_background", group: ["room2", "soundtest"] })
     var m = engine.MediaManager.GetSound("portal_activate");
+    var wrapper;
 
     if(m == false){
         var playcbo = function(){
             var engine = this;
             var m = engine.MediaManager.GetSound("portal_activate");
-            m.play();
+
+            wrapper = new Anibody.util.SoundWrapper(m);
+
+            wrapper.Play();
+            //m.play();
         }.getCallbackObject(engine);
 
         engine.MediaManager.Require("soundtest", playcbo);
 
     }else{
-        m.play();
+
+        wrapper = new Anibody.util.SoundWrapper(m);
+
+        wrapper.Play();
+        //m.play();
     }
 
 }

@@ -664,8 +664,9 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
  * @returns {undefined}
  */
 Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
-    this._calculateCentroid();
     this._sortPoints();
+    this._calculateCentroid();
+    //this._sortPoints(); // sort again if you rely on the angle values being correct for the current centroid
     this._calculateSurroundingRectangle();
     this._calculateArea();
     this._updateFillStyle();

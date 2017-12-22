@@ -530,10 +530,11 @@ Anibody.static.getRGBA = function getRGBA(color, alpha, inc_quot){
 Object.defineProperty(Anibody.static.getRGBA, "name", {value:"getRGBA"});
 
 /**
- * 
+ * returns a rectangle image, which can be drawn upon a plain rectangle and would transform this plain rect into a button with
+ * 3D effects
  * @param {Object} box Object that contents of the rectangle props Object {width:Number, height:Number, rounding:Number}
  * @param {Number} depth the inline gradient depth in pixel
- * @param {Array} stops Array of gradient stops = Object {stop:Number[0-1], color:string}
+ * @param {Array} stops Array of gradient stops = Object {stop:Number[0-1], color:string} (optional)
  * @returns {Image}
  */
 Anibody.static.buttonLayout = function buttonLayout(box, depth, stops){
@@ -772,4 +773,4 @@ Anibody.static.copyText = function copyText(str){
     return res;
 };
 
-Object.defineProperty(Anibody.static.forceRange, "name", {value:"copyText"});
+Object.defineProperty(Anibody.static.copyText, "name", {value:"copyText"});
