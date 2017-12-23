@@ -89,8 +89,6 @@ Anibody.util.SoundWrapper.prototype.Play = function(useropt){
         offsetStart : 0,
         offsetEnd : 0,
         duration : "complete", // "complete" or miliseconds
-        fadeIn : 0, //miliseconds
-        fadeOut : 0, // milliseconds
         volume : 1,
         // ....
 
@@ -98,31 +96,21 @@ Anibody.util.SoundWrapper.prototype.Play = function(useropt){
 
     Anibody.mergeOptionObject(options, useropt)
 
-
-    this.Audio.volume = options.volume;
-
     if(options.duration === "complete"){
         options.duration = this.Duration - options.offsetStart - options.offsetEnd;
     }
+
+    this.Audio.addEventListener("play", function(){
+        if (options.offsetStart > 0) {
+            var time = options.offsetStart / 1000;    
+            this.currentTime = time;
+        }
+    });
 
     this.Audio.onplay = function(){
 
         var self = this;
 
-        if(options.fadeIn > 0){
-            self.volume = 0;
-            new Anibody.util.Flow(self, "volume", options.volume, options.fadeIn).Start();
-        }
-
-        if(options.fadeOut > 0){
-            
-            var f = function(){
-                self.volume = options.volume;
-                new Anibody.util.Flow(self, "volume", 0, options.fadeOut).Start();
-            };
-            
-            window.setTimeout(f, options.duration - options.fadeOut);
-        }
 
         if (options.offsetStart > 0) {
             var time = options.offsetStart / 1000;    
@@ -131,9 +119,15 @@ Anibody.util.SoundWrapper.prototype.Play = function(useropt){
 
     };
 
-    this.Audio.onplaying = function(){
-        console.log("onplaying: " + this.volume);
-    };
+    // onplaying is the first event after the browser automatically sets the volume to 1
+    // but the event will be triggered numerous times
+    this.Audio._wrappingSet = false;
+    this.Audio.addEventListener("playing", function(){
+        if(this._wrappingSet) return;
+        this._wrappingSet = true;
+        this.volume = options.volume
+    });
+
     this.Audio.play();
 };
 

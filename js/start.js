@@ -418,8 +418,8 @@ function testSoundWrapper(engine){
         if(m !== -1){
             wrapper = new Anibody.util.SoundWrapper(m);
             wrapper.Play({
-                fadeIn : 2000,
-                offsetStart : 1000
+                offsetStart : 3000,
+                volume : 0.2
             });
         }else{
             console.log(`Can't find a Sound with "${codename}" in the MediaManager's MediaPack`);

@@ -170,7 +170,7 @@ Anibody.util.Flow.prototype.Start = function(){
     var f = function(obj, key, step, self){
         // save the new value into a temporary variable (_preval)
         _preval = obj[key] + step;
-        console.log(_preval);
+        //console.log(_preval);
         
         // then checking before overwriting  actual
         // so that the actual target won't be overwritten with a too small or too big value 
