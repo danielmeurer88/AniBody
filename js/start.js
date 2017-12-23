@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         new ImgF("./img_rpg/button_1.png", "button_state_1"),
         new ImgF("./img_rpg/button_2.png", "button_state_2"),
         new ImgF("./img_rpg/sprite_test.png", "sprite_test"),
-        new ImgF({ path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1", "preload"] }),
+        new ImgF({ path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1"] }),
         new ImgF({ path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure" }),
         new ImgF({ path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group: "room2" }),
         new ImgF({ path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure" }),
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
         new ImgF({ path: "./img_rpg/fire_sprite.png", codename: "bonfire", group: "room1" }),
         waterglass,
         new ImgF({ path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group: "room1" }),
-        new Anibody.util.SoundFile({ path: "./music/portal_activate.mp3", codename: "portal_activate", group:["room2", "soundtest"] }),
+        new Anibody.util.SoundFile({ path: "./music/portal_activate.mp3", codename: "portal_activate", group:["room1", "soundtest"] }),
         new Anibody.util.SoundFile({ path: "./music/alongway.mp3", codename: "girl_background", group: "room2" })
     ];
 
@@ -54,6 +54,8 @@ function menu_callback(engine) {
         TextColor: "white", FontHeight: 18, DisplayType: "image"
     });
 
+    // ---------------------------------------------------------------------------
+    // BUTTON 1 - Initiation
     var b1 = new Button("center", 120, {
         Label: "Start",
         TriggerCallbackObject: function (engine) {
@@ -61,11 +63,11 @@ function menu_callback(engine) {
         }.getCallbackObject(engine, engine),
         HoverText: "Startet das Spiel"
     });
-
     b1.AddButtonEffect();
-    engine.AddObject(b1);
+    b1.Register();
 
-    /* BUTTON HELP */
+    // ---------------------------------------------------------------------------
+    // BUTTON 2 - Test Button 1 - Initiation
     var b2 = new Button("center", 220,
         {
             Label: "Test Button",
@@ -75,11 +77,10 @@ function menu_callback(engine) {
             HoverText: "Wird zum Testen unterschiedlicher Dinge benutzt."
         });
     b2.AddButtonEffect();
-
-    //engine.AddObject(b2);
     b2.Register();
 
-    /* BUTTON HELP2 */
+    // ---------------------------------------------------------------------------
+    // BUTTON 3 - Test Button 2 - Initiation
     var b3 = new Button("center", 320,
         {
             Label: "Test Button 2",
@@ -89,11 +90,13 @@ function menu_callback(engine) {
             HoverText: "Wird auch zum Testen unterschiedlicher Dinge benutzt."
         });
     b3.AddButtonEffect();
-
     b3.Register();
 
+    // Engine gets started
     engine.Start();
 
+    // -----------------------------------------------------------
+    // register the fullscreen button 
     $("#fs_btn").on("click", function () {
         engine.RequestFullscreen();
         var f = function (en) {
@@ -106,43 +109,25 @@ function menu_callback(engine) {
 
     });
 
-    // input field
+    // ---------------------------------------------------------------------------
+    // InputField - top left - Initiation
     Anibody.import(Anibody.ui.InputField);
     var infi = new InputField(10, 10, 300);
-    //engine.AddObject(infi);
     infi.Register();
 
-    //testing the horizontal and vertically flipped image feature
-    var w = new Anibody.Widget();
-    w.TestImg = engine.MediaManager.GetImage("logo");
-    w.TestImgV = w.TestImg.getVerticallyFlippedImage();
-    w.TestImgH = w.TestImg.getHorizontallyFlippedImage();
-    w.Draw = function (c) {
-        c.drawImage(this.TestImgV, 10, 500);
-        c.drawImage(this.TestImg, 10, 500 - this.TestImg.height - 5);
-        c.drawImage(this.TestImgH, 10 + this.TestImg.width + 5, 500);
-    };
 
-    w.Register();
-    window.setTimeout(function (w) { w.Deregister(); }, 2000, w);
-
-
-    /* engine.testobj = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
-    
-    window.setTimeout(function(engine){
-        engine.testobj.clearInterval();
-    }, 10000, engine);
- */
 
 }
+
 
 function button1(engine) {
 
-    testRect(engine);
+    testSpline(engine);
 }
 
 function button2(engine) {
-    soundTest(engine);
+
+    testSoundWrapper(engine);
 }
 
 //###########################################
@@ -152,28 +137,23 @@ function button2(engine) {
 function testRect(engine){
     
     var background = Anibody.shapes.GetGradientCode("rgba(255,0,0,0.25)", "rgba(0, 255,0,0.25)", "rgba(0,0,255,0.25)");
-    
-/*     var grad = engine.Context.createLinearGradient(-100,-100,100, 100);
-    grad.addColorStop(0.0, "#f00");
-    grad.addColorStop(1, "#00f");
-    grad.addColorStop(1, "#00f"); */
 
-    var r = new Anibody.shapes.Rectangle(0, 0, 200, 200);
-    r.FillType = "radialGradient"; // none, color, image, linearGradient, radialGradient
-    r.FillCode = background; // none, colorCode, codename, stops-object
+    var r = new Anibody.shapes.Rectangle(5, 395, 200, 200);
     
+    //x1,x2 = rate of the width of the surrounding rectangle
+    //y1,y2 = rate of the height of the surrounding rectangle
+    //r1,r2 = rate of the min(width,height) of the surrounding rectangle
     r.RadialGradientRates = {
         x1 : 0.25, y1 : 0.25, r1 : 0.25,
         x2 : 0.25, y2 : 0.25, r2 : 0.95
     };
-    
+
+    r.FillType = "radialGradient"; // none, color, image, linearGradient, radialGradient
     r.FillCode = background; // none, colorCode, codename, stops-object
     
     r.BorderWidth = 3;
-    r.BorderType = "color"; //
+    r.BorderType = "color";
     r.BorderCode = "#966";
-
-    /* r.SetFillStyle(grad); */
 
     r._drawPoints = true;
     r._drawCentroid = true;
@@ -373,25 +353,55 @@ function testSprite(engine) {
 
 }
 
-function testSpline(engine) {
+function testRandom(engine){
 
-    var w = engine.Canvas.width;
-    var h = engine.Canvas.height;
-    var sp = new Spline();
+    var first = Date.now();
+    var i=0;
+
+    var cbo = function(){
+
+        var dif = Date.now() - first;
+        console.log("Call Nr. " + (++i) + " after " + dif + " ms");
+
+    }.getCallbackObject();
+
+    engine.rndInterval = Anibody.static.Random.SetRandomInterval(cbo, 300, 1300);
+    
+    window.setTimeout(function(engine){
+        engine.rndInterval.clearInterval();
+    }, 10000, engine);
+}
+
+function testSpline(engine) {
+    Anibody.import(Anibody.visual.Spline);
+
+    var sp = new Spline(
+        { x: 750, y: 550 },
+        730, 480,
+        {x: 680, y:350}
+    );
 
     sp.SetColor("red");
     sp.DrawPoints = true;
 
     sp.SetCloseSpline(true);
 
-    sp.AddPoint({ x: w * 0.65, y: h * 0.99 });
-    sp.AddPoint({ x: w * 0.15, y: h * 0.7 });
-    sp.AddPoint({ x: w * 0.63, y: h * 0.55 });
+    sp.Register();
 
-    engine.AddObject(sp);
+    // adding a mouse click handler to further test the spline
+    var onmouseclickcbo = function (event) {
+
+        var mpos = event.Mouse.Position;
+        event.Handled = true;
+
+        this.AddPoint(mpos.X, mpos.Y);
+
+    }.getCallbackObject(sp);
+
+    engine.Input.MouseHandler.AddMouseHandler("leftclick", onmouseclickcbo);
 }
 
-function soundTest(engine){
+function testSoundWrapper(engine){
 
     // "girl_background", group: ["room2", "soundtest"] })
     var m = engine.MediaManager.GetSound("portal_activate");
@@ -418,4 +428,30 @@ function soundTest(engine){
         //m.play();
     }
 
+}
+
+function testImageWrapper(engine){
+
+    var duration = 5000;
+
+    var w = new Anibody.Widget();
+    var img = engine.MediaManager.GetImage("logo");
+    
+    w.wrapper = new Anibody.util.ImageWrapper(img);
+    
+    w.Draw = function (c) {
+        c.drawImage(this.wrapper.Image, 10, 500);
+    };
+
+    // starts drawing
+    w.Register();
+
+    // ends drawing in $(duration) Milliseconds
+    window.setTimeout(function (w) { w.Deregister(); }, duration, w);
+
+    // changes to vertical-option is 1/3 of $(duration)
+    window.setTimeout(function (w) { w.wrapper.Option = "vertical"; }, duration/3, w);
+
+    // changes to vertical-option is 1/3 of $(duration)
+    window.setTimeout(function (w) { w.wrapper.Option = "horizontal"; }, duration/3*2, w);
 }

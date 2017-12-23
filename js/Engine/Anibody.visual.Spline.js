@@ -7,6 +7,8 @@ Anibody.SetPackage("Anibody", "visual");
 Anibody.visual.Spline = function Spline() {
     Anibody.ABO.call(this);
 
+    this._args = arguments;
+
     this.Canvas = {
         width : this.Engine.Canvas.width,
         height : this.Engine.Canvas.height
@@ -43,7 +45,44 @@ Object.defineProperty(Anibody.visual.Spline, "name", {value:"Spline"});
  */
 Anibody.visual.Spline.prototype.Initialize = function () {
 
-    // starting to calculate the control points of the spline with all points
+    if(this._args.length > 0){
+        this.AddPoints.apply(this, this._args);
+    }
+    
+};
+
+/**
+ * adds point to the spline
+ * @param {object/number} porx
+ * @param {number} y
+ * @returns {undefined}
+ */
+Anibody.visual.Spline.prototype.AddPoints = function () {
+    
+    var arg;
+
+    for(var i=0; i<arguments.length; i++){
+
+        arg = arguments[i];
+
+        if(!isNaN(arg)){
+            // now: arg should be the x value
+            if(!isNaN(arguments[i+1])){
+                // arguments[i+1] is the y value
+                p = {x:arg, y:arguments[i+1]};
+                i++; // i++ because we want to skip the next loop
+            }
+        }else{
+            p = arg;
+        }
+
+        this.Points.push(p);
+        this._pointsStack.push(p);
+    }
+
+    // update because of change
+    this._updatePoints();
+    
 };
 
 /**
@@ -94,9 +133,21 @@ Anibody.visual.Spline.prototype.RemoveLastPoint = function () {
 Anibody.visual.Spline.prototype.Draw = function (c) {
     c.save();
 
+    
+
     var p1, cp1, cp2, p2;
     
     if(this.Points.length >= 2){
+
+        if(this._close){
+            // if Spline is to be closed then copy the first point and add it as the last one
+            var p = {x:this.Points[0].x, y:this.Points[0].y};
+            this.Points.push(p);
+            // calculate new control points
+            this._calculateCurveControlPoints();
+            // remove the last point add the end of the draw step
+            // see [*] ...
+        }
     
         c.lineJoin = "round";
 
@@ -125,24 +176,11 @@ Anibody.visual.Spline.prototype.Draw = function (c) {
         }
         
         if(this._close){
-            var endi = this.Points.length - 1;
-            p1 = this.Points[endi];
-            cp1 = this.FirstControlPoints[endi];
-            cp2 = this.SecondControlPoints[endi];
-            p2 = this.Points[0];
-                
-            c.beginPath();
-            c.moveTo(p1.x, p1.y);
-            c.bezierCurveTo(
-                    cp1.x, cp1.y,
-                    cp2.x, cp2.y,
-                    p2.x, p2.y
-                    );
-            c.stroke();
+            // [*] ... remove the last point add the end of the draw step
+            this.Points.pop();
         }
-        
     }
-        
+    
     // drawing the points if wished
     if (this.DrawPoints){
         c.strokeStyle = "black";
