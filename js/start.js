@@ -403,29 +403,28 @@ function testSpline(engine) {
 
 function testSoundWrapper(engine){
 
-    // "girl_background", group: ["room2", "soundtest"] })
-    var m = engine.MediaManager.GetSound("portal_activate");
+    var codename = "portal_activate";
+    //codename = "debug";
+    var m = engine.MediaManager.GetSound(codename);
     var wrapper;
 
-    if(m == false){
-        var playcbo = function(){
-            var engine = this;
-            var m = engine.MediaManager.GetSound("portal_activate");
-
-            wrapper = new Anibody.util.SoundWrapper(m);
-
-            wrapper.Play();
-            //m.play();
+    if(m === 0){
+        var againcbo = function(){
+            testSoundWrapper(this);
         }.getCallbackObject(engine);
 
-        engine.MediaManager.Require("soundtest", playcbo);
-
+        engine.MediaManager.Require("soundtest", againcbo);
     }else{
 
-        wrapper = new Anibody.util.SoundWrapper(m);
+        if(m !== -1){
+            wrapper = new Anibody.util.SoundWrapper(m);
+            wrapper.Play();
+        }else{
+            console.log(`Can't find a Sound with "${codename}" in the MediaManager's MediaPack`);
 
-        wrapper.Play();
-        //m.play();
+            
+
+        }
     }
 
 }

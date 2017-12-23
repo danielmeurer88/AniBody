@@ -79,9 +79,11 @@ Anibody.util.MediaManager.prototype.Draw = function (c) {
 };
 
 /**
- * returns the first image whose codename matches the searched string
+ * searches the loaded image whose codename matches the searched string
+ * if it can't find it then it searches in the MediaPack (MediaFiles, which hasn't bee loaded yet)
+ * if it finds it there, the function returns 0 otherwise -1
  * @param {string} codename
- * @returns {image/false}
+ * @returns {image/number}
  */
 Anibody.util.MediaManager.prototype.GetImage = function (codename) {
     try{
@@ -90,27 +92,44 @@ Anibody.util.MediaManager.prototype.GetImage = function (codename) {
         else
             return codename;
     }catch(e){
-        return false;
+        var subpack = [];
+        for(var i=0; i<this.Pack.length;i++){
+            if(this.Pack[i].Codename === codename){
+                return 0;
+            }
+        }
+        return -1;
     }
 };
 /**
- * returns the first Image whose codename matches the searched string
+ * searches the loaded image whose codename matches the searched string
+ * if it can't find it then it searches in the MediaPack (MediaFiles, which hasn't bee loaded yet)
+ * if it finds it there, the function returns 0 otherwise -1
  * @param {string} codename
  * @deprecated the Class' name is ImageFile, therefore the name of this method should be GetImage
  * @returns {image/false}
  */
 Anibody.util.MediaManager.prototype.GetPicture = function (codename) {return this.GetImage(codename);};
+
 /**
- * returns the first audio whose codename matches the searched string
+ * searches the loaded audio whose codename matches the searched string
+ * if it can't find it then it searches in the MediaPack (MediaFiles, which hasn't bee loaded yet)
+ * if it finds it there, the function returns 0 otherwise -1
  * @param {string} codename
- * @returns {audio/false}
+ * @returns {image/number}
  */
 Anibody.util.MediaManager.prototype.GetSound = function (codename) {
     try{
         var s = this.Sounds.get(codename);
         return s.Data;
     }catch(e){
-        return false;
+        var subpack = [];
+        for(var i=0; i<this.Pack.length;i++){
+            if(this.Pack[i].Codename === codename){
+                return 0;
+            }
+        }
+        return -1;
     }
 };
 
