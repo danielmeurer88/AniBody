@@ -546,12 +546,17 @@ Anibody.debug.Monitor = function Monitor(obj, attr, cbo, name) {
         this.CallbackObject = cbo;
     else
         this.CallbackObject = {that: this, function(newv, oldv, startv, para) {
-                console.log("'{0}' changed from '{1}' to '{2}' and began with '{3}'".format(this.Name, oldv, newv, startv));
+                //console.log("'{0}' changed from '{1}' to '{2}' and began with '{3}'".format(this.Name, oldv, newv, startv));
+                console.log(`"${this.Name}" changed from ${oldv} to ${newv} - it began with ${startv}`);
             }, parameter: "default"};
 
     this.StartValue;
     this.OldValue;
     this.CurrentValue;
+
+    this.IntervalSpeed = 40;
+
+    this._ref = null;
 
     this.Initialize();
 };
@@ -583,11 +588,37 @@ Anibody.debug.Monitor.prototype.Update = function () {
     this.CurrentValue = this.Object[this.Attribute];
 
     if (this._didAttrChange()) {
-        var cbo = this.CallbackObject;
-        cbo.function.call(cbo.that, this.CurrentValue, this.OldValue, this.StartValue, cbo.para);
+        var cbo = {};
+        cbo.function = this.CallbackObject.function;
+        cbo.that = this.CallbackObject.that;
+        cbo.parameter = [this.CurrentValue, this.OldValue, this.StartValue, this.CallbackObject.parameter];
+        cbo.useApply = true;
+
+        Anibody.CallObject(cbo);
     }
 
     this.OldValue = this.CurrentValue;
+};
+
+/**
+ * Starts monitoring
+ * @returns {undefined}
+ */
+Anibody.debug.Monitor.prototype.Start = function () {
+
+    var handler = function(that){
+        that.Update();
+    };
+
+    this._ref = window.setInterval(handler, this.IntervalSpeed, this);
+};
+
+/**
+ * Stops monitoring
+ * @returns {undefined}
+ */
+Anibody.debug.Monitor.prototype.Stop = function () {
+    window.clearInterval(this._ref);
 };
 
 /**

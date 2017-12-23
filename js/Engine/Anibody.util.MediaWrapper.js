@@ -8,25 +8,6 @@ Anibody.SetPackage("Anibody", "util"); // checks if the object Anibody.util exis
 Anibody.util.ImageWrapper = function ImageWrapper(img) {
     this.Image = img;
 
-    this.Option = "default"; // default, vertical, horizontal
-    this._option = "default";
-    Object.defineProperty(this,"_option", {enumerable:false});
-
-    var self = this;
-
-    Object.defineProperty(this, "Option", {
-        set: function (newValue) {
-            self._option = newValue;
-            //default
-            if(self._option === "default"){ self.Image = self._defaultImage; }
-            // vertical
-            if(self._option === "vertical"){ self._provideHorizontallyFlippedImage(); }
-            // horizontal
-            if(self._option === "horizontal"){ self._provideVerticallyFlippedImage(); }
-        },
-        get: function () { return self._option; }
-    });
-
     this._defaultImage = img;
     Object.defineProperty(this,"_defaultImage", {enumerable:false});
 
@@ -34,12 +15,12 @@ Anibody.util.ImageWrapper = function ImageWrapper(img) {
 
 Object.defineProperty(Anibody.util.MediaManager, "name", {value:"ImageWrapper"});
 
-Anibody.util.ImageWrapper.prototype._provideHorizontallyFlippedImage = function(){
-    this.Image = this._defaultImage.getHorizontallyFlippedImage();
+Anibody.util.ImageWrapper.prototype.FlipVertically = function(){
+    this.Image = this.Image.getVerticallyFlippedImage();
 };
 
-Anibody.util.ImageWrapper.prototype._provideVerticallyFlippedImage = function(){
-    this.Image = this._defaultImage.getVerticallyFlippedImage();
+Anibody.util.ImageWrapper.prototype.FlipHorizontally = function(){
+    this.Image = this.Image.getHorizontallyFlippedImage();
 };
 
 Anibody.util.ImageWrapper.prototype.Brighten = function(factor){
@@ -49,7 +30,7 @@ Anibody.util.ImageWrapper.prototype.Brighten = function(factor){
     var h = this.Image.height;
 
     var i,j;
-    var r,g,b,a;
+    var r,g,b,inc;
 
     for(j=0; j<h; j++)
         for(i=0; i<w; i++){
@@ -59,16 +40,18 @@ Anibody.util.ImageWrapper.prototype.Brighten = function(factor){
             b = imgdata.data[ 4 * (i + w * j) + 2 ];
             //a = imgdata.data[ 4 * (i + w * j) + 3 ];
 
-            r = (r + r*factor) % 256;
-            g = (g + g*factor) % 256;
-            b = (b + b*factor) % 256;
-            //a = (a + a*factor);
+            inc = parseInt( 256 * factor );
+
+            r = (r + inc);
+            g = (g + inc);
+            b = (b + inc);
 
             imgdata.data[ 4 * (i + w * j) + 0 ] = r;
             imgdata.data[ 4 * (i + w * j) + 1 ] = g;
             imgdata.data[ 4 * (i + w * j) + 2 ] = b;
 
         }
+    this.Image = imgdata.getImage();
 
 };
 
@@ -90,11 +73,17 @@ Anibody.util.SoundWrapper = function SoundWrapper(a) {
         },
         get: function () { return self.Audio.loop; }
     });
+    Object.defineProperty(this, "Duration", {
+        set: function (newValue) {
+            self.Audio.duration = newValue / 1000;
+        },
+        get: function () { return self.Audio.duration * 1000; }
+    });
 }
 
 Object.defineProperty(Anibody.util.MediaManager, "name", {value:"SoundWrapper"});
 
-Anibody.util.SoundWrapper.prototype.Play = function(opt){
+Anibody.util.SoundWrapper.prototype.Play = function(useropt){
 
     var options = {
         offsetStart : 0,
@@ -102,13 +91,50 @@ Anibody.util.SoundWrapper.prototype.Play = function(opt){
         duration : "complete", // "complete" or miliseconds
         fadeIn : 0, //miliseconds
         fadeOut : 0, // milliseconds
-        volumn : 1,
+        volume : 1,
         // ....
 
     };
 
-    this.Audio.play();
+    Anibody.mergeOptionObject(options, useropt)
 
+
+    this.Audio.volume = options.volume;
+
+    if(options.duration === "complete"){
+        options.duration = this.Duration - options.offsetStart - options.offsetEnd;
+    }
+
+    this.Audio.onplay = function(){
+
+        var self = this;
+
+        if(options.fadeIn > 0){
+            self.volume = 0;
+            new Anibody.util.Flow(self, "volume", options.volume, options.fadeIn).Start();
+        }
+
+        if(options.fadeOut > 0){
+            
+            var f = function(){
+                self.volume = options.volume;
+                new Anibody.util.Flow(self, "volume", 0, options.fadeOut).Start();
+            };
+            
+            window.setTimeout(f, options.duration - options.fadeOut);
+        }
+
+        if (options.offsetStart > 0) {
+            var time = options.offsetStart / 1000;    
+            this.currentTime = time;
+        } 
+
+    };
+
+    this.Audio.onplaying = function(){
+        console.log("onplaying: " + this.volume);
+    };
+    this.Audio.play();
 };
 
 Anibody.util.SoundWrapper.prototype.Pause = function(){

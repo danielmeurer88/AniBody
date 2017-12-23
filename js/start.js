@@ -122,7 +122,7 @@ function menu_callback(engine) {
 
 function button1(engine) {
 
-    testSpline(engine);
+    testShape(engine);
 }
 
 function button2(engine) {
@@ -207,7 +207,7 @@ function testShape(engine) {
     s.FillCode = background; // none, colorCode, codename, stops-object
     s.BorderWidth = 6;
     s.BorderType = "color"; //
-    s.BorderCode = "#966";
+    s.BorderCode = "#666";
 
     s._drawPoints = true;
     s._drawCentroid = true;
@@ -218,12 +218,10 @@ function testShape(engine) {
 
     s.Register();
 
-    var dw = new Anibody.debug.DebugWindow();
-    dw.Add(s, ["X", "Y", "Width", "Height"], "Shape");
-    dw.Register();
-    //dw.Open();
+    var mon = new Anibody.debug.Monitor(s.Points, "length", null, "Anzahl Punkte");
+    mon.Start();
 
-    var f = function (event) {
+    var onleftclick = function (event) {
 
         var mpos = event.Mouse.Position;
         event.Handled = true;
@@ -232,18 +230,18 @@ function testShape(engine) {
 
     }.getCallbackObject(s);
 
-    engine.Input.MouseHandler.AddMouseHandler("leftclick", f);
+    engine.Input.MouseHandler.AddMouseHandler("leftclick", onleftclick);
 
-    f = function (event) {
+    var onrightclick = function (event) {
         
                 var mpos = event.Mouse.Position;
                 event.Handled = true;
         
-                this.Rotate(Math.PI * 0.2);
+                this.Rotate(Math.PI * 0.1);
         
             }.getCallbackObject(s);
 
-    engine.Input.MouseHandler.AddMouseHandler("rightclick", f);
+    engine.Input.MouseHandler.AddMouseHandler("rightclick", onrightclick);
 }
 
 function testSprite(engine) {
@@ -403,26 +401,31 @@ function testSpline(engine) {
 
 function testSoundWrapper(engine){
 
-    var codename = "portal_activate";
-    //codename = "debug";
+    var againcbo = function(){
+        testSoundWrapper(this);
+    }.getCallbackObject(engine);
+
+    var codename = "bomb_timer";
+    //codename = "portal_activate";
+
     var m = engine.MediaManager.GetSound(codename);
     var wrapper;
 
     if(m === 0){
-        var againcbo = function(){
-            testSoundWrapper(this);
-        }.getCallbackObject(engine);
-
         engine.MediaManager.Require("soundtest", againcbo);
     }else{
 
         if(m !== -1){
             wrapper = new Anibody.util.SoundWrapper(m);
-            wrapper.Play();
+            wrapper.Play({
+                fadeIn : 2000,
+                offsetStart : 1000
+            });
         }else{
             console.log(`Can't find a Sound with "${codename}" in the MediaManager's MediaPack`);
 
-            
+            var sf = new Anibody.util.SoundFile("./music/alien_bomb_timer.wav", "bomb_timer", "soundtest");
+            engine.MediaManager.LoadMedia([sf], againcbo);
 
         }
     }
@@ -442,15 +445,35 @@ function testImageWrapper(engine){
         c.drawImage(this.wrapper.Image, 10, 500);
     };
 
-    // starts drawing
+    // the function that processes the user input
+    w.ProcessInput = function () {
+
+        var keys = this.Engine.Input.Keys;
+        var step = 0.05;
+
+        if (keys.B.FramesPressed === 4) {
+            this.wrapper.Brighten(step)
+        }
+
+        if (keys.D.FramesPressed === 4) {
+            this.wrapper.Darken(step)
+        }
+
+        if (keys.Q.FramesPressed === 4) {
+            this.Deregister();
+        }
+
+        if (keys.V.FramesPressed === 4) {
+            this.wrapper.FlipVertically();
+        }
+
+        if (keys.H.FramesPressed === 4) {
+            this.wrapper.FlipHorizontally();
+        }
+
+    };
+
+    // starts drawing and processInput
     w.Register();
 
-    // ends drawing in $(duration) Milliseconds
-    window.setTimeout(function (w) { w.Deregister(); }, duration, w);
-
-    // changes to vertical-option is 1/3 of $(duration)
-    window.setTimeout(function (w) { w.wrapper.Option = "vertical"; }, duration/3, w);
-
-    // changes to vertical-option is 1/3 of $(duration)
-    window.setTimeout(function (w) { w.wrapper.Option = "horizontal"; }, duration/3*2, w);
 }

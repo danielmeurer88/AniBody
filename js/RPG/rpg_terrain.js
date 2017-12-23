@@ -98,11 +98,11 @@ RPGTerrain.prototype.Initialize = function(){
         
         if(this.StructureCodename){
            str_img = this.Engine.MediaManager.GetImage(this.StructureCodename);
-           str_img.getImageData();
+           var imgdata = str_img.getImageData();
            this.FieldDimension = {X:str_img.width, Y:str_img.height};
            for(var j=0; j<this.FieldDimension.Y; j++)
                for(var i=0; i<this.FieldDimension.X; i++){
-                   p = str_img.ImageData.getPixel(i,j);
+                   p = imgdata.getPixel(i,j);
                    if(p.red <= 33 && p.green <= 33 && p.blue <= 33){
                        // it's a black pixel
                        this.Fields[i][j] = new Field(i, j, this.Field, Field.prototype.Types.Blocked);

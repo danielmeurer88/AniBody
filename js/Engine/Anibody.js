@@ -7,14 +7,24 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.1.5",
+        Version: "1.1.6",
         Author: "Daniel Meurer",
-        LastUpdated: "2017_12_22_h21" // year_month_day_hhour
+        LastUpdated: "2017_12_23_h17" // year_month_day_hhour
     };
+
+    this.StartTimestamp = Date.now();
+    this.RunTime = 0;
+    Object.defineProperty(this, "RunTime", {
+        set: function (newValue) {
+        },
+        get: function () { 
+            return Date.now() - this.StartTimestamp;
+        }
+    });
     
     this.CurrentFrame = 0;
     
-    // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof for jQuery
+    // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof
     if ($) {
         if (!$.AnibodyArray) {
             $.AnibodyArray = [];
@@ -23,7 +33,7 @@ function Anibody(html_id) {
         $.AnibodyArray.push(this);
         $.Anibody = this;
     } else {
-        this.Info.Error = "$ cannot bet set up";
+        this.Info.Error = "$ cannot be set up";
         return false;
     }
 
@@ -37,7 +47,6 @@ function Anibody(html_id) {
     this.Flags.KeyboardInput = true;
     this.Flags.TouchHandler = true;
     this.Flags.Touch2FakeMouseClick = true;
-    this.Flags.DebugWindow = false;
     this.Flags.Storage = true;
     this.Flags.IntervalHandler = true;
     Object.defineProperty(this, "Flags", {enumerable:false});
@@ -76,8 +85,6 @@ function Anibody(html_id) {
     this.MediaManager = null;
     // terrain holds the data of a game world. if not further declared a default terrain with the same size as the canvas object will be set
     this.Terrain = null;
-    this.DebugWindow = null;
-    this.Consolero = null;
 
     this.OverlayImages = [];
 
@@ -160,16 +167,14 @@ Anibody.prototype.Initialize = function () {
         this.Storage = new Anibody.util.Storage();
     }
     
-    if(this.Flags.DebugWindow)
-        this.DebugWindow = new DebugWindow();
-    
-    this.Consolero = new Anibody.debug.Consolero();
 };
 
 /**
  * @description before it starts the Engine, it checks if there is a Terrain object and a Camera selected, if not default objects are initialized
  */
 Anibody.prototype.Start = function () {
+
+    this.StartTimestamp = Date.now();
 
     if (!this.Terrain)
         this.SetTerrain(new Anibody.DefaultTerrain());
@@ -314,9 +319,6 @@ Anibody.prototype.Update = function () {
     if (this.Flags.MediaManager)
         this.MediaManager.Update();
 
-    if (this.DebugWindow)
-        this.DebugWindow.Update();
-
     if (this.Flags.AntiHoverEffect) {
         if (this.Input.Canvas.MouseOn) {
             this.AHEStart();
@@ -365,9 +367,6 @@ Anibody.prototype.Draw = function () {
 
     if (this.Flags.MediaManager)
         this.MediaManager.Draw(c);
-
-    if (this.DebugWindow)
-        this.DebugWindow.Draw();
 
     // used by widgets
     for (var i = 0; i < this.ForegroundDrawFunctionObjects.heap.length; i++) {
@@ -866,6 +865,28 @@ Anibody.importAll = function(packagePath){
     for(var name in packagePath){
         Anibody.import(packagePath[name]);
     }
+};
+
+/**
+ * merges a user written object into a main object
+ * - the main object contains all needed keys and default values
+ * - the values of the user object may overwrite the main object
+ * if they both have the specific key in common
+ * @param {Object} main
+ * @param {Object} user - 
+ * @returns {undefined}
+ */
+Anibody.mergeOptionObject = function(main, user){
+    
+    if(typeof main !== "object" || typeof user !== "object") return false;
+    var key;
+
+    for(key in main){
+        if(typeof user[key] !== "undefined")
+            main[key] = user[key];
+    }
+
+    return true;
 };
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

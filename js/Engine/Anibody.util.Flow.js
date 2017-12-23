@@ -165,15 +165,31 @@ Anibody.util.Flow.prototype.Start = function(){
     var framesWhenReady = this.FPS * (this.Duration/1000);
     // the needed difference divided by the estimated amount of needed frames
     this.Step = this.Difference / framesWhenReady;
-    
+    var _preval;
+
     var f = function(obj, key, step, self){
-        obj[key] += step;
+        // save the new value into a temporary variable (_preval)
+        _preval = obj[key] + step;
+        console.log(_preval);
         
+        // then checking before overwriting  actual
+        // so that the actual target won't be overwritten with a too small or too big value 
+        if(self.TargetIsSmaller){
+            if(_preval <= self.TargetValue)
+                obj[key] = self.TargetValue;
+        }else{
+            if(_preval >= self.TargetValue)
+                obj[key] = self.TargetValue;
+        }
+
+        // now invoke the CBO after every step
         var aef = self.AfterEveryFrameObject;
-        if(aef)
-            aef.function.call(aef.that, aef.parameter)
+        if(aef){
+            Anibody.CallObject(aef);
+        }
         
         // checks if the target attribute of the object already hit the target value
+        // if so - end the process and invoke end-CBO
         if(self.TargetIsSmaller){
             
             if(obj[key] <= self.TargetValue){
@@ -181,7 +197,7 @@ Anibody.util.Flow.prototype.Start = function(){
                 clearInterval(self.ref);
                 var cbo = self.CallbackObject;
                 if(typeof cbo !== "undefined" && typeof cbo.function === "function")
-                    cbo.function.call(cbo.that, cbo.parameter);
+                    Anibody.CallObject(cbo);
                     
             }
         }else{
@@ -190,7 +206,7 @@ Anibody.util.Flow.prototype.Start = function(){
                 clearInterval(self.ref);
                 var cbo = self.CallbackObject;
                 if(typeof cbo !== "undefined" && typeof cbo.function === "function")
-                    cbo.function.call(cbo.that, cbo.parameter);
+                    Anibody.CallObject(cbo);
             }
         }
         

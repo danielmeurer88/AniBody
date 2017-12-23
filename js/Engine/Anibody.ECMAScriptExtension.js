@@ -468,6 +468,22 @@ Anibody.ECMAScriptExtension = function () {
         this.data[p + 2 ] = b;
         this.data[p + 3 ] = a;
     };
+    /**
+     * puts the image data to a new image and returns it
+     */
+    window.ImageData.prototype.getImage = function (x, y, r, g, b, a) {
+        var can = document.createElement("canvas");
+        can.width = this.width;
+        can.height = this.height;
+        var con = can.getContext("2d");
+        con.putImageData(this,0,0);
+        var durl = can.toDataURL();
+        var img = document.createElement("img");
+        img.width = this.width;
+        img.height = this.height;
+        img.src = durl;
+        return img;
+    };
 
     /**
      * Adds an attribute called ImageData to all images
@@ -624,7 +640,6 @@ Anibody.ECMAScriptExtension = function () {
         if (rad < 0)
             rad = (rad + 2 * Math.PI) % (2 * Math.PI);
 
-//    var degree = rad * 180 / Math.PI;
 
         var leftAngle = rad - (Math.PI / 2);
         var rightAngle = rad + (Math.PI / 2);
