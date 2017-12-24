@@ -113,6 +113,7 @@ function menu_callback(engine) {
     // InputField - top left - Initiation
     Anibody.import(Anibody.ui.InputField);
     var infi = new InputField(10, 10, 300);
+    infi.BindToStorageEntry("startInputField");
     infi.Register();
 
 

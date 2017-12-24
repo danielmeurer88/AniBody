@@ -349,6 +349,38 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
     c.restore();
 
 };
+
+/**
+ * drawing just the figure for collition test
+ * also: no save()/restore() needed
+ * @param {CanvasContext} c
+ */
+Anibody.shapes.Shape.prototype.EasyDraw = function (c) {
+    var rp = this.Centroid;
+
+    c.translate(rp.x, rp.y);
+
+    if(this.VisualRotation){
+        c.rotate(this._rotation);
+    }
+
+    if (this.Points.length > 1) {
+        // create Path
+        c.beginPath();
+        c.moveTo(this.Points[0].x - rp.x, this.Points[0].y - rp.y);
+        for (var i = 1; i < this.Points.length; i++) {
+            c.lineTo(this.Points[i].x - rp.x, this.Points[i].y - rp.y);
+        }
+        c.closePath();
+
+        // FILL
+        c.fill();
+        // STROKE
+        c.lineWidth = this.BorderWidth;
+        c.stroke();
+    }
+}
+
 /**
  * @see README_DOKU.txt
  */
@@ -589,6 +621,29 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
 
     this._calculateSurroundingRectangle();
 
+};
+
+Anibody.shapes.Shape.prototype.IsCollidingWith = function (s) {
+    
+    var can = document.createElement("canvas");
+    can.width = this.Engine.Canvas.width;
+    can.height = this.Engine.Canvas.height;
+    var c = can.getContext("2d");
+
+    // fill this shape
+    this.EasyDraw(c);
+    // source-in
+    c.globalCompositeOperation = "source-in";
+
+    // fill other shape
+    s.EasyDraw(c);
+
+    // TESTING - Download result
+    var data = can.toDataURL();
+    this.Engine.Download("CollitionTest", data);
+
+    // search if there are any drawn pixel - if yes: they collide
+    // TODA
 };
 
 /**

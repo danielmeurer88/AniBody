@@ -253,9 +253,9 @@ Anibody.ui.InputField.prototype.Draw = function (c) {
  */
 Anibody.ui.InputField.prototype.BindToStorageEntry = function (key) {
     if (typeof key === "string" && key.length > 0) {
-        var txt = this.Engine.Storage.ReadFromStorage(key);
+        var txt = this.Engine.Storage.Read(key);
         if (txt.code) {
-            txt = this.Engine.Storage.WriteToStorage(key, "");
+            txt = this.Engine.Storage.Write(key, "");
         }
         this.Bound = true;
         this.BindKey = key;
@@ -333,7 +333,7 @@ Anibody.ui.InputField.prototype.AddLetter = function (add) {
     
     this.Text = this.Text.substr(0, this.CursorPos) + add + this.Text.substr(++this.CursorPos - 1);
     if(this.Bound)
-        this.Engine.Storage.WriteToStorage(this.BindKey, this.Text);
+        this.Engine.Storage.Write(this.BindKey, this.Text);
 };
 /**
 * @description Remove one letter from the Text where the cursor is
@@ -351,7 +351,7 @@ Anibody.ui.InputField.prototype.RemoveLetter = function () {
             this.CursorPos--;
     }
     if(this.Bound)
-        this.Engine.Storage.WriteToStorage(this.BindKey, this.Text);
+        this.Engine.Storage.Write(this.BindKey, this.Text);
 
 };
 /**
