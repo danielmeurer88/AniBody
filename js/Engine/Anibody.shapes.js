@@ -14,31 +14,10 @@ Anibody.shapes.Shape = function Shape() { // Base class
 
     this.Area = null; // px^2
 
+    this.AutoSort = true;
     this.Points = [];
     this._pointsStack = [];
     Object.defineProperty(this, "_pointsStack", { enumerable: false });
-
-    this.FillType = "color"; // none, color, image, linearGradient, radialGradient
-    this.FillCode = "#666"; // none, colorCode, codename, stops-object
-    this._fillStyle = null;
-    
-    this.LinearGradientRates = {
-        x1 : 0.0, y1 : 0.0,
-        x2 : 1.0, y2 : 1.0
-    };
-    
-    this.RadialGradientRates = {
-        x1 : 0.25, y1 : 0.25, r1 : 0.05,
-        x2 : 0.25, y2 : 0.25, r2 : 0.25
-    };
-    
-    this._generatedFillStyle = true;
-    this._generatedBorderStyle = true;
-    
-    this.BorderWidth = 0;
-    this.BorderType = "color"; //
-    this.BorderCode = "#000";
-    this._borderStyle = null;
 
     var self = this;
     Object.defineProperty(this, "FillType", {
@@ -81,6 +60,28 @@ Anibody.shapes.Shape = function Shape() { // Base class
         BorderCode: null
     };
     Object.defineProperty(this, "_private", { enumerable: false });
+
+    this.FillType = "color"; // none, color, image, linearGradient, radialGradient
+    this.FillCode = "#666"; // none, colorCode, codename, stops-object
+    this._fillStyle = null;
+    
+    this.LinearGradientRates = {
+        x1 : 0.0, y1 : 0.0,
+        x2 : 1.0, y2 : 1.0
+    };
+    
+    this.RadialGradientRates = {
+        x1 : 0.25, y1 : 0.25, r1 : 0.05,
+        x2 : 0.25, y2 : 0.25, r2 : 0.25
+    };
+    
+    this._generatedFillStyle = true;
+    this._generatedBorderStyle = true;
+    
+    this.BorderWidth = 0;
+    this.BorderType = "color"; //
+    this.BorderCode = "#000";
+    this._borderStyle = null;
 
     this.IsMouseOver = false;
 
@@ -285,6 +286,13 @@ Anibody.shapes.Shape.prototype.ClearBorderStyle = function(){
 };
 
 /**
+ * Circular sort points around the Centroid
+ */
+Anibody.shapes.Shape.prototype.Sort = function () {
+    this._sortPoints();
+};
+
+/**
  * @see README_DOKU.txt
  */
 Anibody.shapes.Shape.prototype.Draw = function (c) {
@@ -357,7 +365,7 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
  */
 Anibody.shapes.Shape.prototype.EasyDraw = function (c) {
     var rp = this.Centroid;
-
+    c.save();
     c.translate(rp.x, rp.y);
 
     if(this.VisualRotation){
@@ -379,6 +387,7 @@ Anibody.shapes.Shape.prototype.EasyDraw = function (c) {
         c.lineWidth = this.BorderWidth;
         c.stroke();
     }
+    c.restore();
 }
 
 /**
@@ -695,8 +704,11 @@ Anibody.shapes.Shape.prototype._sortPoints = function () {
  * @returns {undefined}
  */
 Anibody.shapes.Shape.prototype._pointsDataUpdate = function () {
-    this._sortPoints();
+    if(this.AutoSort)
+        this._sortPoints();
+    
     this._calculateCentroid();
+    
     //this._sortPoints(); // sort again if you rely on the angle values being correct for the current centroid
     this._calculateSurroundingRectangle();
     this._calculateArea();

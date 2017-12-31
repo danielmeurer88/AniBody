@@ -560,6 +560,38 @@ Anibody.ECMAScriptExtension = function () {
         return this.DataURL;
     };
 
+     /**
+     * Creates a circle path with the radius r. The circle touches the axis of x and y if centroid is false
+     * Is it true than x,y will be the centroid of the circle
+     * @param {number} x
+     * @returns {undefined}
+     */
+    window.CanvasRenderingContext2D.prototype.download = function (filename) {
+
+        if (typeof filename === "undefined"){
+            var d = new Date();
+            filename = "image_" + d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate() + "-" + d.getHours() + "-" + d.getMinutes() + "-" + d.getSeconds() + ".png";
+        }
+
+        data = this.canvas.toDataURL();
+
+        var saveData = (function () {
+            var a = document.createElement("a");
+            document.body.appendChild(a);
+            a.style = "display: none";
+            return function (data, fileName) {
+                var url = data;
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+            };
+        }());
+
+        saveData(data, filename);
+
+    };
+
     /**
      * Creates a circle path with the radius r. The circle touches the axis of x and y if centroid is false
      * Is it true than x,y will be the centroid of the circle

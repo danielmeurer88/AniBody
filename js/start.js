@@ -487,4 +487,7 @@ function testTalignment(engine){
 
     var green = new T("green", 220, 250);
     green.Register();
+
+    var res = red.IsCollidingWith(green);
+    console.log(`Collision: ${res}`);
 }

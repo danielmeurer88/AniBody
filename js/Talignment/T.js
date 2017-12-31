@@ -54,6 +54,7 @@ T.prototype.Initialize = function () {
 
     var s = new Anibody.shapes.Shape();
 
+    s.AutoSort = false;
     s.AddPoints.apply(s,p);
     s.Move(this._dx, this._dy);
 
@@ -90,8 +91,10 @@ T.prototype.IsCollidingWith = function (s) {
     s.Shape.EasyDraw(c);
 
     // TESTING - Download result
-    var data = can.toDataURL();
-    this.Engine.Download("CollitionTest", data);
+    // var data = can.toDataURL();
+    // this.Engine.Download("CollisionTest", data);
+
+    c.download();
 
     // search if there are any drawn pixel - if yes: they collide
     // TODO
