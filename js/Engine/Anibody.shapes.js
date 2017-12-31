@@ -623,28 +623,7 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
 
 };
 
-Anibody.shapes.Shape.prototype.IsCollidingWith = function (s) {
-    
-    var can = document.createElement("canvas");
-    can.width = this.Engine.Canvas.width;
-    can.height = this.Engine.Canvas.height;
-    var c = can.getContext("2d");
 
-    // fill this shape
-    this.EasyDraw(c);
-    // source-in
-    c.globalCompositeOperation = "source-in";
-
-    // fill other shape
-    s.EasyDraw(c);
-
-    // TESTING - Download result
-    var data = can.toDataURL();
-    this.Engine.Download("CollitionTest", data);
-
-    // search if there are any drawn pixel - if yes: they collide
-    // TODA
-};
 
 /**
  * Moves the Shape

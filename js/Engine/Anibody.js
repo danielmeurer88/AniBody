@@ -869,11 +869,11 @@ Anibody.importAll = function(packagePath){
 
 /**
  * merges a user written object into a main object
- * - the main object contains all needed keys and default values
+ * - the main object contains all needed keys with (idealy) default values
  * - the values of the user object may overwrite the main object
  * if they both have the specific key in common
  * @param {Object} main
- * @param {Object} user - 
+ * @param {Object} user 
  * @returns {undefined}
  */
 Anibody.mergeOptionObject = function(main, user){

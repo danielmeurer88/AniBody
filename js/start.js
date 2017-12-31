@@ -128,7 +128,7 @@ function button1(engine) {
 
 function button2(engine) {
 
-    testSoundWrapper(engine);
+    testTalignment(engine);
 }
 
 //###########################################
@@ -477,4 +477,14 @@ function testImageWrapper(engine){
     // starts drawing and processInput
     w.Register();
 
+}
+
+function testTalignment(engine){
+    engine.FlushObjects();
+
+    var red = new T("red", 200, 200);
+    red.Register();
+
+    var green = new T("green", 220, 250);
+    green.Register();
 }
