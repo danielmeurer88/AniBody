@@ -482,13 +482,13 @@ function testImageWrapper(engine){
 function testTalignment(engine){
     engine.FlushObjects();
 
-    var red = new T("red", 200, 200);
+    var red = new T("red", 0, 0);
     red.Register();
 
-    var green = new T("green", 220, 280);
+    var green = new T("green", 0, 245);
     green.Register();
 
-    var blue = new T("blue", 220, 140);
+    var blue = new T("blue", 300, 140);
     blue.Register();
 
     var res = red.IsCollidingWith([green, blue]);

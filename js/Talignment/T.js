@@ -92,6 +92,9 @@ T.prototype.IsCollidingWith = function (arr) {
     can.height = height;
     var c = can.getContext("2d");
 
+    var i,j, k;
+    var r,b;
+
     // get image data of this T
     
     if (this.Shape.Points.length > 1) {
@@ -99,7 +102,7 @@ T.prototype.IsCollidingWith = function (arr) {
 
         c.beginPath();
         c.moveTo(this.Shape.Points[0].x - x, this.Shape.Points[0].y - y);
-        for (var i = 1; i < this.Shape.Points.length; i++) {
+        for (i = 1; i < this.Shape.Points.length; i++) {
             c.lineTo(this.Shape.Points[i].x - x, this.Shape.Points[i].y - y);
         }
         c.closePath();
@@ -121,8 +124,7 @@ T.prototype.IsCollidingWith = function (arr) {
     c.clearRect(0,0,width,height);
 
     // get image data of all shapes in the array
-
-    for(var i=0; i<arr.length; i++){
+    for(i=0; i<arr.length; i++){
 
         s = arr[i];
 
@@ -131,8 +133,8 @@ T.prototype.IsCollidingWith = function (arr) {
 
             c.beginPath();
             c.moveTo(s.Shape.Points[0].x - x, s.Shape.Points[0].y - y);
-            for (var i = 1; i < s.Shape.Points.length; i++) {
-                c.lineTo(s.Shape.Points[i].x - x, s.Shape.Points[i].y - y);
+            for (j = 1; j < s.Shape.Points.length; j++) {
+                c.lineTo(s.Shape.Points[j].x - x, s.Shape.Points[j].y - y);
             }
             c.closePath();
 
@@ -154,8 +156,7 @@ T.prototype.IsCollidingWith = function (arr) {
 
     // loop through it
     // where a red pixel (red above 250) is, there should be no blue pixel in all of the other image datas
-    var i,j, k;
-    var r,b;
+    
     for(j=0; j<height; j++){
         for(i=0; i<width; i++){
 
@@ -163,7 +164,7 @@ T.prototype.IsCollidingWith = function (arr) {
 
             if(r > 250){
 
-                for(k=0; k <= otherImageData.length; k++){
+                for(k=0; k < otherImageData.length; k++){
                     b = otherImageData[k].data[ 4 * (i + width * j) + 2 ]; // blue value of pixel (i,j)
 
                     if(b > 250){
