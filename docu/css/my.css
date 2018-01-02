@@ -4,7 +4,7 @@ body {
     color : rgb(24, 24, 24);
 }
 
-header {
+header, footer {
     
     background-color: #404040;
     color : white;
