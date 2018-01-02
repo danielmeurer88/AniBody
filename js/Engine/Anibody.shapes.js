@@ -84,6 +84,7 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this._borderStyle = null;
 
     this.IsMouseOver = false;
+    this.Selected = false;
 
     this._rotation = 0;
 
@@ -329,6 +330,11 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
 
         c.fillStyle = this._fillStyle;
         c.fill();
+
+        if(this.Selected){
+            c.fillStyle = "rgba(255,255,255,0.33)";
+            c.fill();
+        }
 
         // STROKE
 

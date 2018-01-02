@@ -7,9 +7,9 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.1.6",
+        Version: "1.1.7",
         Author: "Daniel Meurer",
-        LastUpdated: "2017_12_23_h17" // year_month_day_hhour
+        LastUpdated: "2018_1_2_h1" // year_month_day_hhour
     };
 
     this.StartTimestamp = Date.now();

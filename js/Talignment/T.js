@@ -14,21 +14,34 @@ function T(color, dx, dy) { // Base class
     this._dx = dx; // delta x
     this._dy = dy; // delta y 
 
-    this.X = 0;
-    this.Y = 0;
-
     this.Shape = null;
 
-    // var self = this;
-    // Object.defineProperty(this, "xyz", {
-    //     set: function (newValue) {
-    //         self.xyz = newValue;
-    //     },
-    //     get: function () { return false; }
-    // });
+    var self = this;
+    Object.defineProperty(this, "X", {
+        set: function (newValue) {},
+        get: function () { return self.Shape.X; }
+    });
+    Object.defineProperty(this, "Y", {
+        set: function (newValue) {},
+        get: function () { return self.Shape.Y; }
+    });
 
-    // this.xyz = 0;
-    // Object.defineProperty(this, "xyz", { enumerable: false });
+    Object.defineProperty(this, "Width", {
+        set: function (newValue) {},
+        get: function () { return self.Shape.Width; }
+    });
+    Object.defineProperty(this, "Height", {
+        set: function (newValue) {},
+        get: function () { return self.Shape.Height; }
+    });
+    Object.defineProperty(this, "IsMouseOver", {
+        set: function (newValue) {},
+        get: function () { return self.Shape.IsMouseOver; }
+    });
+    Object.defineProperty(this, "Selected", {
+        set: function (newValue) {},
+        get: function () { return self.Shape.Selected; }
+    });
 
     this.Initialize();
 };
@@ -60,9 +73,9 @@ T.prototype.Initialize = function () {
 
     s.FillCode = this._color; // none, colorCode, codename, stops-object
 
-    s._drawPoints = true;
-    s._drawCentroid = true;
-    s._drawArea = true;
+    // s._drawPoints = true;
+    // s._drawCentroid = true;
+    // s._drawArea = true;
     s._drawSurroundingRectangle = true;
 
     s.VisualRotation = false;
@@ -177,3 +190,6 @@ T.prototype.IsCollidingWith = function (arr) {
     return false;
 };
 
+T.prototype.Move = function (dx,dy) {
+    this.Shape.Move(dx,dy);
+};

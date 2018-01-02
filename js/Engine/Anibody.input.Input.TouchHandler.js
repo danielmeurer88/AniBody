@@ -188,8 +188,8 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
         }
     }
     
-    if(this.ExpectTouch)
-        console.log("No guesture matched: timedelta: {0}, xdelta: {1}, ydelta: {2}".format(timedelta, xdelta, ydelta));
+    // if(this.ExpectTouch)
+    //     console.log("No guesture matched: timedelta: {0}, xdelta: {1}, ydelta: {2}".format(timedelta, xdelta, ydelta));
     
     //clean-up at the end
     this.EventObjects.TouchMoveEvent = false; // Start- and EndEventObject will be overwritten in the next guesture but MoveEventObject only if the guesture moves - to be sure => clean it up
