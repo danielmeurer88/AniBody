@@ -19,12 +19,12 @@ function TGUI(){
         }
     });
 
-    this.Initialization();
+this.Initialize();
 }
 TGUI.prototype = Object.create(Anibody.EngineObject.prototype);
 TGUI.prototype.constructor = TGUI;
 
-TGUI.prototype.Initialization = function(){
+TGUI.prototype.Initialize = function(){
 
     var red = new T("red", 0, 0);
 
