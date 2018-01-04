@@ -23,3 +23,7 @@ section a:hover {
     color : rgb(170, 30, 30);
     font-weight: bold;
 }
+
+.row h5 {
+    margin-top: 0.8rem;
+}

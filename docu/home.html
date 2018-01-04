@@ -10,7 +10,6 @@
 	<script language="javascript" type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
 
 	<script language="javascript" type="text/javascript" src="js/highlight.pack.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
 
 	<script language="javascript" type="text/javascript" src="js/anibody.1.1.7.js"></script>
 	<script language="javascript" type="text/javascript" src="js/start.js"></script>
@@ -67,23 +66,45 @@
 	<!-- ######    CONTENT    ######################################################################################################## -->
 	<!-- ############################################################################################################################# -->
 
-	<section>
+	<div class="jumbotron">
 
 		<div style="margin-top:0.5rem" class="container-fluid">
-
 			<div class="row">
-
 				<div class="col-xl-10 offset-xl-1">
-					<h3>AniBody - A 2d Canvas-based game engine</h3>
+					<h1>Anibody</h1>
+					<p><i>A 2d Canvas-based game engine</i></p>
 				</div>
-
 			</div>
-
 		</div>
 
-	</section>
+	</div>
 
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xl-10 offset-xl-1">	
+				<h5>Idea of the Engine:</h5>
+				<div>It provides the developer a possibility to implement game elements or interactive animations with less writing effort in a short period of time.</div>
+				<div>It's HTML5-conform and hence cross-browser friendly.</div>
+			</div>
+		</div>
+
+		<div class="row">
+				<div class="col-xl-10 offset-xl-1">	
+					<h5>Installation:</h5>
+					<pre><code class="html">
+<!-- You do not have to use jquery but if you do than jquery should be included before anibody -->
+<script_ language="javascript" type="text/javascript" src="jquery.js"></script_>
+
+<script_ language="javascript" type="text/javascript" src="anibody.1.x.x.js"></script_>
+					</code></pre>
+
+				</div>
+			</div>
+
+	</div>
 	
+
+	<!-- ##### FOOTER ############################## -->
 	<footer class="footer navbar-dark">
       <div class="container-fluid">
         
@@ -99,6 +120,20 @@
 
       </div>
     </footer>
+
+	<script>
+		// searches through every code-element for typical html-characters and replace them
+		// also it searches for "script_" and replaces it with "script" ...
+		// if a browser sees a "script"-element it directly tries to run the script, which leads to unwanted behaviour 
+		var codes = document.querySelectorAll("code");
+		var element;
+		for(var i=0; i<codes.length; i++){
+			element = codes[i];
+			element.innerHTML = element.innerHTML.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;").replace(/script_/g, "script");;
+		}
+		// starts highlighting of the source code in code-elements
+		hljs.initHighlightingOnLoad();
+	</script>
 
 </body>
 
