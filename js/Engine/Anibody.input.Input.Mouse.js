@@ -199,7 +199,7 @@ Anibody.input.Input.Mouse.prototype.UnregisterMouseEvents = function () {
 };
 
 Anibody.input.Input.Mouse.prototype.FakeMouseClick = function (x, y) {
-    console.log("fake mouse down at {0},{1}".format( x, y) );
+    //console.log("fake mouse down at {0},{1} - Runtime: {2}s".format( x, y, (this.Engine.RunTime/1000)) );
     var releaseLength = 300;
 
     var fe = {
@@ -208,11 +208,11 @@ Anibody.input.Input.Mouse.prototype.FakeMouseClick = function (x, y) {
 
     this.EventObject = fe;
     this.Left.Down = true;
-    this.Up = false;
+    this.Left.Up = false;
     this.Left.FramesUp = 0;
 
     var upf = function () {
-        //console.log("fake mouse up: {0},{1}".format( x, y) );
+        //console.log("fake mouse up: {0},{1} - Runtime: {2}".format( x, y, (this.Engine.RunTime/1000)) );
         var fe = {
             pageX: x, pageY: y, clientX: x, clientY: y, which: 1
         };
