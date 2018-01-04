@@ -49,7 +49,10 @@ Anibody.input.Input.TouchHandler = function TouchHandler(){
         Detected : false,
         TapListener : [],
         LongTapListener : [],
-        SwipeListener : []
+        SwipeListener : [],
+        TouchStartListener : [],
+        MoveListener : [],
+        TouchEndListener : []
     };
     
     this.Finger2 = {
@@ -58,7 +61,10 @@ Anibody.input.Input.TouchHandler = function TouchHandler(){
         Detected : false,
         TapListener : [],
         LongTapListener : [],
-        SwipeListener : []
+        SwipeListener : [],
+        TouchStartListener : [],
+        MoveListener : [],
+        TouchEndListener : []
     };
     
 this.Initialize();
@@ -98,6 +104,19 @@ Anibody.input.Input.TouchHandler.prototype.TouchStartHandler = function(e){
         this.Finger2.Y = e.touches[1].clientY;
         this.Finger2.Detected = true;
     }
+
+    if (this.Finger2.Detected) {
+        for (var i = 0; i<this.Finger2.TouchStartListener.length; i++) {
+            cbo = this.Finger2.TouchStartListener[i];
+            Anibody.CallObject(cbo);
+        }
+    } else {
+        for (var i = 0; i<this.Finger1.TouchStartListener.length; i++) {
+            cbo = this.Finger1.TouchStartListener[i];
+            Anibody.CallObject(cbo);
+        }
+    }
+
     if(this.PreventDefault)
         e.preventDefault();
 };
@@ -116,6 +135,19 @@ Anibody.input.Input.TouchHandler.prototype.TouchMoveHandler = function(e){
         
         this.Finger2.X = e.touches[1].clientX;
         this.Finger2.Y = e.touches[1].clientY;
+    }
+
+    // check if there are move listener on the detected finger and call them
+    if (this.Finger2.Detected) {
+        for (var i = 0; i<this.Finger2.MoveListener.length; i++) {
+            cbo = this.Finger2.MoveListener[i];
+            Anibody.CallObject(cbo);
+        }
+    } else {
+        for (var i = 0; i<this.Finger1.MoveListener.length; i++) {
+            cbo = this.Finger1.MoveListener[i];
+            Anibody.CallObject(cbo);
+        }
     }
 
     if (this.PreventScrolling) {
@@ -199,6 +231,18 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
 //    this.Finger1.Y = -1;
 //    this.Finger2.X = -1;
 //    this.Finger2.Y = -1;
+
+    if (this.Finger2.Detected) {
+        for (var i = 0; i<this.Finger2.TouchEndListener.length; i++) {
+            cbo = this.Finger2.TouchEndListener[i];
+            Anibody.CallObject(cbo);
+        }
+    } else {
+        for (var i = 0; i<this.Finger1.TouchEndListener.length; i++) {
+            cbo = this.Finger1.TouchEndListener[i];
+            Anibody.CallObject(cbo);
+        }
+    }
     
     this.ExpectTouch = false;
     
@@ -278,7 +322,7 @@ Anibody.input.Input.TouchHandler.prototype.OnTapFinger1 = function(){
     }
     
     var cbo;
-    for(var i=0; this.Finger1.TapListener.length; i++){
+    for(var i=0; i<this.Finger1.TapListener.length; i++){
         cbo = this.Finger1.TapListener[i];
         Anibody.CallObject(cbo);
     }
@@ -290,7 +334,7 @@ Anibody.input.Input.TouchHandler.prototype.OnTapFinger1 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnTapFinger2 = function(){
     console.log("Finger2 Tap");
     var cbo;
-    for(var i=0; this.Finger2.TapListener.length; i++){
+    for(var i=0; i<this.Finger2.TapListener.length; i++){
         cbo = this.Finger2.TapListener[i];
         Anibody.CallObject(cbo);
     }
@@ -302,7 +346,7 @@ Anibody.input.Input.TouchHandler.prototype.OnTapFinger2 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
     console.log("Finger1 LongTap");
     var cbo;
-    for(var i=0; this.Finger1.LongTapListener.length; i++){
+    for(var i=0; i<this.Finger1.LongTapListener.length; i++){
         cbo = this.Finger1.LongTapListener[i];
         Anibody.CallObject(cbo);
     }
@@ -314,7 +358,7 @@ Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
     console.log("Finger2 LongTap");
     var cbo;
-    for(var i=0; this.Finger2.LongTapListener.length; i++){
+    for(var i=0; i<this.Finger2.LongTapListener.length; i++){
         cbo = this.Finger2.LongTapListener[i];
         Anibody.CallObject(cbo);
     }
@@ -327,7 +371,7 @@ Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
     console.log("Finger1 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
     var cbo;
-    for(var i=0; this.Finger1.SwipeListener.length; i++){
+    for(var i=0; i<this.Finger1.SwipeListener.length; i++){
         cbo = this.Finger1.SwipeListener[i];
         Anibody.CallObject(cbo, dir);
     }
@@ -340,7 +384,7 @@ Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
 Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger2 = function(dir){
     console.log("Finger2 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
     var cbo;
-    for(var i=0; this.Finger2.SwipeListener.length; i++){
+    for(var i=0; i<this.Finger2.SwipeListener.length; i++){
         cbo = this.Finger2.SwipeListener[i];
         Anibody.CallObject(cbo, dir);
     }
@@ -361,6 +405,12 @@ Anibody.input.Input.TouchHandler.prototype.AddEventListener = function(eventtype
         case "longtapfinger2" : this.Finger2.LongTapListener.push(cbo);break;
         case "swipefinger1" : this.Finger1.SwipeListener.push(cbo);break;
         case "swipefinger2" : this.Finger2.SwipeListener.push(cbo);break;
+        case "touchstartfinger1" : this.Finger1.TouchStartListener.push(cbo);break;
+        case "touchstartfinger2" : this.Finger2.TouchStartListener.push(cbo);break;
+        case "movefinger1" : this.Finger1.MoveListener.push(cbo);break;
+        case "movefinger2" : this.Finger2.MoveListener.push(cbo);break;
+        case "touchendfinger1" : this.Finger1.TouchEndListener.push(cbo);break;
+        case "touchendfinger2" : this.Finger2.TouchEndListener.push(cbo);break;
         default : console.log("could not add event listener with type "+eventtype);
     }
 };

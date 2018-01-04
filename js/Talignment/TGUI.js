@@ -8,6 +8,15 @@ function TGUI(){
     this._movestep = 25;
     this._keyModulo = 10;
 
+    this.StartX = 0;
+    this.StartY = 0;
+    this.LastX = 0;
+    this.LastY = 0;
+    this.CurrentX = 0;
+    this.CurrentY = 0;
+    
+    this.Dragging = false;
+
     var self = this;
     Object.defineProperty(this, "Selected", {
         set: function (newValue) {},
@@ -95,6 +104,29 @@ TGUI.prototype.Initialize = function(){
 
     this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", onmouseclickcbo);
 
+    // register Touch 
+
+    var th = this.Engine.Input.TouchHandler;
+
+    th.FakeMouseClick = false;
+    
+    var ontouchstart = function(arg1){
+        var e = th;
+        console.log("start");
+    }.getCallbackObject(this, "test");
+    th.AddEventListener("touchstartfinger1", ontouchstart);
+
+    var ontouchmove = function(arg1){
+        var e = th;
+        console.log("move");
+    }.getCallbackObject(this, "test");
+    th.AddEventListener("movefinger1", ontouchmove);
+
+    var ontouchend = function(arg1){
+        var e = th;
+        console.log("end");
+    }.getCallbackObject(this, "test");
+    th.AddEventListener("touchendfinger1", ontouchend);
 };
 
 TGUI.prototype.ProcessInput = function(){
