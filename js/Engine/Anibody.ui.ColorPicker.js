@@ -265,6 +265,12 @@ Anibody.ui.ColorPicker.prototype.ProcessInput = function(){
     
     // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 };
+
+/**
+ * @see Anibody.ui.ColorPicker.prototype.Show()
+ */
+Anibody.ui.ColorPicker.prototype.Start = function(){this.Show();};
+
 /**
  * @see README_DOKU.txt
  */
@@ -275,6 +281,10 @@ Anibody.ui.ColorPicker.prototype.Show = function(){
             this.AddMouseHandler();
     }}).Start();
 };
+/**
+ * @see Anibody.ui.ColorPicker.prototype,Hide()
+ */
+Anibody.ui.ColorPicker.prototype.Stop = function(){this.Hide();};
 /**
  * @see README_DOKU.txt
  */
