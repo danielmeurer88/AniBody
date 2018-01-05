@@ -2,10 +2,10 @@ Anibody.SetPackage("Anibody", "ui");
 
 /**
  * A class which opens a dialog box that allows the user to select a certain color
- * @param {type} x the amount of pixels from the canvas nullpoint to the dialog box 
- * @param {type} y the amount of pixels from the canvas nullpoint to the dialog box 
- * @param {type} width the width of the dialog box, which will be the height too
- * @param {type} cpcbo a Callback-Object, which contents the function, which will be trigged when the user selects a color and presses ok
+ * @param {type} x the amount of pixels from the canvas nullpoint to the dialog box (optional)
+ * @param {type} y the amount of pixels from the canvas nullpoint to the dialog box (optional)
+ * @param {type} width the width of the dialog box, which will be the height too (optional)
+ * @param {type} cpcbo a Callback-Object, which contents the function, which will be trigged when the user selects a color and presses ok (optional)
  * @returns {ColorPicker}
  */
 Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
@@ -13,6 +13,16 @@ Anibody.ui.ColorPicker = function ColorPicker(x,y,width, cpcbo){
     
     this.ColorPickedCallbackObject = cpcbo;
     
+    var shortestLength = Math.min(this.Engine.Canvas.width, this.Engine.Canvas.height);
+    if(isNaN(x))
+        x = shortestLength*0.05;
+
+    if(isNaN(y))
+        y = shortestLength*0.05;
+
+    if(isNaN(width))
+        width = shortestLength*0.9;
+
     this.X = x;
     this.Y = y;
     this.Width = width;

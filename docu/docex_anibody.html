@@ -71,35 +71,54 @@
 
 		<div style="margin-top:0.5rem" class="container-fluid">
 
+			<!-- ++++++++++++++++++++++++++++++++++++++++++  Back - row -->
 			<div class="row">
-
 				<div class="col-xl-10 offset-xl-1">
 					<!-- CONTENT -->
 					<a href="docex.html">...back</a>
+				</div>
+			</div>
+
+			<!-- ++++++++++++++++++++++++++++++++++++++++++  Import - row -->
+			<div id="import" class="row">
+
+				<div class="col-xl-10 offset-xl-1">
+					<!-- CONTENT -->
+					<h5>Anibody.import()</h5>
+					<div>Let's say we want a ColorPicker. The class name is <span class='techterms'>Anibody.ui.Colorpicker</span>. 
+						Writing it everytime you want to instantiate a new ColorPicker is quiet cumbersome.</div>
+					<p>Therefore Anibody provides an import function:</p>
+					<pre><code class="javascript">Anibody.import(Anibody.ui.ColorPicker);
+var cp = ColorPicker();
+cp.Start();</code></pre>
+					<p>If ColorPicker is still too long or the name collides with another class in your project then there is the possibility
+						to use an alias.</p>
+					<pre><code class="javascript">Anibody.import(Anibody.ui.ColorPicker, "Copi");
+var cp = Copi();
+cp.Start();</code></pre>
+
+				</div>
+
+			</div>
+
+	</section>
+
+
+	<footer class="footer navbar-dark">
+		<div class="container-fluid">
+
+			<div class="row navbar-nav">
+
+				<div class="col-xl-2 d-md-none d-xl-none">
+					<a class="nav-link" href="https://github.com/danielmeurer88/AniBody" target="_blank" rel="noopener" aria-label="GitHub">
+						<i class="fa fa-github" aria-hidden="true"></i> Anibody on GitHub
+					</a>
 				</div>
 
 			</div>
 
 		</div>
-
-	</section>
-
-	
-	<footer class="footer navbar-dark">
-      <div class="container-fluid">
-        
-        <div class="row navbar-nav">
-        
-            <div class="col-xl-2 d-md-none d-xl-none">
-                <a class="nav-link" href="https://github.com/danielmeurer88/AniBody" target="_blank" rel="noopener" aria-label="GitHub">
-                    <i class="fa fa-github" aria-hidden="true"></i> Anibody on GitHub
-                </a>
-            </div>
-        
-        </div>
-
-      </div>
-    </footer>
+	</footer>
 
 </body>
 

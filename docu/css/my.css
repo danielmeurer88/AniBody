@@ -27,3 +27,7 @@ section a:hover {
 .row h5 {
     margin-top: 0.8rem;
 }
+
+.techterms {
+    font-family: Courier New, Courier, monospace;
+}
