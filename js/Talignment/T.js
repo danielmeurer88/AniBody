@@ -193,3 +193,7 @@ T.prototype.IsCollidingWith = function (arr) {
 T.prototype.Move = function (dx,dy) {
     this.Shape.Move(dx,dy);
 };
+
+T.prototype.IsPointInT = function (x,y) {
+    return this.Shape.IsPointInShape(x,y);
+};

@@ -223,15 +223,6 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
     // if(this.ExpectTouch)
     //     console.log("No guesture matched: timedelta: {0}, xdelta: {1}, ydelta: {2}".format(timedelta, xdelta, ydelta));
     
-    //clean-up at the end
-    this.EventObjects.TouchMoveEvent = false; // Start- and EndEventObject will be overwritten in the next guesture but MoveEventObject only if the guesture moves - to be sure => clean it up
-    this.Finger1.Detected = false;
-    this.Finger2.Detected = false;
-//    this.Finger1.X = -1;
-//    this.Finger1.Y = -1;
-//    this.Finger2.X = -1;
-//    this.Finger2.Y = -1;
-
     if (this.Finger2.Detected) {
         for (var i = 0; i<this.Finger2.TouchEndListener.length; i++) {
             cbo = this.Finger2.TouchEndListener[i];
@@ -244,6 +235,10 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
         }
     }
     
+    //clean-up at the end
+    this.EventObjects.TouchMoveEvent = false; // Start- and EndEventObject will be overwritten in the next guesture but MoveEventObject only if the guesture moves - to be sure => clean it up
+    this.Finger1.Detected = false;
+    this.Finger2.Detected = false;
     this.ExpectTouch = false;
     
     if(this.PreventDefault)

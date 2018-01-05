@@ -99,6 +99,10 @@ function menu_callback(engine) {
     // register the fullscreen button 
     $("#fs_btn").on("click", function () {
         engine.RequestFullscreen();
+
+        //testing
+        engine.FullScale();
+
         var f = function (en) {
             en.ExitFullscreen();
         };

@@ -8,13 +8,15 @@ function TGUI(){
     this._movestep = 25;
     this._keyModulo = 10;
 
+    // touch and mouse related dragging
     this.StartX = 0;
     this.StartY = 0;
     this.LastX = 0;
     this.LastY = 0;
     this.CurrentX = 0;
     this.CurrentY = 0;
-    
+    this.MoveStep = 20;
+    this.RotateStep = Math.PI * 0.2;
     this.Dragging = false;
 
     var self = this;
@@ -47,6 +49,78 @@ TGUI.prototype.Initialize = function(){
 
     this.Widget = new Anibody.Widget();
     this.Widget.that = this;
+
+    this._overwriteProcessInputOfWidget();
+
+    this.Widget.Register();
+
+    // register Mouse handler
+    this._registerMouseHandler();
+
+    // register Touch 
+    this._registerTouchListener();
+    
+};
+
+TGUI.prototype.ProcessInput = function(){
+    var i;
+
+    for(i=0; i<4; i++)
+        this.Ts[i].ProcessInput();
+};
+
+TGUI.prototype.Update = function(){
+    var i;
+
+    for(i=0; i<4; i++){
+        this.Ts[i].Update();
+    }
+        
+};
+
+TGUI.prototype.Draw = function(c){
+    var i;
+
+    for(i=0; i<4; i++)
+        this.Ts[i].Draw(c);
+};
+
+/**
+ * Selects one of the 4 pieces. Whether by the attribute IsMouseOver or by a given position
+ * @param {number} x - optional x value
+ * @param {number} y - optional y value
+ */
+TGUI.prototype.SelectPiece = function(x,y){
+    var i;
+    var seli = null;
+
+    if(isNaN(x) && isNaN(y)){
+        for(i=0; i<4; i++){
+            if(this.Ts[i].IsMouseOver){
+                this.Ts[3].Shape.Selected = false;
+                this.Ts[i].Shape.Selected = true;
+                seli = i;
+            }
+        }
+    }else{
+        for(i=0; i<4; i++){
+            if(this.Ts[i].IsPointInT(x,y)){
+                this.Ts[3].Shape.Selected = false;
+                this.Ts[i].Shape.Selected = true;
+                seli = i;
+            }
+        }
+    }
+    
+
+    if(seli !== null){
+        var temp = this.Ts.delete(seli);
+        this.Ts.push(temp);
+    }
+        
+};
+
+TGUI.prototype._overwriteProcessInputOfWidget = function(){
     this.Widget.keyCounter = 0;
     this.Widget.moveInhancer = 1;
 
@@ -90,9 +164,9 @@ TGUI.prototype.Initialize = function(){
             that.Selected.Move(0, movestep);
         }
     };
+};
 
-    this.Widget.Register();
-
+TGUI.prototype._registerMouseHandler = function(){
     var onmouseclickcbo = function (event) {
 
         var mpos = event.Mouse.Position;
@@ -103,71 +177,92 @@ TGUI.prototype.Initialize = function(){
     }.getCallbackObject(this);
 
     this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", onmouseclickcbo);
+};
 
-    // register Touch 
-
+TGUI.prototype._registerTouchListener = function(){
     var th = this.Engine.Input.TouchHandler;
 
     th.FakeMouseClick = false;
     
     var ontouchstart = function(arg1){
-        var e = th;
-        console.log("start");
+        //console.log("start");
+
+        var x1 = th.Finger1.X;
+        var y1 = th.Finger1.Y;
+        var x2 = th.Finger2.X;
+        var y2 = th.Finger2.Y;
+
+        if(!th.Finger2.Detected){
+            this.SelectPiece(x1,y1);
+            this.StartX = x1;
+            this.StartY = y1;
+        }else{
+            this.StartX = x2;
+            this.StartY = y2;
+        }
+
+        this.CurrentX = this.StartX;
+        this.CurrentY = this.StartY;
+        this.LastX = this.StartX;
+        this.LastY = this.StartY;
+
     }.getCallbackObject(this, "test");
     th.AddEventListener("touchstartfinger1", ontouchstart);
 
     var ontouchmove = function(arg1){
-        var e = th;
-        console.log("move");
+        //console.log("move");
+
+        var x1 = th.Finger1.X;
+        var y1 = th.Finger1.Y;
+        var x2 = th.Finger2.X;
+        var y2 = th.Finger2.Y;
+
+        if(!th.Finger2.Detected){
+            this.CurrentX = x1;
+            this.CurrentY = y1;
+        }else{
+            this.CurrentX = x2;
+            this.CurrentY = y2;
+        }
+
+        this.Dragging = true;
+
+        // check if current touch x position is "MoveStep"-pixels (threshold) to the right
+        if(this.LastX + this.MoveStep <= this.CurrentX ){
+            this.LastX += this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(this.MoveStep, 0);
+            else
+                this.Selected.Shape.Rotate(this.RotateStep);
+        }
+
+        if(this.LastX - this.MoveStep >= this.CurrentX){
+            this.LastX -= this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(this.MoveStep*(-1), 0);
+            else
+                this.Selected.Shape.Rotate(this.RotateStep*(-1));
+        }
+
+        if(this.LastY + this.MoveStep <= this.CurrentY ){
+            this.LastY += this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(0, this.MoveStep);
+        }
+
+        if(this.LastY - this.MoveStep >= this.CurrentY){
+            this.LastY -= this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(0, this.MoveStep*(-1));
+        }
+
+
     }.getCallbackObject(this, "test");
     th.AddEventListener("movefinger1", ontouchmove);
 
     var ontouchend = function(arg1){
-        var e = th;
+        this.Dragging = false;
         console.log("end");
     }.getCallbackObject(this, "test");
     th.AddEventListener("touchendfinger1", ontouchend);
-};
-
-TGUI.prototype.ProcessInput = function(){
-    var i;
-
-    for(i=0; i<4; i++)
-        this.Ts[i].ProcessInput();
-};
-
-TGUI.prototype.Update = function(){
-    var i;
-
-    for(i=0; i<4; i++){
-        this.Ts[i].Update();
-    }
-        
-};
-
-TGUI.prototype.Draw = function(c){
-    var i;
-
-    for(i=0; i<4; i++)
-        this.Ts[i].Draw(c);
-};
-
-TGUI.prototype.SelectPiece = function(){
-    var i;
-    var seli = null;
-
-    for(i=0; i<4; i++){
-        if(this.Ts[i].IsMouseOver){
-            this.Ts[3].Shape.Selected = false;
-            this.Ts[i].Shape.Selected = true;
-            seli = i;
-        }
-
-    }
-
-    if(seli !== null){
-        var temp = this.Ts.delete(seli);
-        this.Ts.push(temp);
-    }
-        
 };

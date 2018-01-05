@@ -638,7 +638,27 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
 
 };
 
+Anibody.shapes.Shape.prototype.IsPointInShape = function (x, y) {
+    
+    var c = this.Engine.Context;
+    c.save();
 
+    if (this.Points.length > 1) {
+        // create Path
+        c.beginPath();
+        c.moveTo(this.Points[0].x, this.Points[0].y);
+        for (var i = 1; i < this.Points.length; i++) {
+            c.lineTo(this.Points[i].x , this.Points[i].y);
+        }
+        c.closePath();
+
+        return c.isPointInPath(x,y);
+    }else{
+        return false;
+    }
+
+
+};
 
 /**
  * Moves the Shape

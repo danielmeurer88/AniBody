@@ -444,6 +444,15 @@ Anibody.prototype.Download = function (name, data) {
 };
 
 /**
+ * Try to auto scale canvas
+ * @returns {boolean}
+ */
+Anibody.prototype.FullScale = function(){
+
+    
+};
+
+/**
  * Request the fullscreen mode for the canvas and returns true if the browser knows the feature
  * @returns {boolean}
  */
