@@ -127,7 +127,7 @@ function menu_callback(engine) {
 
 function button1(engine) {
 
-    testShape(engine);
+    testNewCallObjectOptions(engine);
 }
 
 function button2(engine) {
@@ -489,4 +489,43 @@ function testTalignment(engine){
     var tgui = new TGUI();
     tgui.Register();
     
+}
+
+function testNewCallObjectOptions(engine){
+
+    var func = function(){
+        console.log("Start +++++++++++++++++++++++++++++++++++");
+        console.log(arguments);
+        console.log("End +++++++++++++++++++++++++++++++++++");
+    };
+
+    var cbo_withParameter = func.getCallbackObject(engine, "mainParameter");
+    var cbo_withoutParameter = func.getCallbackObject(engine);
+
+    // main
+    Anibody.CallObject(cbo_withParameter);
+    
+    // pre, main,
+    Anibody.CallObject(cbo_withParameter, {
+        useApply : true,
+        preparameter : "preparameter",
+        //postparameter : "postparameter"
+    });
+
+    // pre, main, post
+    Anibody.CallObject(cbo_withParameter, {
+        useApply : true,
+        preparameter : "preparameter",
+        postparameter : "postparameter"
+    });
+
+    // ...
+    Anibody.CallObject(cbo_withoutParameter);
+    
+    // pre, post
+    Anibody.CallObject(cbo_withoutParameter, {
+        useApply : true,
+        preparameter : "preparameter",
+        postparameter : "postparameter"
+    });
 }

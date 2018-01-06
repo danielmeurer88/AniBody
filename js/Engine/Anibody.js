@@ -850,16 +850,85 @@ Anibody.CallObject = function(obj, opt){
     // 3 cases
 
     // 1. obj.parameter is undefined
+    if(typeof obj.parameter === "undefined"){
+        // if preparameter exists
+        if(main.preparameter !== null){
+            obj.parameter = main.preparameter;
+        }
+        // main.preparameter could be a primitive data type or an object
 
-    // 2. obj.parameter is defined and main.preparameter
-    // 2a. main.preparameter = is not an array
-    // 2b. main.preparameter = is an array
+        // if postparameter exists and is an array
+        if(main.postparameter !== null && main.postparameter.push){
+            // now it is possible that preparameter was written into the obj.parameter already
+            
+            // check if obj.parameter exists and is an array
+            if(typeof obj.parameter !== "undefined" && obj.parameter.push){
+                obj.parameter = obj.parameter.concat(main.postparameter);
+            }
 
-    // 3. obj.parameter is defined and main.postparameter
-    // 3a. main.postparameter = is not an array
-    // 3b. main.postparameter = is an array
+            // check if obj.parameter exists and is NOT an array
+            if(typeof obj.parameter !== "undefined" && !obj.parameter.push){
+                obj.parameter = [obj.parameter].concat(main.postparameter);
+            }
+        }
 
-    
+        // if postparameter exists and is NOT array
+        if(main.postparameter !== null && !main.postparameter.push){
+            // now it is possible that preparameter was written into the obj.parameter already
+            
+            // check if obj.parameter exists and is an array
+            if(typeof obj.parameter !== "undefined" && obj.parameter.push){
+                obj.parameter = obj.parameter.concat([main.postparameter]);
+            }
+
+            // check if obj.parameter exists and is NOT an array
+            if(typeof obj.parameter !== "undefined" && !obj.parameter.push){
+                obj.parameter = [obj.parameter, main.postparameter];
+            }
+        }
+
+
+    }else{
+        // 2. obj.parameter is defined and main.preparameter...
+        
+        // 2a. main.preparameter exists and is an array
+        if(main.preparameter !== null && main.preparameter.push){
+            
+            if(!obj.parameter.push)
+                obj.parameter = main.preparameter.concat([obj.parameter]);
+            else
+                obj.parameter = main.preparameter.concat(obj.parameter);
+
+        }
+
+        // 2b. main.preparameter exists and is NOT an array
+        if(main.preparameter !== null && !main.preparameter.push){
+            
+            if(!obj.parameter.push)
+                obj.parameter = [main.preparameter].concat([obj.parameter]);
+            else
+                obj.parameter = [main.preparameter].concat(obj.parameter);
+        }
+
+        // 3a. main.postparameter exists and is NOT an array
+        if(main.postparameter !== null && !main.postparameter.push){
+            
+            if(!obj.parameter.push)
+                obj.parameter = [obj.parameter].concat([main.postparameter]);
+            else
+                obj.parameter = obj.parameter.concat([main.postparameter]);
+        }
+
+        // 3b. main.postparameter exists and is an array
+        if(main.postparameter !== null && main.postparameter.push){
+            if(!obj.parameter.push)
+                obj.parameter = [obj.parameter].concat(main.postparameter);
+            else
+                obj.parameter = obj.parameter.concat(main.postparameter);
+        }
+
+    }
+
     if(typeof obj === "object" && typeof obj.function === "function"){
         if(main.useApply)
             obj.function.apply(obj.that, obj.parameter);
