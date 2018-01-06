@@ -626,6 +626,10 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
         // get distance
         d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
         
+        if(isNaN(p._angleRadian)){
+            p._angleRadian = this._getAngle(p);
+        }
+
         p._angleRadian += rad;
         p._angleDegree = (p._angleRadian * 180 / Math.PI);
 

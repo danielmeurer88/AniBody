@@ -5,7 +5,6 @@ function TGUI(){
 
     this.Widget = null;
 
-    this._movestep = 25;
     this._keyModulo = 10;
 
     // touch and mouse related dragging
@@ -16,8 +15,9 @@ function TGUI(){
     this.CurrentX = 0;
     this.CurrentY = 0;
     this.MoveStep = 20;
-    this.RotateStep = Math.PI * 0.2;
+    this.RotateStep = Math.PI * 0.1;
     this.Dragging = false;
+    this.Rotating = false;
 
     var self = this;
     Object.defineProperty(this, "Selected", {
@@ -37,13 +37,13 @@ TGUI.prototype.constructor = TGUI;
 
 TGUI.prototype.Initialize = function(){
 
-    var red = new T("red", 0, 0);
+    var red = new T("red", this.MoveStep*1, this.MoveStep*1);
 
-    var green = new T("green", 0, 245);
+    var green = new T("green", this.MoveStep*2, this.MoveStep*2);
 
-    var blue = new T("blue", 300, 140);
+    var blue = new T("blue", this.MoveStep*3, this.MoveStep*3);
 
-    var yellow = new T("yellow", 200, 200);
+    var yellow = new T("yellow", this.MoveStep*4, this.MoveStep*4);
     yellow.Shape.Selected = true;
     this.Ts.push(red, green, blue, yellow);
 
@@ -145,7 +145,7 @@ TGUI.prototype._overwriteProcessInputOfWidget = function(){
         if(this.keyCounter > 120){
             this.moveInhancer++;
         }
-        var movestep = that._movestep * this.moveInhancer;
+        var movestep = that.Movestep * this.moveInhancer;
 
 
         if (keys.A.FramesPressed % that._keyModulo === 1) {
@@ -162,6 +162,14 @@ TGUI.prototype._overwriteProcessInputOfWidget = function(){
 
         if (keys.S.FramesPressed % that._keyModulo === 1) {
             that.Selected.Move(0, movestep);
+        }
+
+        if (keys.Q.FramesPressed % that._keyModulo === 1) {
+            that.Selected.Shape.Rotate(that.RotateStep);
+        }
+
+        if (keys.E.FramesPressed % that._keyModulo === 1) {
+            that.Selected.Shape.Rotate(that.RotateStep*(-1));
         }
     };
 };
@@ -197,16 +205,11 @@ TGUI.prototype._registerTouchListener = function(){
 
         var x1 = th.Finger1.X;
         var y1 = th.Finger1.Y;
-        var x2 = th.Finger2.X;
-        var y2 = th.Finger2.Y;
 
         if(!th.Finger2.Detected){
             this.SelectPiece(x1,y1);
             this.StartX = x1;
             this.StartY = y1;
-        }else{
-            this.StartX = x2;
-            this.StartY = y2;
         }
 
         this.CurrentX = this.StartX;
@@ -220,19 +223,15 @@ TGUI.prototype._registerTouchListener = function(){
     var ontouchstart2 = function(arg1){
         //console.log("start");
 
-        var x1 = th.Finger1.X;
-        var y1 = th.Finger1.Y;
         var x2 = th.Finger2.X;
         var y2 = th.Finger2.Y;
 
-        if(!th.Finger2.Detected){
-            this.SelectPiece(x1,y1);
-            this.StartX = x1;
-            this.StartY = y1;
-        }else{
+        if(th.Finger2.Detected){
             this.StartX = x2;
             this.StartY = y2;
         }
+
+        this.Dragging = false;
 
         this.CurrentX = this.StartX;
         this.CurrentY = this.StartY;
@@ -247,46 +246,39 @@ TGUI.prototype._registerTouchListener = function(){
 
         var x1 = th.Finger1.X;
         var y1 = th.Finger1.Y;
-        var x2 = th.Finger2.X;
-        var y2 = th.Finger2.Y;
 
         if(!th.Finger2.Detected){
             this.CurrentX = x1;
             this.CurrentY = y1;
-        }else{
-            this.CurrentX = x2;
-            this.CurrentY = y2;
         }
 
         this.Dragging = true;
+        
+        if(th.Finger2.Detected) return;
 
         // check if current touch x position is "MoveStep"-pixels (threshold) to the right
         if(this.LastX + this.MoveStep <= this.CurrentX ){
             this.LastX += this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(this.MoveStep, 0);
-            else
-                this.Selected.Shape.Rotate(this.RotateStep);
+            this.Selected.Move(this.MoveStep, 0);
+            return;
         }
 
         if(this.LastX - this.MoveStep >= this.CurrentX){
             this.LastX -= this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(this.MoveStep*(-1), 0);
-            else
-                this.Selected.Shape.Rotate(this.RotateStep*(-1));
+            this.Selected.Move(this.MoveStep*(-1), 0);
+            return;
         }
 
         if(this.LastY + this.MoveStep <= this.CurrentY ){
             this.LastY += this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(0, this.MoveStep);
+            this.Selected.Move(0, this.MoveStep);
+            return;
         }
 
         if(this.LastY - this.MoveStep >= this.CurrentY){
             this.LastY -= this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(0, this.MoveStep*(-1));
+            this.Selected.Move(0, this.MoveStep*(-1));
+            return;
         }
 
 
@@ -296,50 +288,29 @@ TGUI.prototype._registerTouchListener = function(){
     var ontouchmove2 = function(arg1){
         //console.log("move");
 
-        var x1 = th.Finger1.X;
-        var y1 = th.Finger1.Y;
         var x2 = th.Finger2.X;
         var y2 = th.Finger2.Y;
 
-        if(!th.Finger2.Detected){
-            this.CurrentX = x1;
-            this.CurrentY = y1;
-        }else{
+        if(th.Finger2.Detected){
             this.CurrentX = x2;
             this.CurrentY = y2;
         }
 
-        this.Dragging = true;
+        this.Dragging = false;
+        this.Rotating = true;
 
         // check if current touch x position is "MoveStep"-pixels (threshold) to the right
         if(this.LastX + this.MoveStep <= this.CurrentX ){
             this.LastX += this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(this.MoveStep, 0);
-            else
-                this.Selected.Shape.Rotate(this.RotateStep);
+            this.Selected.Shape.Rotate(this.RotateStep);
+            return;
         }
 
         if(this.LastX - this.MoveStep >= this.CurrentX){
             this.LastX -= this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(this.MoveStep*(-1), 0);
-            else
-                this.Selected.Shape.Rotate(this.RotateStep*(-1));
+            this.Selected.Shape.Rotate(this.RotateStep*(-1));
+            return;
         }
-
-        if(this.LastY + this.MoveStep <= this.CurrentY ){
-            this.LastY += this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(0, this.MoveStep);
-        }
-
-        if(this.LastY - this.MoveStep >= this.CurrentY){
-            this.LastY -= this.MoveStep;
-            if(!th.Finger2.Detected)
-                this.Selected.Move(0, this.MoveStep*(-1));
-        }
-
 
     }.getCallbackObject(this, "test");
     th.AddEventListener("movefinger2", ontouchmove2);
@@ -351,7 +322,7 @@ TGUI.prototype._registerTouchListener = function(){
     th.AddEventListener("touchendfinger1", ontouchend1);
 
     var ontouchend2 = function(arg1){
-        this.Dragging = false;
+        this.Rotating = false;
         console.log("end");
     }.getCallbackObject(this, "test");
     th.AddEventListener("touchendfinger2", ontouchend2);
