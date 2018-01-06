@@ -818,16 +818,50 @@ Anibody.SetPackage = function(/*strings*/){
  * @param {boolean} useApply - sets the CBO.useApply if the CBO had not set it
  * @returns {undefined}
  */
-Anibody.CallObject = function(obj, useApply){
+Anibody.CallObject = function(obj, opt){
     
+    var useApply = false;
+
     if(typeof obj !== "object" || obj === null) // javascript sees null as an object
         return;
     
-    if(typeof obj.useApply !== "undefined")
+    // if useApply is true in the callobject then so be it
+    if(typeof obj.useApply === "boolean")
         useApply = obj.useApply;
+
+    //if opt === boolean, it overwrites what is said in the callobject
+    if(typeof opt === "boolean")
+        useApply = obj.useApply;
+
+    // default options for the rest of the function
+    var main = {
+        useApply : useApply,
+        preparameter : null,
+        postparameter : null
+    };
+
+    // if opt is an object - it will be treated as an option object
+    if(typeof opt === "object"){
+        Anibody.mergeOptionObject(main, opt);
+    }
+    
+    //TODO: implement the use of pre and postparameter
+
+    // 3 cases
+
+    // 1. obj.parameter is undefined
+
+    // 2. obj.parameter is defined and main.preparameter
+    // 2a. main.preparameter = is not an array
+    // 2b. main.preparameter = is an array
+
+    // 3. obj.parameter is defined and main.postparameter
+    // 3a. main.postparameter = is not an array
+    // 3b. main.postparameter = is an array
+
     
     if(typeof obj === "object" && typeof obj.function === "function"){
-        if(useApply)
+        if(main.useApply)
             obj.function.apply(obj.that, obj.parameter);
         else
             obj.function.call(obj.that, obj.parameter);
