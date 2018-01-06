@@ -15,6 +15,21 @@ Anibody.input.Input.TouchHandler = function TouchHandler(){
     this.PreventScrolling = true;
     this.FakeMouseClick = this.Engine.Flags.Touch2FakeMouseClick; //flag if a (short) tap will call for a fake mouse click - useful if the default will be prevented
     // a FakeMouseClick will only be recognized by the AniBody-Engine as a real mouse click in the MouseHandler
+    this.Detect = {
+        Tap1 : true,
+        Tap2 : true,
+        LongTap1 : true,
+        LongTap2 : true,
+        Swipe1 : true,
+        Swipe2 : true,
+        TouchStart1 : true,
+        TouchStart2 : true,
+        TouchMove1 : true,
+        TouchMove2 : true,
+        TouchEnd1 : true,
+        TouchEnd2 : true
+    };
+
     
     // DEFINED VALUES
     this.DEFINEDVALUES = {
@@ -106,15 +121,17 @@ Anibody.input.Input.TouchHandler.prototype.TouchStartHandler = function(e){
     }
 
     if (this.Finger2.Detected) {
-        for (var i = 0; i<this.Finger2.TouchStartListener.length; i++) {
-            cbo = this.Finger2.TouchStartListener[i];
-            Anibody.CallObject(cbo);
-        }
+        if(this.Detect.TouchStart2)
+            for (var i = 0; i<this.Finger2.TouchStartListener.length; i++) {
+                cbo = this.Finger2.TouchStartListener[i];
+                Anibody.CallObject(cbo);
+            }
     } else {
-        for (var i = 0; i<this.Finger1.TouchStartListener.length; i++) {
-            cbo = this.Finger1.TouchStartListener[i];
-            Anibody.CallObject(cbo);
-        }
+        if(this.Detect.TouchStart1)
+            for (var i = 0; i<this.Finger1.TouchStartListener.length; i++) {
+                cbo = this.Finger1.TouchStartListener[i];
+                Anibody.CallObject(cbo);
+            }
     }
 
     if(this.PreventDefault)
@@ -139,15 +156,17 @@ Anibody.input.Input.TouchHandler.prototype.TouchMoveHandler = function(e){
 
     // check if there are move listener on the detected finger and call them
     if (this.Finger2.Detected) {
-        for (var i = 0; i<this.Finger2.MoveListener.length; i++) {
-            cbo = this.Finger2.MoveListener[i];
-            Anibody.CallObject(cbo);
-        }
+        if(this.Detect.TouchMove2)
+            for (var i = 0; i<this.Finger2.MoveListener.length; i++) {
+                cbo = this.Finger2.MoveListener[i];
+                Anibody.CallObject(cbo);
+            }
     } else {
-        for (var i = 0; i<this.Finger1.MoveListener.length; i++) {
-            cbo = this.Finger1.MoveListener[i];
-            Anibody.CallObject(cbo);
-        }
+        if(this.Detect.TouchMove1)
+            for (var i = 0; i<this.Finger1.MoveListener.length; i++) {
+                cbo = this.Finger1.MoveListener[i];
+                Anibody.CallObject(cbo);
+            }
     }
 
     if (this.PreventScrolling) {
@@ -184,10 +203,12 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
 
         // is it a tap with the first or the second finger
         if(!this.Finger2.Detected){
-            this.OnTapFinger1();
+            if(this.Detect.Tap1)
+                this.OnTapFinger1();
             
         }else{
-            this.OnTapFinger2();
+            if(this.Detect.Tap2)
+                this.OnTapFinger2();
         }
 
     }// Tap testing ENDIF
@@ -199,9 +220,11 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
 
         // is it a longtap with the first or the second finger
         if(!this.Finger2.Detected){
-            this.OnLongTapFinger1();
+            if(this.Detect.LongTap1)
+                this.OnLongTapFinger1();
         }else{
-            this.OnLongTapFinger2();
+            if(this.Detect.LongTap2)
+                this.OnLongTapFinger2();
         }
 
     }// LongTap testing ENDIF
@@ -214,9 +237,11 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
         var dir = this._getDirectionObject(xdelta, ydelta);
         
         if(!this.Finger2.Detected){
-            this.OnSwipeFinger1(dir);
+            if(this.Detect.Swipe1)
+                this.OnSwipeFinger1(dir);
         }else{
-            this.OnSwipeFinger2(dir);
+            if(this.Detect.Swipe2)
+                this.OnSwipeFinger2(dir);
         }
     }
     
@@ -224,15 +249,17 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
     //     console.log("No guesture matched: timedelta: {0}, xdelta: {1}, ydelta: {2}".format(timedelta, xdelta, ydelta));
     
     if (this.Finger2.Detected) {
-        for (var i = 0; i<this.Finger2.TouchEndListener.length; i++) {
-            cbo = this.Finger2.TouchEndListener[i];
-            Anibody.CallObject(cbo);
-        }
+        if(this.Detect.TouchEnd2)
+            for (var i = 0; i<this.Finger2.TouchEndListener.length; i++) {
+                cbo = this.Finger2.TouchEndListener[i];
+                Anibody.CallObject(cbo);
+            }
     } else {
-        for (var i = 0; i<this.Finger1.TouchEndListener.length; i++) {
-            cbo = this.Finger1.TouchEndListener[i];
-            Anibody.CallObject(cbo);
-        }
+        if(this.Detect.TouchEnd1)
+            for (var i = 0; i<this.Finger1.TouchEndListener.length; i++) {
+                cbo = this.Finger1.TouchEndListener[i];
+                Anibody.CallObject(cbo);
+            }
     }
     
     //clean-up at the end

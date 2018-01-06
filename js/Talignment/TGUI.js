@@ -183,8 +183,16 @@ TGUI.prototype._registerTouchListener = function(){
     var th = this.Engine.Input.TouchHandler;
 
     th.FakeMouseClick = false;
+    th.Detect.Tap1 = false;
+    th.Detect.Tap2 = false;
+    th.Detect.LongTap1 = false;
+    th.Detect.LongTap2 = false;
+    th.Detect.Swipe1 = false;
+    th.Detect.Swipe2 = false;
     
-    var ontouchstart = function(arg1){
+    // still improvement needed
+
+    var ontouchstart1 = function(arg1){
         //console.log("start");
 
         var x1 = th.Finger1.X;
@@ -207,9 +215,34 @@ TGUI.prototype._registerTouchListener = function(){
         this.LastY = this.StartY;
 
     }.getCallbackObject(this, "test");
-    th.AddEventListener("touchstartfinger1", ontouchstart);
+    th.AddEventListener("touchstartfinger1", ontouchstart1);
 
-    var ontouchmove = function(arg1){
+    var ontouchstart2 = function(arg1){
+        //console.log("start");
+
+        var x1 = th.Finger1.X;
+        var y1 = th.Finger1.Y;
+        var x2 = th.Finger2.X;
+        var y2 = th.Finger2.Y;
+
+        if(!th.Finger2.Detected){
+            this.SelectPiece(x1,y1);
+            this.StartX = x1;
+            this.StartY = y1;
+        }else{
+            this.StartX = x2;
+            this.StartY = y2;
+        }
+
+        this.CurrentX = this.StartX;
+        this.CurrentY = this.StartY;
+        this.LastX = this.StartX;
+        this.LastY = this.StartY;
+
+    }.getCallbackObject(this, "test");
+    th.AddEventListener("touchstartfinger2", ontouchstart2);
+
+    var ontouchmove1 = function(arg1){
         //console.log("move");
 
         var x1 = th.Finger1.X;
@@ -258,11 +291,68 @@ TGUI.prototype._registerTouchListener = function(){
 
 
     }.getCallbackObject(this, "test");
-    th.AddEventListener("movefinger1", ontouchmove);
+    th.AddEventListener("movefinger1", ontouchmove1);
 
-    var ontouchend = function(arg1){
+    var ontouchmove2 = function(arg1){
+        //console.log("move");
+
+        var x1 = th.Finger1.X;
+        var y1 = th.Finger1.Y;
+        var x2 = th.Finger2.X;
+        var y2 = th.Finger2.Y;
+
+        if(!th.Finger2.Detected){
+            this.CurrentX = x1;
+            this.CurrentY = y1;
+        }else{
+            this.CurrentX = x2;
+            this.CurrentY = y2;
+        }
+
+        this.Dragging = true;
+
+        // check if current touch x position is "MoveStep"-pixels (threshold) to the right
+        if(this.LastX + this.MoveStep <= this.CurrentX ){
+            this.LastX += this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(this.MoveStep, 0);
+            else
+                this.Selected.Shape.Rotate(this.RotateStep);
+        }
+
+        if(this.LastX - this.MoveStep >= this.CurrentX){
+            this.LastX -= this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(this.MoveStep*(-1), 0);
+            else
+                this.Selected.Shape.Rotate(this.RotateStep*(-1));
+        }
+
+        if(this.LastY + this.MoveStep <= this.CurrentY ){
+            this.LastY += this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(0, this.MoveStep);
+        }
+
+        if(this.LastY - this.MoveStep >= this.CurrentY){
+            this.LastY -= this.MoveStep;
+            if(!th.Finger2.Detected)
+                this.Selected.Move(0, this.MoveStep*(-1));
+        }
+
+
+    }.getCallbackObject(this, "test");
+    th.AddEventListener("movefinger2", ontouchmove2);
+
+    var ontouchend1 = function(arg1){
         this.Dragging = false;
         console.log("end");
     }.getCallbackObject(this, "test");
-    th.AddEventListener("touchendfinger1", ontouchend);
+    th.AddEventListener("touchendfinger1", ontouchend1);
+
+    var ontouchend2 = function(arg1){
+        this.Dragging = false;
+        console.log("end");
+    }.getCallbackObject(this, "test");
+    th.AddEventListener("touchendfinger2", ontouchend2);
 };
