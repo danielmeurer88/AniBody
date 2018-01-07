@@ -491,41 +491,73 @@ function testTalignment(engine){
     
 }
 
-function testNewCallObjectOptions(engine){
+function testNewCallObjectOptions(engine) {
 
-    var func = function(){
+    var func = function () {
         console.log("Start +++++++++++++++++++++++++++++++++++");
         console.log(arguments);
         console.log("End +++++++++++++++++++++++++++++++++++");
+        console.log(" ");
     };
 
     var cbo_withParameter = func.getCallbackObject(engine, "mainParameter");
     var cbo_withoutParameter = func.getCallbackObject(engine);
 
+    var cbo_extrem = func.getCallbackObject(engine, ["para1", "para2", {para:"para3"}]);
+    cbo_extrem.useApply = true;
+
+    // ...
+    Anibody.CallObject(cbo_withoutParameter);
+
+    // pre
+    Anibody.CallObject(cbo_withoutParameter, {
+        useApply: true,
+        preparameter: "preparameter"
+    });
+
+    // post
+    Anibody.CallObject(cbo_withoutParameter, {
+        useApply: true,
+        postparameter: "postparameter"
+    });
+
+    // pre, post
+    Anibody.CallObject(cbo_withoutParameter, {
+        useApply: true,
+        preparameter: "preparameter",
+        postparameter: "postparameter"
+    });
+
+    
+
     // main
     Anibody.CallObject(cbo_withParameter);
     
+    
+
     // pre, main,
     Anibody.CallObject(cbo_withParameter, {
-        useApply : true,
-        preparameter : "preparameter",
-        //postparameter : "postparameter"
+        useApply: true,
+        preparameter: "preparameter"
+    });
+    
+
+    // main, post
+    Anibody.CallObject(cbo_withParameter, {
+        useApply: true,
+        postparameter: "postparameter"
     });
 
     // pre, main, post
     Anibody.CallObject(cbo_withParameter, {
-        useApply : true,
-        preparameter : "preparameter",
-        postparameter : "postparameter"
+        useApply: true,
+        preparameter: "preparameter",
+        postparameter: "postparameter"
     });
 
-    // ...
-    Anibody.CallObject(cbo_withoutParameter);
-    
-    // pre, post
-    Anibody.CallObject(cbo_withoutParameter, {
-        useApply : true,
-        preparameter : "preparameter",
-        postparameter : "postparameter"
+    // pre, para1, para2, object, post
+    Anibody.CallObject(cbo_extrem, {
+        preparameter: "preparameter",
+        postparameter: "postparameter"
     });
 }
