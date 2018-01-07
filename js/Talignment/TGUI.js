@@ -200,13 +200,13 @@ TGUI.prototype._registerTouchListener = function(){
     
     // still improvement needed
 
-    var ontouchstart1 = function(arg1){
+    var ontouchstart1 = function(e){
         //console.log("start");
 
-        var x1 = th.Finger1.X;
-        var y1 = th.Finger1.Y;
+        var x1 = e.TouchHandler.Finger1.X;
+        var y1 = e.TouchHandler.Finger1.Y;
 
-        if(!th.Finger2.Detected){
+        if(!e.TouchHandler.Finger2.Detected){
             this.SelectPiece(x1,y1);
             this.StartX = x1;
             this.StartY = y1;
@@ -220,13 +220,13 @@ TGUI.prototype._registerTouchListener = function(){
     }.getCallbackObject(this, "test");
     th.AddEventListener("touchstartfinger1", ontouchstart1);
 
-    var ontouchstart2 = function(arg1){
+    var ontouchstart2 = function(e){
         //console.log("start");
 
-        var x2 = th.Finger2.X;
-        var y2 = th.Finger2.Y;
+        var x2 = e.TouchHandler.Finger2.X;
+        var y2 = e.TouchHandler.Finger2.Y;
 
-        if(th.Finger2.Detected){
+        if(e.TouchHandler.Finger2.Detected){
             this.StartX = x2;
             this.StartY = y2;
         }
@@ -241,20 +241,20 @@ TGUI.prototype._registerTouchListener = function(){
     }.getCallbackObject(this, "test");
     th.AddEventListener("touchstartfinger2", ontouchstart2);
 
-    var ontouchmove1 = function(arg1){
+    var ontouchmove1 = function(e){
         //console.log("move");
 
-        var x1 = th.Finger1.X;
-        var y1 = th.Finger1.Y;
+        var x1 = e.TouchHandler.Finger1.X;
+        var y1 = e.TouchHandler.Finger1.Y;
 
-        if(!th.Finger2.Detected){
+        if(!e.TouchHandler.Finger2.Detected){
             this.CurrentX = x1;
             this.CurrentY = y1;
         }
 
         this.Dragging = true;
         
-        if(th.Finger2.Detected) return;
+        if(e.TouchHandler.Finger2.Detected) return;
 
         // check if current touch x position is "MoveStep"-pixels (threshold) to the right
         if(this.LastX + this.MoveStep <= this.CurrentX ){
@@ -285,13 +285,13 @@ TGUI.prototype._registerTouchListener = function(){
     }.getCallbackObject(this, "test");
     th.AddEventListener("movefinger1", ontouchmove1);
 
-    var ontouchmove2 = function(arg1){
+    var ontouchmove2 = function(e){
         //console.log("move");
 
-        var x2 = th.Finger2.X;
-        var y2 = th.Finger2.Y;
+        var x2 = e.TouchHandler.Finger2.X;
+        var y2 = e.TouchHandler.Finger2.Y;
 
-        if(th.Finger2.Detected){
+        if(e.TouchHandler.Finger2.Detected){
             this.CurrentX = x2;
             this.CurrentY = y2;
         }
@@ -302,26 +302,26 @@ TGUI.prototype._registerTouchListener = function(){
         // check if current touch x position is "MoveStep"-pixels (threshold) to the right
         if(this.LastX + this.MoveStep <= this.CurrentX ){
             this.LastX += this.MoveStep;
-            this.Selected.Shape.Rotate(this.RotateStep);
+            this.Selected.Shape.Rotate(this.RotateStep, true);
             return;
         }
 
         if(this.LastX - this.MoveStep >= this.CurrentX){
             this.LastX -= this.MoveStep;
-            this.Selected.Shape.Rotate(this.RotateStep*(-1));
+            this.Selected.Shape.Rotate(this.RotateStep*(-1), true);
             return;
         }
 
     }.getCallbackObject(this, "test");
     th.AddEventListener("movefinger2", ontouchmove2);
 
-    var ontouchend1 = function(arg1){
+    var ontouchend1 = function(e){
         this.Dragging = false;
         console.log("end");
     }.getCallbackObject(this, "test");
     th.AddEventListener("touchendfinger1", ontouchend1);
 
-    var ontouchend2 = function(arg1){
+    var ontouchend2 = function(e){
         this.Rotating = false;
         console.log("end");
     }.getCallbackObject(this, "test");

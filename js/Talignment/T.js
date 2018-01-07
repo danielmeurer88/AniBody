@@ -43,6 +43,8 @@ function T(color, dx, dy) { // Base class
         get: function () { return self.Shape.Selected; }
     });
 
+    this.SquareSize = 50;
+
     this.Initialize();
 };
 
@@ -54,15 +56,17 @@ T.prototype.constructor = T;
  */
 T.prototype.Initialize = function () {
 
+    var sz = this.SquareSize;
+
     var p = [
-        0,0,
-        250, 0,
-        250, 50,
-        150, 50,
-        150, 250,
-        100,250,
-        100, 50,
-        0, 50
+        sz*0,sz*0,
+        sz*5, sz*0,
+        sz*5, sz*1,
+        sz*3, sz*1,
+        sz*3, sz*6,
+        sz*2, sz*6,
+        sz*2, sz*1,
+        sz*0, sz*1
     ];
 
     var s = new Anibody.shapes.Shape();

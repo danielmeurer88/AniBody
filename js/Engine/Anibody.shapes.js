@@ -10,7 +10,7 @@ Anibody.shapes.Shape = function Shape() { // Base class
     this.X = 0;
     this.Y = 0;
     this.Centroid = { x: 0, y: 0 };
-    this.RotationPoint = { x: 0, y: 0 };
+    this.SurroundingRectangleCentroid = { x: 0, y: 0 };
 
     this.Area = null; // px^2
 
@@ -509,7 +509,7 @@ Anibody.shapes.Shape.prototype._calculateSurroundingRectangle = function () {
     this.Y = y;
     this.Width = max - x;
     this.Height = maxy - y;
-    this.RotationPoint = { x: this.X + this.Width/2, y: this.Y + this.Height/2 };
+    this.SurroundingRectangleCentroid = { x: this.X + this.Width/2, y: this.Y + this.Height/2 };
 };
 /**
  * Adds a new points to the Shape
@@ -611,9 +611,18 @@ Anibody.shapes.Shape.prototype.ClearArea = function (x, y, width, height) {
  * @param {number} rad - rotation step in radiants (clockwise)
  * @returns {undefined}
  */
-Anibody.shapes.Shape.prototype.Rotate = function (rad) {
+Anibody.shapes.Shape.prototype.Rotate = function (rad, surrounding) {
     
-    var rp = this.Centroid;
+    if(typeof surrounding === "undefined")
+        surrounding = false;
+
+    var rp;
+
+    if(!surrounding)
+        rp = this.Centroid;
+    else
+        rp = this.SurroundingRectangleCentroid;
+     
     var p;
     var d;
     
@@ -626,9 +635,7 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad) {
         // get distance
         d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
         
-        if(isNaN(p._angleRadian)){
-            p._angleRadian = this._getAngle(p);
-        }
+        p._angleRadian = this._getAngle(p, rp);
 
         p._angleRadian += rad;
         p._angleDegree = (p._angleRadian * 180 / Math.PI);
@@ -674,8 +681,8 @@ Anibody.shapes.Shape.prototype.Move = function (dx, dy) {
     this.Centroid.x += dx;
     this.Centroid.y += dy;
 
-    this.RotationPoint.x += dx;
-    this.RotationPoint.y += dy;
+    this.SurroundingRectangleCentroid.x += dx;
+    this.SurroundingRectangleCentroid.y += dy;
 
     for(var i=0; i<this.Points.length; i++){
         this.Points[i].x += dx;
@@ -693,12 +700,15 @@ Anibody.shapes.Shape.prototype.Move = function (dx, dy) {
  * @param {point-object} p
  * @returns {Number}
  */
-Anibody.shapes.Shape.prototype._getAngle = function (p) {
+Anibody.shapes.Shape.prototype._getAngle = function (p, to) {
     var dx, dy, val;
 
+    if(typeof to === "undefined")
+        to = this.Centroid;
+
     // radian gap is on the left
-    dx = p.x - this.Centroid.x;
-    dy = p.y - this.Centroid.y;
+    dx = p.x - to.x;
+    dy = p.y - to.y;
 
     // dy should be first parameter, dx 2nd
     val = Math.atan2(dy, dx);

@@ -120,18 +120,31 @@ Anibody.input.Input.TouchHandler.prototype.TouchStartHandler = function(e){
         this.Finger2.Detected = true;
     }
 
+    var newe;
     if (this.Finger2.Detected) {
-        if(this.Detect.TouchStart2)
+        if(this.Detect.TouchStart2){
+            newe = this._getTouchEventObject("touchstartfinger2");
             for (var i = 0; i<this.Finger2.TouchStartListener.length; i++) {
                 cbo = this.Finger2.TouchStartListener[i];
-                Anibody.CallObject(cbo);
-            }
+                Anibody.CallObject(cbo,{
+                    preparameter:newe,
+                    useApply : true
+                });
+            }// for
+        }
+            
     } else {
-        if(this.Detect.TouchStart1)
+        if(this.Detect.TouchStart1){
+            newe = this._getTouchEventObject("touchstartfinger1");
             for (var i = 0; i<this.Finger1.TouchStartListener.length; i++) {
                 cbo = this.Finger1.TouchStartListener[i];
-                Anibody.CallObject(cbo);
-            }
+                Anibody.CallObject(cbo,{
+                    preparameter:newe,
+                    useApply : true
+                });
+            }//for
+        }
+            
     }
 
     if(this.PreventDefault)
@@ -154,19 +167,30 @@ Anibody.input.Input.TouchHandler.prototype.TouchMoveHandler = function(e){
         this.Finger2.Y = e.touches[1].clientY;
     }
 
+    var newe;
     // check if there are move listener on the detected finger and call them
     if (this.Finger2.Detected) {
-        if(this.Detect.TouchMove2)
+        if(this.Detect.TouchMove2){
+            newe = this._getTouchEventObject("touchmovefinger2");
             for (var i = 0; i<this.Finger2.MoveListener.length; i++) {
                 cbo = this.Finger2.MoveListener[i];
-                Anibody.CallObject(cbo);
+                Anibody.CallObject(cbo,{
+                    preparameter:newe,
+                    useApply : true
+                });
             }
+        }
     } else {
-        if(this.Detect.TouchMove1)
+        if(this.Detect.TouchMove1){
+            newe = this._getTouchEventObject("touchmovefinger1");
             for (var i = 0; i<this.Finger1.MoveListener.length; i++) {
                 cbo = this.Finger1.MoveListener[i];
-                Anibody.CallObject(cbo);
+                Anibody.CallObject(cbo,{
+                    preparameter:newe,
+                    useApply : true
+                });
             }
+        }
     }
 
     if (this.PreventScrolling) {
@@ -247,19 +271,29 @@ Anibody.input.Input.TouchHandler.prototype.TouchEndHandler = function(e){
     
     // if(this.ExpectTouch)
     //     console.log("No guesture matched: timedelta: {0}, xdelta: {1}, ydelta: {2}".format(timedelta, xdelta, ydelta));
-    
+    var newe;
     if (this.Finger2.Detected) {
-        if(this.Detect.TouchEnd2)
+        if(this.Detect.TouchEnd2){
+            newe = this._getTouchEventObject("touchendfinger2");
             for (var i = 0; i<this.Finger2.TouchEndListener.length; i++) {
                 cbo = this.Finger2.TouchEndListener[i];
-                Anibody.CallObject(cbo);
+                Anibody.CallObject(cbo,{
+                    preparameter:newe,
+                    useApply : true
+                });
             }
+        }
     } else {
-        if(this.Detect.TouchEnd1)
+        if(this.Detect.TouchEnd1){
+            newe = this._getTouchEventObject("touchendfinger1");
             for (var i = 0; i<this.Finger1.TouchEndListener.length; i++) {
                 cbo = this.Finger1.TouchEndListener[i];
-                Anibody.CallObject(cbo);
+                Anibody.CallObject(cbo,{
+                    preparameter:newe,
+                    useApply : true
+                });
             }
+        }
     }
     
     //clean-up at the end
@@ -344,9 +378,13 @@ Anibody.input.Input.TouchHandler.prototype.OnTapFinger1 = function(){
     }
     
     var cbo;
+    var e = this._getTouchEventObject("tapfinger1");
     for(var i=0; i<this.Finger1.TapListener.length; i++){
         cbo = this.Finger1.TapListener[i];
-        Anibody.CallObject(cbo);
+        Anibody.CallObject(cbo,{
+            preparameter:e,
+            useApply : true
+        });
     }
 };
 /**
@@ -356,9 +394,13 @@ Anibody.input.Input.TouchHandler.prototype.OnTapFinger1 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnTapFinger2 = function(){
     console.log("Finger2 Tap");
     var cbo;
+    var e = this._getTouchEventObject("tapfinger2");
     for(var i=0; i<this.Finger2.TapListener.length; i++){
         cbo = this.Finger2.TapListener[i];
-        Anibody.CallObject(cbo);
+        Anibody.CallObject(cbo,{
+            preparameter:e,
+            useApply : true
+        });
     }
 };
 /**
@@ -368,9 +410,13 @@ Anibody.input.Input.TouchHandler.prototype.OnTapFinger2 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
     console.log("Finger1 LongTap");
     var cbo;
+    var e = this._getTouchEventObject("longtapfinger1");
     for(var i=0; i<this.Finger1.LongTapListener.length; i++){
         cbo = this.Finger1.LongTapListener[i];
-        Anibody.CallObject(cbo);
+        Anibody.CallObject(cbo,{
+            preparameter:e,
+            useApply : true
+        });
     }
 };
 /**
@@ -380,9 +426,13 @@ Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger1 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
     console.log("Finger2 LongTap");
     var cbo;
+    var e = this._getTouchEventObject("longtapfinger2");
     for(var i=0; i<this.Finger2.LongTapListener.length; i++){
         cbo = this.Finger2.LongTapListener[i];
-        Anibody.CallObject(cbo);
+        Anibody.CallObject(cbo,{
+            preparameter:e,
+            useApply : true
+        });
     }
 };
 /**
@@ -393,9 +443,16 @@ Anibody.input.Input.TouchHandler.prototype.OnLongTapFinger2 = function(){
 Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
     console.log("Finger1 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
     var cbo;
+    var e = this._getTouchEventObject("swipefinger1");
+    for(var key in dir){
+        e[key] = dir[key];
+    }
     for(var i=0; i<this.Finger1.SwipeListener.length; i++){
         cbo = this.Finger1.SwipeListener[i];
-        Anibody.CallObject(cbo, dir);
+        Anibody.CallObject(cbo,{
+            preparameter:e,
+            useApply : true
+        });
     }
 };
 /**
@@ -406,9 +463,16 @@ Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger1 = function(dir){
 Anibody.input.Input.TouchHandler.prototype.OnSwipeFinger2 = function(dir){
     console.log("Finger2 " + this._getSwipeDirection(dir) + " swipe - " + JSON.stringify(dir));
     var cbo;
+    var e = this._getTouchEventObject("swipefinger2");
+    for(var key in dir){
+        e[key] = dir[key];
+    }
     for(var i=0; i<this.Finger2.SwipeListener.length; i++){
         cbo = this.Finger2.SwipeListener[i];
-        Anibody.CallObject(cbo, dir);
+        Anibody.CallObject(cbo,{
+            preparameter:e,
+            useApply : true
+        });
     }
 };
 
@@ -438,14 +502,30 @@ Anibody.input.Input.TouchHandler.prototype.AddEventListener = function(eventtype
 };
 
 /**
- * collection of the touch event types
- * @type object
+ * returns the event object given as first parameter for touch event handler
+ * @param {string} type - touch event type
  */
-Anibody.input.Input.TouchHandler.prototype.Types = {
-    TapFinger1 : "tapfinger1",
-    TapFinger2 : "tapfinger2",
-    LongTapFinger1 : "longtapfinger1",
-    LongTapFinger2 : "longtapfinger2",
-    SwipeFinger1 : "swipefinger1",
-    SwipeFinger2 : "swipefinger2"
+Anibody.input.Input.TouchHandler.prototype._getTouchEventObject = function(type){
+    
+    var x,y;
+    var finger = type[type.length-1];
+
+    if( finger === "1"){
+        x = this.Finger1.X;
+        y = this.Finger1.Y;
+    }else{
+        x = this.Finger2.X;
+        y = this.Finger2.Y;
+    }
+
+    return {
+        TouchHandler : this,
+        eventtype : type,
+        finger : finger,
+        x : x,
+        y : y,
+        screenX : x,
+        screenY : y
+    };
+
 };
