@@ -1322,6 +1322,14 @@ Anibody.ECMAScriptExtension = function () {
             return window.removeEventListener(eventhandler, handler, cap);
         };
 
+        window.width = function(){
+            return window.innerWidth;
+        }
+
+        window.height = function(){
+            return window.innerHeight;
+        }
+
     }
         
 

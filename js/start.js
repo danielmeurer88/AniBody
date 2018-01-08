@@ -98,18 +98,15 @@ function menu_callback(engine) {
     // -----------------------------------------------------------
     // register the fullscreen button 
     $("#fs_btn").on("click", function () {
-        engine.RequestFullscreen();
-
-        //testing
-        engine.FullScale();
+        engine.RequestFullscreen(true);
 
         var f = function (en) {
             en.ExitFullscreen();
         };
-        window.setTimeout(f, 3000, engine);
+        //window.setTimeout(f, 3000, engine);
 
-        var res = Anibody.static.copyText("Hallo du - Wie geht es dir?");
-        console.log(res);
+        //var res = Anibody.static.copyText("Hallo du - Wie geht es dir?");
+        //console.log(res);
 
     });
 
@@ -127,7 +124,8 @@ function menu_callback(engine) {
 
 function button1(engine) {
 
-    testNewCallObjectOptions(engine);
+    testFullScale(engine);
+    
 }
 
 function button2(engine) {
@@ -138,6 +136,13 @@ function button2(engine) {
 //###########################################
 //##############    TESTS     ###############
 //###########################################
+
+function testFullScale(engine){
+
+    
+    engine.RequestFullscreen();
+
+}
 
 function testRect(engine){
     

@@ -449,7 +449,44 @@ Anibody.prototype.Download = function (name, data) {
  */
 Anibody.prototype.FullScale = function(){
 
-    
+    var self = this;
+
+    var scalefunc = function(){
+        var can = self.Canvas;
+        var c = self.Context;
+
+        var width = $(window).width();
+        var height = $(window).height();
+
+        var ratiow = width / can.width;
+        var ratioh = height / can.height;
+
+        var ratio = Math.min(ratiow, ratioh);
+
+        can.width = width;
+        can.height = height;
+
+        c.scale(ratio, ratio);
+    };
+
+    scalefunc();
+
+};
+
+/**
+ * Scale canvas to the original scale value
+ * @returns {boolean}
+ */
+Anibody.prototype.ScaleBack = function(){
+
+    var scalefunc = function(){
+        var can = self.Canvas;
+        var c = self.Context;
+        c.scale(1, 1);
+    };
+
+    scalefunc();
+
 };
 
 /**
@@ -457,7 +494,8 @@ Anibody.prototype.FullScale = function(){
  * @returns {boolean}
  */
 Anibody.prototype.RequestFullscreen = function(){
-    // try fullscreen
+         
+        // try fullscreen
     var can = this.Canvas;
     var done = false;
 
@@ -482,24 +520,6 @@ Anibody.prototype.RequestFullscreen = function(){
         done = true;
     }
 
-    // TODO : check if canvas has the CSS pseudo-selectors! if not: set them
-    // more info: https://developers.google.com/web/updates/2011/10/Let-Your-Content-Do-the-Talking-Fullscreen-API
-    /*
-    div:-webkit-full-screen {
-        width: 100% !important;
-    }
-    div:-moz-full-screen {
-        width: 100% !important;
-    }
-    div:-ms-fullscreen {
-        width: 100% !important;
-    }
-    div:fullscreen {
-        width: 100% !important;
-    }
-    */
-
-    return done;
 };
 
 /**
@@ -959,127 +979,6 @@ Anibody.CallObject = function(obj, opt){
         
 };
 
-// Anibody.CallObject = function(obj, opt){
-    
-//     var useApply = false;
-    
-//     if(typeof obj !== "object" || obj === null) // javascript sees null as an object
-//         return;
-
-//     var tempParameter = obj.parameter;
-    
-//     // if useApply is true in the callobject then so be it
-//     if(typeof obj.useApply === "boolean")
-//         useApply = obj.useApply;
-
-//     //if opt === boolean, it overwrites what is said in the callobject
-//     if(typeof opt === "boolean")
-//         useApply = obj.useApply;
-
-//     // default options for the rest of the function
-//     var main = {
-//         useApply : useApply,
-//         preparameter : null,
-//         postparameter : null
-//     };
-
-//     // if opt is an object - it will be treated as an option object
-//     if(typeof opt === "object"){
-//         Anibody.mergeOptionObject(main, opt);
-//     }
-    
-//     //TODO: implement the use of pre and postparameter
-
-//     // 3 cases
-
-//     // 1. obj.parameter is undefined
-//     if(typeof obj.parameter === "undefined"){
-//         // if preparameter exists
-//         if(main.preparameter !== null){
-//             obj.parameter = main.preparameter;
-//         }
-//         // main.preparameter could be a primitive data type or an object
-
-//         // if postparameter exists and is an array
-//         if(main.postparameter !== null && main.postparameter.push){
-//             // now it is possible that preparameter was written into the obj.parameter already
-            
-//             // check if obj.parameter exists and is an array
-//             if(typeof obj.parameter !== "undefined" && obj.parameter.push){
-//                 obj.parameter = obj.parameter.concat(main.postparameter);
-//             }
-
-//             // check if obj.parameter exists and is NOT an array
-//             if(typeof obj.parameter !== "undefined" && !obj.parameter.push){
-//                 obj.parameter = [obj.parameter].concat(main.postparameter);
-//             }
-//         }
-
-//         // if postparameter exists and is NOT array
-//         if(main.postparameter !== null && !main.postparameter.push){
-//             // now it is possible that preparameter was written into the obj.parameter already
-            
-//             // check if obj.parameter exists and is an array
-//             if(typeof obj.parameter !== "undefined" && obj.parameter.push){
-//                 obj.parameter = obj.parameter.concat([main.postparameter]);
-//             }
-
-//             // check if obj.parameter exists and is NOT an array
-//             if(typeof obj.parameter !== "undefined" && !obj.parameter.push){
-//                 obj.parameter = [obj.parameter, main.postparameter];
-//             }
-//         }
-
-
-//     }else{
-//         // 2. obj.parameter is defined and main.preparameter...
-        
-//         // 2a. main.preparameter exists and is an array
-//         if(main.preparameter !== null && main.preparameter.push){
-            
-//             if(!obj.parameter.push)
-//                 obj.parameter = main.preparameter.concat([obj.parameter]);
-//             else
-//                 obj.parameter = main.preparameter.concat(obj.parameter);
-
-//         }
-
-//         // 2b. main.preparameter exists and is NOT an array
-//         if(main.preparameter !== null && !main.preparameter.push){
-            
-//             if(!obj.parameter.push)
-//                 obj.parameter = [main.preparameter].concat([obj.parameter]);
-//             else
-//                 obj.parameter = [main.preparameter].concat(obj.parameter);
-//         }
-
-//         // 3a. main.postparameter exists and is NOT an array
-//         if(main.postparameter !== null && !main.postparameter.push){
-            
-//             if(!obj.parameter.push)
-//                 obj.parameter = [obj.parameter].concat([main.postparameter]);
-//             else
-//                 obj.parameter = obj.parameter.concat([main.postparameter]);
-//         }
-
-//         // 3b. main.postparameter exists and is an array
-//         if(main.postparameter !== null && main.postparameter.push){
-//             if(!obj.parameter.push)
-//                 obj.parameter = [obj.parameter].concat(main.postparameter);
-//             else
-//                 obj.parameter = obj.parameter.concat(main.postparameter);
-//         }
-
-//     }
-
-//     if(typeof obj === "object" && typeof obj.function === "function"){
-//         if(main.useApply)
-//             obj.function.apply(obj.that, obj.parameter);
-//         else
-//             obj.function.call(obj.that, obj.parameter);
-//     }
-        
-// };
 
 Anibody.import = function(packagePath, alias){
     
