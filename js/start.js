@@ -102,35 +102,22 @@ function menu_callback(engine) {
             DisplayType: "color",
             ColorCode: "red",
             TriggerCallbackObject: function (engine) {
-                
+                console.log("Anibody.Scale = " + this.Scale);
             }.getCallbackObject(engine, engine),
             HoverText: "Wird zum Testen von Dinge benutzt, die echte Mausklicks ben{oe}tigen.".decodeURI()
         });
     bmc.AddButtonEffect();
     bmc.Register();
 
-    bmc.SetFullScreenButton();
+    bmc.SetFullScreenButton(false);
+    bmc._withMaxScale = true;
+
     bmc.SetCopyTextButton("Das ist nicht wunderbar");
     bmc._copyText = "Das ist ja wunderbar";
     
 
     // Engine gets started
     engine.Start();
-
-    // -----------------------------------------------------------
-    // register the fullscreen button 
-    $("#fs_btn").on("click", function () {
-        engine.RequestFullscreen(true);
-
-        var f = function (en) {
-            en.ExitFullscreen();
-        };
-        //window.setTimeout(f, 3000, engine);
-
-        //var res = Anibody.static.copyText("Hallo du - Wie geht es dir?");
-        //console.log(res);
-
-    });
 
     // ---------------------------------------------------------------------------
     // InputField - top left - Initiation
@@ -145,8 +132,6 @@ function menu_callback(engine) {
 
 
 function button1(engine) {
-
-    testFullScale(engine);
     
 }
 
@@ -158,13 +143,6 @@ function button2(engine) {
 //###########################################
 //##############    TESTS     ###############
 //###########################################
-
-function testFullScale(engine){
-
-    
-    engine.RequestFullscreen();
-
-}
 
 function testRect(engine){
     

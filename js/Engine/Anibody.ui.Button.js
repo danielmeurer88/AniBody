@@ -125,6 +125,7 @@ Anibody.ui.Button = function Button(x, y, options) {
     this._urgencyFontColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyFontColor;
     
     this._copyText = "";
+    this._withMaxScale = false;
     
     this.Initialize();
 };
@@ -1495,14 +1496,20 @@ Anibody.ui.Button.prototype.AddButtonEffect = function(depth, stops){
     
 };
 
-Anibody.ui.Button.prototype.SetFullScreenButton = function () {
+Anibody.ui.Button.prototype.SetFullScreenButton = function (withMaxScale) {
+    
+    if(typeof withMaxScale === "undefined")
+        withMaxScale = false;
+    
+    this._withMaxScale = withMaxScale;
+
     var self = this;
 
     var reqf = function(){
 
         if(!self.IsMouseOver) return;
 
-        self.Engine.RequestFullscreen();
+        self.Engine.RequestFullscreen(self._withMaxScale);
     };
 
     this.Engine.Canvas.addEventListener("click", reqf);

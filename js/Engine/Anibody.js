@@ -13,7 +13,6 @@ function Anibody(html_id) {
     };
 
     this.StartTimestamp = Date.now();
-    this.RunTime = 0;
     Object.defineProperty(this, "RunTime", {
         set: function (newValue) {
         },
@@ -22,8 +21,26 @@ function Anibody(html_id) {
         }
     });
     
-    this.CurrentFrame = 0;
+    this._currentFrame = 0;
+    Object.defineProperty(this, "_currentFrame", {enumerable:false});
+    Object.defineProperty(this, "CurrentFrame", {
+        set: function (newValue) {
+        },
+        get: function () { 
+            return this._currentFrame;
+        }
+    });
     
+    this._scale = 1;
+    Object.defineProperty(this, "_scale", {enumerable:false});
+    Object.defineProperty(this, "Scale", {
+        set: function (newValue) {
+        },
+        get: function () { 
+            return this._scale;
+        }
+    });
+
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof
     if ($) {
         if (!$.AnibodyArray) {
@@ -209,7 +226,7 @@ Anibody.prototype.Pause = function () {this.Paused = true};
  * @returns {undefined}
  */
 Anibody.prototype.Frame = function () {
-    this.CurrentFrame++;
+    this._currentFrame++;
     var e = arguments[0];
     e.ProcessInput();
     if (!e.Paused) {
@@ -447,7 +464,7 @@ Anibody.prototype.Download = function (name, data) {
  * Try to auto scale canvas
  * @returns {boolean}
  */
-Anibody.prototype.FullScale = function(){
+Anibody.prototype.MaxScale = function(){
 
     var self = this;
 
@@ -466,6 +483,8 @@ Anibody.prototype.FullScale = function(){
         can.width = width;
         can.height = height;
 
+        self._scale = ratio;
+
         c.scale(ratio, ratio);
     };
 
@@ -479,9 +498,11 @@ Anibody.prototype.FullScale = function(){
  */
 Anibody.prototype.ScaleBack = function(){
 
+    var self = this;
     var scalefunc = function(){
         var can = self.Canvas;
         var c = self.Context;
+        self._scale = 1;
         c.scale(1, 1);
     };
 
@@ -493,9 +514,12 @@ Anibody.prototype.ScaleBack = function(){
  * Request the fullscreen mode for the canvas and returns true if the browser knows the feature
  * @returns {boolean}
  */
-Anibody.prototype.RequestFullscreen = function(){
-         
-        // try fullscreen
+Anibody.prototype.RequestFullscreen = function(withMaxScale){
+    
+    if(typeof withMaxScale === "undefined")
+        withMaxScale = false;
+    
+    // try fullscreen
     var can = this.Canvas;
     var done = false;
 
@@ -518,6 +542,10 @@ Anibody.prototype.RequestFullscreen = function(){
     if(!done && can.msRequestFullscreen){
         can.msRequestFullscreen();
         done = true;
+    }
+
+    if(withMaxScale){
+        this.MaxScale();
     }
 
 };

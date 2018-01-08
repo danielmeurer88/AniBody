@@ -80,7 +80,7 @@ T.prototype.Initialize = function () {
     // s._drawPoints = true;
     // s._drawCentroid = true;
     // s._drawArea = true;
-    s._drawSurroundingRectangle = true;
+    // s._drawSurroundingRectangle = true;
 
     s.VisualRotation = false;
 

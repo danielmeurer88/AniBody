@@ -14,8 +14,8 @@ function TGUI(){
     this.LastY = 0;
     this.CurrentX = 0;
     this.CurrentY = 0;
-    this.MoveStep = 20;
-    this.RotateStep = Math.PI * 0.1;
+    this.MoveStep = 10;
+    this.RotateStep = Math.PI * 0.05;
     this.Dragging = false;
     this.Rotating = false;
 
@@ -145,7 +145,7 @@ TGUI.prototype._overwriteProcessInputOfWidget = function(){
         if(this.keyCounter > 120){
             this.moveInhancer++;
         }
-        var movestep = that.Movestep * this.moveInhancer;
+        var movestep = that.MoveStep * this.moveInhancer;
 
 
         if (keys.A.FramesPressed % that._keyModulo === 1) {
@@ -165,11 +165,11 @@ TGUI.prototype._overwriteProcessInputOfWidget = function(){
         }
 
         if (keys.Q.FramesPressed % that._keyModulo === 1) {
-            that.Selected.Shape.Rotate(that.RotateStep);
+            that.Selected.Shape.Rotate(that.RotateStep*(-1));
         }
 
         if (keys.E.FramesPressed % that._keyModulo === 1) {
-            that.Selected.Shape.Rotate(that.RotateStep*(-1));
+            that.Selected.Shape.Rotate(that.RotateStep);
         }
     };
 };
