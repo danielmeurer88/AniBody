@@ -11,7 +11,6 @@ Anibody.util.MediaManager = function MediaManager() {
 
     this.Images = new Map();
     this.Sounds = new Map();
-    this.Strings = new Map();
 
     this.Pack = [];
     this.SortedPack = false;
@@ -37,8 +36,8 @@ Anibody.util.MediaManager.prototype.DefaultFontColor = "black";
  * @returns {undefined}
  */
 Anibody.util.MediaManager.prototype.Flush = function () {
-    //this.Images = [];
-    //this.Sounds = [];
+    this.Images.clear();
+    this.Sounds.clear();
 };
 /**
  * draws a progess bar while loading files

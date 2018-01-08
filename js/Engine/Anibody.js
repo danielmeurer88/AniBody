@@ -698,23 +698,6 @@ Anibody.prototype.SetCamera = function (cam) {
     this.Camera.SelectedCamera = cam;
 };
 /**
- * yetTODO
- * @returns {undefined}
- */
-Anibody.prototype.ActivateFullScreen_yetTODO = function () {
-    var elem = this.Canvas;
-
-    var w = $(window).width();
-    var h = $(window).height();
-
-    elem.width = w;
-    elem.height = h;
-
-    this.Canvas.ScreenRatio = w / h;
-
-    this.IsCanvasFitToScreen = true;
-};
-/**
  * Adds an Image for an given number of frames on the top of the canvas
  * @param {HTML-Image} img
  * @param {number} x

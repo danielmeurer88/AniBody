@@ -92,6 +92,28 @@ function menu_callback(engine) {
     b3.AddButtonEffect();
     b3.Register();
 
+    // ---------------------------------------------------------------------------
+    // BUTTON MOUSECLICK - Test Button 2 - Initiation
+    var bmc = new Button(engine.Canvas.width - 80, engine.Canvas.height - 60,
+        {
+            Label: "mc",
+            Width: 60,
+            Height: 40,
+            DisplayType: "color",
+            ColorCode: "red",
+            TriggerCallbackObject: function (engine) {
+                
+            }.getCallbackObject(engine, engine),
+            HoverText: "Wird zum Testen von Dinge benutzt, die echte Mausklicks ben{oe}tigen.".decodeURI()
+        });
+    bmc.AddButtonEffect();
+    bmc.Register();
+
+    bmc.SetFullScreenButton();
+    bmc.SetCopyTextButton("Das ist nicht wunderbar");
+    bmc._copyText = "Das ist ja wunderbar";
+    
+
     // Engine gets started
     engine.Start();
 

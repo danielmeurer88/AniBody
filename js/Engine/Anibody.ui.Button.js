@@ -123,7 +123,9 @@ Anibody.ui.Button = function Button(x, y, options) {
     this._urgencyBorderColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyBorderColor;
     this._urgencyBackgroundColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyBackgroundColor;
     this._urgencyFontColor = Anibody.ui.Button.DefaultButtonTemplate.UrgencyFontColor;
-        
+    
+    this._copyText = "";
+    
     this.Initialize();
 };
 
@@ -1492,6 +1494,44 @@ Anibody.ui.Button.prototype.AddButtonEffect = function(depth, stops){
     this.ButtonLayout = img;
     
 };
+
+Anibody.ui.Button.prototype.SetFullScreenButton = function () {
+    var self = this;
+
+    var reqf = function(){
+
+        if(!self.IsMouseOver) return;
+
+        self.Engine.RequestFullscreen();
+    };
+
+    this.Engine.Canvas.addEventListener("click", reqf);
+};
+
+Anibody.ui.Button.prototype.SetCopyTextButton = function (optText) {
+
+    if(typeof optText !== "undefined")
+        this._copyText = optText;
+
+    // if(typeof this._copyText !== "string")
+    //     this._copyText = this._copyText.toString();
+
+    var self = this;
+
+    var copyf = function(){
+
+        if(!self.IsMouseOver) return;
+
+        var txt = self._copyText;
+
+        if(Anibody.static.copyText(txt))
+            console.log("Copied: " + txt);
+    };
+
+    this.Engine.Canvas.addEventListener("click", copyf);
+
+};
+
 /**
  * Sets the counter - if counter is higher than zero it displayes the counter number
  * @param {number} c
