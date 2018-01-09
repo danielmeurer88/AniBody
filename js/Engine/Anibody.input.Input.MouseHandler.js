@@ -11,7 +11,14 @@ Anibody.input.Input.MouseHandler = function MouseHandler(){
     this.RightMouseClickHandlerCBOs = new Anibody.util.PriorityQueue();
     this.WheelHandlerCBOs = new Anibody.util.PriorityQueue();
     this.WheelLimiter = 0.1;
-    
+
+    this.MouseDownEventListener = null;
+    this.MouseMoveEventListener = null;
+    this.MouseUpEventListener = null;
+    this.MouseDownHandlerCBOs = new Anibody.util.PriorityQueue();
+    this.MouseMoveHandlerCBOs = new Anibody.util.PriorityQueue();
+    this.MouseUpHandlerCBOs = new Anibody.util.PriorityQueue();
+
     this.HoverRequests = [];
     this._yesPool = [];
     
@@ -35,6 +42,86 @@ Anibody.input.Input.MouseHandler.prototype.Initialize = function(){
     // increase wheel limiter
         this.WheelLimiter = 1.5;
     }
+
+    var self = this;
+    // MOUSEDOWN Function
+    var f = function (e) {
+
+        var whichButton = "none";
+        if (e.which === 1) {
+            whichButton = "left";
+        }
+        if (e.which === 3) {
+            whichButton = "right";
+        }
+
+        e.Handled = false;
+        e.Timestamp = Date.now();
+        e.RunTime = self.Engine.RunTime;
+        e.Frame = self.Engine.CurrentFrame;
+        e.Type = whichButton;
+        e.Mouse = self.Engine.Input.Mouse;
+
+        var that = e.data;
+        for(var i=0; i<that.MouseDownHandlerCBOs.length; i++){
+            Anibody.CallObject( that.MouseDownHandlerCBOs.heap[i].data, {preparameter:e} );
+        }
+
+    };
+    this.MouseDownEventListener = $(document).on("mousedown",this, f);
+
+    // MOUSEMOVE Function
+    f = function (e) {
+
+        var whichButton = "none";
+        if (e.which === 1) {
+            whichButton = "left";
+        }
+        if (e.which === 3) {
+            whichButton = "right";
+        }
+
+        e.Handled = false;
+        e.Timestamp = Date.now();
+        e.RunTime = self.Engine.RunTime;
+        e.Frame = self.Engine.CurrentFrame;
+        e.Type = whichButton;
+        e.Mouse = self.Engine.Input.Mouse;
+
+        var that = e.data;
+        for(var i=0; i<that.MouseMoveHandlerCBOs.length; i++){
+            Anibody.CallObject( that.MouseMoveHandlerCBOs.heap[i].data, {preparameter:e} );
+        }
+
+    };
+    
+    this.MouseMoveEventListener = $(document).on("mousemove",this, f);
+
+    // MOUSEUP Function
+    f = function (e) {
+
+        var whichButton = "none";
+        if (e.which === 1) {
+            whichButton = "left";
+        }
+        if (e.which === 3) {
+            whichButton = "right";
+        }
+
+        e.Handled = false;
+        e.Timestamp = Date.now();
+        e.RunTime = self.Engine.RunTime;
+        e.Frame = self.Engine.CurrentFrame;
+        e.Type = whichButton;
+        e.Mouse = self.Engine.Input.Mouse;
+
+        var that = e.data;
+        for(var i=0; i<that.MouseUpHandlerCBOs.length; i++){
+            Anibody.CallObject( that.MouseUpHandlerCBOs.heap[i].data, {preparameter:e} );
+        }
+
+    };
+    this.MouseUpEventListener = $(document).on("mouseup",this, f);
 };
 
 /**
@@ -83,6 +170,18 @@ Anibody.input.Input.MouseHandler.prototype.AddMouseHandler = function(type, cbo,
     if(type === "wheel"){
         ref = this.WheelHandlerCBOs.Enqueue(cbo, prio);
         this.WheelHandlerCBOs.Sort();
+    }
+    if(type === "mousemove"){
+        ref = this.MouseMoveHandlerCBOs.Enqueue(cbo, prio);
+        this.MouseMoveHandlerCBOs.Sort();
+    }
+    if(type === "mouseup"){
+        ref = this.MouseUpHandlerCBOs.Enqueue(cbo, prio);
+        this.MouseUpHandlerCBOs.Sort();
+    }
+    if(type === "mousedown"){
+        ref = this.MouseDownHandlerCBOs.Enqueue(cbo, prio);
+        this.MouseDownHandlerCBOs.Sort();
     }
     return ref;
 };
@@ -154,6 +253,7 @@ Anibody.input.Input.MouseHandler.prototype.MouseClickHandler = function(){
         var event = {
             Handled: false,
             Timestamp: Date.now(),
+            RunTime : this.Engine.RunTime,
             Frame: this.Engine.CurrentFrame,
             Type: "leftclick",
             Mouse : this.Engine.Input.Mouse
@@ -179,6 +279,7 @@ Anibody.input.Input.MouseHandler.prototype.MouseClickHandler = function(){
         var event = {
             Handled: false,
             Timestamp: Date.now(),
+            RunTime : this.Engine.RunTime,
             Frame: this.Engine.CurrentFrame,
             Type: "rightclick",
             Mouse : this.Engine.Input.Mouse

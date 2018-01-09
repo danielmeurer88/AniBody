@@ -112,12 +112,12 @@ Anibody.input.Input.Mouse.prototype.RegisterMouseEvents = function (lockContextM
         e.data.Input.Mouse.DownEvent = e;
 
         var input = e.data.Input.Mouse;
-        if (e.which == 1) {
+        if (e.which === 1) {
             input.Left.Down = true;
             input.Left.Up = false;
             input.Left.FramesUp = 0;
         }
-        if (e.which == 3) {
+        if (e.which === 3) {
             input.Right.Down = true;
             input.Right.Up = false;
             input.Right.FramesUp = 0;

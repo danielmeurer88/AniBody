@@ -50,6 +50,8 @@ TGUI.prototype.Initialize = function(){
     this.Widget = new Anibody.Widget();
     this.Widget.that = this;
 
+    this._createButtons();
+
     this._overwriteProcessInputOfWidget();
 
     this.Widget.Register();
@@ -120,6 +122,18 @@ TGUI.prototype.SelectPiece = function(x,y){
         
 };
 
+TGUI.prototype._createButtons = function(){
+    
+    var can = this.Engine.Canvas;
+    var portrait = false;
+
+    if(can.height > can.width)
+        portrait = true;
+
+    
+
+};
+
 TGUI.prototype._overwriteProcessInputOfWidget = function(){
     this.Widget.keyCounter = 0;
     this.Widget.moveInhancer = 1;
@@ -175,16 +189,103 @@ TGUI.prototype._overwriteProcessInputOfWidget = function(){
 };
 
 TGUI.prototype._registerMouseHandler = function(){
-    var onmouseclickcbo = function (event) {
+    var mh = this.Engine.Input.MouseHandler;
+
+
+    var onmousedowncbo = function (event) {
+        var mpos = event.Mouse.Position;
+        event.Handled = true;
+
+        var x = mpos.X;
+        var y = mpos.Y;
+
+        this.StartX = x;
+        this.StartY = y;
+        this.CurrentX = this.StartX;
+        this.CurrentY = this.StartY;
+        this.LastX = this.StartX;
+        this.LastY = this.StartY;
+        
+        if(event.Type === "left"){
+            this.SelectPiece();
+            this.Dragging = true;
+        }else{
+            this.Rotating = true;
+        }
+
+    }.getCallbackObject(this);
+
+    var onmousemovecbo = function(e){
+
+        if(!this.Dragging && !this.Rotating) return;
 
         var mpos = event.Mouse.Position;
         event.Handled = true;
 
-        this.SelectPiece();
+        this.CurrentX = mpos.X;
+        this.CurrentY = mpos.Y;
+
+        if(event.Type === "left"){
+            this.Dragging = true;
+            this.Rotating = false;
+        }else{
+            this.Dragging = false;
+            this.Rotating = true;
+        }
+        
+        // check if current touch x position is "MoveStep"-pixels (threshold) to the right
+        if(this.LastX + this.MoveStep <= this.CurrentX ){
+            this.LastX += this.MoveStep;
+            if(this.Dragging)
+                this.Selected.Move(this.MoveStep, 0);
+            else
+                this.Selected.Shape.Rotate(this.RotateStep, true);
+            return;
+        }
+
+        if(this.LastX - this.MoveStep >= this.CurrentX){
+            this.LastX -= this.MoveStep;
+            if(this.Dragging)
+                this.Selected.Move(this.MoveStep*(-1), 0);
+            else
+                this.Selected.Shape.Rotate(this.RotateStep*(-1), true);
+            return;
+        }
+
+        if(this.Dragging && this.LastY + this.MoveStep <= this.CurrentY ){
+            this.LastY += this.MoveStep;
+            this.Selected.Move(0, this.MoveStep);
+            return;
+        }
+
+        if(this.Dragging && this.LastY - this.MoveStep >= this.CurrentY){
+            this.LastY -= this.MoveStep;
+            this.Selected.Move(0, this.MoveStep*(-1));
+            return;
+        }
+
 
     }.getCallbackObject(this);
 
-    this.Engine.Input.MouseHandler.AddMouseHandler("leftclick", onmouseclickcbo);
+    var onmouseupcbo = function(e){
+        var mpos = event.Mouse.Position;
+        event.Handled = true;
+
+        this.CurrentX = mpos.X;
+        this.CurrentY = mpos.Y;
+        
+        this.Dragging = false;
+        this.Rotating = false;
+        
+
+    }.getCallbackObject(this);
+
+    mh.AddMouseHandler("mousedown", onmousedowncbo, 12);
+
+    mh.AddMouseHandler("mousemove", onmousemovecbo, 12);
+    
+    mh.AddMouseHandler("mouseup", onmouseupcbo, 12);
+
 };
 
 TGUI.prototype._registerTouchListener = function(){
