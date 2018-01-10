@@ -79,6 +79,23 @@
 				</div>
 			</div>
 
+			<!-- ++++++++++++++++++++++++++++++++++++++++++  THE CLASS Title - row -->
+			<div class="row">
+				<div class="col-xl-10 offset-xl-1">
+					<!-- CONTENT -->
+					<h3>The Class: Anibody</h3>
+				</div>
+			</div>
+
+			<!-- ++++++++++++++++++++++++++++++++++++++++++  THE List of Attributes
+					<!-- CONTENT -->
+					<h5>List of (important) Attributes</h5>
+					<ul>
+						<li></li>
+					</ul>
+				</div>
+			</div>
+
 			<!-- ++++++++++++++++++++++++++++++++++++++++++  Import - row -->
 			<div id="import" class="row">
 
@@ -89,12 +106,12 @@
 						Writing it everytime you want to instantiate a new ColorPicker is quiet cumbersome.</div>
 					<p>Therefore Anibody provides an import function:</p>
 					<pre><code class="javascript">Anibody.import(Anibody.ui.ColorPicker);
-var cp = ColorPicker();
+var cp = new ColorPicker();
 cp.Start();</code></pre>
 					<p>If ColorPicker is still too long or the name collides with another class in your project then there is the possibility
 						to use an alias.</p>
 					<pre><code class="javascript">Anibody.import(Anibody.ui.ColorPicker, "Copi");
-var cp = Copi();
+var cp = new Copi();
 cp.Start();</code></pre>
 
 				</div>
