@@ -84,6 +84,11 @@ function Anibody(html_id) {
     this.Canvas = {};// the canvas object
     this.Canvas.ScreenRatio = 0;
 
+    this._origWidth = 0;
+    this._origHeight = 0;
+    Object.defineProperty(this, "_origWidth", {enumerable:false});
+    Object.defineProperty(this, "_origHeight", {enumerable:false});
+
     // after the user uses the first touch event, it will be true
     this.IsTouchDevice = false;
     this.IsCanvasFitToScreen = false;
@@ -475,6 +480,9 @@ Anibody.prototype.MaxScale = function(){
         var width = $(window).width();
         var height = $(window).height();
 
+        self._origWidth = can.width;
+        self._origHeight = can.height;
+
         var ratiow = width / can.width;
         var ratioh = height / can.height;
 
@@ -501,7 +509,11 @@ Anibody.prototype.ScaleBack = function(){
     var self = this;
     var scalefunc = function(){
         var can = self.Canvas;
-        var c = self.Context;
+
+        can.width = self._origWidth;
+        can.height = self._origHeight;
+
+        var c = can.Context;
         self._scale = 1;
         c.scale(1, 1);
     };

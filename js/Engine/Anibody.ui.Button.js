@@ -1509,7 +1509,21 @@ Anibody.ui.Button.prototype.SetFullScreenButton = function (withMaxScale) {
 
         if(!self.IsMouseOver) return;
 
-        self.Engine.RequestFullscreen(self._withMaxScale);
+        if(typeof self._fullscreen === "undefined")
+            self._fullscreen = false;
+
+
+        if(!self._fullscreen){
+            self._fullscreen = true;
+            self.Engine.RequestFullscreen(self._withMaxScale);
+        }else{
+            self._fullscreen = false;
+            self.ExitFullscreen();
+            self.ScaleBack();
+        }
+
+
+        
     };
 
     this.Engine.Canvas.addEventListener("click", reqf);
