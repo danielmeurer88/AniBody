@@ -38,12 +38,16 @@ TGUI.prototype.constructor = TGUI;
 TGUI.prototype.Initialize = function(){
 
     var red = new T("red", this.MoveStep*1, this.MoveStep*1);
+    red.Name = "Red";
 
     var green = new T("green", this.MoveStep*2, this.MoveStep*2);
+    green.Name = "Green";
 
     var blue = new T("blue", this.MoveStep*3, this.MoveStep*3);
+    blue.Name = "Blue";
 
     var yellow = new T("yellow", this.MoveStep*4, this.MoveStep*4);
+    yellow.Name = "Yellow";
     yellow.Shape.Selected = true;
     this.Ts.push(red, green, blue, yellow);
 
@@ -130,8 +134,49 @@ TGUI.prototype._createButtons = function(){
     if(can.height > can.width)
         portrait = true;
 
-    
+    if(!portrait){
+        // landscape canvas
 
+        // BUTTON MOUSECLICK - Test Button 2 - Initiation
+        var bmc = new Button(can.width - 100, can.height/2 - 60,
+            {
+                Label: "Test",
+                Width: 80,
+                Height: 40,
+                DisplayType: "color",
+                ColorCode: "red",
+                TriggerCallbackObject: function (gui) {
+                    
+                    if(gui._getCollision()){
+                        res = "Ts are colliding";
+                        
+                    }else{
+                        res = "Ts are not colliding";
+                    }
+
+                    new Anibody.ui.Alert(res).Start();
+                    console.log(res);
+
+                }.getCallbackObject("self",this),
+                HoverText: "Tests if the pieces are colliding".decodeURI()
+            });
+        bmc.AddButtonEffect();
+        bmc.Register();
+
+    }
+
+};
+
+TGUI.prototype._getCollision = function(){
+    var collision = false;
+
+    collision = this.Ts[0].IsCollidingWith([this.Ts[1], this.Ts[2], this.Ts[3]]);
+
+    collision = this.Ts[1].IsCollidingWith([this.Ts[2], this.Ts[3]]);
+
+    collision = this.Ts[2].IsCollidingWith([this.Ts[3]]);
+
+    return collision;
 };
 
 TGUI.prototype._overwriteProcessInputOfWidget = function(){

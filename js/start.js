@@ -57,11 +57,11 @@ function menu_callback(engine) {
     // ---------------------------------------------------------------------------
     // BUTTON 1 - Initiation
     var b1 = new Button("center", 120, {
-        Label: "Start",
+        Label: "Start RPG Example",
         TriggerCallbackObject: function (engine) {
             level_rpg(engine);
         }.getCallbackObject(engine, engine),
-        HoverText: "Startet das Spiel"
+        HoverText: "Starts the RPG Proof of Concept"
     });
     b1.AddButtonEffect();
     b1.Register();
@@ -74,7 +74,7 @@ function menu_callback(engine) {
             TriggerCallbackObject: function (engine) {
                 button1(engine);
             }.getCallbackObject("self", engine),
-            HoverText: "Wird zum Testen unterschiedlicher Dinge benutzt."
+            HoverText: "will be used for testing"
         });
     b2.AddButtonEffect();
     b2.Register();
@@ -83,11 +83,11 @@ function menu_callback(engine) {
     // BUTTON 3 - Test Button 2 - Initiation
     var b3 = new Button("center", 320,
         {
-            Label: "Test Button 2",
+            Label: "Start T Alignment",
             TriggerCallbackObject: function (engine) {
                 button2(engine);
             }.getCallbackObject(engine, engine),
-            HoverText: "Wird auch zum Testen unterschiedlicher Dinge benutzt."
+            HoverText: "Starts the puzzle with the 4 pieces formed in a T shape"
         });
     b3.AddButtonEffect();
     b3.Register();

@@ -21,10 +21,10 @@ Anibody.ui.Alert = function Alert(text){
     this.Rows = [];
     this.RowLengths = [];
             
-    this.Rounding = Alert.prototype.DefaultRounding;
-    this.FontHeight = Alert.prototype.DefaultFontHeight;
-    this.BoxPadding = Alert.prototype.DefaultBoxPadding;
-    this.RowSpace = Alert.prototype.DefaultRowSpace;
+    this.Rounding = Anibody.ui.Alert.prototype.DefaultRounding;
+    this.FontHeight = Anibody.ui.Alert.prototype.DefaultFontHeight;
+    this.BoxPadding = Anibody.ui.Alert.prototype.DefaultBoxPadding;
+    this.RowSpace = Anibody.ui.Alert.prototype.DefaultRowSpace;
     this.FontPadding = this.BoxPadding;
     
     // the whole confirm dialog box
@@ -343,7 +343,9 @@ Anibody.ui.Alert.prototype.Start = function (cbo) {
     this.Active = true;
     
     new Anibody.util.Flow(this, "Opacity", 1, 600,{
-        that:this, parameter:true, function: function(p){}
+        that:this, parameter:true, function: function(p){
+            this.Opacity = 1;
+        }
     }).Start();
     
     this.Register(); // Widget.Register();
