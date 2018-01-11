@@ -47,11 +47,13 @@ Anibody.input.Input.MouseHandler.prototype.Initialize = function(){
     // MOUSEDOWN Function
     var f = function (e) {
 
+        var buttons = typeof e.buttons !== undefined ? e.buttons : e.which === 0 ? 0 : 1 << (e.which - 1);
+
         var whichButton = "none";
-        if (e.which === 1) {
+        if (buttons === 1) {
             whichButton = "left";
         }
-        if (e.which === 3) {
+        if (buttons === 3) {
             whichButton = "right";
         }
 
@@ -73,11 +75,13 @@ Anibody.input.Input.MouseHandler.prototype.Initialize = function(){
     // MOUSEMOVE Function
     f = function (e) {
 
+        var buttons = typeof e.buttons !== undefined ? e.buttons : e.which === 0 ? 0 : 1 << (e.which - 1);
+
         var whichButton = "none";
-        if (e.which === 1) {
+        if (buttons === 1) {
             whichButton = "left";
         }
-        if (e.which === 3) {
+        if (buttons === 3) {
             whichButton = "right";
         }
 
@@ -97,14 +101,18 @@ Anibody.input.Input.MouseHandler.prototype.Initialize = function(){
     
     this.MouseMoveEventListener = $(document).on("mousemove",this, f);
 
+    
+
     // MOUSEUP Function
     f = function (e) {
-
+        
+        var buttons = typeof e.buttons !== undefined ? e.buttons : e.which === 0 ? 0 : 1 << (e.which - 1);
+        
         var whichButton = "none";
-        if (e.which === 1) {
+        if (buttons === 1) {
             whichButton = "left";
         }
-        if (e.which === 3) {
+        if (buttons === 3) {
             whichButton = "right";
         }
 

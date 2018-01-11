@@ -513,7 +513,7 @@ Anibody.prototype.ScaleBack = function(){
         can.width = self._origWidth;
         can.height = self._origHeight;
 
-        var c = can.Context;
+        var c = self.Context;
         self._scale = 1;
         c.scale(1, 1);
     };

@@ -154,7 +154,7 @@ TGUI.prototype._createButtons = function(){
                         res = "Ts are not colliding";
                     }
 
-                    new Anibody.ui.Alert(res).Start();
+                    //new Anibody.ui.Alert(res).Start();
                     console.log(res);
 
                 }.getCallbackObject("self",this),
@@ -170,11 +170,23 @@ TGUI.prototype._createButtons = function(){
 TGUI.prototype._getCollision = function(){
     var collision = false;
 
+    // more collision checks than necessary but still a bug exists
+    // still a pair of two Ts - (often different color)
+    // if one of the pair and the other one collides - it won't be detected
+    // TODO
+
+    console.log(`Order: ${this.Ts[0].Name}, ${this.Ts[1].Name}, ${this.Ts[2].Name}, ${this.Ts[3].Name}`);
+
     collision = this.Ts[0].IsCollidingWith([this.Ts[1], this.Ts[2], this.Ts[3]]);
 
-    collision = this.Ts[1].IsCollidingWith([this.Ts[2], this.Ts[3]]);
+    if(!collision)
+        collision = this.Ts[1].IsCollidingWith([this.Ts[0], this.Ts[2], this.Ts[3]]);
 
-    collision = this.Ts[2].IsCollidingWith([this.Ts[3]]);
+    if(!collision)
+        collision = this.Ts[2].IsCollidingWith([this.Ts[0], this.Ts[1], this.Ts[3]]);
+
+    if(!collision)
+        collision = this.Ts[3].IsCollidingWith([this.Ts[0], this.Ts[1], this.Ts[2]]);
 
     return collision;
 };
@@ -260,7 +272,7 @@ TGUI.prototype._registerMouseHandler = function(){
 
     }.getCallbackObject(this);
 
-    var onmousemovecbo = function(e){
+    var onmousemovecbo = function(event){
 
         if(!this.Dragging && !this.Rotating) return;
 
@@ -312,7 +324,7 @@ TGUI.prototype._registerMouseHandler = function(){
 
     }.getCallbackObject(this);
 
-    var onmouseupcbo = function(e){
+    var onmouseupcbo = function(event){
         var mpos = event.Mouse.Position;
         event.Handled = true;
 

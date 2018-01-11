@@ -1518,8 +1518,9 @@ Anibody.ui.Button.prototype.SetFullScreenButton = function (withMaxScale) {
             self.Engine.RequestFullscreen(self._withMaxScale);
         }else{
             self._fullscreen = false;
-            self.ExitFullscreen();
-            self.ScaleBack();
+            self.Engine.ExitFullscreen();
+            if(self._withMaxScale)
+                self.Engine.ScaleBack();
         }
 
 

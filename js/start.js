@@ -57,11 +57,11 @@ function menu_callback(engine) {
     // ---------------------------------------------------------------------------
     // BUTTON 1 - Initiation
     var b1 = new Button("center", 120, {
-        Label: "Start RPG Example",
+        Label: "Start",
         TriggerCallbackObject: function (engine) {
             level_rpg(engine);
         }.getCallbackObject(engine, engine),
-        HoverText: "Starts the RPG Proof of Concept"
+        HoverText: "Startet das Spiel"
     });
     b1.AddButtonEffect();
     b1.Register();
@@ -70,11 +70,11 @@ function menu_callback(engine) {
     // BUTTON 2 - Test Button 1 - Initiation
     var b2 = new Button("center", 220,
         {
-            Label: "Test Button",
+            Label: "T Alignment (in dev)",
             TriggerCallbackObject: function (engine) {
-                button1(engine);
+                button2(engine);
             }.getCallbackObject("self", engine),
-            HoverText: "will be used for testing"
+            HoverText: "Starts T Alignment puzzle."
         });
     b2.AddButtonEffect();
     b2.Register();
@@ -83,11 +83,11 @@ function menu_callback(engine) {
     // BUTTON 3 - Test Button 2 - Initiation
     var b3 = new Button("center", 320,
         {
-            Label: "Start T Alignment",
+            Label: "SpriteTest",
             TriggerCallbackObject: function (engine) {
-                button2(engine);
+                button3(engine);
             }.getCallbackObject(engine, engine),
-            HoverText: "Starts the puzzle with the 4 pieces formed in a T shape"
+            HoverText: "Wird auch zum Testen unterschiedlicher Dinge benutzt."
         });
     b3.AddButtonEffect();
     b3.Register();
@@ -119,25 +119,19 @@ function menu_callback(engine) {
     // Engine gets started
     engine.Start();
 
-    // ---------------------------------------------------------------------------
-    // InputField - top left - Initiation
-    Anibody.import(Anibody.ui.InputField);
-    var infi = new InputField(10, 10, 300);
-    infi.BindToStorageEntry("startInputField");
-    infi.Register();
-
-
-
 }
 
-
-function button1(engine) {
-    
-}
 
 function button2(engine) {
+    engine.FlushObjects();
 
-    testTalignment(engine);
+    var tgui = new TGUI();
+    tgui.Register();
+        
+}
+
+function button3(engine) {
+    testSprite(engine);
 }
 
 //###########################################
@@ -317,7 +311,7 @@ function testSprite(engine) {
     // the function that processes the user input for the Sprite
     // a plain widget is used for this
     w.ProcessInput = function () {
-
+        
         var keys = this.Engine.Input.Keys;
         var speed = 2;
 
@@ -355,6 +349,11 @@ function testSprite(engine) {
         if (keys.Q.FramesPressed > 1) {
             bowser.ResetClippingIndex();
         }
+
+    };
+    w.Draw = function (c) {
+        
+        c.fillText("Sprite Control: W,S,A,D and Space (Reset Sprite with Q)", 20, 20);
 
     };
     w.Register();
@@ -488,14 +487,6 @@ function testImageWrapper(engine){
 
 }
 
-function testTalignment(engine){
-    engine.FlushObjects();
-
-    var tgui = new TGUI();
-    tgui.Register();
-    
-}
-
 function testNewCallObjectOptions(engine) {
 
     var func = function () {
@@ -565,4 +556,12 @@ function testNewCallObjectOptions(engine) {
         preparameter: "preparameter",
         postparameter: "postparameter"
     });
+}
+
+function testInputField(engine){
+    // InputField - top left - Initiation
+    Anibody.import(Anibody.ui.InputField);
+    var infi = new InputField(10, 10, 300);
+    infi.BindToStorageEntry("startInputField");
+    infi.Register();
 }
