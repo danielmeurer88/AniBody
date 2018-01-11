@@ -57,11 +57,11 @@ function menu_callback(engine) {
     // ---------------------------------------------------------------------------
     // BUTTON 1 - Initiation
     var b1 = new Button("center", 120, {
-        Label: "Start",
+        Label: "RPG Example Start",
         TriggerCallbackObject: function (engine) {
             level_rpg(engine);
         }.getCallbackObject(engine, engine),
-        HoverText: "Startet das Spiel"
+        HoverText: "Starts the RPG Proof of Concept"
     });
     b1.AddButtonEffect();
     b1.Register();
@@ -83,7 +83,7 @@ function menu_callback(engine) {
     // BUTTON 3 - Test Button 2 - Initiation
     var b3 = new Button("center", 320,
         {
-            Label: "SpriteTest",
+            Label: "Current Test",
             TriggerCallbackObject: function (engine) {
                 button3(engine);
             }.getCallbackObject(engine, engine),
@@ -94,17 +94,18 @@ function menu_callback(engine) {
 
     // ---------------------------------------------------------------------------
     // BUTTON MOUSECLICK - Test Button 2 - Initiation
-    var bmc = new Button(engine.Canvas.width - 80, engine.Canvas.height - 60,
+    var bmc = new Button(engine.Canvas.width - 60, engine.Canvas.height - 60,
         {
-            Label: "mc",
-            Width: 60,
-            Height: 40,
+            Label: "max",
+            Width: 50,
+            Height: 50,
             DisplayType: "color",
+            FontHeight: 14,
             ColorCode: "red",
             TriggerCallbackObject: function (engine) {
                 console.log("Anibody.Scale = " + this.Scale);
             }.getCallbackObject(engine, engine),
-            HoverText: "Wird zum Testen von Dinge benutzt, die echte Mausklicks ben{oe}tigen.".decodeURI()
+            HoverText: "Toggles between original and max scales - not correctly working.".decodeURI()
         });
     bmc.AddButtonEffect();
     bmc.Register();
@@ -115,6 +116,7 @@ function menu_callback(engine) {
     bmc.SetCopyTextButton("Das ist nicht wunderbar");
     bmc._copyText = "Das ist ja wunderbar";
     
+    createTestButtons(engine);
 
     // Engine gets started
     engine.Start();
@@ -132,6 +134,115 @@ function button2(engine) {
 
 function button3(engine) {
     testSprite(engine);
+}
+
+function createTestButtons(engine){
+
+    Anibody.ui.Button.SetTemplateByObject({
+        Width: 25, Height: 25,
+        Codename: ["button_state_0", "button_state_1", "button_state_2"],
+        TextColor: "white", FontHeight: 14, DisplayType: "image"
+    });
+
+    var testbuttons = [];
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 1
+    testbuttons[0] = new Button(20, engine.Canvas.height - 150,
+        {
+            Label: "T1",
+            TriggerCallbackObject: function (engine) {
+                testRect(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.shapes.Rect"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 2
+    testbuttons[1] = new Button(50, engine.Canvas.height - 150,
+        {
+            Label: "T2",
+            TriggerCallbackObject: function (engine) {
+                testShape(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.shapes.Shape"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 3
+    testbuttons[2] = new Button(80, engine.Canvas.height - 150,
+        {
+            Label: "T3",
+            TriggerCallbackObject: function (engine) {
+                testSprite(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.visual.Sprite"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 4
+    testbuttons[3] = new Button(110, engine.Canvas.height - 150,
+        {
+            Label: "T4",
+            TriggerCallbackObject: function (engine) {
+                testRandom(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.static.Random.SetRandomInterval"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 5
+    testbuttons[4] = new Button(140, engine.Canvas.height - 150,
+        {
+            Label: "T5",
+            TriggerCallbackObject: function (engine) {
+                testSpline(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.visual.Spline"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 6
+    testbuttons[5] = new Button(20, engine.Canvas.height - 110,
+        {
+            Label: "T6",
+            TriggerCallbackObject: function (engine) {
+                testSoundWrapper(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.util.SoundWrapper"
+        });
+    
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 7
+    testbuttons[6] = new Button(50, engine.Canvas.height - 110,
+        {
+            Label: "T7",
+            TriggerCallbackObject: function (engine) {
+                testImageWrapper(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.util.ImageWrapper"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 8
+    testbuttons[7] = new Button(80, engine.Canvas.height - 110,
+        {
+            Label: "T8",
+            TriggerCallbackObject: function (engine) {
+                testNewCallObjectOptions(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.CallObject()"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 9
+    testbuttons[8] = new Button(110, engine.Canvas.height - 110,
+        {
+            Label: "T9",
+            TriggerCallbackObject: function (engine) {
+                testInputField(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.ui.InputField"
+        });
+
+
+    for(var i=0; i<testbuttons.length; i++){
+        testbuttons[i].AddButtonEffect();
+        testbuttons[i].Register();
+    }
+    
+
 }
 
 //###########################################
@@ -451,7 +562,7 @@ function testImageWrapper(engine){
     w.wrapper = new Anibody.util.ImageWrapper(img);
     
     w.Draw = function (c) {
-        c.drawImage(this.wrapper.Image, 10, 500);
+        c.drawImage(this.wrapper.Image, 280, 500);
     };
 
     // the function that processes the user input

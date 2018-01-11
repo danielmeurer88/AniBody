@@ -149,7 +149,7 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
                 this.Height*rates.y2 - offsety
         );
         var stops = this.FillCode;
-        if(stops && stops.length)
+        if(stops && stops.push)
             for (var i = 0; i < stops.length; i++) {
                 lg.addColorStop(stops[i].stop, stops[i].color);
             }
@@ -171,7 +171,7 @@ Anibody.shapes.Shape.prototype._updateFillStyle = function () {
             Math.min(this.Width, this.Height) * rates.r2
         );
         var stops = this.FillCode;
-        if(stops && stops.length)
+        if(stops && stops.push)
             for (var i = 0; i < stops.length; i++) {
                 rg.addColorStop(stops[i].stop, stops[i].color);
             }
@@ -214,8 +214,8 @@ Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
                 this.Width*rates.x2 - offsetx, 
                 this.Height*rates.y2 - offsety
         );
-        var stops = this.FillCode;
-        if(stops && stops.length)
+        var stops = this.BorderCode;
+        if(stops && stops.push)
             for (var i = 0; i < stops.length; i++) {
                 lg.addColorStop(stops[i].stop, stops[i].color);
             }
@@ -237,7 +237,7 @@ Anibody.shapes.Shape.prototype._updateBorderStyle = function () {
             Math.min(this.Width, this.Height) * rates.r2
         );
         var stops = this.FillCode;
-        if(stops && stops.length)
+        if(stops && stops.push)
             for (var i = 0; i < stops.length; i++) {
                 rg.addColorStop(stops[i].stop, stops[i].color);
             }
