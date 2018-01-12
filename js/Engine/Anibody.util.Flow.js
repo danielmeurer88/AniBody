@@ -66,12 +66,26 @@ Anibody.util.MultiFlow.prototype.Start = function(){
         var obj, attr;
         var aef = self.AfterEveryFrameObject;
         var cbo = self.CallbackObject;
+        var _temp;
         
         for(var i=0; i<self.Object.length; i++){
             obj = self.Object[i];
             attr = self.AttributeString[i];
             
-            obj[attr] += self.Step[i];
+            // before writing the new value into the actual object,
+            // write it into a temp variable and test it
+            _temp = obj[attr] + self.Step[i];
+
+            // now check if it is bigger or smaller than the target value
+            if(self.TargetIsSmaller[i]){
+                if(_temp <= self.TargetValue[i])
+                    _temp = self.TargetValue[i];
+            }else{
+                if(_temp >= self.TargetValue[i])
+                    _temp = self.TargetValue[i];
+            }
+
+            obj[attr] = _temp;
         
             if(aef)
                 aef.function.call(aef.that, aef.parameter)
@@ -176,11 +190,14 @@ Anibody.util.Flow.prototype.Start = function(){
         // so that the actual target won't be overwritten with a too small or too big value 
         if(self.TargetIsSmaller){
             if(_preval <= self.TargetValue)
-                obj[key] = self.TargetValue;
+                _preval = self.TargetValue;
         }else{
             if(_preval >= self.TargetValue)
-                obj[key] = self.TargetValue;
+                _preval = self.TargetValue;
         }
+
+        // now it is save to overwrite the actual object
+        obj[key] = _preval;
 
         // now invoke the CBO after every step
         var aef = self.AfterEveryFrameObject;

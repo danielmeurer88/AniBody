@@ -344,6 +344,7 @@ Anibody.ui.Alert.prototype.Start = function (cbo) {
     
     new Anibody.util.Flow(this, "Opacity", 1, 600,{
         that:this, parameter:true, function: function(p){
+            console.log("Flowing");
             this.Opacity = 1;
         }
     }).Start();

@@ -133,7 +133,22 @@ function button2(engine) {
 }
 
 function button3(engine) {
-    testSprite(engine);
+
+    var a = { key : 0};
+    var b1 = {key : 50};
+    var b2 = {key : 100};
+
+    var flow = new Anibody.util.Flow(a, "key", 1, 600,{
+        that:this, parameter:true, function: function(p){
+            console.log("Flowing");
+        }
+    });
+
+    var mon = new Anibody.debug.Monitor(a, "key");
+    mon.Start();
+    flow.Start();
+    
+    var alert = new Anibody.ui.Alert("test"); alert.Start();
 }
 
 function createTestButtons(engine){
