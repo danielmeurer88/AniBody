@@ -320,6 +320,13 @@ Anibody.util.Timer.prototype.Pause = function(){
         this.Active = false;
 };
 /**
+ * sets Frames per Second
+ * @returns {undefined}
+ */
+Anibody.util.Timer.prototype.SetFPS = function(fps){
+    this.Milli = 1000/fps;
+};
+/**
  * sets the number of total calls until the timer stops itself
  * @param {type} t
  * @returns {undefined}

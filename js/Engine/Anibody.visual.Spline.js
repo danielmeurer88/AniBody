@@ -133,7 +133,7 @@ Anibody.visual.Spline.prototype.RemoveLastPoint = function () {
 Anibody.visual.Spline.prototype.Draw = function (c) {
     c.save();
 
-    
+    var cam = this.Engine.GetCamera();
 
     var p1, cp1, cp2, p2;
     
@@ -166,11 +166,11 @@ Anibody.visual.Spline.prototype.Draw = function (c) {
             p2 = this.Points[i + 1];
                 
             c.beginPath();
-            c.moveTo(p1.x, p1.y);
+            c.moveTo(p1.x-cam.X, p1.y-cam.Y);
             c.bezierCurveTo(
-                    cp1.x, cp1.y,
-                    cp2.x, cp2.y,
-                    p2.x, p2.y
+                    cp1.x-cam.X, cp1.y-cam.Y,
+                    cp2.x-cam.X, cp2.y-cam.Y,
+                    p2.x-cam.X, p2.y-cam.Y
                     );
             c.stroke();
         }
@@ -187,7 +187,7 @@ Anibody.visual.Spline.prototype.Draw = function (c) {
         c.lineWidth = 1.5;
         for (var i = 0; i < this.Points.length; i++){
             //this.Points[i].Draw(c);
-            c.drawCross(this.Points[i].x, this.Points[i].y, 6);
+            c.drawCross(this.Points[i].x-cam.X, this.Points[i].y-cam.Y, 6);
         }
             
     }

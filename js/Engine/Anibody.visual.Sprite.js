@@ -74,13 +74,11 @@ Anibody.visual.Sprite.prototype.Initialize = function(){
     }
     
     this.ResetTemplate();
-    
-    // not really used yet - TODO
+
     this.ClipCanvas = document.createElement("CANVAS");
     this.ClipCanvas.width = this.Width;
     this.ClipCanvas.height = this.Height;
     this.ClipContext = this.ClipCanvas.getContext("2d");
-    
     
 };
 
@@ -266,6 +264,7 @@ Anibody.visual.Sprite.prototype.Draw = function(c){
         return;
     
     var cp = false;
+    var cam = this.Engine.GetCamera();
     
     if(this._useDefault && this.DefaultClipping!== null){
         cp = this.DefaultClipping;
@@ -284,7 +283,7 @@ Anibody.visual.Sprite.prototype.Draw = function(c){
     c.drawImage(this.SpriteImage, /* sprite img */
         x, cp.Origin.y, /* where on the sprite to start clipping (x, y) */
         this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
-        this.X, this.Y, this.Width, this.Height /* where on the canvas (x, y, width, height) */
+        this.X - cam.X, this.Y - cam.Y, this.Width, this.Height /* where on the canvas (x, y, width, height) */
     );
     
 };

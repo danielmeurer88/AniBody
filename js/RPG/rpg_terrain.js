@@ -153,13 +153,14 @@ RPGTerrain.prototype.Draw = function(c){
 };
 RPGTerrain.prototype.Update = function(){
         
-        if(!this.SideQHandled)
-            this.FillObjQ();
-        
-        if(this.RPGMouse)
-            this.RPGMouse.Update();
-        
-    };
+    if(!this.SideQHandled)
+        this.FillObjQ();
+    
+    if(this.RPGMouse)
+        this.RPGMouse.Update();
+    
+};
+
 RPGTerrain.prototype.GetField = function(x,y){ return this.Fields[x][y];};
 
 /**

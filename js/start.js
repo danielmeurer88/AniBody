@@ -134,21 +134,7 @@ function button2(engine) {
 
 function button3(engine) {
 
-    var a = { key : 0};
-    var b1 = {key : 50};
-    var b2 = {key : 100};
-
-    var flow = new Anibody.util.Flow(a, "key", 1, 600,{
-        that:this, parameter:true, function: function(p){
-            console.log("Flowing");
-        }
-    });
-
-    var mon = new Anibody.debug.Monitor(a, "key");
-    mon.Start();
-    flow.Start();
-    
-    var alert = new Anibody.ui.Alert("test"); alert.Start();
+    testFollowingCameraWithSpriteTest(engine);
 }
 
 function createTestButtons(engine){
@@ -484,7 +470,25 @@ function testSprite(engine) {
     };
     w.Register();
 
+    return bowser;
+
 }
+
+function testFollowingCameraWithSpriteTest(engine){
+
+    engine.FlushObjects();
+
+    
+
+    var rect = new Anibody.shapes.Rectangle(600, 500, 200, 200);
+    rect.Register();
+
+    var bowser = testSprite(engine);
+
+    var fcam = new Anibody.cam.FollowingCamera(bowser);
+    engine.SetCamera(fcam);
+    
+};
 
 function testRandom(engine){
 

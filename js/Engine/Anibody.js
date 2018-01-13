@@ -101,7 +101,23 @@ function Anibody(html_id) {
     this.ProcessInputFunctionObjects = null;// array of all functions, which the user added and which concern the input processing
     this.UpdateFunctionObjects = null;// PriorityQueue of all functions, which the user added and which concern the update process
     this.ForegroundDrawFunctionObjects = null;// PriorityQueue of Callback-Objects to draw the functions in the background
-    this.FPS = 25;// the amount of frames per second (default: 25)
+    this._fps = 25;// the amount of frames per second (default: 25)
+    Object.defineProperty(this, "FPS", {
+        set: function (newValue) {
+            if(this.Timer !== null){
+                this._fps = newValue;
+                this.Timer.SetFPS(newValue);
+                if(this.Timer.Active){
+                    this.Timer.Stop();
+                    this.Timer.Start();
+                }
+            }
+        },
+        get: function () { 
+            return this._fps;
+        }
+    });
+    
     this.Timer = null; // wildcard for the Timer, which regulates, that the frame-functions is called 'this.FPS' times per second
 
     this.MediaManager = null;

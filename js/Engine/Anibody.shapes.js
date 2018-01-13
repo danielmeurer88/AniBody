@@ -301,8 +301,9 @@ Anibody.shapes.Shape.prototype.Draw = function (c) {
 
     c.save();
     var rp = this.Centroid;
+    var cam = this.Engine.GetCamera();
 
-    c.translate(rp.x, rp.y);
+    c.translate(rp.x - cam.X, rp.y - cam.Y);
 
     if(this.VisualRotation){
         c.rotate(this._rotation);
@@ -427,6 +428,7 @@ Anibody.shapes.Shape.prototype.ProcessInput = function () {
  * @returns {undefined}
  */
 Anibody.shapes.Shape.prototype._calculateCentroid = function () {
+
     if (this.Points.length < 1) return;
     // vertices = this.Points 
 
@@ -645,10 +647,34 @@ Anibody.shapes.Shape.prototype.Rotate = function (rad, surrounding) {
 
     }
 
+    if(!surrounding){
+        p = this.SurroundingRectangleCentroid;
+    }else{
+        p = this.Centroid;
+    }
+    // get distance
+    d = Math.sqrt( Math.pow((p.x - rp.x),2) + Math.pow((p.y - rp.y),2) );
+        
+    p._angleRadian = this._getAngle(p, rp);
+
+    p._angleRadian += rad;
+    p._angleDegree = (p._angleRadian * 180 / Math.PI);
+
+    p.x = rp.x + (d * Math.cos( p._angleRadian ));
+    p.y = rp.y + (d * Math.sin( p._angleRadian ));
+
+
+
     this._calculateSurroundingRectangle();
 
 };
 
+/**
+ * checks if a point lays within the Shape
+ * @param {number} x - x value of the point
+ * @param {number} y - y value of the point
+ * @returns {boolean}
+ */
 Anibody.shapes.Shape.prototype.IsPointInShape = function (x, y) {
     
     var c = this.Engine.Context;
@@ -799,6 +825,7 @@ Anibody.shapes.GetGradientCode = function (/*strings of color-codes*/) {
  * @returns {Anibody.Rectangle}
  */
 Anibody.shapes.Rectangle = function Rectangle(x, y, width, height) { // Rectangle class
+
     Anibody.shapes.Shape.call(this, 
         x, y,
         x + width, y, 
@@ -811,3 +838,8 @@ Anibody.shapes.Rectangle.prototype = Object.create(Anibody.shapes.Shape.prototyp
 Anibody.shapes.Rectangle.prototype.constructor = Anibody.shapes.Rectangle;
 
 Object.defineProperty(Anibody.shapes.Rectangle, "name", { value: "Rectangle" });
+
+Anibody.shapes.Shape.prototype._calculateCentroid = function () {
+    this.Centroid.x = (this.Points[0].x + this.Points[2].x) / 2;
+    this.Centroid.y = (this.Points[0].y + this.Points[2].y) / 2;
+};
