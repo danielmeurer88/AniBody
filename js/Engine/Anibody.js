@@ -1,5 +1,24 @@
 
-function Anibody(html_id) {
+function Anibody(html_id, opt) {
+
+    // get options
+    var mainopt = {
+        flagConstantLoop : true, // flag if developer wants to have a timer, which constantly triggers Frame() (input, update, draw) or self responsible
+        flagPreventKeyboardStrokesToBubbleUp : true,
+        flagPreventContextClickBubbleToUp : true,
+        flagMediaManager : true,
+        flagMouseInput : true,
+        flagKeyboardInput : true,
+        flagTouchHandler : true,
+        flagTouch2FakeMouseClick : true,
+        flagStorage : true,
+        flagIntervalHandler : true,
+        fps : 25
+    };
+
+    if(typeof opt === "object"){
+        Anibody.mergeOptionObject(mainopt, opt);
+    }
 
     Anibody.ECMAScriptExtension();
 
@@ -7,15 +26,14 @@ function Anibody(html_id) {
     this.Info = {
         Engine: "AniBody",
         Project: "Dev",
-        Version: "1.1.7",
+        Version: "1.1.8",
         Author: "Daniel Meurer",
         LastUpdated: "2018_1_2_h1" // year_month_day_hhour
     };
 
     this.StartTimestamp = Date.now();
     Object.defineProperty(this, "RunTime", {
-        set: function (newValue) {
-        },
+        set: function (newValue) {},
         get: function () { 
             return Date.now() - this.StartTimestamp;
         }
@@ -24,8 +42,7 @@ function Anibody(html_id) {
     this._currentFrame = 0;
     Object.defineProperty(this, "_currentFrame", {enumerable:false});
     Object.defineProperty(this, "CurrentFrame", {
-        set: function (newValue) {
-        },
+        set: function (newValue) {},
         get: function () { 
             return this._currentFrame;
         }
@@ -34,11 +51,8 @@ function Anibody(html_id) {
     this._scale = 1;
     Object.defineProperty(this, "_scale", {enumerable:false});
     Object.defineProperty(this, "Scale", {
-        set: function (newValue) {
-        },
-        get: function () { 
-            return this._scale;
-        }
+        set: function (newValue) {},
+        get: function () { return this._scale;}
     });
 
     // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof
@@ -56,16 +70,16 @@ function Anibody(html_id) {
 
     // ### FLAGS
     this.Flags = {};
-    this.Flags.ConstantLoop = true; // flag if developer wants to have a timer, which constantly triggers Frame() (input, update, draw) or self responsible
-    this.Flags.PreventKeyboardStrokesToBubbleUp = true;
-    this.Flags.PreventContextClickBubbleToUp = true;
-    this.Flags.MediaManager = true;
-    this.Flags.MouseInput = true;
-    this.Flags.KeyboardInput = true;
-    this.Flags.TouchHandler = true;
-    this.Flags.Touch2FakeMouseClick = true;
-    this.Flags.Storage = true;
-    this.Flags.IntervalHandler = true;
+    this.Flags.ConstantLoop = mainopt.flagConstantLoop; // flag if developer wants to have a timer, which constantly triggers Frame() (input, update, draw) or self responsible
+    this.Flags.PreventKeyboardStrokesToBubbleUp = mainopt.flagPreventKeyboardStrokesToBubbleUp;
+    this.Flags.PreventContextClickBubbleToUp = mainopt.flagPreventContextClickBubbleToUp;
+    this.Flags.MediaManager = mainopt.flagMediaManager;
+    this.Flags.MouseInput = mainopt.flagMouseInput;
+    this.Flags.KeyboardInput = mainopt.flagKeyboardInput;
+    this.Flags.TouchHandler = mainopt.flagTouchHandler;
+    this.Flags.Touch2FakeMouseClick = mainopt.flagTouch2FakeMouseClick;
+    this.Flags.Storage = mainopt.flagStorage;
+    this.Flags.IntervalHandler = mainopt.flagIntervalHandler;
     Object.defineProperty(this, "Flags", {enumerable:false});
 
     // ### PROPERTIES - STATE OF ENGINE
@@ -101,7 +115,7 @@ function Anibody(html_id) {
     this.ProcessInputFunctionObjects = null;// array of all functions, which the user added and which concern the input processing
     this.UpdateFunctionObjects = null;// PriorityQueue of all functions, which the user added and which concern the update process
     this.ForegroundDrawFunctionObjects = null;// PriorityQueue of Callback-Objects to draw the functions in the background
-    this._fps = 25;// the amount of frames per second (default: 25)
+    this._fps = mainopt.fps;// the amount of frames per second (default: 25)
     Object.defineProperty(this, "FPS", {
         set: function (newValue) {
             if(this.Timer !== null){

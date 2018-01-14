@@ -2,7 +2,19 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-    var engine = new Anibody("PlayDiv");
+    var engine = new Anibody("PlayDiv",{
+        flagConstantLoop : true, // flag if developer wants to have a timer, which constantly triggers Frame() (input, update, draw) or self responsible
+        flagPreventKeyboardStrokesToBubbleUp : true,
+        flagPreventContextClickBubbleToUp : true,
+        flagMediaManager : true,
+        flagMouseInput : true,
+        flagKeyboardInput : true,
+        flagTouchHandler : true,
+        flagTouch2FakeMouseClick : true,
+        flagStorage : true,
+        flagIntervalHandler : true,
+        fps : 25
+    });
 
     Anibody.import(Anibody.util.ImageFile, "ImgF");
 
