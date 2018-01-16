@@ -840,6 +840,7 @@ Anibody.shapes.Rectangle.prototype.constructor = Anibody.shapes.Rectangle;
 Object.defineProperty(Anibody.shapes.Rectangle, "name", { value: "Rectangle" });
 
 Anibody.shapes.Shape.prototype._calculateCentroid = function () {
+    if(this.Points.length < 4) return;
     this.Centroid.x = (this.Points[0].x + this.Points[2].x) / 2;
     this.Centroid.y = (this.Points[0].y + this.Points[2].y) / 2;
 };
