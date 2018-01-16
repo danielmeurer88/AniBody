@@ -92,103 +92,73 @@ T.prototype.ProcessInput = function () {this.Shape.ProcessInput();};
 T.prototype.Update = function () {this.Shape.Update();};
 T.prototype.Draw = function (c) {this.Shape.Draw(c);};
 
-T.prototype.IsCollidingWith = function (arr) {
+T.prototype.IsThereCollision = function (arr) {
     
+    var i,j, k;
+    var r;
+
     var can = document.createElement("canvas");
 
-    var x = this.Shape.X;
-    var y = this.Shape.Y;
-    var width = this.Shape.Width;
-    var height = this.Shape.Height;
+    var x = 0;
+    var y = 0;
+    var width = this.Engine.Canvas.width;
+    var height = this.Engine.Canvas.height;
 
-    var imageData;
-    var otherImageData = [];
+    arr.push(this);
+    
+    imgData = [];
     var s;
 
     can.width = width;
     can.height = height;
     var c = can.getContext("2d");
 
-    var i,j, k;
-    var r,b;
-
-    // get image data of this T
-    
-    if (this.Shape.Points.length > 1) {
-        // create Path
-
-        c.beginPath();
-        c.moveTo(this.Shape.Points[0].x - x, this.Shape.Points[0].y - y);
-        for (i = 1; i < this.Shape.Points.length; i++) {
-            c.lineTo(this.Shape.Points[i].x - x, this.Shape.Points[i].y - y);
-        }
-        c.closePath();
-
-        // FILL
-        c.fillStyle = "rgba(255,0,0,1)";
-        c.fill();
-
-        // STROKE
-        c.lineWidth = this.Shape.BorderWidth;
-        c.strokeStyle = "rgba(255,0,0,1)";
-        c.stroke();
-    }
-
-    // get the easy T shape and saves it
-    var imageData = c.getImageData(0,0,width, height);
-
-    //clear the canvas
-    c.clearRect(0,0,width,height);
-
     // get image data of all shapes in the array
     for(i=0; i<arr.length; i++){
 
-        s = arr[i];
+        s = arr[i].Shape;
 
-        if (s.Shape.Points.length > 1) {
+        if (s.Points.length > 1) {
             // create Path
 
             c.beginPath();
-            c.moveTo(s.Shape.Points[0].x - x, s.Shape.Points[0].y - y);
-            for (j = 1; j < s.Shape.Points.length; j++) {
-                c.lineTo(s.Shape.Points[j].x - x, s.Shape.Points[j].y - y);
+            c.moveTo(s.Points[0].x, s.Points[0].y);
+            for (j = 1; j < s.Points.length; j++) {
+                c.lineTo(s.Points[j].x, s.Points[j].y);
             }
             c.closePath();
 
             // FILL
-            c.fillStyle = "rgba(0,0,255,1)";
+            c.fillStyle = "rgba(255,0,0,1)";
             c.fill();
 
             // STROKE
-            c.lineWidth = s.Shape.BorderWidth;
-            c.strokeStyle = "rgba(0,0,255,1)";
+            c.lineWidth = s.BorderWidth;
+            c.strokeStyle = "rgba(255,0,0,1)";
             c.stroke();
         }
-        otherImageData.push(c.getImageData(0,0,width,height));
+        imgData.push(c.getImageData(0,0,width,height));
+        //c.download();
         c.clearRect(0,0,width,height);
     }
-
-    // search if there are any drawn pixel - if yes: they collide
-    // TODO
 
     // loop through it
     // where a red pixel (red above 250) is, there should be no blue pixel in all of the other image datas
     
+    var nomorethan1 = 0;
     for(j=0; j<height; j++){
         for(i=0; i<width; i++){
+            nomorethan1 = 0;
+            r = 4 * (i + (width) * j) + 0;
 
-            r = imageData.data[ 4 * (i + width * j) + 0 ]; // red value of pixel (i,j)
+            for(k=0; k<imgData.length; k++){
+                if(imgData[k].data[r] > 250)
+                    nomorethan1++;
+            }
+            
+            if(nomorethan1 > 1)
+                return true;
 
-            if(r > 250){
-
-                for(k=0; k < otherImageData.length; k++){
-                    b = otherImageData[k].data[ 4 * (i + width * j) + 2 ]; // blue value of pixel (i,j)
-
-                    if(b > 250){
-                        return true;
-                    } // if b > 250
-                } // for k
-            } // if r > 250
         } // for i
     } // for j
     return false;

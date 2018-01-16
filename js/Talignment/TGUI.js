@@ -177,16 +177,7 @@ TGUI.prototype._getCollision = function(){
 
     console.log(`Order: ${this.Ts[0].Name}, ${this.Ts[1].Name}, ${this.Ts[2].Name}, ${this.Ts[3].Name}`);
 
-    collision = this.Ts[0].IsCollidingWith([this.Ts[1], this.Ts[2], this.Ts[3]]);
-
-    if(!collision)
-        collision = this.Ts[1].IsCollidingWith([this.Ts[0], this.Ts[2], this.Ts[3]]);
-
-    if(!collision)
-        collision = this.Ts[2].IsCollidingWith([this.Ts[0], this.Ts[1], this.Ts[3]]);
-
-    if(!collision)
-        collision = this.Ts[3].IsCollidingWith([this.Ts[0], this.Ts[1], this.Ts[2]]);
+    collision = this.Ts[0].IsThereCollision([this.Ts[1], this.Ts[2], this.Ts[3]]);
 
     return collision;
 };

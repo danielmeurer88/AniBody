@@ -145,8 +145,7 @@ function button2(engine) {
 }
 
 function button3(engine) {
-
-    testFollowingCameraWithSpriteTest(engine);
+    testCollision(engine);
 }
 
 function createTestButtons(engine){
@@ -250,6 +249,19 @@ function createTestButtons(engine){
         });
 
 
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 10
+    testbuttons[9] = new Button(140, engine.Canvas.height - 110,
+        {
+            Label: "TA",
+            TriggerCallbackObject: function (engine) {
+                testFollowingCameraWithSpriteTest(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.cam.FollowingCamera (also Sprite)"
+        });
+
+
+    
+    
     for(var i=0; i<testbuttons.length; i++){
         testbuttons[i].AddButtonEffect();
         testbuttons[i].Register();
@@ -706,4 +718,109 @@ function testInputField(engine){
     var infi = new InputField(10, 10, 300);
     infi.BindToStorageEntry("startInputField");
     infi.Register();
+}
+
+function testCollision(engine){
+
+    // TEST CLASS
+
+    function Test(x1,y1,x2,y2){
+        Anibody.ABO.call(this);
+        this.Shape = new Anibody.shapes.Shape(x1,y1, x2, y1, x2, y2, x1, y2);
+    };
+    Test.prototype = Object.create(Anibody.ABO.prototype);
+    Test.prototype.constructor = Test;
+
+    Test.prototype.IsThereCollision = function (arr) {
+    
+        var i,j, k;
+        var r;
+
+        var can = document.createElement("canvas");
+
+        var x = this.Shape.X;
+        var y = this.Shape.Y;
+        var width = this.Shape.X + this.Shape.Width;
+        var height = this.Shape.Y + this.Shape.Height;
+
+        for(i=0; i<arr.length; i++){
+            if(x > arr[i].Shape.X)
+                x = arr[i].Shape.X;
+
+            if(y > arr[i].Shape.Y)
+                y = arr[i].Shape.Y;
+
+            if(width < arr[i].Shape.X + arr[i].Shape.Width)
+                width = arr[i].Shape.X + arr[i].Shape.Width;
+
+            if(height < arr[i].Shape.Y + arr[i].Shape.Height)
+                height = arr[i].Shape.Y + arr[i].Shape.Height;
+        }
+
+        arr.push(this);
+        
+        imgData = [];
+        var s;
+    
+        can.width = width - x;
+        can.height = height - y;
+        var c = can.getContext("2d");
+    
+        // get image data of all shapes in the array
+        for(i=0; i<arr.length; i++){
+    
+            s = arr[i].Shape;
+    
+            if (s.Points.length > 1) {
+                // create Path
+    
+                c.beginPath();
+                c.moveTo(s.Points[0].x-x, s.Points[0].y-x);
+                for (j = 0; j < s.Points.length; j++) {
+                    c.lineTo(s.Points[j].x-x, s.Points[j].y-y);
+                }
+                c.closePath();
+    
+                // FILL
+                c.fillStyle = "rgba(255,0,0,1)";
+                c.fill();
+    
+                // STROKE
+                c.lineWidth = s.BorderWidth;
+                c.strokeStyle = "rgba(255,0,0,1)";
+                c.stroke();
+            }
+            imgData.push(c.getImageData(0,0,width-x,height-y));
+            c.clearRect(0,0,width-x,height-y);
+        }
+    
+        // loop through it
+        // where a red pixel (red above 250) is, there should be no blue pixel in all of the other image datas
+        
+        var nomorethan1 = 0;
+        for(j=0; j<height-y; j++){
+            for(i=0; i<width-x; i++){
+                nomorethan1 = 0;
+                r = 4 * (i + (width-x) * j) + 0;
+
+                for(k=0; k<imgData.length; k++){
+                    if(imgData[k].data[r] === 255)
+                        nomorethan1++;
+                }
+                
+                if(nomorethan1 > 1)
+                    return true;
+    
+            } // for i
+        } // for j
+        return false;
+    };
+
+    var t1 = new Test(2,2, 4,4);
+    var t2 = new Test(3,3, 4,8);
+    var t3 = new Test(3,4, 10,12);
+
+    var res = t2.IsThereCollision([t1, t3]);
+
+    console.log(res);
 }
