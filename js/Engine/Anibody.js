@@ -55,7 +55,7 @@ function Anibody(html_id, opt) {
         get: function () { return this._scale;}
     });
 
-    // Check if jQuery framework is active - $.fn is typicall for jQuery but not a difinite proof
+    // Check if jQuery framework or the replacement is active
     if ($) {
         if (!$.AnibodyArray) {
             $.AnibodyArray = [];
@@ -1100,7 +1100,7 @@ Anibody.mergeOptionObject = function(main, user){
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 /**
- * Every object used in the AniBody-Engine should derive from this class if it is used in the background
+ * Every object used in the AniBody-Engine should derive from this class. EngineObjects are used in the background of the engine,
  * not visible to the user
  * @returns {EngineObject}
  */
