@@ -2,6 +2,7 @@ function TGUI(){
     Anibody.EngineObject.call(this);
 
     this.Ts = [];
+    this.BlockSize = 50;
 
     this.Widget = null;
 
@@ -14,7 +15,7 @@ function TGUI(){
     this.LastY = 0;
     this.CurrentX = 0;
     this.CurrentY = 0;
-    this.MoveStep = 10;
+    this.MoveStep = 5;
     this.RotateStep = Math.PI * 0.05;
     this.Dragging = false;
     this.Rotating = false;
@@ -30,6 +31,14 @@ function TGUI(){
         }
     });
 
+    var len = this.BlockSize*9 + 25;
+    var start = 50;
+
+    this._tl = {x:start, y:start};
+    this._tr = {x:start+len, y:start};
+    this._br = {x:start+len, y:start+len};
+    this._bl = {x:start, y:start+len};
+
 this.Initialize();
 }
 TGUI.prototype = Object.create(Anibody.EngineObject.prototype);
@@ -37,16 +46,16 @@ TGUI.prototype.constructor = TGUI;
 
 TGUI.prototype.Initialize = function(){
 
-    var red = new T("red", this.MoveStep*1, this.MoveStep*1);
+    var red = new T("red", this.MoveStep*2, this.MoveStep*2, this.BlockSize);
     red.Name = "Red";
 
-    var green = new T("green", this.MoveStep*2, this.MoveStep*2);
+    var green = new T("green", this.MoveStep*4, this.MoveStep*4, this.BlockSize);
     green.Name = "Green";
 
-    var blue = new T("blue", this.MoveStep*3, this.MoveStep*3);
+    var blue = new T("blue", this.MoveStep*8, this.MoveStep*8, this.BlockSize);
     blue.Name = "Blue";
 
-    var yellow = new T("yellow", this.MoveStep*4, this.MoveStep*4);
+    var yellow = new T("yellow", this.MoveStep*16, this.MoveStep*16, this.BlockSize);
     yellow.Name = "Yellow";
     yellow.Shape.Selected = true;
     this.Ts.push(red, green, blue, yellow);
@@ -87,8 +96,20 @@ TGUI.prototype.Update = function(){
 TGUI.prototype.Draw = function(c){
     var i;
 
+    c.save();
+
+    c.beginPath();
+    c.moveTo(this._tl.x, this._tl.y);
+    c.lineTo(this._tr.x, this._tr.y);
+    c.lineTo(this._br.x, this._br.y);
+    c.lineTo(this._bl.x, this._bl.y);
+    c.closePath();
+    c.stroke();
+
     for(i=0; i<4; i++)
         this.Ts[i].Draw(c);
+
+    c.restore();
 };
 
 /**
@@ -146,16 +167,16 @@ TGUI.prototype._createButtons = function(){
                 DisplayType: "color",
                 ColorCode: "red",
                 TriggerCallbackObject: function (gui) {
-                    
-                    if(gui._getCollision()){
-                        res = "Ts are colliding";
-                        
-                    }else{
-                        res = "Ts are not colliding";
+                    var inlim = false;
+                    var col = gui._getCollision()
+                    if(!col){
+                        inlim = gui._inLimits();
                     }
 
+                    var res = inlim && !col;
+
                     //new Anibody.ui.Alert(res).Start();
-                    console.log(res);
+                    console.log(`In Limits: ${inlim} and No collision: ${!col}`);
 
                 }.getCallbackObject("self",this),
                 HoverText: "Tests if the pieces are colliding".decodeURI()
@@ -175,11 +196,36 @@ TGUI.prototype._getCollision = function(){
     // if one of the pair and the other one collides - it won't be detected
     // TODO
 
-    console.log(`Order: ${this.Ts[0].Name}, ${this.Ts[1].Name}, ${this.Ts[2].Name}, ${this.Ts[3].Name}`);
+    //console.log(`Order: ${this.Ts[0].Name}, ${this.Ts[1].Name}, ${this.Ts[2].Name}, ${this.Ts[3].Name}`);
 
     collision = this.Ts[0].IsThereCollision([this.Ts[1], this.Ts[2], this.Ts[3]]);
 
     return collision;
+};
+
+TGUI.prototype._inLimits = function(){
+
+    var s,p, pok;
+    
+    var tl = this._tl;
+    var br = this._br;
+
+    pok = true;
+
+    for(var j=0;pok && j<4; j++){
+        s = this.Ts[j].Shape;
+        for(var i=0;pok && i<s.Points.length; i++){
+            pok = false;
+            p = s.Points[i];
+            if(tl.x <= p.x && br.x >= p.x && tl.y <= p.y && br.y >= p.y)
+                pok = true;
+            else{
+                console.log(["j", j, "i", i, "topleft", tl, "bottomright", br, "p", p]);
+            }
+        }
+    }
+
+    return pok;
 };
 
 TGUI.prototype._overwriteProcessInputOfWidget = function(){

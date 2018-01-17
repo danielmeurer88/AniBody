@@ -2,7 +2,7 @@
  * Represents a T puzzle piece
  * @returns {T}
  */
-function T(color, dx, dy) { // Base class
+function T(color, dx, dy, blocksize) { // Base class
     Anibody.ABO.call(this);
 
     if(typeof color !== "string")
@@ -43,7 +43,7 @@ function T(color, dx, dy) { // Base class
         get: function () { return self.Shape.Selected; }
     });
 
-    this.SquareSize = 50;
+    this.SquareSize = blocksize;
 
     this.Initialize();
 };
@@ -134,7 +134,7 @@ T.prototype.IsThereCollision = function (arr) {
 
             // STROKE
             c.lineWidth = s.BorderWidth;
-            c.strokeStyle = "rgba(255,0,0,1)";
+            c.strokeStyle = "rgba(0,255,0,1)";
             c.stroke();
         }
         imgData.push(c.getImageData(0,0,width,height));
