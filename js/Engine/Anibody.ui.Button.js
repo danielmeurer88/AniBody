@@ -12,6 +12,8 @@ Anibody.ui.Button = function Button(x, y, options) {
     Anibody.ABO.call(this);
     
     this.Options = options;
+
+    this.ClickEasement = 0;
     
     this.Type = "Button";
     this.X = x || 0;
@@ -195,8 +197,7 @@ Anibody.ui.Button.prototype.Initialize = function () {
     Anibody.ui.Button._processOptions(this, this.Options);
     
     if(this.X === "center"){
-        var c = this.Engine.Canvas;
-        this.X = (c.width - this.Width) / 2;
+        this.X = (this.Engine.Canvas.width - this.Width) / 2;
     }
     
     this._inflated = {width : this.Width, height: this.Height};
@@ -295,7 +296,7 @@ Anibody.ui.Button.prototype._deregisterHoverImageDrawing = function(){
  */
 Anibody.ui.Button.prototype.ProcessInput = function () {
           
-    var area = this.GetArea(0, this.Rounding);
+    var area = this.GetArea(this.ClickEasement, this.Rounding);
      
     this.Engine.Input.MouseHandler.AddHoverRequest(area, this, "IsMouseOver");
      

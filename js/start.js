@@ -18,29 +18,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     Anibody.import(Anibody.util.ImageFile, "ImgF");
 
-    var waterglass = new ImgF({ path: "./img_rpg/water_glass.jpg", codename: "water_glass", group: "room3" });
+    var waterglass = new ImgF({ path: "./pics/water_glass.jpg", codename: "water_glass", group: "room3" });
     waterglass.AddGroup("room1");
 
     var mediapack = [
-        new ImgF("./img_rpg/logo.png", "logo"),
-        new ImgF("./img_rpg/button_0.png", "button_state_0"),
-        new ImgF("./img_rpg/button_1.png", "button_state_1"),
-        new ImgF("./img_rpg/button_2.png", "button_state_2"),
-        new ImgF("./img_rpg/sprite_test.png", "sprite_test"),
-        new ImgF({ path: "./img_rpg/rpg_img2.png", codename: "rpg_img", group: ["room1"] }),
-        new ImgF({ path: "./img_rpg/rpg_structure2.png", codename: "rpg_structure" }),
-        new ImgF({ path: "./img_rpg/rpg_subimg2.jpg", codename: "rpg_subimg", group: "room2" }),
-        new ImgF({ path: "./img_rpg/rpg_substructure.png", codename: "rpg_substructure" }),
-        new ImgF({ path: "./img_rpg/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
-        new ImgF({ path: "./img_rpg/tresure_closed.png", codename: "tresure_closed" }),
-        new ImgF({ path: "./img_rpg/tresure_opened.png", codename: "tresure_opened" }),
-        new ImgF({ path: "./img_rpg/girl.png", codename: "girl", group: "room2" }),
-        new ImgF({ path: "./img_rpg/da_racoon.jpg", codename: "da_racoon", group: "room2" }),
-        new ImgF({ path: "./img_rpg/crate.png", codename: "crate", group: "room2" }),
-        new ImgF({ path: "./img_rpg/crate_pad.png", codename: "pad", group: "room2" }),
-        new ImgF({ path: "./img_rpg/fire_sprite.png", codename: "bonfire", group: "room1" }),
+        new ImgF("./pics/logo.png", "logo"),
+        new ImgF("./pics/button_0.png", "button_state_0"),
+        new ImgF("./pics/button_1.png", "button_state_1"),
+        new ImgF("./pics/button_2.png", "button_state_2"),
+        new ImgF("./pics/sprite_test.png", "sprite_test"),
+        new ImgF({ path: "./pics/rpg_img2.png", codename: "rpg_img", group: ["room1"] }),
+        new ImgF({ path: "./pics/rpg_structure2.png", codename: "rpg_structure" }),
+        new ImgF({ path: "./pics/rpg_subimg2.jpg", codename: "rpg_subimg", group: "room2" }),
+        new ImgF({ path: "./pics/rpg_substructure.png", codename: "rpg_substructure" }),
+        new ImgF({ path: "./pics/grey_sprite_3x4.png", codename: "rpg_testsprite" }),
+        new ImgF({ path: "./pics/tresure_closed.png", codename: "tresure_closed" }),
+        new ImgF({ path: "./pics/tresure_opened.png", codename: "tresure_opened" }),
+        new ImgF({ path: "./pics/girl.png", codename: "girl", group: "room2" }),
+        new ImgF({ path: "./pics/da_racoon.jpg", codename: "da_racoon", group: "room2" }),
+        new ImgF({ path: "./pics/crate.png", codename: "crate", group: "room2" }),
+        new ImgF({ path: "./pics/crate_pad.png", codename: "pad", group: "room2" }),
+        new ImgF({ path: "./pics/fire_sprite.png", codename: "bonfire", group: "room1" }),
         waterglass,
-        new ImgF({ path: "./img_rpg/litte_click_sprite.png", codename: "little_click_sprite", group: "room1" }),
+        new ImgF({ path: "./pics/litte_click_sprite.png", codename: "little_click_sprite", group: "room1" }),
+
+        new ImgF({ path: "./pics/cam.png", codename: "cam", group: "t" }),
+
         new Anibody.util.SoundFile({ path: "./music/portal_activate.mp3", codename: "portal_activate", group:["room1", "soundtest"] }),
         new Anibody.util.SoundFile({ path: "./music/alongway.mp3", codename: "girl_background", group: "room2" })
     ];
@@ -137,15 +140,21 @@ function menu_callback(engine) {
 
 
 function button2(engine) {
-    engine.FlushObjects();
 
-    var tgui = new TGUI();
-    tgui.Register();
+    var cbo = function(engine){
+
+        engine.FlushObjects();
+
+        var tgui = new TGUI();
+        tgui.Register();
+
+    }.getCallbackObject(engine, engine);
+
+    engine.MediaManager.Require("t", cbo);
         
 }
 
 function button3(engine) {
-    testCollision(engine);
 }
 
 function createTestButtons(engine){
@@ -718,109 +727,4 @@ function testInputField(engine){
     var infi = new InputField(10, 10, 300);
     infi.BindToStorageEntry("startInputField");
     infi.Register();
-}
-
-function testCollision(engine){
-
-    // TEST CLASS
-
-    function Test(x1,y1,x2,y2){
-        Anibody.ABO.call(this);
-        this.Shape = new Anibody.shapes.Shape(x1,y1, x2, y1, x2, y2, x1, y2);
-    };
-    Test.prototype = Object.create(Anibody.ABO.prototype);
-    Test.prototype.constructor = Test;
-
-    Test.prototype.IsThereCollision = function (arr) {
-    
-        var i,j, k;
-        var r;
-
-        var can = document.createElement("canvas");
-
-        var x = this.Shape.X;
-        var y = this.Shape.Y;
-        var width = this.Shape.X + this.Shape.Width;
-        var height = this.Shape.Y + this.Shape.Height;
-
-        for(i=0; i<arr.length; i++){
-            if(x > arr[i].Shape.X)
-                x = arr[i].Shape.X;
-
-            if(y > arr[i].Shape.Y)
-                y = arr[i].Shape.Y;
-
-            if(width < arr[i].Shape.X + arr[i].Shape.Width)
-                width = arr[i].Shape.X + arr[i].Shape.Width;
-
-            if(height < arr[i].Shape.Y + arr[i].Shape.Height)
-                height = arr[i].Shape.Y + arr[i].Shape.Height;
-        }
-
-        arr.push(this);
-        
-        imgData = [];
-        var s;
-    
-        can.width = width - x;
-        can.height = height - y;
-        var c = can.getContext("2d");
-    
-        // get image data of all shapes in the array
-        for(i=0; i<arr.length; i++){
-    
-            s = arr[i].Shape;
-    
-            if (s.Points.length > 1) {
-                // create Path
-    
-                c.beginPath();
-                c.moveTo(s.Points[0].x-x, s.Points[0].y-x);
-                for (j = 0; j < s.Points.length; j++) {
-                    c.lineTo(s.Points[j].x-x, s.Points[j].y-y);
-                }
-                c.closePath();
-    
-                // FILL
-                c.fillStyle = "rgba(255,0,0,1)";
-                c.fill();
-    
-                // STROKE
-                c.lineWidth = s.BorderWidth;
-                c.strokeStyle = "rgba(255,0,0,1)";
-                c.stroke();
-            }
-            imgData.push(c.getImageData(0,0,width-x,height-y));
-            c.clearRect(0,0,width-x,height-y);
-        }
-    
-        // loop through it
-        // where a red pixel (red above 250) is, there should be no blue pixel in all of the other image datas
-        
-        var nomorethan1 = 0;
-        for(j=0; j<height-y; j++){
-            for(i=0; i<width-x; i++){
-                nomorethan1 = 0;
-                r = 4 * (i + (width-x) * j) + 0;
-
-                for(k=0; k<imgData.length; k++){
-                    if(imgData[k].data[r] === 255)
-                        nomorethan1++;
-                }
-                
-                if(nomorethan1 > 1)
-                    return true;
-    
-            } // for i
-        } // for j
-        return false;
-    };
-
-    var t1 = new Test(2,2, 4,4);
-    var t2 = new Test(3,3, 4,8);
-    var t3 = new Test(3,4, 10,12);
-
-    var res = t2.IsThereCollision([t1, t3]);
-
-    console.log(res);
 }

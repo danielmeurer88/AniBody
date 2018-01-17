@@ -39,6 +39,11 @@ function TGUI(){
     this._br = {x:start+len, y:start+len};
     this._bl = {x:start, y:start+len};
 
+    this.Button = {
+        Test : null,
+        Cam : null
+    };
+
 this.Initialize();
 }
 TGUI.prototype = Object.create(Anibody.EngineObject.prototype);
@@ -80,12 +85,18 @@ TGUI.prototype.Initialize = function(){
 TGUI.prototype.ProcessInput = function(){
     var i;
 
+    for(var key in this.Button)
+        this.Button[key].ProcessInput();
+
     for(i=0; i<4; i++)
         this.Ts[i].ProcessInput();
 };
 
 TGUI.prototype.Update = function(){
     var i;
+
+    for(var key in this.Button)
+        this.Button[key].Update();
 
     for(i=0; i<4; i++){
         this.Ts[i].Update();
@@ -97,6 +108,8 @@ TGUI.prototype.Draw = function(c){
     var i;
 
     c.save();
+    c.fillStyle = "white";
+    c.fillRect(0,0,c.canvas.width, c.canvas.height);
 
     c.beginPath();
     c.moveTo(this._tl.x, this._tl.y);
@@ -105,6 +118,9 @@ TGUI.prototype.Draw = function(c){
     c.lineTo(this._bl.x, this._bl.y);
     c.closePath();
     c.stroke();
+
+    for(var key in this.Button)
+        this.Button[key].Draw(c);
 
     for(i=0; i<4; i++)
         this.Ts[i].Draw(c);
@@ -158,8 +174,8 @@ TGUI.prototype._createButtons = function(){
     if(!portrait){
         // landscape canvas
 
-        // BUTTON MOUSECLICK - Test Button 2 - Initiation
-        var bmc = new Button(can.width - 100, can.height/2 - 60,
+        // test
+        this.Button.Test = new Button(can.width - 100, can.height/2 - 60,
             {
                 Label: "Test",
                 Width: 80,
@@ -180,9 +196,25 @@ TGUI.prototype._createButtons = function(){
 
                 }.getCallbackObject("self",this),
                 HoverText: "Tests if the pieces are colliding".decodeURI()
-            });
-        bmc.AddButtonEffect();
-        bmc.Register();
+        });
+        this.Button.Test.AddButtonEffect();
+
+        this.Button.Cam = new Button(can.width - 60, can.height - 60,
+            {
+                Width: 50,
+                Height: 50,
+                DisplayType: "both",
+                Codename: "cam",
+                ColorCode: "#d77",
+                TriggerCallbackObject: function () {
+                    
+                    this.Engine.Context.download();
+
+                }.getCallbackObject("self"),
+                HoverText: "Tests if the pieces are colliding".decodeURI()
+        });
+        this.Button.Cam.ClickEasement = 20;
+        this.Button.Cam.AddButtonEffect();
 
     }
 
