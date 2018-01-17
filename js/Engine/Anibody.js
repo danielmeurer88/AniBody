@@ -1,4 +1,10 @@
-
+/**
+ * This is the main class. This is the engine. By default, it contains a timer, which calls the Frame()-Methode 25
+ * times per second (known as FPS, “frames per second”). Through an option parameter the engine's timer can be set
+ * to a different value or being canceled completely through an option in the option object.
+ * @param {string} html_id - The id of the targeted canvas as a string
+ * @param {object} opt 
+ */
 function Anibody(html_id, opt) {
 
     // get options
@@ -28,7 +34,7 @@ function Anibody(html_id, opt) {
         Project: "Dev",
         Version: "1.1.8",
         Author: "Daniel Meurer",
-        LastUpdated: "2018_1_2_h1" // year_month_day_hhour
+        LastUpdated: "2018_1_17_h10" // year_month_day_hhour
     };
 
     this.StartTimestamp = Date.now();
