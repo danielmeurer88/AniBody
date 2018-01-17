@@ -1133,7 +1133,7 @@ Object.defineProperty(Anibody.EngineObject.prototype, "Engine", {get: function()
 }});
 
 /**
- * Adds an Object to the engine
+ * Adds the EngineObject to an engine
  * @param {number} prior - the priority (you can use null if you don't care about priorities)
  * @param {number} ei - index of the engine (default:0) 
  * @returns {undefined}
