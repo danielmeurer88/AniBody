@@ -155,6 +155,9 @@ function button2(engine) {
 }
 
 function button3(engine) {
+
+    var svg = new Anibody.svg.SVGTest(10,10, 200, 200);
+    console.log(svg);
 }
 
 function createTestButtons(engine){
