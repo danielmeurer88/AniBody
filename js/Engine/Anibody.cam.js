@@ -1,7 +1,8 @@
 Anibody.SetPackage("Anibody", "cam");
 
 /**
- * Default Camera - used when the user's field of view is not bigger as the canvas
+ * Camera that centeralizes on target ABO (or similar) object, making it look like
+ * it follows this object.
  * @returns {FollowingCamera}
  */
 Anibody.cam.FollowingCamera = function FollowingCamera(abo){

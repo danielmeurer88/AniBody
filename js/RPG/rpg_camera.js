@@ -25,25 +25,25 @@ function RPGCamera(){
         }
         
         
+        
+        // if(sObj){
+        //     if(this.CenterVertical){
+        //         this.X = fcenter.X - (w/2);
 
-        if(sObj){
-            if(this.CenterVertical){
-                this.X = fcenter.X - (w/2);
+        //         if(this.X < 0)
+        //             this.X = 0;
+        //          if(this.X > this.Engine.Terrain.Width - this.Engine.Canvas.width)
+        //             this.X = this.Engine.Terrain.Width - this.Engine.Canvas.width;
+        //     }
+        //     if(this.CenterHorizontal){
+        //         this.Y = fcenter.Y - (h/2);
 
-                if(this.X < 0)
-                    this.X = 0;
-                 if(this.X > this.Engine.Terrain.Width - this.Engine.Canvas.width)
-                    this.X = this.Engine.Terrain.Width - this.Engine.Canvas.width;
-            }
-            if(this.CenterHorizontal){
-                this.Y = fcenter.Y - (h/2);
-
-                if(this.Y < 0)
-                    this.Y = 0;
-                 if(this.Y > this.Engine.Terrain.Height - this.Engine.Canvas.height)
-                    this.Y = this.Engine.Terrain.Height - this.Engine.Canvas.height;
-            }
-        }
+        //         if(this.Y < 0)
+        //             this.Y = 0;
+        //          if(this.Y > this.Engine.Terrain.Height - this.Engine.Canvas.height)
+        //             this.Y = this.Engine.Terrain.Height - this.Engine.Canvas.height;
+        //     }
+        // }
     };
 }
 RPGCamera.prototype = Object.create(Anibody.ABO.prototype);

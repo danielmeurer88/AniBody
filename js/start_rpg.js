@@ -17,8 +17,7 @@ function rpg_callback(engine){
     // creating a starting terrain
     //var topterr = createTerrain("rpg", "room1", "rpg_img", "rpg_structure", 60);
     var topterr = new RPGTerrain("room1", "rpg_img", "rpg_structure", 60);
-    // creating a rpg camera
-    this.SetCamera(new RPGCamera());
+    
     // setting the terrain as the active terrain
     this.SetTerrain(topterr);
     
@@ -144,6 +143,11 @@ function rpg_callback(engine){
         // adding the player to the overall object loop because it is used on all terrains at all times
         engine.AddObject(player, prarr.player);
     }
+
+    // CAMERA
+    // creating a rpg camera
+    var fcam = new Anibody.cam.FollowingCamera(player);
+    this.SetCamera(fcam);
     
     
     

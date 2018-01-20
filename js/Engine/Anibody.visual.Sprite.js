@@ -283,7 +283,7 @@ Anibody.visual.Sprite.prototype.Draw = function(c){
     c.drawImage(this.SpriteImage, /* sprite img */
         x, cp.Origin.y, /* where on the sprite to start clipping (x, y) */
         this.Width, this.Height, /* where on the sprite to end? clipping (width, height) */
-        this.X - cam.X, this.Y - cam.Y, this.Width, this.Height /* where on the canvas (x, y, width, height) */
+        this.X, this.Y, this.Width, this.Height /* where on the canvas (x, y, width, height) */
     );
     
 };
