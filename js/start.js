@@ -156,11 +156,16 @@ function button2(engine) {
 
 function button3(engine) {
 
+    if(typeof engine.SVG !== "undefined")
+        engine.SVG.Deregister();
+
     var svg = new Anibody.svg.SVGTest(10,10, 200, 200);
     console.log(svg);
     svg.Register();
 
-    svg.InnerHTML = "<text x='5' y='5'>Testy test test</text>";
+    svg.InnerHTML = "<text x='0' y='15'>Testy test test</text>";
+
+    engine.SVG = svg;
 }
 
 function createTestButtons(engine){

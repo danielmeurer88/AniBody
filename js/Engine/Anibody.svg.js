@@ -1,7 +1,7 @@
 Anibody.SetPackage("Anibody", "svg");
 
 /**
- * Represents a bezier spline
+ * 
  * @returns {Spline}
  */
 Anibody.svg.SVGTest = function SVGTest(x, y, width, height) {
@@ -16,6 +16,8 @@ Anibody.svg.SVGTest = function SVGTest(x, y, width, height) {
     this.Y = y;
     this._svgReady = false;
 
+    this._containsHTML = false;
+
     this._innerHTML = "";
     var self = this;
     Object.defineProperty(this, "InnerHTML", {
@@ -23,7 +25,7 @@ Anibody.svg.SVGTest = function SVGTest(x, y, width, height) {
             self._innerHTML = newValue;
             self._updateElement();
         },
-        get: function () { return self._innerText; }
+        get: function () { return self._innerHTML; }
     });
 
     this._element = null;
@@ -71,7 +73,32 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
     this._svgReady = false;
 
     var div = document.createElement("div");
-    var svgtext = "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' width='"+this.Width+"' height='"+this.Height+"'>" + this._innerHTML + "<svg>";
+    var svgtext;
+
+    if(!this._containsHTML){
+        svgtext = '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' + this.InnerHTML + '</svg>';
+    }else{
+
+        var doc = document.implementation.createHTMLDocument('');
+        doc.write(this.InnerHTML);
+
+        // You must manually set the xmlns if you intend to immediately serialize 
+        // the HTML document to a string as opposed to appending it to a 
+        // <foreignObject> in the DOM
+        doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
+
+        // Get well-formed markup
+        html = (new XMLSerializer()).serializeToString(doc);
+
+        svgtext = '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' +
+           '<foreignObject width="100%" height="100%">' +
+           '<div xmlns="http://www.w3.org/1999/xhtml">' +
+             html +
+           '</div>' +
+           '</foreignObject>' +
+           '</svg>';
+    }
+
     div.innerHTML = svgtext;
     this._element = div.childNodes[0];
 
@@ -81,7 +108,7 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
         domURL.revokeObjectURL(this._url);
     }
     this._blob = new Blob([svgtext], {type: 'image/svg+xml'});
-    this._url = domURL.createObjectURL(this._blob); // maybe this works directly with this._element?
+    this._url = domURL.createObjectURL(this._blob);
 
     this._image = document.createElement("img");
     this._image.width = this.Width;
