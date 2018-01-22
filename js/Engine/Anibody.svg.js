@@ -79,22 +79,16 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
         svgtext = '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' + this.InnerHTML + '</svg>';
     }else{
 
-        var doc = document.implementation.createHTMLDocument('');
-        doc.write(this.InnerHTML);
-
-        // You must manually set the xmlns if you intend to immediately serialize 
-        // the HTML document to a string as opposed to appending it to a 
-        // <foreignObject> in the DOM
-        doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
-
-        // Get well-formed markup
-        html = (new XMLSerializer()).serializeToString(doc);
+        // var doc = document.implementation.createHTMLDocument('');
+        // doc.write(this.InnerHTML);
+        // doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
+        // var html = (new XMLSerializer()).serializeToString(doc);
 
         svgtext = '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' +
            '<foreignObject width="100%" height="100%">' +
-           '<div xmlns="http://www.w3.org/1999/xhtml">' +
-             html +
-           '</div>' +
+           '<body xmlns="http://www.w3.org/1999/xhtml">' +
+             this.InnerHTML +
+           '</body>' +
            '</foreignObject>' +
            '</svg>';
     }

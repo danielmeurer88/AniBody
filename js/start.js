@@ -159,11 +159,16 @@ function button3(engine) {
     if(typeof engine.SVG !== "undefined")
         engine.SVG.Deregister();
 
-    var svg = new Anibody.svg.SVGTest(10,10, 200, 200);
+    var svg = new Anibody.svg.SVGTest(10,10, 200, 100);
     console.log(svg);
     svg.Register();
 
-    svg.InnerHTML = "<text x='0' y='15'>Testy test test</text>";
+    //svg.InnerHTML = "<text x='0' y='15'>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</text>";
+
+    svg._containsHTML = true;
+    svg.InnerHTML = "<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>";
+    svg.InnerHTML = "<p>Das ist</p> Soo<i style='color:blue;'>oo</i>oo C<u>oo</u>l";
+
 
     engine.SVG = svg;
 }
