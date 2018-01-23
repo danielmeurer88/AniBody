@@ -156,7 +156,7 @@ function button2(engine) {
 
 function button3(engine) {
 
-    testSVGFunctions(engine);
+    testABText(engine);
     
 }
 
@@ -780,4 +780,26 @@ function testSVGFunctions(engine){
     };
     w.Register();
 
+}
+
+function testABText(engine){
+    var test = "Das <span style='color:red;'>ist</span> ein <u>Test</u>";
+    var text = new Anibody.visual.ABText(test);
+    text.Register();
+
+    text.FlowMove(500, 400, 2500);
+
+    console.log(text.PlainText);
+
+    window.setTimeout(function(){
+        text.FlowResize(80, 4000);
+    },200);
+
+    window.setTimeout(function(){
+        text.Color = "green";
+    },2000);
+
+    window.setTimeout(function(){
+        text.FlowMove(0, 500, 2500);
+    },2550);
 }

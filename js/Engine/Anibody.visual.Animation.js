@@ -526,28 +526,57 @@ Anibody.visual.ImageObject.prototype.FlowMove = function (tox, toy) {
 };
 
 /**
- * Represents a string
- * @param {string} txt
- * @param {number} x 
- * @param {number} y
- * @param {number} fh
+ * Renders a string, which can be formatted with HTML tags or inline CSS
+ * @param {string} txt - html code with the text of the string
+ * @param {number} x - x value
+ * @param {number} y - y value
+ * @param {number} fs - default font size
  * @returns {ABText}
  */
-Anibody.visual.ABText = function ABText(txt, x, y, fh) {
+Anibody.visual.ABText = function ABText(txt, x, y, fs) {
     Anibody.ABO.call(this);
-    this.X = x;
-    this.Y = y;
-    this.Width = false;
-    this.Height = false;
-    this.Text = txt;
-    this.TextWidth = 0;
-    this.FontHeight = fh || 20;
+    this.X = (isNaN(x)) ? 0 : x;
+    this.Y = (isNaN(y)) ? 0 : y;
+    this.Width = 0;
+    this.Height = 0;
 
-    this.Underline = false;
-    this.TextAlign = "left";
-    this.TextBaseline = "top";
+    this.Text = (typeof txt === "string") ? txt : "";
 
-    this.Color = ABText.prototype.DefaultFontColor;
+    Object.defineProperty(this, "PlainText", {
+        set: function (newValue) {
+            if(typeof newValue === "string"){
+                this.Text = newValue;
+                this._updateObject();
+            }
+        },
+        get: function () {
+            var killTags = /(<[/\s\w\d'"=;:\-\(\).,]*>)/g;
+            var pt = this.Text.replace(killTags, "");
+            return pt;
+        }
+    });
+    this._fontSize = isNaN(fs) ? 20 : fh;
+    Object.defineProperty(this, "FontSize", {
+        set: function (newValue) {
+            if(!isNaN(newValue)){
+                this._fontSize = newValue;
+                this._updateObject();
+            }},
+        get: function () {return this._fontSize;}
+    });
+
+    this._color = Anibody.visual.ABText.prototype.DefaultFontColor;
+    Object.defineProperty(this, "Color", {
+        set: function (newValue) {
+            if(typeof newValue === "string"){
+                this._color = newValue;
+                this._updateObject();
+            }},
+        get: function () {return this._color;}
+    });
+
+    this._img = null;
+    this._ready = false;
 
     this.Initialize();
 };
@@ -562,86 +591,58 @@ Anibody.visual.ABText.prototype.DefaultFontColor = "black";
  * @see README_DOKU.txt
  */
 Anibody.visual.ABText.prototype.Initialize = function () {
-    this.Resize();
+    this._updateObject();
 };
 
 /**
- * Calculates the values for the new text
- * @returns {undefined}
+ * creates the image, which will be rendered, of the current object info - updates automatically if certain attributes
+ * @returns undefined
  */
-Anibody.visual.ABText.prototype.Resize = function () {
-    this.Height = this.FontHeight;
-    var c = this.Engine.Context;
-    c.save();
-    c.setFontHeight(this.FontHeight);
-    this.TextWidth = c.measureText(this.Text).width;
-    this.Width = this.TextWidth;
-    c.restore();
+Anibody.visual.ABText.prototype._updateObject = function () {
+    var txt = '<div style="font-size: '+this.FontSize+'px;color:'+this.Color+';">' +this.Text+ '</div>';
+    
+    this._ready = false;
+
+    var readycbo = function(){this._ready = true;}.getCallbackObject(this);
+
+    this._img = Anibody.svg.TransformHTMLCode2Image(txt, readycbo);
+    this.Width = this._img.width;
+    this.Height = this._img.height;
 };
+
 
 /**
  * @see README_DOKU.txt
  */
 Anibody.visual.ABText.prototype.Draw = function (c) {
 
+    var cam = this.Engine.GetCamera();
+
     c.save();
-    c.setFontHeight(this.FontHeight);
-    c.textAlign = this.TextAlign;
-    c.textBaseline = this.TextBaseline;
-
-    c.fillStyle = this.Color;
-    c.fillText(this.Text, this.X, this.Y);
-
-    if (this.Underline) {
-        var offx = 0;
-        var offy = 0;
-                
-        if(this.TextBaseline === "middle"){
-            offy -= this.Height/2;
-        }
-        
-        if(this.TextBaseline === "bottom"){
-            offy -= this.Height;
-        }
-                
-        if(this.TextAlign === "center"){
-            offx = 0 - this.Width/2;
-        }
-        
-        if(this.TextAlign === "right"){
-            offx = 0 - this.Width;
-        }
-        
-        c.lineWidth = this.FontHeight / 15;
-        c.strokeStyle = this.Color;
-        c.beginPath();
-        c.moveTo(this.X + offx, this.Y + this.Height + offy);
-        c.lineTo(this.X + this.Width + offx, this.Y + this.Height + offy);
-        c.stroke();
-        c.closePath();
+    if(this._ready){
+        c.drawImage(this._img, this.X - cam.X, this.Y - cam.Y);
     }
-
     c.restore();
 };
+
 /**
- * Sets the text
- * @param {string} txt
- * @returns {undefined}
+ * Resizes the (default) font size to a certain size in an animation of a certain duration
+ * @param {integer} to - font size to which it resizes in an animation
+ * @param {integer} ms - milliseconds of the animation
+ * @param {object} cbo - callbackobject, which will be called after the animation
  */
-Anibody.visual.ABText.prototype.SetText = function (txt) {
-    this.Text = txt;
-    this.Resize();
-};
-
 Anibody.visual.ABText.prototype.FlowResize = function (to, ms, cbo) {
-    // TODO
-    new Anibody.util.Flow(this, "FontHeight", to, ms, cbo, function(){
-        this.Resize();
-    }.getCallbackObject(this)).Start();
+    new Anibody.util.Flow(this, "FontSize", to, ms, cbo).Start();
 };
 
+/**
+ * Moves the text to a certain position in an animation of a certain duration
+ * @param {number} tox - x value of the target position
+ * @param {number} toy - y value of the target position
+ * @param {integer} ms - milliseconds of the animation
+ * @param {object} cbo - callbackobject, which will be called after the animation
+ */
 Anibody.visual.ABText.prototype.FlowMove = function (tox, toy, ms, cbo) {
-    // TODO
     new Anibody.util.MultiFlow(
             [this, this],
             ["X", "Y"],

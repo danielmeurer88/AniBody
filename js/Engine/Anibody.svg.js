@@ -1,9 +1,13 @@
 Anibody.SetPackage("Anibody", "svg");
 
-Anibody.svg.TransformHTMLCode2Image = function(htmlcode, extrawidth, extraheight){
-
-    if(isNaN(extrawidth))extrawidth = 0;
-    if(isNaN(extraheight))extraheight = 0;
+/**
+ * Transforms a given html as a string into an image
+ * (creates svg file with html in a foreign element and load it in an image)
+ * @param {string} htmlcode -
+ * @param {object} cbo -callbackobject, which is called afterwards
+ * @returns {image}
+ */
+Anibody.svg.TransformHTMLCode2Image = function(htmlcode, cbo){
 
     var div = document.createElement("div");
     div.innerHTML = htmlcode;
@@ -13,8 +17,8 @@ Anibody.svg.TransformHTMLCode2Image = function(htmlcode, extrawidth, extraheight
     // the browser will now render the sizes
     document.body.appendChild(element);
 
-    var height = element.clientHeight + extraheight;
-    var width = element.clientWidth + extrawidth;
+    var height = element.clientHeight;
+    var width = element.clientWidth;
 
     // remove the element from the body
     document.body.removeChild(element);
@@ -41,12 +45,26 @@ Anibody.svg.TransformHTMLCode2Image = function(htmlcode, extrawidth, extraheight
         domURL.revokeObjectURL(this.src);
     };
 
+    if(typeof cbo === "object"){
+        image.cbo = cbo;
+        image.onload = function(){
+            Anibody.CallObject(this.cbo);
+        };
+    }
+
     image.src = url;
 
     return image;
 };
 
-Anibody.svg.TransformHTMLElement2Image = function(element){
+/**
+ * Transforms a given html element into an image
+ * (creates svg file with html in a foreign element and load it in an image)
+ * @param {htmlnode} element - html element
+ * @param {object} cbo -callbackobject, which is called afterwards
+ * @returns {image}
+ */
+Anibody.svg.TransformHTMLElement2Image = function(element,cbo){
 
     var htmlcode = element.outerHTML;
 
@@ -81,6 +99,12 @@ Anibody.svg.TransformHTMLElement2Image = function(element){
         var domURL = window.URL || window.webkitURL || window;
         domURL.revokeObjectURL(this.src);
     };
+
+    if(typeof cbo === "object"){
+        image.onload = function(){
+            Anibody.CallObject(cbo);
+        };
+    }
 
     image.src = url;
 
