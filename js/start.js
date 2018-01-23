@@ -156,12 +156,7 @@ function button2(engine) {
 
 function button3(engine) {
 
-    var img = Anibody.svg.TransformHTML2Image();
-    var w = new Anibody.Widget();
-    w.Draw = function(c){
-        c.drawImage(img, 5, 5);
-    };
-    w.Register();
+    testSVGFunctions(engine);
     
 }
 
@@ -753,4 +748,36 @@ function testHTMLSVGCanvas(engine){
 
 
     engine.SVG = svg;
+}
+
+function testSVGFunctions(engine){
+
+    var code = '' +
+    '<div id="ALERT_WINDOW" style="background-color:rgb(220, 220, 220); font-size: 16px; width:350px; padding-bottom:3px; border-radius: 10px; box-shadow: inset -4px -4px 5px 0px rgba(0,0,0,0.5), inset 4px 4px 5px 0px rgba(255, 255, 255, 0.5);">' +
+        '<div id="ALERT_TITLE_CONTAINER" style="background-color:rgb(175, 175, 175); height: 20px; padding: 14px 10px 6px 10px; border-radius: 10px 10px 0px 0px; box-shadow: inset -4px 0px 5px 0px rgba(0,0,0,0.5), inset 4px 4px 5px 0px rgba(255, 255, 255, 0.5);">' +
+                '<div id="ALERT_TITLE" style="font-size: 16px; float:left;font-weight: bold;">The Title of the Alert Window</div>' +
+                '<div id="ALERT_XBUTTON" style="background-color:rgb(233, 233, 233); font-weight: bolder; height:18px; width:18px; float:right; text-align: center; padding:5px; margin-top: -6px; border-radius: 2px">X</div>' +
+        '</div>' +
+        '<div id="ALERT_TEXT_CONTAINER" style="margin: 5px 10px;">' +
+                '<div>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor.</div>' +
+                '<div style="margin-top: 8px;"> Proin porttitor, orci nec nonummy molestie, enim est eleifend mi, non fermentum diam nisl sit amet erat. Duis semper.</div>' +
+        '</div>' +
+        '<div id="ALERT_BUTTON_CONTAINER" style="margin: 5px 10px 10px 10px;">' +
+                '<div id="ALERT_XBUTTON" style="background-color:rgb(155, 155, 155);height:18px; font-weight: 900; width: fit-content;padding: 10px 20px 10px 20px; margin: auto; border-radius: 4px">OK</div>' +
+        '</div>' +
+    '</div>';
+
+    var div = document.createElement("div");
+    div.innerHTML = code;
+    var element = div.childNodes[0];
+
+    //var img = Anibody.svg.TransformHTMLCode2Image(code);
+    var img = Anibody.svg.TransformHTMLElement2Image(element);
+    
+    var w = new Anibody.Widget();
+    w.Draw = function(c){
+        c.drawImage(img, 0, 0);
+    };
+    w.Register();
+
 }

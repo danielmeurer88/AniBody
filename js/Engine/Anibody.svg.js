@@ -1,25 +1,9 @@
 Anibody.SetPackage("Anibody", "svg");
 
-Anibody.svg.TransformHTML2Image = function(){
+Anibody.svg.TransformHTMLCode2Image = function(htmlcode, extrawidth, extraheight){
 
-    // static dom element structure
-    // for testing purposes
-    var htmltitle = "Das ist eine Titel";
-    var htmltext = "Das ist der Text, der zum Titel dieser Box passen sollte und hier angezeigt wird. Du musst dies einfach einmal so hinnehmen.";
-    var htmlbutton = "OK";
-
-    var width = 220;
-
-    var htmlcode = "" +
-    "<div style='background-color:grey; padding:4px; width:"+width+"px'>" +
-        "<div style='height:18px;font-size:16px;'>"+htmltitle+"</div>" +
-        "<div style='font-size:14px;margin-top:5px;'>"+htmltext+"</div>" +
-        "<div style='height:18px;font-size:14px;margin-top:5px;'><div>"+htmlbutton+"</div></div>" +
-    "</div>";
-
-    // Test structure end
-
-    // beginning of the real function
+    if(isNaN(extrawidth))extrawidth = 0;
+    if(isNaN(extraheight))extraheight = 0;
 
     var div = document.createElement("div");
     div.innerHTML = htmlcode;
@@ -29,8 +13,8 @@ Anibody.svg.TransformHTML2Image = function(){
     // the browser will now render the sizes
     document.body.appendChild(element);
 
-    var height = element.clientHeight;
-    width = element.clientWidth;
+    var height = element.clientHeight + extraheight;
+    var width = element.clientWidth + extrawidth;
 
     // remove the element from the body
     document.body.removeChild(element);
@@ -38,7 +22,7 @@ Anibody.svg.TransformHTML2Image = function(){
     var svgtext = '' +
     '<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+height+'">' +
         '<foreignObject width="100%" height="100%">' +
-            '<body xmlns="http://www.w3.org/1999/xhtml">' +
+            '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
                 htmlcode +
             '</body>' +
         '</foreignObject>' +
@@ -62,6 +46,46 @@ Anibody.svg.TransformHTML2Image = function(){
     return image;
 };
 
+Anibody.svg.TransformHTMLElement2Image = function(element){
+
+    var htmlcode = element.outerHTML;
+
+    // append the new element to the body.
+    // the browser will now render the sizes
+    document.body.appendChild(element);
+
+    var height = element.clientHeight;
+    var width = element.clientWidth;
+
+    // remove the element from the body
+    document.body.removeChild(element);
+
+    var svgtext = '' +
+    '<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+height+'">' +
+        '<foreignObject width="100%" height="100%">' +
+            '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
+                htmlcode +
+            '</body>' +
+        '</foreignObject>' +
+    '</svg>';
+
+    var domURL = window.URL || window.webkitURL || window;
+    var blob = new Blob([svgtext], {type: 'image/svg+xml'});
+    var url = domURL.createObjectURL(blob);
+
+    var image = document.createElement("img");
+    image.width = width;
+    image.height = height;
+
+    image.revokeObjectURL = function(){
+        var domURL = window.URL || window.webkitURL || window;
+        domURL.revokeObjectURL(this.src);
+    };
+
+    image.src = url;
+
+    return image;
+};
 
 /**
  * 
@@ -149,7 +173,7 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
 
         svgtext = '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' +
            '<foreignObject width="100%" height="100%">' +
-           '<body xmlns="http://www.w3.org/1999/xhtml">' +
+           '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
              this.InnerHTML +
            '</body>' +
            '</foreignObject>' +
