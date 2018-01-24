@@ -160,128 +160,6 @@ function button3(engine) {
     
 }
 
-function createTestButtons(engine){
-
-    Anibody.ui.Button.SetTemplateByObject({
-        Width: 25, Height: 25,
-        Codename: ["button_state_0", "button_state_1", "button_state_2"],
-        TextColor: "white", FontHeight: 14, DisplayType: "image"
-    });
-
-    var testbuttons = [];
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 1
-    testbuttons[0] = new Button(20, engine.Canvas.height - 150,
-        {
-            Label: "T1",
-            TriggerCallbackObject: function (engine) {
-                testRect(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.shapes.Rect"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 2
-    testbuttons[1] = new Button(50, engine.Canvas.height - 150,
-        {
-            Label: "T2",
-            TriggerCallbackObject: function (engine) {
-                testShape(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.shapes.Shape"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 3
-    testbuttons[2] = new Button(80, engine.Canvas.height - 150,
-        {
-            Label: "T3",
-            TriggerCallbackObject: function (engine) {
-                testSprite(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.visual.Sprite"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 4
-    testbuttons[3] = new Button(110, engine.Canvas.height - 150,
-        {
-            Label: "T4",
-            TriggerCallbackObject: function (engine) {
-                testRandom(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.static.Random.SetRandomInterval"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 5
-    testbuttons[4] = new Button(140, engine.Canvas.height - 150,
-        {
-            Label: "T5",
-            TriggerCallbackObject: function (engine) {
-                testSpline(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.visual.Spline"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 6
-    testbuttons[5] = new Button(20, engine.Canvas.height - 110,
-        {
-            Label: "T6",
-            TriggerCallbackObject: function (engine) {
-                testSoundWrapper(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.util.SoundWrapper"
-        });
-    
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 7
-    testbuttons[6] = new Button(50, engine.Canvas.height - 110,
-        {
-            Label: "T7",
-            TriggerCallbackObject: function (engine) {
-                testImageWrapper(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.util.ImageWrapper"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 8
-    testbuttons[7] = new Button(80, engine.Canvas.height - 110,
-        {
-            Label: "T8",
-            TriggerCallbackObject: function (engine) {
-                testNewCallObjectOptions(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.CallObject()"
-        });
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 9
-    testbuttons[8] = new Button(110, engine.Canvas.height - 110,
-        {
-            Label: "T9",
-            TriggerCallbackObject: function (engine) {
-                testInputField(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.ui.InputField"
-        });
-
-
-    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 10
-    testbuttons[9] = new Button(140, engine.Canvas.height - 110,
-        {
-            Label: "TA",
-            TriggerCallbackObject: function (engine) {
-                testFollowingCameraWithSpriteTest(engine);
-            }.getCallbackObject(engine, engine),
-            HoverText: "Test Anibody.cam.FollowingCamera (also Sprite)"
-        });
-
-
-    
-    
-    for(var i=0; i<testbuttons.length; i++){
-        testbuttons[i].AddButtonEffect();
-        testbuttons[i].Register();
-    }
-    
-
-}
-
 //###########################################
 //##############    TESTS     ###############
 //###########################################
@@ -772,7 +650,7 @@ function testSVGFunctions(engine){
     var element = div.childNodes[0];
 
     //var img = Anibody.svg.TransformHTMLCode2Image(code);
-    var img = Anibody.svg.TransformHTMLElement2Image(element);
+    var img = Anibody.static.TransformHTML2Image(element);
     
     var w = new Anibody.Widget();
     w.Draw = function(c){
@@ -808,5 +686,158 @@ function testABText(engine){
     sb.Start();
 
     console.log(text.PlainText);
+
+}
+
+//###########################################
+//##########    TESTS BUTTONS     ###########
+//###########################################
+
+function createTestButtons(engine){
+
+    Anibody.ui.Button.SetTemplateByObject({
+        Width: 25, Height: 25,
+        Codename: ["button_state_0", "button_state_1", "button_state_2"],
+        TextColor: "white", FontHeight: 14, DisplayType: "image"
+    });
+
+    var testbuttons = [];
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 1
+    testbuttons[0] = new Button(20, engine.Canvas.height - 150,
+        {
+            Label: "T1",
+            TriggerCallbackObject: function (engine) {
+                testRect(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.shapes.Rect"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 2
+    testbuttons[1] = new Button(50, engine.Canvas.height - 150,
+        {
+            Label: "T2",
+            TriggerCallbackObject: function (engine) {
+                testShape(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.shapes.Shape"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 3
+    testbuttons[2] = new Button(80, engine.Canvas.height - 150,
+        {
+            Label: "T3",
+            TriggerCallbackObject: function (engine) {
+                testSprite(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.visual.Sprite"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 4
+    testbuttons[3] = new Button(110, engine.Canvas.height - 150,
+        {
+            Label: "T4",
+            TriggerCallbackObject: function (engine) {
+                testRandom(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.static.Random.SetRandomInterval"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 5
+    testbuttons[4] = new Button(140, engine.Canvas.height - 150,
+        {
+            Label: "T5",
+            TriggerCallbackObject: function (engine) {
+                testSpline(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.visual.Spline"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 6
+    testbuttons[5] = new Button(20, engine.Canvas.height - 110,
+        {
+            Label: "T6",
+            TriggerCallbackObject: function (engine) {
+                testSoundWrapper(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.util.SoundWrapper"
+        });
+    
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 7
+    testbuttons[6] = new Button(50, engine.Canvas.height - 110,
+        {
+            Label: "T7",
+            TriggerCallbackObject: function (engine) {
+                testImageWrapper(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.util.ImageWrapper"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 8
+    testbuttons[7] = new Button(80, engine.Canvas.height - 110,
+        {
+            Label: "T8",
+            TriggerCallbackObject: function (engine) {
+                testNewCallObjectOptions(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.CallObject()"
+        });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 9
+    testbuttons[8] = new Button(110, engine.Canvas.height - 110,
+        {
+            Label: "T9",
+            TriggerCallbackObject: function (engine) {
+                testInputField(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.ui.InputField"
+        });
+
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 10
+    testbuttons[9] = new Button(140, engine.Canvas.height - 110,
+    {
+        Label: "TA",
+        TriggerCallbackObject: function (engine) {
+            testFollowingCameraWithSpriteTest(engine);
+        }.getCallbackObject(engine, engine),
+        HoverText: "Test Anibody.cam.FollowingCamera (also Sprite)"
+    });
+
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 11
+    testbuttons[10] = new Button(20, engine.Canvas.height - 70,
+        {
+            Label: "TB",
+            TriggerCallbackObject: function (engine) {
+                testHTMLSVGCanvas(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.svg.SVGTest"
+        });
+    
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 12
+    testbuttons[11] = new Button(50, engine.Canvas.height - 70,
+        {
+            Label: "TC",
+            TriggerCallbackObject: function (engine) {
+                testSVGFunctions(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.static.TransformHTML2Image()"
+        });
+    
+    // +++++++++++++++++++++++++++++++++++++++++++++++++++++ TEST BUTTON 13
+    testbuttons[12] = new Button(80, engine.Canvas.height - 70,
+        {
+            Label: "TD",
+            TriggerCallbackObject: function (engine) {
+                testABText(engine);
+            }.getCallbackObject(engine, engine),
+            HoverText: "Test Anibody.visual.ABText AND Anibody.util.Storyboard"
+        });
+    
+    for(var i=0; i<testbuttons.length; i++){
+        testbuttons[i].AddButtonEffect();
+        testbuttons[i].Register();
+    }
+    
 
 }
