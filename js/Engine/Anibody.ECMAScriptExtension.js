@@ -431,6 +431,8 @@ Anibody.ECMAScriptExtension = function () {
      * transforms the function into a callback-object and returns this object
      * @param {object} that
      * @param {object} parameter
+     * @param {boolean} useApply - if true the conformation expects the parameter to be an array and uses
+     * Function.apply(that, parameter) instead of call
      * @returns {object}
      */
     Function.prototype.getCallbackObject = function (that, parameter, useApply) {
