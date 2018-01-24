@@ -605,7 +605,7 @@ Anibody.visual.ABText.prototype._updateObject = function () {
 
     var readycbo = function(){this._ready = true;}.getCallbackObject(this);
 
-    this._img = Anibody.svg.TransformHTMLCode2Image(txt, readycbo);
+    this._img = Anibody.static.TransformHTML2Image(txt, readycbo);
     this.Width = this._img.width;
     this.Height = this._img.height;
 };

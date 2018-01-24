@@ -785,21 +785,28 @@ function testSVGFunctions(engine){
 function testABText(engine){
     var test = "Das <span style='color:red;'>ist</span> ein <u>Test</u>";
     var text = new Anibody.visual.ABText(test);
-    text.Register();
 
-    text.FlowMove(500, 400, 2500);
+    var sb = new Anibody.util.Storyboard();
+
+    sb.AddAction(0, function(){
+        text.FlowMove(500, 400, 2500);
+    });
+
+    sb.AddAction(200, function(){
+        text.FlowResize(80, 4000);
+    });
+
+    sb.AddAction(2000, function(){
+        text.Color = "green";
+    });
+
+    sb.AddAction(2550, function(){
+        text.FlowMove(0, 500, 2500);
+    });
+
+    text.Register();
+    sb.Start();
 
     console.log(text.PlainText);
 
-    window.setTimeout(function(){
-        text.FlowResize(80, 4000);
-    },200);
-
-    window.setTimeout(function(){
-        text.Color = "green";
-    },2000);
-
-    window.setTimeout(function(){
-        text.FlowMove(0, 500, 2500);
-    },2550);
 }

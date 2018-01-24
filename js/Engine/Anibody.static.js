@@ -772,5 +772,119 @@ Anibody.static.copyText = function copyText(str){
 
     return res;
 };
-
 Object.defineProperty(Anibody.static.copyText, "name", {value:"copyText"});
+
+/**
+ * Transforms a given html as a string into an image
+ * (creates svg file with html in a foreign element and load it in an image)
+ * @param {string|htmlnode} html -
+ * @param {object} cbo -callbackobject, which is called afterwards
+ * @returns {image}
+ */
+Anibody.static.TransformHTML2Image = function(html, cbo){
+
+    var element;
+    var code;
+
+    if(typeof html === "string"){
+        var div = document.createElement("div");
+        div.innerHTML = html;
+        element = div.childNodes[0];
+        code = html;
+    }else{
+        element = html;
+        code = element.outerHTML;
+    }
+
+    // append the element to the body.
+    // the browser will now render the sizes
+    document.body.appendChild(element);
+    // and then we can receive the real sizes
+    var height = element.clientHeight;
+    var width = element.clientWidth;
+
+    // remove the element from the body
+    document.body.removeChild(element);
+
+    var svgtext = '' +
+    '<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+height+'">' +
+        '<foreignObject width="100%" height="100%">' +
+            '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
+                code +
+            '</body>' +
+        '</foreignObject>' +
+    '</svg>';
+
+    var domURL = window.URL || window.webkitURL || window;
+    var blob = new Blob([svgtext], {type: 'image/svg+xml'});
+    var url = domURL.createObjectURL(blob);
+
+    var image = document.createElement("img");
+    image.width = width;
+    image.height = height;
+
+    image.revokeObjectURL = function(){
+        var domURL = window.URL || window.webkitURL || window;
+        domURL.revokeObjectURL(this.src);
+    };
+
+    if(typeof cbo === "object"){
+        image.cbo = cbo;
+        image.onload = function(){
+            Anibody.CallObject(this.cbo);
+        };
+    }
+
+    image.src = url;
+
+    return image;
+};
+
+/*
+Anibody.static.TransformHTMLElement2Image = function(element,cbo){
+
+    var html = element.outerHTML;
+
+    // append the new element to the body.
+    // the browser will now render the sizes
+    document.body.appendChild(element);
+
+    var height = element.clientHeight;
+    var width = element.clientWidth;
+
+    // remove the element from the body
+    document.body.removeChild(element);
+
+    var svgtext = '' +
+    '<svg xmlns="http://www.w3.org/2000/svg" width="'+width+'" height="'+height+'">' +
+        '<foreignObject width="100%" height="100%">' +
+            '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
+                html +
+            '</body>' +
+        '</foreignObject>' +
+    '</svg>';
+
+    var domURL = window.URL || window.webkitURL || window;
+    var blob = new Blob([svgtext], {type: 'image/svg+xml'});
+    var url = domURL.createObjectURL(blob);
+
+    var image = document.createElement("img");
+    image.width = width;
+    image.height = height;
+
+    image.revokeObjectURL = function(){
+        var domURL = window.URL || window.webkitURL || window;
+        domURL.revokeObjectURL(this.src);
+    };
+
+    if(typeof cbo === "object"){
+        image.onload = function(){
+            Anibody.CallObject(cbo);
+        };
+    }
+
+    image.src = url;
+
+    return image;
+};
+ */
