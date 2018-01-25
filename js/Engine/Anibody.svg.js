@@ -63,7 +63,6 @@ Object.defineProperty(Anibody.svg.SVGTest, "name", {value:"Spline"});
  * @see README_DOKU.txt
  */
 Anibody.svg.SVGTest.prototype.Initialize = function () {
-    this._image = document.createElement("img");
     this._updateElement();
 };
 
@@ -72,7 +71,6 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
 
     this._svgReady = false;
 
-    var div = document.createElement("div");
     var svgtext;
 
     if(!this._containsHTML){
@@ -84,17 +82,15 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
         // doc.documentElement.setAttribute('xmlns', doc.documentElement.namespaceURI);
         // var html = (new XMLSerializer()).serializeToString(doc);
 
-        svgtext = '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' +
-           '<foreignObject width="100%" height="100%">' +
-           '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
-             this.InnerHTML +
-           '</body>' +
-           '</foreignObject>' +
-           '</svg>';
+        var svgtext = '' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="'+this.Width+'" height="'+this.Height+'">' +
+            '<foreignObject width="100%" height="100%">' +
+                '<body style="padding:0; margin:0;" xmlns="http://www.w3.org/1999/xhtml">' +
+                    this.InnerHTML +
+                '</body>' +
+            '</foreignObject>' +
+        '</svg>';
     }
-
-    div.innerHTML = svgtext;
-    this._element = div.childNodes[0];
 
     var domURL = window.URL || window.webkitURL || window;
 
@@ -110,7 +106,6 @@ Anibody.svg.SVGTest.prototype._updateElement = function () {
 
     var self = this;
     this._image.onload = function(e){
-        console.log("SVG loaded");
         self._svgReady = true;
     };
 
@@ -131,7 +126,7 @@ Anibody.svg.SVGTest.prototype.Draw = function (c) {
 
     var cam = this.Engine.GetCamera();
 
-    if(this._image && this._image.complete && this._svgReady){
+    if(this._svgReady){
         c.drawImage(this._image, this.X, this.Y);
     }
 
