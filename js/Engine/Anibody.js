@@ -368,7 +368,6 @@ Anibody.prototype.Update = function () {
     }
 
     // invoke update functions of every object in the object queue as long as they have one
-
     for (var i = 0; i < this.Objects.Queue.heap.length; i++) {
         o = this.GetObject(i);
         if (o && o.Update)
