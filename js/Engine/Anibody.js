@@ -277,8 +277,9 @@ Anibody.prototype.Frame = function () {
 };
 
 /**
- * @description The functions adds an object to the ProcessInput(), which is a part of the Frame()
- * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
+ * @description The functions adds an callback object to the ProcessInput()
+ * @param {Object} pio - callback object of the function
+ * @param {number} prio - priority of the callback objects added this way
  * @returns {undefined}
  */
 Anibody.prototype.AddProcessInputFunctionObject = function (pio, prio) {
@@ -287,8 +288,8 @@ Anibody.prototype.AddProcessInputFunctionObject = function (pio, prio) {
     return ref;
 };
 /**
- * @description The functions adds an object to the ProcessInput(), which is a part of the Frame()
- * @param {Object} pio = { function : func, parameter : obj } the function of this object is regularly triggered once per frame with the specific parameter as the first argument
+ * @description The functions removes the callback object from the ProcessInput() by a given reference number
+ * @param {number} ref - reference number (given by the AddProcessInputFunctionObject())
  * @returns {undefined}
  */
 Anibody.prototype.RemoveProcessInputFunctionObject = function (ref) {
