@@ -16,6 +16,12 @@ Anibody.ui.Button = function Button(x, y, options) {
     this.ClickEasement = 0;
     
     this.Type = "Button";
+
+    this._xorig = x;
+    this._yorig = y;
+    Object.defineProperty(this, "_xorig", { enumerable: false });
+    Object.defineProperty(this, "_yorig", { enumerable: false });
+
     this.X = (isNaN(x)) ? 0 : x;
     this.Y = (isNaN(y)) ? 0 : y;
     this.Width = Anibody.ui.Button.DefaultButtonTemplate.Width;
@@ -196,8 +202,12 @@ Anibody.ui.Button.prototype.Initialize = function () {
     
     Anibody.ui.Button._processOptions(this, this.Options);
     
-    if(this.X === "center"){
+    if(this._xorig === "center"){
         this.X = (this.Engine.Canvas.width - this.Width) / 2;
+    }
+
+    if(this._yorig === "center"){
+        this.Y = (this.Engine.Canvas.height - this.Height) / 2;
     }
     
     this._inflated = {width : this.Width, height: this.Height};
