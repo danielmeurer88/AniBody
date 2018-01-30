@@ -328,8 +328,7 @@ Anibody.prototype.ProcessInput = function () {
 };
 
 /**
- * Adds an UpdateFunctionObject (Object={that,function,parameter}) to the PriorityQueue,
- * whose functions will be updated in the Update-Function
+ * Adds an UpdateFunctionObject to the Update() on the Widget level.
  * @param {object} ufo - UpdateFunctionObject
  * @param {number} prior - priority (optional)
  * @returns {reference number}
